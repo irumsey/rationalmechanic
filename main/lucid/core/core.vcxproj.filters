@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="Clock.h" />
+    <ClInclude Include="Noncopyable.h" />
+    <ClInclude Include="Error.h" />
+    <ClInclude Include="Types.h" />
+    <ClInclude Include="Reader.h" />
+    <ClInclude Include="Identity.h" />
+    <ClInclude Include="FileWriter.h" />
+    <ClInclude Include="Logger.h" />
+    <ClInclude Include="Writer.h" />
+    <ClInclude Include="FileReader.h" />
+    <ClInclude Include="Ctor.h" />
+    <ClInclude Include="Factory.h" />
+    <ClInclude Include="Cache.h" />
+    <ClInclude Include="FileSystem.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Error.cpp" />
+    <ClCompile Include="Logger.cpp" />
+    <ClCompile Include="FileReader.cpp" />
+    <ClCompile Include="FileWriter.cpp" />
+  </ItemGroup>
+</Project>
