@@ -29,10 +29,6 @@ namespace win {
 
 			virtual void scan() override;
 
-			virtual void initialize() override;
-
-			virtual void shutdown() override;
-
 			static FileSystem &instance();
 
 		protected:

@@ -98,10 +98,6 @@ namespace core {
 
 		virtual void scan() = 0;
 
-		virtual void initialize() = 0;
-
-		virtual void shutdown() = 0;
-
 		static FileSystem &instance();
 
 	protected:

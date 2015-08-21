@@ -24,26 +24,7 @@ namespace gigl {
 	public:
 		virtual ~Resources();
 
-		template<class T> static std::shared_ptr<T> get(std::string const &key)
-		{
-			Resources &resources = instance();
-			std::hash_map<void*, CacheBase*> &caches = resources._caches;
-
-			ResourceCache<T> *cache = nullptr;
-
-			std::hash_map<void*, CacheBase*>::iterator iter = caches.find(Type<T>::ID());
-			if (iter != caches.end())
-			{
-				cache = static_cast<ResourceCache<T>*>(iter->second);
-			}
-			else
-			{
-				cache = new ResourceCache<T>();
-				caches[Type<T>::ID()] = cache;
-			}
-
-			return cache->get(key);
-		}
+		template<class T> static std::shared_ptr<T> get(std::string const &key);
 
 		static Resources &instance();
 
@@ -105,6 +86,27 @@ namespace gigl {
 		LUCID_PREVENT_COPY(Resources);
 		LUCID_PREVENT_ASSIGNMENT(Resources);
 	};
+
+	template<class T> inline std::shared_ptr<T> Resources::get(std::string const &key)
+	{
+		Resources &resources = instance();
+		std::hash_map<void*, CacheBase*> &caches = resources._caches;
+
+		ResourceCache<T> *cache = nullptr;
+
+		std::hash_map<void*, CacheBase*>::iterator iter = caches.find(Type<T>::ID());
+		if (iter != caches.end())
+		{
+			cache = static_cast<ResourceCache<T>*>(iter->second);
+		}
+		else
+		{
+			cache = new ResourceCache<T>();
+			caches[Type<T>::ID()] = cache;
+		}
+
+		return cache->get(key);
+	}
 
 }	///	gigl
 }	///	lucid

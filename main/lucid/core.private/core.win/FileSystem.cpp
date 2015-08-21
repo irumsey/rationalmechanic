@@ -125,16 +125,6 @@ namespace win {
 		}
 	}
 
-	void FileSystem::initialize()
-	{
-		///	NOP
-	}
-
-	void FileSystem::shutdown()
-	{
-		_listeners.clear();
-	}
-
 }	///	win
 }	///	core
 }	///	lucid

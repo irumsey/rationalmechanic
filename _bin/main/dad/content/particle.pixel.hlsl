@@ -7,7 +7,7 @@ struct InputPixel
 {
 	float4 ppsPosition : SV_POSITION;
 	float2    texcoord : TEXCOORD0;
-	float       lookup : TEXCOORD1;
+	float     lifetime : TEXCOORD1;
 };
 
 struct OutputPixel
@@ -20,7 +20,7 @@ OutputPixel main(InputPixel input)
 	OutputPixel output = (OutputPixel)0;
 
 	float4 diffuse = diffuseTexture.Sample(theSampler, input.texcoord);
-	float4 lookup = lookupTexture.Sample(theSampler, float2(input.lookup, 0));
+	float4 lookup = lookupTexture.Sample(theSampler, float2(input.lifetime, 0));
 
 	output.color.rgb = diffuse.rgb + lookup.rgb;
 	output.color.a = diffuse.a * lookup.a;

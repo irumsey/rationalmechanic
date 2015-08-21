@@ -19,7 +19,7 @@ struct OutputVertex
 {
 	float4 ppsPosition : SV_POSITION;
 	float2    texcoord : TEXCOORD0;
-	float       lookup : TEXCOORD1;
+	float     lifetime : TEXCOORD1;
 };
 
 OutputVertex main(InputVertex input)
@@ -40,7 +40,7 @@ OutputVertex main(InputVertex input)
 	output.ppsPosition = mul(viewProjMatrix, float4(position, 1));
 
 	output.texcoord = input.texcoord.xy + input.texcoord.zw * input.corner.zw;
-	output.lookup = (time - input.time.x) / input.time.y;
+	output.lifetime = (time - input.time.x) / input.time.y;
 
 	return output;
 }
