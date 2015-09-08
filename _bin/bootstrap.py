@@ -549,7 +549,7 @@ def bootAll(root):
 
 				kind = os.path.splitext(name)[1]
 
-				print('bootsraping: ' + src)
+				print('bootstrapping: ' + src)
 				bootContent[kind](src, dst)
 
 #	main()

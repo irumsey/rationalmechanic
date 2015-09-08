@@ -161,7 +161,115 @@ namespace math {
 	template<class T> inline Vector<T,3> transformDirection(Quaternion<T> const q, Vector<T,3> const &r)
 	{
 		Quaternion<T> u = q * Quaternion<T>(r.x, r.y, r.z, constants::zero<T>()) * conjugate(q);
+
 		return Vector<T,3>(u.x, u.y, u.z);
+	}
+
+	///	slerp
+	///
+	///	spherical interpolation.
+	template<class T> inline Quaternion<T> slerp(T t, Quaternion<T> const &q1, Quaternion<T> const &q2)
+	{
+		T dp = dot(q1, q2);
+		Quaternion<T> q3 = q2;
+
+		if (dp < constants::zero<T>())
+		{
+			dp = -dp;
+			q3 = -q2;
+		}
+
+		if (dp < T(0.95))
+		{
+			T theta = acos(dp);
+			T coeff = constants::one<T>() / sin(theta);
+
+			return coeff * (q1 * sin(theta * (constants::one<T>() - t)) + q3 * sin(theta * t));
+		}
+
+		return lerp(t, q1, q3);
+	}
+
+	///	slerpNoInvert
+	///
+	///
+	template<class T> inline Quaternion<T> slerpNoInvert(T t, Quaternion<T> const &q1, Quaternion<T> const &q2)
+	{
+		T dp = dot(q1, q2);
+
+		if ((T(-0.95) < dp) && (dp < T(0.95)))
+		{
+			T theta = acos(dp);
+			T coeff = constants::one<T>() / sin(theta);
+
+			return coeff * (q1 * sin(theta * (constants::one<T>() - t)) + q2 * sin(theta * t));
+		}
+
+		return lerp(t, q1, q2);
+	}
+
+	///	exp
+	///
+	///	returns the exp value of the specified quaternion.
+	template<class T> inline Quaternion<T> exp(Quaternion<T> const &rhs)
+	{
+		T a = sqrt(rhs.x * rhs.x + rhs.y * rhs.y + rhs.z * rhs.z);
+		T sina = sin(a);
+		T cosa = cos(a);
+
+		Quaternion<T> result(0, 0, 0, cosa);
+		if (a > constants::zero<T>())
+		{
+			T coeff = sina / a;
+
+			result.x = coeff * rhs.x;
+			result.y = coeff * rhs.y;
+			result.z = coeff * rhs.z;
+		}
+
+		return result;
+	}
+
+	///	log
+	///
+	///	returns the log of the specified quaternion.
+	template<class T> inline Quaternion<T> log(Quaternion<T> const &rhs)
+	{
+		T a = acos(rhs.w);
+		T sina = sin(a);
+
+		Quaternion<T> result(0, 0, 0, 0);
+		if (sina > constants::zero<T>())
+		{
+			T coeff = a / sina;
+
+			result.x = coeff * rhs.x;
+			result.y = coeff * rhs.y;
+			result.z = coeff * rhs.z;
+		}
+
+		return result;
+	}
+
+	///	squad
+	///
+	///	spherical spline interpolation.  s1 and s2 are computed using computeControl(...) below.
+	template<class T> inline Quaternion<T> squad(T t, Quaternion<T> const &q1, Quaternion<T> const &q2, Quaternion<T> const &s1, Quaternion<T> const &s2)
+	{
+		Quaternion<T> c = slerpNoInvert(t, q1, q2);
+		Quaternion<T> d = slerpNoInvert(t, s1, s2);
+
+		return slerpNoInvert(constants::two<T>() * t * (constants::one<T>() - t), c, d);
+	}
+
+	///	compute control
+	///
+	///	used to compute spline control values given: previous (q1), current (q2), and next (q3) values.
+	template<class T> inline Quaternion<T> computeControl(Quaternion<T> const &q1, Quaternion<T> const &q2, Quaternion<T> const &q3)
+	{
+		Quaternion<T> q(-q2.x, -q2.y, -q2.z, q2.w);
+
+		return q2 * exp(T(-0.25) * (log(q * q1) + log(q * q3)));
 	}
 
 }	///	math

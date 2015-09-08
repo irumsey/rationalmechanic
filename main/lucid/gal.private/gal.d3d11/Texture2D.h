@@ -46,18 +46,18 @@ namespace d3d11 {
 		ID3D11ShaderResourceView *d3dResourceView() const;
 
 	private:
-			int32_t _width = 0;
-			int32_t _height = 0;
+		int32_t _width = 0;
+		int32_t _height = 0;
 
-			ID3D11Resource *_d3dResource = nullptr;
-			ID3D11ShaderResourceView *_d3dResourceView = nullptr;
+		ID3D11Resource *_d3dResource = nullptr;
+		ID3D11ShaderResourceView *_d3dResourceView = nullptr;
 
-			void initialize(std::string const &path);
+		void initialize(std::string const &path);
 
-			void shutdown();
+		void shutdown();
 
-			LUCID_PREVENT_COPY(Texture2D);
-			LUCID_PREVENT_ASSIGNMENT(Texture2D);
+		LUCID_PREVENT_COPY(Texture2D);
+		LUCID_PREVENT_ASSIGNMENT(Texture2D);
 	};
 
 	inline int32_t Texture2D::width() const
