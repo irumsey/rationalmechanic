@@ -21,6 +21,8 @@ namespace gal {
 
 		virtual void shutdown() = 0;
 
+		virtual void resize(int32_t width, int32_t height) = 0;
+
 		virtual bool windowed() const = 0;
 
 		virtual int32_t width() const = 0;

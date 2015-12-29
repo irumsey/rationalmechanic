@@ -77,6 +77,7 @@ namespace d3d11 {
 	void DepthTarget2D::initialize()
 	{
 		D3D11_TEXTURE2D_DESC descTexture;
+		::memset(&descTexture, 0, sizeof(D3D11_TEXTURE2D_DESC));
 
 		descTexture.Format = d3dFormat[_format];
 		descTexture.Width = _width;
@@ -88,10 +89,10 @@ namespace d3d11 {
 		descTexture.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 
 		HRESULT hResult = d3d11ConcreteDevice->CreateTexture2D(&descTexture, nullptr, &_d3dTexture2D);
-		GAL_VALIDATE_HRESULT(hResult, "unable to create depth target");
+		GAL_VALIDATE_HRESULT(hResult, "unable to create depth texture");
 
 		hResult = d3d11ConcreteDevice->CreateDepthStencilView(_d3dTexture2D, nullptr, &_d3dDepthStencilView);
-		GAL_VALIDATE_HRESULT(hResult, "unable to create depth target");
+		GAL_VALIDATE_HRESULT(hResult, "unable to create depth view");
 	}
 
 	void DepthTarget2D::shutdown()

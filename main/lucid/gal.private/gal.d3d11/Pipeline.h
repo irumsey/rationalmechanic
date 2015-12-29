@@ -45,6 +45,8 @@ namespace d3d11 {
 
 		void shutdown();
 
+		void resize(int32_t width, int32_t height, int32_t samples);
+
 		virtual Statistics &statistics() override;
 
 		virtual Statistics const &statistics() const override;
@@ -61,11 +63,15 @@ namespace d3d11 {
 
 		virtual void endGeometry(::lucid::gal::VertexFormat const *format) override;
 
+		virtual void setUnorderedTarget(::lucid::gal::Unordered2D *unordered) override;
+
 		virtual void setRenderTarget(int32_t index, ::lucid::gal::RenderTarget2D *renderTarget) override;
 
 		virtual void setDepthTarget(::lucid::gal::DepthTarget2D *depthtarget) override;
 
-		virtual void restoreBackBuffer(bool color = true, bool depth = true) override;
+		virtual void restoreBackBuffer(bool color = true, bool depth = true, bool unordered = true) override;
+
+		virtual void updateTargets() override;
 
 		virtual void viewport(::lucid::gal::Viewport const &viewport) override;
 
@@ -77,6 +83,8 @@ namespace d3d11 {
 
 		virtual void setIndexStream(::lucid::gal::IndexBuffer const *buffer) override;
 
+		virtual void draw(TOPOLOGY topology, int32_t vertexCount) override;
+
 		virtual void draw(TOPOLOGY topology, int32_t vertexCount, int32_t indexCount, int32_t indexStart = 0, int32_t indexOffset = 0) override;
 
 		virtual void drawInstanced(TOPOLOGY topology, int32_t vertexCount, int32_t indexCount, int32_t instanceCount, int32_t indexStart = 0, int32_t instanceStart = 0, int32_t indexOffset = 0) override;
@@ -85,6 +93,7 @@ namespace d3d11 {
 
 	private:
 		static int32_t const TARGET_MAXIMUM = 4;
+		static int32_t const UNORDERED_SLOT = TARGET_MAXIMUM;
 
 		Statistics _statistics;
 		::lucid::gal::Viewport _viewport;
@@ -99,13 +108,14 @@ namespace d3d11 {
 		ID3D11Texture2D *_d3dDepth = nullptr;
 		ID3D11DepthStencilView *_d3dDepthView = nullptr;
 
+		ID3D11UnorderedAccessView *_d3dCurrentUnordered = nullptr;
 		ID3D11RenderTargetView *_d3dCurrentTargets[TARGET_MAXIMUM];
 		ID3D11DepthStencilView *_d3dCurrentDepth = nullptr;
 		bool _targetsChanged = true;
 
 		::lucid::gal::d3d11::Program const *_activeProgram = nullptr;
 
-		void updateTargets();
+		void createDepthBuffer(int32_t width, int32_t height, int32_t samples);
 
 		LUCID_PREVENT_COPY(Pipeline);
 		LUCID_PREVENT_ASSIGNMENT(Pipeline);

@@ -20,7 +20,7 @@ namespace d3d11 {
 	///
 	///
 	///
-	template<class T> class Buffer
+	class Buffer
 	{
 	public:
 		virtual ~Buffer() {}
@@ -29,7 +29,7 @@ namespace d3d11 {
 
 		virtual int32_t stride() const = 0;
 
-		virtual T* lock(int32_t start = 0, int32_t count = 0) = 0;
+		virtual void *lock(int32_t start = 0, int32_t count = 0) = 0;
 
 		virtual void unlock() = 0;
 
@@ -45,7 +45,7 @@ namespace d3d11 {
 	///
 	///
 	///
-	template<class TYPE, D3D11_BIND_FLAG BINDING> class StaticBuffer : public Buffer <TYPE>
+	template<D3D11_BIND_FLAG BINDING> class StaticBuffer : public Buffer
 	{
 	public:
 		StaticBuffer(int32_t count, int32_t stride)
@@ -54,17 +54,14 @@ namespace d3d11 {
 		{
 			::memset(&_d3dDesc, 0, sizeof(D3D11_BUFFER_DESC));
 
-			_d3dDesc.Usage = D3D11_USAGE_DEFAULT;
+			_d3dDesc.Usage = D3D11_USAGE_IMMUTABLE;
 			_d3dDesc.ByteWidth = _count * _stride;
 			_d3dDesc.BindFlags = BINDING;
-
-			_buffer = new uint8_t[_count * _stride];
 		}
 
 		virtual ~StaticBuffer()
 		{
 			safeRelease(_d3dBuffer);
-			delete[] _buffer;
 		}
 
 		virtual int32_t count() const override
@@ -77,9 +74,14 @@ namespace d3d11 {
 			return _stride;
 		}
 
-		virtual TYPE* lock(int32_t start = 0, int32_t count = 0) override
+		virtual void *lock(int32_t start = 0, int32_t count = 0) override
 		{
-			return reinterpret_cast<TYPE*>(_buffer + start * _stride);
+			///	sanity check...
+			delete [] _buffer;
+			_buffer = new uint8_t[_count * _stride];
+
+			///	TBD: use start and count;
+			return _buffer;
 		}
 
 		virtual void unlock() override
@@ -93,6 +95,10 @@ namespace d3d11 {
 			data.SysMemSlicePitch = 0;
 
 			HRESULT hResult = d3d11ConcreteDevice->CreateBuffer(&_d3dDesc, &data, &_d3dBuffer);
+			
+			delete [] _buffer;
+			_buffer = nullptr;
+
 			GAL_VALIDATE_HRESULT(hResult, "unable to create buffer");
 		}
 
@@ -104,7 +110,7 @@ namespace d3d11 {
 	private:
 		int32_t _count = 0;
 		int32_t _stride = 0;
-		uint8_t *_buffer = 0;
+		void *_buffer = nullptr;
 
 		ID3D11Buffer *_d3dBuffer = 0;
 		D3D11_BUFFER_DESC _d3dDesc;
@@ -116,7 +122,7 @@ namespace d3d11 {
 	///
 	///
 	///
-	template<class TYPE, D3D11_BIND_FLAG BINDING> class DynamicBuffer : public Buffer <TYPE>
+	template<D3D11_BIND_FLAG BINDING> class DynamicBuffer : public Buffer
 	{
 	public:
 		DynamicBuffer(int32_t count, int32_t stride)
@@ -150,7 +156,7 @@ namespace d3d11 {
 			return _stride;
 		}
 
-		virtual TYPE* lock(int32_t start = 0, int32_t count = 0) override
+		virtual void *lock(int32_t start = 0, int32_t count = 0) override
 		{
 			D3D11_MAPPED_SUBRESOURCE mapped;
 			HRESULT hResult = d3d11ConcreteContext->Map(_d3dBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
@@ -158,7 +164,8 @@ namespace d3d11 {
 
 			_locked = true;
 
-			return reinterpret_cast<TYPE*>(reinterpret_cast<uint8_t*>(mapped.pData) + start * _stride);
+			///	TBD: use start and count
+			return mapped.pData;
 		}
 
 		virtual void unlock() override

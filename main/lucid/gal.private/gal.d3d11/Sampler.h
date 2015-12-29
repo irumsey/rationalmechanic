@@ -67,6 +67,7 @@ namespace d3d11	{
 		std::string name = "<unknown>";
 
 		int32_t vsPosition = -1;
+		int32_t gsPosition = -1;
 		int32_t psPosition = -1;
 
 		SamplerState state;

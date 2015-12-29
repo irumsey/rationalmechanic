@@ -66,10 +66,10 @@ namespace d3d11 {
 		switch (_usage)
 		{
 		case USAGE_STATIC:
-			_d3dBuffer = new StaticBuffer<uint8_t, D3D11_BIND_VERTEX_BUFFER>(count, stride);
+			_d3dBuffer = new StaticBuffer<D3D11_BIND_VERTEX_BUFFER>(count, stride);
 			break;
 		case USAGE_DYNAMIC:
-			_d3dBuffer = new DynamicBuffer<uint8_t, D3D11_BIND_VERTEX_BUFFER>(count, stride);
+			_d3dBuffer = new DynamicBuffer<D3D11_BIND_VERTEX_BUFFER>(count, stride);
 			break;
 		default:
 			LUCID_THROW("invalid vertex buffer usage specified");

@@ -2,7 +2,7 @@
 
 #include <cassert>
 #include <memory>
-#include <hash_map>
+#include <unordered_map>
 
 ///
 ///
@@ -31,7 +31,7 @@ namespace core {
 		///	Otherwise, the supplied constructor is used to make a new instance.
 		template<class C> inline std::shared_ptr<T> get(K const &key, C const &ctor)
 		{
-			std::hash_map<K, std::weak_ptr<T> >::iterator iter = cache.find(key);
+			std::unordered_map<K, std::weak_ptr<T> >::iterator iter = cache.find(key);
 			if (iter != cache.end())
 				return iter->second.lock();
 
@@ -44,7 +44,7 @@ namespace core {
 	private:
 		typedef K key_t;
 		typedef T value_t;
-		typedef std::hash_map<K, std::weak_ptr<T> > cache_t;
+		typedef std::unordered_map<K, std::weak_ptr<T> > cache_t;
 
 		///	Dtor
 		///

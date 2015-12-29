@@ -25,6 +25,7 @@ namespace d3d11 {
 		Uniform::TYPE type = Uniform::TYPE_UNDEFINED;
 
 		int32_t vsPosition = -1;
+		int32_t gsPosition = -1;
 		int32_t psPosition = -1;
 
 		int32_t size = 0;

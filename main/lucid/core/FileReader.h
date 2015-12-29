@@ -24,11 +24,13 @@ namespace core {
 
 		virtual ~FileReader();
 
-		bool isOpen() const;
-
 		bool open(std::string const &path);
 
 		void close();
+
+		bool is_open() const;
+
+		bool is_eof() const;
 
 		virtual void read(void *data, int size) override;
 
@@ -65,15 +67,20 @@ namespace core {
 		LUCID_PREVENT_ASSIGNMENT(FileReader);
 	};
 
-	inline bool FileReader::isOpen() const
-	{
-		return _file.is_open();
-	}
-
 	inline void FileReader::close()
 	{
 		if (_file.is_open())
 			_file.close();
+	}
+
+	inline bool FileReader::is_open() const
+	{
+		return _file.is_open();
+	}
+
+	inline bool FileReader::is_eof() const
+	{
+		return _file.eof();
 	}
 
 }	///	core

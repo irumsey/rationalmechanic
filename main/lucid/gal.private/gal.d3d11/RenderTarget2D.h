@@ -34,6 +34,8 @@ namespace d3d11 {
 
 		virtual int32_t height() const override;
 
+		ID3D11Texture2D *d3dTexture() const;
+
 		ID3D11RenderTargetView *d3dTargetView() const;
 
 		ID3D11ShaderResourceView *d3dResourceView() const;
@@ -68,6 +70,11 @@ namespace d3d11 {
 	inline int32_t RenderTarget2D::height() const
 	{
 		return _height;
+	}
+
+	inline ID3D11Texture2D *RenderTarget2D::d3dTexture() const
+	{
+		return _d3dTexture2D;
 	}
 
 	inline ID3D11RenderTargetView *RenderTarget2D::d3dTargetView() const

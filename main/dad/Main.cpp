@@ -12,21 +12,6 @@
 #include <lucid/core/Clock.h>
 
 ///
-///	Libraries...
-///
-#ifdef _DEBUG
-#	pragma comment (lib,        "core.debug.lib")
-#	pragma comment (lib,    "core.win.debug.lib")
-#	pragma comment (lib,   "gal.d3d11.debug.lib")
-#	pragma comment (lib,        "gigl.debug.lib")
-#else
-#	pragma comment (lib,      "core.release.lib")
-#	pragma comment (lib,  "core.win.release.lib")
-#	pragma comment (lib, "gal.d3d11.release.lib")
-#	pragma comment (lib,      "gigl.release.lib")
-#endif
-
-///
 ///	Constants...
 ///
 int32_t   const SCREEN_WIDTH = 1280;

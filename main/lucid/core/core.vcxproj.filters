@@ -15,11 +15,15 @@
     <ClInclude Include="Factory.h" />
     <ClInclude Include="Cache.h" />
     <ClInclude Include="FileSystem.h" />
+    <ClInclude Include="Queue.h" />
+    <ClInclude Include="Stack.h" />
+    <ClInclude Include="Profiler.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Error.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="FileReader.cpp" />
     <ClCompile Include="FileWriter.cpp" />
+    <ClCompile Include="Profiler.cpp" />
   </ItemGroup>
 </Project>

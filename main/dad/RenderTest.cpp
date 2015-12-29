@@ -121,12 +121,10 @@ void RenderTest::render(float32_t time, float32_t interpolant)
 		std::shared_ptr<gal::Program> program = _mesh->program();
 		std::shared_ptr<gigl::Material> material = _mesh->material();
 
-		pipeline.beginProgram(program.get());			
-			material->begin(_context);
-					pipeline.setVertexStream(1, _instances.get());
-					_mesh->drawInstanced(count);
-			material->end();
-		pipeline.endProgram(program.get());
+		material->begin(_context);
+				pipeline.setVertexStream(1, _instances.get());
+				_mesh->drawInstanced(count);
+		material->end();
 	}
 
 	++_frameCount;

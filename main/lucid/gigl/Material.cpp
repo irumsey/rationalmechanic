@@ -3,6 +3,8 @@
 #include "Resources.h"
 #include <lucid/gal/Program.h>
 #include <lucid/gal/Texture2D.h>
+#include <lucid/gal/Unordered2D.h>
+#include <lucid/gal/Pipeline.h>
 #include <lucid/core/FileReader.h>
 #include <lucid/core/Reader.h>
 #include <lucid/core/Logger.h>
@@ -16,6 +18,9 @@ namespace /* anonymous */
 
 	typedef ::lucid::gal::Parameter parameter_t;
 	typedef ::lucid::gal::Program program_t;
+
+	typedef ::lucid::gal::Unordered2D unordered2d_t;
+	typedef std::shared_ptr<unordered2d_t> shared_unordered2d_t;
 
 	typedef ::lucid::gal::Texture2D texture2d_t;
 	typedef std::shared_ptr<texture2d_t> shared_texture2d_t;
@@ -83,12 +88,17 @@ namespace gigl {
 		
 	void Material::begin(Context const &context) const
 	{
+		gal::Pipeline &pipeline = gal::Pipeline::instance();
+
+		pipeline.updateTargets();
 		std::for_each(_attributes.begin(), _attributes.end(), Applicator(context, _program.get()));
+		pipeline.beginProgram(_program.get());
 	}
 
 	void Material::end()
 	{
-		///	NOP for now
+		gal::Pipeline &pipeline = gal::Pipeline::instance();
+		pipeline.endProgram(_program.get());
 	}
 
 	Material *Material::create(std::string const &path)
@@ -149,6 +159,12 @@ namespace /* anonymous */
 		apply_jump[info.tid](context, program, parameter, result);
 	}
 
+	template<> void apply<shared_unordered2d_t>(context_t const &context, program_t const *program, parameter_t const *parameter, primitive_t const &value)
+	{
+		shared_unordered2d_t texture = value.as<shared_unordered2d_t>();
+		program->set(parameter, texture.get());
+	}
+
 	template<> void apply<shared_texture2d_t>(context_t const &context, program_t const *program, parameter_t const *parameter, primitive_t const &value)
 	{
 		shared_texture2d_t texture = value.as<shared_texture2d_t>();
@@ -189,6 +205,7 @@ namespace /* anonymous */
 		apply<shared_texture2d_t>,
 		apply<shared_target2d_t>,
 		apply<std::string>,
+		apply<shared_unordered2d_t>,
 	};
 
 }	///	anonymous

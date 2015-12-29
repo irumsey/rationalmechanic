@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <hash_map>
+#include <unordered_map>
 
 namespace rnd
 {
@@ -13,7 +13,7 @@ namespace rnd
 		///	contains assignments for variables in an expression.
 		///
 		///	SEE ALSO: Evaluate
-		typedef std::hash_map<std::string, double> Symbols;
+		typedef std::unordered_map<std::string, double> Symbols;
 
 	}	///	xpr
 }		///	rnd

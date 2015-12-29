@@ -27,6 +27,7 @@ namespace gal {
 	class RenderState;
 	class Parameter;
 	class Texture2D;
+	class Unordered2D;
 	class RenderTarget2D;
 
 	///	Program
@@ -72,6 +73,8 @@ namespace gal {
 		virtual void set(Parameter const *parameter, Matrix4x4 const &value) const = 0;
 
 		virtual void set(Parameter const *parameter, Texture2D const *value) const = 0;
+
+		virtual void set(Parameter const *parameter, Unordered2D const *value) const = 0;
 
 		virtual void set(Parameter const *parameter, RenderTarget2D const *value) const = 0;
 

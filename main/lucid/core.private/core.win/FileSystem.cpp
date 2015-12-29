@@ -7,12 +7,6 @@
 ///
 ///
 ///
-
-namespace core = ::lucid::core;
-
-///
-///
-///
 namespace lucid {
 namespace core {
 
@@ -23,6 +17,16 @@ namespace core {
 
 }	///	core
 }	///	lucid
+
+///
+///
+///
+namespace /* anonymous */
+{
+
+	namespace core = ::lucid::core;
+
+}	///	anonymous
 
 ///
 ///

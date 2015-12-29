@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <hash_map>
+#include <unordered_map>
 #include <rnd/xpr/Symbols.h>
 #include <rnd/xpr/Algorithm.h>
 

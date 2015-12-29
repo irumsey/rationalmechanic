@@ -57,7 +57,13 @@ namespace d3d11 {
 
 		descChain.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 
-		HRESULT hResult = ::D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, 0, 0, D3D11_SDK_VERSION, &descChain, &_d3dChain, &_d3dDevice, nullptr, &_d3dContext);
+		uint32_t flags = 0;
+
+#if defined(GAL_ENABLE_NATIVE_DEBUG)
+		flags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif
+
+		HRESULT hResult = ::D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, flags, 0, 0, D3D11_SDK_VERSION, &descChain, &_d3dChain, &_d3dDevice, nullptr, &_d3dContext);
 		GAL_VALIDATE_HRESULT(hResult, "unable to initialize gal system");
 
 		galConcretePipeline.initialize(_width, _height, _samples, _d3dDevice, _d3dContext, _d3dChain);
@@ -70,6 +76,14 @@ namespace d3d11 {
 		safeRelease(_d3dContext);
 		safeRelease(_d3dChain);
 		safeRelease(_d3dDevice);
+	}
+
+	void System::resize(int32_t width, int32_t height)
+	{
+		_width = width;
+		_height = height;
+
+		galConcretePipeline.resize(_width, _height, _samples);
 	}
 
 	::lucid::gal::d3d11::System &System::instance()

@@ -100,5 +100,15 @@ namespace core {
 
 	};
 
+	///	log
+	///
+	///	global convienience function for logging messages.
+	///	got tired of getting instance first.
+	inline void log(std::string const &category, std::string const &message)
+	{
+		Logger &logger = Logger::instance();
+		logger.log(category, message);
+	}
+
 }	///	core
 }	///	lucid

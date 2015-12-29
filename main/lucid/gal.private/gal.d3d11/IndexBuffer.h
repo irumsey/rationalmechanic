@@ -33,17 +33,19 @@ namespace d3d11 {
 	class IndexBuffer : public ::lucid::gal::IndexBuffer
 	{
 	public:
-		IndexBuffer(USAGE usage, int32_t count);
+		IndexBuffer(USAGE usage, FORMAT format, int32_t count);
 
 		IndexBuffer(::lucid::core::Reader &reader);
 
 		virtual ~IndexBuffer();
 
+		virtual FORMAT format() const override;
+
 		virtual USAGE usage() const override;
 
 		virtual int32_t count() const override;
 
-		virtual uint16_t *lock(int32_t start = 0, int32_t count = 0) override;
+		virtual void *lock(int32_t start = 0, int32_t count = 0) override;
 
 		virtual void unlock() override;
 
@@ -51,7 +53,8 @@ namespace d3d11 {
 
 	private:
 		USAGE _usage = USAGE_UNDEFINED;
-		Buffer<uint16_t> *_d3dBuffer = nullptr;
+		FORMAT _format = FORMAT_UNDEFINED;
+		Buffer *_d3dBuffer = nullptr;
 
 		int32_t _size = 0;
 
@@ -66,6 +69,11 @@ namespace d3d11 {
 	inline IndexBuffer::USAGE IndexBuffer::usage() const
 	{
 		return _usage;
+	}
+
+	inline IndexBuffer::FORMAT IndexBuffer::format() const
+	{
+		return _format;
 	}
 
 	inline int32_t IndexBuffer::count() const

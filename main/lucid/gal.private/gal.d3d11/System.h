@@ -38,6 +38,8 @@ namespace d3d11 {
 
 		virtual void shutdown() override;
 
+		virtual void resize(int32_t width, int32_t height) override;
+
 		virtual bool windowed() const override;
 
 		virtual int32_t width() const override;

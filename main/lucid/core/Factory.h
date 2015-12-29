@@ -1,6 +1,6 @@
 #pragma once
 
-#include <hash_map>
+#include <unordered_map>
 #include <lucid/core/Noncopyable.h>
 #include <lucid/core/Error.h>
 #include <lucid/core/Ctor.h>
@@ -40,7 +40,7 @@ namespace core {
 		}
 
 	private:
-		std::hash_map<K, Ctor<T> const *> _ctors;
+		std::unordered_map<K, Ctor<T> const *> _ctors;
 
 		LUCID_PREVENT_COPY(Factory);
 		LUCID_PREVENT_ASSIGNMENT(Factory);

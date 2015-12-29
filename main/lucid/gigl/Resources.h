@@ -2,7 +2,7 @@
 
 #include <memory>
 #include <string>
-#include <hash_map>
+#include <unordered_map>
 #include <lucid/core/Noncopyable.h>
 #include <lucid/core/Ctor.h>
 #include <lucid/core/Cache.h>
@@ -81,7 +81,7 @@ namespace gigl {
 			::lucid::core::Cache<std::string, T> internal;
 		};
 
-		std::hash_map<void*, CacheBase*> _caches;
+		std::unordered_map<void*, CacheBase*> _caches;
 
 		LUCID_PREVENT_COPY(Resources);
 		LUCID_PREVENT_ASSIGNMENT(Resources);
@@ -90,11 +90,11 @@ namespace gigl {
 	template<class T> inline std::shared_ptr<T> Resources::get(std::string const &key)
 	{
 		Resources &resources = instance();
-		std::hash_map<void*, CacheBase*> &caches = resources._caches;
+		std::unordered_map<void*, CacheBase*> &caches = resources._caches;
 
 		ResourceCache<T> *cache = nullptr;
 
-		std::hash_map<void*, CacheBase*>::iterator iter = caches.find(Type<T>::ID());
+		std::unordered_map<void*, CacheBase*>::iterator iter = caches.find(Type<T>::ID());
 		if (iter != caches.end())
 		{
 			cache = static_cast<ResourceCache<T>*>(iter->second);

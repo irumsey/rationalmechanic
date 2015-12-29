@@ -54,7 +54,7 @@ namespace d3d11 {
 
 	private:
 		USAGE _usage = USAGE_UNDEFINED;
-		Buffer<uint8_t> *_d3dBuffer = nullptr;
+		Buffer *_d3dBuffer = nullptr;
 
 		int32_t _size = 0;
 

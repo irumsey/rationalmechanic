@@ -7,6 +7,7 @@
     <ClCompile Include="Tests.cpp" />
     <ClCompile Include="MathTest.cpp" />
     <ClCompile Include="RenderTest.cpp" />
+    <ClCompile Include="Link.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Session.h" />

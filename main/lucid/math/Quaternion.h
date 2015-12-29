@@ -74,7 +74,7 @@ template<class T> inline QUATERNION(T) operator*(QUATERNION(T) const &lhs, QUATE
 
 template<class T> inline QUATERNION(T) operator/(QUATERNION(T) const &lhs, T const &rhs)
 {
-	T const coeff = constants::one<T>() / rhs;
+	T const coeff = ::lucid::math::constants::one<T>() / rhs;
 	return QUATERNION(T)(coeff * lhs.x, coeff * lhs.y, coeff * lhs.z, coeff * lhs.w);
 }
 

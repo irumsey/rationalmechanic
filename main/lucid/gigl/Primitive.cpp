@@ -2,6 +2,7 @@
 #include "Resources.h"
 #include <lucid/gal/RenderTarget2D.h>
 #include <lucid/gal/Texture2D.h>
+#include <lucid/gal/Unordered2D.h>
 #include <lucid/core/Reader.h>
 
 ///
@@ -11,6 +12,9 @@ namespace /* anonymous */
 {
 
 	typedef ::lucid::core::Reader reader_t;
+
+	typedef ::lucid::gal::Unordered2D unordered2d_t;
+	typedef std::shared_ptr<unordered2d_t> shared_unordered2d_t;
 
 	typedef ::lucid::gal::Texture2D texture2d_t;
 	typedef std::shared_ptr<texture2d_t> shared_texture2d_t;
@@ -25,12 +29,13 @@ namespace /* anonymous */
 	/// ENUM LOOKUP
 	::lucid::gal::RenderTarget2D::FORMAT const targetFormat[] =
 	{
-		target2d_t::FORMAT_UINT_R8G8B8A8,
+		target2d_t::FORMAT_UNORM_R8G8B8A8,
 		target2d_t::FORMAT_UINT_R16G16,
 		target2d_t::FORMAT_UINT_R10G10B10A2,
 		target2d_t::FORMAT_FLOAT_R16G16,
 		target2d_t::FORMAT_FLOAT_R32,
 		target2d_t::FORMAT_FLOAT_R32G32,
+		target2d_t::FORMAT_UINT_R32,
 	};
 
 	typedef primitive_t (*read_func_t)(reader_t &reader);
@@ -62,6 +67,8 @@ namespace gigl {
 		{ Type<      shared_texture2d_t>::VALUE,      "Texture2D" },
 		{ Type<       shared_target2d_t>::VALUE, "RenderTarget2D" },
 		{ Type<         std::    string>::VALUE,         "string" },
+
+		{ Type<    shared_unordered2d_t>::VALUE,    "Unordered2D" },
 	};
 
 	void Primitive::coerceFrom(Primitive const &rhs)
@@ -144,6 +151,8 @@ namespace /* anonymous */
 		read<texture2d_t>,
 		read<target2d_t>,
 		read<std::string>,
+
+		read<UNSUPPORTED>,
 	};
 
 }	///	anonymous

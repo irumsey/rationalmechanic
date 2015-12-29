@@ -1,4 +1,4 @@
-#
+﻿#
 #	imports
 #
 
@@ -14,12 +14,13 @@ import struct
 
 #	render target format
 renderTargetFormat = {
-	   'FORMAT_UINT_R8G8B8A8' :  0,
+	  'FORMAT_UNORM_R8G8B8A8' :  0,
 	     'FORMAT_UINT_R16G16' :  1,
 	'FORMAT_UINT_R10G10B10A2' :  2,
 	    'FORMAT_FLOAT_R16G16' :  3,
 		   'FORMAT_FLOAT_R32' :  4,
 	    'FORMAT_FLOAT_R32G32' :  5,
+            'FORMAT_UINT_R32' :  6,
 }
 
 #	depth target format
@@ -35,6 +36,11 @@ vertexElementFormat = {
 	   'FORMAT_FLOAT2' :  1,
 	   'FORMAT_FLOAT3' :  2,
 	   'FORMAT_FLOAT4' :  3,
+
+	    'FORMAT_UINT1' :  4,
+	    'FORMAT_UINT2' :  5,
+	    'FORMAT_UINT3' :  6,
+	    'FORMAT_UINT4' :  7,
 }
 
 #	vertex element type
@@ -47,6 +53,12 @@ vertexElementType = {
 bufferUsage = {
 	   'USAGE_STATIC' :  0,
 	  'USAGE_DYNAMIC' :  1,
+}
+
+#	index buffer format
+indexBufferFormat = {
+	"FORMAT_UINT16" : 0,
+	"FORMAT_UINT32" : 1,
 }
 
 #	filter state
@@ -156,11 +168,12 @@ blendMode = {
 
 #
 topology = {
-	    'TOPOLOGY_POINT_LIST' : 0,
-	     'TOPOLOGY_LINE_LIST' : 1,
-	    'TOPOLOGY_LINE_STRIP' : 2,
-	 'TOPOLOGY_TRIANGLE_LIST' : 3,
-	'TOPOLOGY_TRIANGLE_STRIP' : 4,
+	        'TOPOLOGY_POINT_LIST' : 0,
+	         'TOPOLOGY_LINE_LIST' : 1,
+	        'TOPOLOGY_LINE_STRIP' : 2,
+	     'TOPOLOGY_TRIANGLE_LIST' : 3,
+	    'TOPOLOGY_TRIANGLE_STRIP' : 4,
+	'TOPOLOGY_TRIANGLE_ADJACENCY' : 5,
 }
 
 #
@@ -371,7 +384,18 @@ def bootProgram(dst, program):
 	bootRenderStates(dst, program['RenderStates'])
 	
 	bootString(dst, program['VertexShader']['Path'])
-	bootString(dst, program['PixelShader']['Path'])
+
+	if 'GeometryShader' in program:
+		bootBoolean(dst, True)
+		bootString(dst, program['GeometryShader']['Path'])
+	else:
+		bootBoolean(dst, False)
+
+	if 'PixelShader' in program:
+		bootBoolean(dst, True)
+		bootString(dst, program['PixelShader']['Path'])
+	else:
+		bootBoolean(dst, False)
 
 def bootProgramFromFile(srcPath, dstPath):
 	bootProgram(open(dstPath, 'wb'), json.load(open(srcPath)))
@@ -455,11 +479,18 @@ def bootVertexBufferFromFile(srcPath, dstPath):
 def bootIndexBuffer(dst, src):
 	data = src['data']
 
+	uint16 = ('FORMAT_UINT16' == src['format'])
+
 	bootInteger(dst, bufferUsage[src['usage']])
+	bootInteger(dst, indexBufferFormat[src['format']])
+
 	bootInteger(dst, len(data))
 
 	for i in range(len(data)):
-		bootIndex(dst, data[i])
+		if uint16:
+			bootIndex(dst, data[i])
+		else:
+			bootUnsigned(dst, data[i])
 
 def bootIndexBufferFromFile(srcPath, dstPath):
 	bootIndexBuffer(open(dstPath, 'wb'), json.load(open(srcPath)))
@@ -525,6 +556,32 @@ def bootContextFromFile(srcPath, dstPath):
 	bootContext(open(dstPath, 'wb'), json.load(open(srcPath)))
 
 #
+#
+#
+def bootCamera(dst, camera):
+	type = camera['type']
+
+	if 'perspective' == type:
+		bootUnsigned(dst, 0)
+		bootFloat(dst, camera['fov'])
+		bootFloat(dst, camera['aspect'])
+		bootFloat(dst, camera['znear'])
+		bootFloat(dst, camera['zfar'])
+	else:
+		bootUnsigned(dst, 1)
+		bootFloat(dst, camera['width'])
+		bootFloat(dst, camera['height'])
+		bootFloat(dst, camera['znear'])
+		bootFloat(dst, camera['zfar'])
+
+	bootVector3(dst, camera['position'])
+	bootVector3(dst, camera['target'])
+	bootVector3(dst, camera['up'])
+
+def bootCameraFromFile(srcPath, dstPath):
+	bootCamera(open(dstPath, 'wb'), json.load(open(srcPath)))
+
+#
 #	
 #
 bootContent = {
@@ -533,6 +590,7 @@ bootContent = {
 	  '.format' : bootVertexFormatFromFile,
 	'.geometry' : bootGeometryFromFile,
 	    '.mesh' : bootMeshFromFile,
+      '.camera' : bootCameraFromFile,
 	 '.context' : bootContextFromFile,
 }
 
@@ -563,6 +621,7 @@ def main():
 	optionParser.add_option('-f', '--format', action = 'store_const', const = '.format', dest = 'kind')
 	optionParser.add_option('-g', '--geometry', action = 'store_const', const = '.geometry', dest = 'kind')
 	optionParser.add_option('-M', '--mesh', action = 'store_const', const = '.mesh', dest = 'kind')
+	optionParser.add_option('-c', '--camera', action = 'store_const', const = '.camera', dest = 'kind')
 	optionParser.add_option('-C', '--context', action = 'store_const', const = '.context', dest = 'kind')
 	(opts, args) = optionParser.parse_args()
 

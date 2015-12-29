@@ -95,8 +95,9 @@
 	 
 		"indices" :
 		{
-			"usage" : "USAGE_STATIC",
-			"data" : [ 0, 1, 2, 3 ]
+			 "usage" :  "USAGE_STATIC",
+			"format" : "FORMAT_UINT16",
+			  "data" : [ 0, 1, 2, 3 ]
 		}
 	}
 }

@@ -3,6 +3,7 @@
 #include "Shader.h"
 #include "RenderState.h"
 #include "Sampler.h"
+#include "Unordered2D.h"
 #include "Texture2D.h"
 #include "RenderTarget2D.h"
 #include "Pipeline.h"
@@ -98,7 +99,8 @@ namespace d3d11 {
 		}
 
 		_vertexShader->setConstant(data, concrete->vsPosition, size);
-		_pixelShader->setConstant(data, concrete->psPosition, size);
+		if (_geometryShader) { _geometryShader->setConstant(data, concrete->gsPosition, size); }
+		if (_pixelShader) { _pixelShader->setConstant(data, concrete->psPosition, size); }
 	}
 
 	void Program::set(::lucid::gal::Parameter const *parameter, bool value) const
@@ -166,10 +168,40 @@ namespace d3d11 {
 			return;
 		}
 
+		if (::lucid::gal::d3d11::Uniform::TYPE_TEXTURE != concreteParameter->type)
+		{
+			///	TBD: error?
+			return;
+		}
+
 		ID3D11ShaderResourceView * const d3dResource = concreteTexture->d3dResourceView();
 
 		_vertexShader->setTexture(concreteParameter->vsPosition, d3dResource);
-		_pixelShader->setTexture(concreteParameter->psPosition, d3dResource);
+		if (_geometryShader) { _geometryShader->setTexture(concreteParameter->gsPosition, d3dResource); }
+		if (_pixelShader) { _pixelShader->setTexture(concreteParameter->psPosition, d3dResource); }
+	}
+
+	void Program::set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Unordered2D const *value) const
+	{
+		::lucid::gal::d3d11::Parameter const *concreteParameter = static_cast<::lucid::gal::d3d11::Parameter const *>(parameter);
+		::lucid::gal::d3d11::Unordered2D const *concreteTexture = static_cast<::lucid::gal::d3d11::Unordered2D const *>(value);
+
+		if (nullptr == parameter)
+		{
+			return;
+		}
+
+		if (::lucid::gal::d3d11::Uniform::TYPE_TEXTURE != concreteParameter->type)
+		{
+			///	TBD: error?
+			return;
+		}
+
+		ID3D11ShaderResourceView * const d3dResource = concreteTexture->d3dResourceView();
+
+		_vertexShader->setTexture(concreteParameter->vsPosition, d3dResource);
+		if (_geometryShader) { _geometryShader->setTexture(concreteParameter->gsPosition, d3dResource); }
+		if (_pixelShader) { _pixelShader->setTexture(concreteParameter->psPosition, d3dResource); }
 	}
 
 	void Program::set(::lucid::gal::Parameter const *parameter, ::lucid::gal::RenderTarget2D const *value) const
@@ -182,10 +214,17 @@ namespace d3d11 {
 			return;
 		}
 
+		if (::lucid::gal::d3d11::Uniform::TYPE_TEXTURE != concreteParameter->type)
+		{
+			///	TBD: error?
+			return;
+		}
+
 		ID3D11ShaderResourceView * const d3dResource = concreteTarget->d3dResourceView();
 
 		_vertexShader->setTexture(concreteParameter->vsPosition, d3dResource);
-		_pixelShader->setTexture(concreteParameter->psPosition, d3dResource);
+		if (_geometryShader) { _geometryShader->setTexture(concreteParameter->gsPosition, d3dResource); }
+		if (_pixelShader) { _pixelShader->setTexture(concreteParameter->psPosition, d3dResource); }
 	}
 
 	void Program::onBegin() const
@@ -195,7 +234,8 @@ namespace d3d11 {
 			SamplerState const &state = sampler->state;
 
 			_vertexShader->setSampler(sampler->vsPosition, state.d3dState);
-			_pixelShader->setSampler(sampler->vsPosition, state.d3dState);
+			if (_geometryShader) { _geometryShader->setSampler(sampler->gsPosition, state.d3dState); }
+			if (_pixelShader) { _pixelShader->setSampler(sampler->psPosition, state.d3dState); }
 		}
 
 		d3d11ConcreteContext->RSSetState(_renderState->d3dRasterizerState());
@@ -203,29 +243,22 @@ namespace d3d11 {
 		d3d11ConcreteContext->OMSetBlendState(_renderState->d3dBlendState(), nullptr, 0xFFFFFFFF);
 
 		_vertexShader->onBegin();
-		_pixelShader->onBegin();
+		if (_geometryShader) { _geometryShader->onBegin(); }
+		if (_pixelShader) { _pixelShader->onBegin(); }
 	}
 
 	void Program::onEnd() const
 	{
 		_vertexShader->onEnd();
-		_pixelShader->onEnd();
+		if (_geometryShader) { _geometryShader->onEnd(); }
+		if (_pixelShader) { _pixelShader->onEnd(); }
 	}
 
 	void Program::onDraw() const
 	{
 		_vertexShader->onDraw();
-		_pixelShader->onDraw();
-	}
-
-	std::vector<uint8_t> const &Program::vertexCode() const
-	{
-		return _vertexShader->code();
-	}
-
-	std::vector<uint8_t> const &Program::pixelCode() const
-	{
-		return _pixelShader->code();
+		if (_geometryShader) { _geometryShader->onDraw(); }
+		if (_pixelShader) { _pixelShader->onDraw(); }
 	}
 
 	void Program::addParameterVS(Uniform const &uniform)
@@ -248,6 +281,29 @@ namespace d3d11 {
 			LUCID_VALIDATE(uniform.size == parameter->size, "vertex shader type mismatch: " + uniform.name);
 
 			parameter->vsPosition = uniform.position;
+		}
+	}
+
+	void Program::addParameterGS(Uniform const &uniform)
+	{
+		auto iter = _parameters.find(uniform.name);
+		if (iter == _parameters.end())
+		{
+			Parameter *parameter = new Parameter(uniform.type, uniform.name);
+
+			parameter->gsPosition = uniform.position;
+			parameter->size = uniform.size;
+
+			_parameters[uniform.name] = parameter;
+		}
+		else
+		{
+			Parameter *parameter = iter->second;
+
+			LUCID_VALIDATE(uniform.type == parameter->type, "geometry shader type mismatch: " + uniform.name);
+			LUCID_VALIDATE(uniform.size == parameter->size, "geometry shader type mismatch: " + uniform.name);
+
+			parameter->gsPosition = uniform.position;
 		}
 	}
 
@@ -284,6 +340,7 @@ namespace d3d11 {
 				Parameter const *parameter = iter->second;
 
 				sampler->vsPosition = parameter->vsPosition;
+				sampler->gsPosition = parameter->gsPosition;
 				sampler->psPosition = parameter->psPosition;
 			}
 		}
@@ -309,8 +366,17 @@ namespace d3d11 {
 			_vertexShader = new VertexShader(reader.read<std::string>());
 			for (auto uniform : _vertexShader->uniforms()) { addParameterVS(uniform); }
 
-			_pixelShader = new PixelShader(reader.read<std::string>());
-			for (auto uniform : _pixelShader->uniforms()) { addParameterPS(uniform); }
+			if (reader.read<bool>())
+			{
+				_geometryShader = new GeometryShader(reader.read<std::string>());
+				for (auto uniform : _geometryShader->uniforms()) { addParameterGS(uniform); }
+			}
+
+			if (reader.read<bool>())
+			{
+				_pixelShader = new PixelShader(reader.read<std::string>());
+				for (auto uniform : _pixelShader->uniforms()) { addParameterPS(uniform); }
+			}
 
 			finalizeSamplers();
 		}
@@ -326,6 +392,7 @@ namespace d3d11 {
 	void Program::shutdown()
 	{
 		delete _pixelShader;
+		delete _geometryShader;
 		delete _vertexShader;
 
 		delete _samplers;

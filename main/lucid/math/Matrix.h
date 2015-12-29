@@ -273,7 +273,7 @@ template<class T, int ROWS, int COLS> inline MATRIX(T,ROWS,COLS) operator/(MATRI
 {
 	MATRIX(T,ROWS,COLS) result;
 
-	T const coeff = inv(rhs);
+	T const coeff = ::lucid::math::constants::one<T>() / rhs;
 
 	result.elements[0] = coeff * lhs.elements[0];
 	for (int32_t i = 1; i < result.COUNT; ++i)
@@ -363,7 +363,7 @@ namespace math {
 	///	trace
 	///
 	///	compute the trace of a square matrix
-	template<class T, int DIM> inline Matrix<T,DIM,DIM> trace(Matrix<T,DIM,DIM> const &rhs)
+	template<class T, int DIM> inline T trace(Matrix<T,DIM,DIM> const &rhs)
 	{
 		T result = rhs[0][0];
 
@@ -620,7 +620,7 @@ namespace math {
 		return Matrix<T,4,4>
 		(
 			2 / width,          0,                  0,                      0,
-		            0, 1 / height,                  0,                      0,
+		            0, 2 / height,                  0,                      0,
 		            0,          0, 1 / (znear - zfar), znear / (znear - zfar),
 		            0,          0,                  0,                      1
 		);
@@ -686,6 +686,15 @@ namespace math {
 			zaxis.x, zaxis.y, zaxis.z, -dot(zaxis, eye),
 			    0.f,     0.f,     0.f,              1.f
 		);
+	}
+
+	///
+	///
+	///
+	template<class T> inline Vector<T, 3> transform(Matrix<T, 4, 4> const &lhs, Vector<T, 3> const &rhs)
+	{
+		Vector<T, 4> result = lhs * Vector<T, 4>(rhs.x, rhs.y, rhs.z, constants::one<T>());
+		return Vector<T, 3>(result.x, result.y, result.z) / result.w;
 	}
 
 }	///	math

@@ -83,6 +83,10 @@ namespace d3d11 {
 				{
 					addUniform(Uniform(Uniform::TYPE_TEXTURE, descResource.Name, descResource.BindPoint));
 				}
+				else if (D3D_SIT_UAV_RWTYPED == descResource.Type)
+				{
+					addUniform(Uniform(Uniform::TYPE_TEXTURE_RANDOM_ACCESS, descResource.Name, descResource.BindPoint));
+				}
 				else if (D3D_SIT_SAMPLER == descResource.Type)
 				{
 					addUniform(Uniform(Uniform::TYPE_SAMPLER, descResource.Name, descResource.BindPoint));
@@ -102,7 +106,14 @@ namespace d3d11 {
 
 	void Shader::onBegin() const
 	{
-		///	NOP
+		if (nullptr != _d3dConstants)
+		{
+			D3D11_MAPPED_SUBRESOURCE mapped;
+
+			d3d11ConcreteContext->Map(_d3dConstants, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
+			::memcpy(mapped.pData, &_rawConstants[0], _rawConstants.size());
+			d3d11ConcreteContext->Unmap(_d3dConstants, 0);
+		}
 	}
 
 	void Shader::onEnd() const
@@ -112,14 +123,7 @@ namespace d3d11 {
 
 	void Shader::onDraw() const
 	{
-		if (nullptr != _d3dConstants)
-		{
-			D3D11_MAPPED_SUBRESOURCE mapped;
-
-			d3d11ConcreteContext->Map(_d3dConstants, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
-			::memcpy(mapped.pData, &_rawConstants[0], _rawConstants.size());
-			d3d11ConcreteContext->Unmap(_d3dConstants, 0);
-		}
+		///	NOP
 	}
 
 	///
@@ -158,12 +162,25 @@ namespace d3d11 {
 
 	void VertexShader::onBegin() const
 	{
+		Shader::onBegin();
+
+		ID3D11Buffer *_d3dConstants = d3dConstants();
+		if (nullptr != _d3dConstants)
+		{
+			d3d11ConcreteContext->VSSetConstantBuffers(0, 1, &_d3dConstants);
+		}
+
 		d3d11ConcreteContext->VSSetShader(_d3dShader, 0, 0);
-		return Shader::onBegin();
 	}
 
 	void VertexShader::onEnd() const
 	{
+		ID3D11ShaderResourceView *nullView = nullptr;
+
+		for (Uniform const &uniform : uniforms())
+			if ((-1 != uniform.position) && ((Uniform::TYPE_TEXTURE == uniform.type) || (Uniform::TYPE_TEXTURE_RANDOM_ACCESS == uniform.type)))
+				d3d11ConcreteContext->VSSetShaderResources(uniform.position, 1, &nullView);
+
 		Shader::onEnd();
 		d3d11ConcreteContext->VSSetShader(0, 0, 0);
 	}
@@ -171,12 +188,70 @@ namespace d3d11 {
 	void VertexShader::onDraw() const
 	{
 		Shader::onDraw();
+	}
+
+	///
+	///
+	///
+
+	GeometryShader::GeometryShader(std::string const &path)
+		: Shader(path)
+	{
+		std::vector<uint8_t> const &_code = code();
+
+		HRESULT hResult = d3d11ConcreteDevice->CreateGeometryShader(&_code[0], _code.size(), nullptr, &_d3dShader);
+		GAL_VALIDATE_HRESULT(hResult, "unable to create shader'" + path + "'");
+	}
+
+	GeometryShader::~GeometryShader()
+	{
+		safeRelease(_d3dShader);
+	}
+
+	void GeometryShader::setTexture(int32_t position, ID3D11ShaderResourceView *d3dResource)
+	{
+		if (-1 < position)
+		{
+			d3d11ConcreteContext->GSSetShaderResources(position, 1, &d3dResource);
+		}
+	}
+
+	void GeometryShader::setSampler(int32_t position, ID3D11SamplerState *d3dState)
+	{
+		if (-1 < position)
+		{
+			d3d11ConcreteContext->GSSetSamplers(position, 1, &d3dState);
+		}
+	}
+
+	void GeometryShader::onBegin() const
+	{
+		Shader::onBegin();
 
 		ID3D11Buffer *_d3dConstants = d3dConstants();
 		if (nullptr != _d3dConstants)
 		{
-			d3d11ConcreteContext->VSSetConstantBuffers(0, 1, &_d3dConstants);
+			d3d11ConcreteContext->GSSetConstantBuffers(0, 1, &_d3dConstants);
 		}
+
+		d3d11ConcreteContext->GSSetShader(_d3dShader, 0, 0);
+	}
+
+	void GeometryShader::onEnd() const
+	{
+		ID3D11ShaderResourceView *nullView = nullptr;
+
+		for (Uniform const &uniform : uniforms())
+			if ((-1 != uniform.position) && ((Uniform::TYPE_TEXTURE == uniform.type) || (Uniform::TYPE_TEXTURE_RANDOM_ACCESS == uniform.type)))
+				d3d11ConcreteContext->GSSetShaderResources(uniform.position, 1, &nullView);
+
+		Shader::onEnd();
+		d3d11ConcreteContext->GSSetShader(0, 0, 0);
+	}
+
+	void GeometryShader::onDraw() const
+	{
+		Shader::onDraw();
 	}
 
 	///
@@ -187,7 +262,7 @@ namespace d3d11 {
 		: Shader(path)
 	{
 		std::vector<uint8_t> const &_code = code();
-		int32_t size = _code.size();
+		int32_t size = (int32_t)_code.size();
 
 		HRESULT hResult = d3d11ConcreteDevice->CreatePixelShader(&_code[0], _code.size(), nullptr, &_d3dShader);
 		GAL_VALIDATE_HRESULT(hResult, "unable to create shader '" + path + "'");
@@ -216,25 +291,33 @@ namespace d3d11 {
 
 	void PixelShader::onBegin() const
 	{
-		d3d11ConcreteContext->PSSetShader(_d3dShader, 0, 0);
-		return Shader::onBegin();
-	}
-
-	void PixelShader::onEnd() const
-	{
-		Shader::onEnd();
-		d3d11ConcreteContext->PSSetShader(0, 0, 0);
-	}
-
-	void PixelShader::onDraw() const
-	{
-		Shader::onDraw();
+		Shader::onBegin();
 
 		ID3D11Buffer *_d3dConstants = d3dConstants();
 		if (nullptr != _d3dConstants)
 		{
 			d3d11ConcreteContext->PSSetConstantBuffers(0, 1, &_d3dConstants);
 		}
+
+		d3d11ConcreteContext->PSSetShader(_d3dShader, 0, 0);
+	}
+
+	void PixelShader::onEnd() const
+	{
+		ID3D11ShaderResourceView *nullView = nullptr;
+
+		for (Uniform const &uniform : uniforms())
+			if ((-1 != uniform.position) && ((Uniform::TYPE_TEXTURE == uniform.type) || (Uniform::TYPE_TEXTURE_RANDOM_ACCESS == uniform.type)))
+				d3d11ConcreteContext->PSSetShaderResources(uniform.position, 1, &nullView);
+
+		Shader::onEnd();
+
+		d3d11ConcreteContext->PSSetShader(0, 0, 0);
+	}
+
+	void PixelShader::onDraw() const
+	{
+		Shader::onDraw();
 	}
 
 }	///	d3d11

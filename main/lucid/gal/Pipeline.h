@@ -16,6 +16,7 @@ namespace gal {
 	///
 
 	class Statistics;
+	class Unordered2D;
 	class RenderTarget2D;
 	class DepthTarget2D;
 	class Program;
@@ -31,11 +32,12 @@ namespace gal {
 	public:
 		enum TOPOLOGY
 		{
-			TOPOLOGY_POINTLIST,
-			TOPOLOGY_LINELIST,
-			TOPOLOGY_LINESTRIP,
-			TOPOLOGY_TRIANGLELIST,
-			TOPOLOGY_TRIANGLESTRIP,
+			TOPOLOGY_POINT_LIST,
+			TOPOLOGY_LINE_LIST,
+			TOPOLOGY_LINE_STRIP,
+			TOPOLOGY_TRIANGLE_LIST,
+			TOPOLOGY_TRIANGLE_STRIP,
+			TOPOLOGY_TRIANGLE_ADJACENCY,
 		};
 
 		virtual ~Pipeline() = 0 {}
@@ -56,11 +58,15 @@ namespace gal {
 
 		virtual void endGeometry(VertexFormat const *format) = 0;
 
+		virtual void setUnorderedTarget(Unordered2D *unordered) = 0;
+
 		virtual void setRenderTarget(int32_t index, RenderTarget2D *renderTarget) = 0;
 
 		virtual void setDepthTarget(DepthTarget2D *depthtarget) = 0;
 
-		virtual void restoreBackBuffer(bool color = true, bool depth = true) = 0;
+		virtual void restoreBackBuffer(bool color = true, bool depth = true, bool unordered = true) = 0;
+
+		virtual void updateTargets() = 0;
 
 		virtual void viewport(Viewport const &viewport) = 0;
 
@@ -71,6 +77,9 @@ namespace gal {
 		virtual void setVertexStream(int32_t index, VertexBuffer const *buffer, int32_t start = 0) = 0;
 
 		virtual void setIndexStream(IndexBuffer const *buffer) = 0;
+
+		///	this is a non-indexed draw
+		virtual void draw(TOPOLOGY topology, int32_t vertexCount) = 0;
 
 		virtual void draw(TOPOLOGY topology, int32_t vertexCount, int32_t indexCount, int32_t indexStart = 0, int32_t indexOffset = 0) = 0;
 

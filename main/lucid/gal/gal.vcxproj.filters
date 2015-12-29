@@ -14,5 +14,7 @@
     <ClInclude Include="Parameter.h" />
     <ClInclude Include="Pipeline.h" />
     <ClInclude Include="Types.h" />
+    <ClInclude Include="TargetReader2D.h" />
+    <ClInclude Include="Unordered2D.h" />
   </ItemGroup>
 </Project>

@@ -48,15 +48,38 @@ namespace gigl {
 		shutdown();
 	}
 
+	::lucid::gal::Pipeline::TOPOLOGY Mesh::topology() const
+	{
+		return _geometry->topology();
+	}
+
+	uint32_t Mesh::vertexCount() const
+	{
+		return _geometry->vertexCount();
+	}
+
+	uint32_t Mesh::indexCount() const
+	{
+		return _geometry->indexCount();
+	}
+
+	uint32_t Mesh::primitiveCount() const
+	{
+		return _geometry->primitiveCount();
+	}
+
 	void Mesh::render(Context const &context) const
 	{
-		gal::Pipeline &pipeline = gal::Pipeline::instance();
+		_material->begin(context);
+			draw();
+		_material->end();
+	}
 
-		pipeline.beginProgram(_program.get());
-			_material->begin(context);
-				draw();
-			_material->end();
-		pipeline.endProgram(_program.get());
+	void Mesh::renderInstanced(Context const &context, int32_t count) const
+	{
+		_material->begin(context);
+			drawInstanced(count);
+		_material->end();
 	}
 
 	void Mesh::draw() const
@@ -79,7 +102,7 @@ namespace gigl {
 		{
 			_material.reset(Material::create(reader));
 		}
-		
+
 		if (reader.read<bool>())
 		{
 			_geometry = Resources::get<Geometry>(reader.read<std::string>());
@@ -94,7 +117,9 @@ namespace gigl {
 
 	void Mesh::shutdown()
 	{
-		///	NOP for now
+		_program.reset();
+		_material.reset();
+		_geometry.reset();
 	}
 
 }	///	gigl

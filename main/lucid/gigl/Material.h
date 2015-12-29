@@ -2,7 +2,7 @@
 
 #include <memory>
 #include <string>
-#include <hash_map>
+#include <unordered_map>
 #include <lucid/core/Identity.h>
 #include <lucid/core/Noncopyable.h>
 #include <lucid/gigl/Primitive.h>
@@ -105,7 +105,7 @@ namespace gigl {
 		::lucid::core::Identity const _identity;
 
 		std::shared_ptr<::lucid::gal::Program> _program;
-		std::hash_map<std::string, Attribute> _attributes;
+		std::unordered_map<std::string, Attribute> _attributes;
 
 		void initialize(::lucid::core::Reader &reader);
 

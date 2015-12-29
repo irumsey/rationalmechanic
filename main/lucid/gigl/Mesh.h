@@ -68,10 +68,22 @@ namespace gigl {
 
 		std::shared_ptr<Material> material() const;
 
+		::lucid::gal::Pipeline::TOPOLOGY topology() const;
+
+		uint32_t vertexCount() const;
+
+		uint32_t indexCount() const;
+
+		uint32_t primitiveCount() const;
+
 		void render(Context const &context) const;
+
+		///	this assumes the per-instance stream(s) are already set.
+		void renderInstanced(Context const &context, int32_t count) const;
 
 		void draw() const;
 
+		///	this assumes the per-instance stream(s) are already set.
 		void drawInstanced(int32_t count) const;
 
 		static Mesh *create(std::string const &path);

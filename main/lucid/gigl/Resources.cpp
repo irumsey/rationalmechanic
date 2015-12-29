@@ -1,5 +1,9 @@
 #include "Resources.h"
 
+///	there are issues if lucid is used with C#
+///	the gc screws up shutdown order
+///	#define GIGL_DELETE_RESOURCES
+
 ///
 ///
 ///
@@ -12,7 +16,9 @@ namespace gigl {
 
 	Resources::~Resources()
 	{
+#if defined(GIGL_DELETE_RESOURCES)
 		for (auto iter : _caches) { delete iter.second; }
+#endif
 	}
 
 	Resources &Resources::instance()

@@ -55,6 +55,7 @@ namespace d3d11 {
 	class Parameter;
 	class RenderState;
 	class VertexShader;
+	class GeometryShader;
 	class PixelShader;
 
 	///
@@ -101,6 +102,8 @@ namespace d3d11 {
 
 		virtual void set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Texture2D const *value) const override;
 
+		virtual void set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Unordered2D const *value) const override;
+
 		virtual void set(::lucid::gal::Parameter const *parameter, ::lucid::gal::RenderTarget2D const *value) const override;
 
 		void onBegin() const;
@@ -109,10 +112,6 @@ namespace d3d11 {
 
 		void onDraw() const;
 
-		std::vector<uint8_t> const &vertexCode() const;
-
-		std::vector<uint8_t> const &pixelCode() const;
-
 	private:
 		::lucid::core::Identity const _identity;
 
@@ -120,11 +119,14 @@ namespace d3d11 {
 		Sampler *_samplers = nullptr;
 
 		VertexShader *_vertexShader = nullptr;
+		GeometryShader *_geometryShader = nullptr;
 		PixelShader *_pixelShader = nullptr;
 
 		std::map<std::string, ::lucid::gal::d3d11::Parameter*> _parameters;
 
 		void addParameterVS(Uniform const &uniform);
+
+		void addParameterGS(Uniform const &uniform);
 
 		void addParameterPS(Uniform const &uniform);
 

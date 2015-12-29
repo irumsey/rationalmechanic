@@ -6,5 +6,10 @@
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="Algorithm.h" />
+    <ClInclude Include="Frustum.h" />
+    <ClInclude Include="Plane.h" />
+    <ClInclude Include="Sphere.h" />
+    <ClInclude Include="AABB.h" />
   </ItemGroup>
 </Project>

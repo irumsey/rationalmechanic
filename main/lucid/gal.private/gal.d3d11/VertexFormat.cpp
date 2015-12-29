@@ -1,6 +1,7 @@
 #include "VertexFormat.h"
 #include "System.h"
 #include "Utility.h"
+#include <lucid/core/FileReader.h>
 #include <lucid/core/Reader.h>
 #include <sstream>
 #include <d3dcompiler.h>
@@ -18,6 +19,11 @@ namespace /* anonymous */
 		"float2",
 		"float3",
 		"float4",
+
+		  "uint",
+		 "uint2",
+		 "uint3",
+		 "uint4",
 	};
 
 	/// ENUM LOOKUP
@@ -27,6 +33,11 @@ namespace /* anonymous */
 		DXGI_FORMAT_R32G32_FLOAT,
 		DXGI_FORMAT_R32G32B32_FLOAT,
 		DXGI_FORMAT_R32G32B32A32_FLOAT,
+
+		DXGI_FORMAT_R32_UINT,
+		DXGI_FORMAT_R32G32_UINT,
+		DXGI_FORMAT_R32G32B32_UINT,
+		DXGI_FORMAT_R32G32B32A32_UINT,
 	};
 
 	///	ENUM LOOKUP
@@ -55,6 +66,11 @@ namespace gal {
 	VertexFormat *VertexFormat::create(std::vector<VertexElement> const &layout)
 	{
 		return new ::lucid::gal::d3d11::VertexFormat(layout);
+	}
+
+	VertexFormat *VertexFormat::create(std::string const &path)
+	{
+		return create(core::FileReader(path));
 	}
 
 	VertexFormat *VertexFormat::create(::lucid::core::Reader &reader)
@@ -117,7 +133,7 @@ namespace d3d11 {
 		std::string const source = header + body.str() + footer;
 
 		ID3DBlob *blob = nullptr;
-		HRESULT hResult = ::D3DCompile(source.c_str(), source.size(), nullptr, nullptr, nullptr, "main", "vs_4_1", 0, 0, &blob, nullptr);
+		HRESULT hResult = ::D3DCompile(source.c_str(), source.size(), nullptr, nullptr, nullptr, "main", "vs_4_0", 0, 0, &blob, nullptr);
 		GAL_VALIDATE_HRESULT(hResult, "unable to create 'dummy' code for vertex format");
 
 		code.resize(blob->GetBufferSize());
@@ -146,7 +162,7 @@ namespace d3d11 {
 		::lucid::gal::d3d11::createDummyCode(code, layout);
 
 		_layout = layout;
-		int32_t count = _layout.size();
+		int32_t count = (int32_t)_layout.size();
 
 		std::vector<D3D11_INPUT_ELEMENT_DESC> d3dElements(count);
 		for (int32_t i = 0; i < count; ++i)

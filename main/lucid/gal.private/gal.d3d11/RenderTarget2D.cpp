@@ -3,6 +3,7 @@
 #include "Pipeline.h"
 #include "Utility.h"
 #include <lucid/core/Reader.h>
+#include <lucid/core/Logger.h>
 
 ///
 ///
@@ -13,12 +14,14 @@ namespace /* anonymous */
 	/// ENUM LOOKUP
 	DXGI_FORMAT const d3dFormat[] =
 	{
-		DXGI_FORMAT_R8G8B8A8_UINT,
+		DXGI_FORMAT_R8G8B8A8_UNORM,
 		DXGI_FORMAT_R16G16_UINT,
 		DXGI_FORMAT_R10G10B10A2_UINT,
 		DXGI_FORMAT_R16G16_FLOAT,
 		DXGI_FORMAT_R32_FLOAT,
 		DXGI_FORMAT_R32G32_FLOAT,
+
+		DXGI_FORMAT_R32_UINT,
 	};
 
 }	///	anonymous
@@ -96,7 +99,7 @@ namespace d3d11 {
 		descTexture.Height = _height;
 		descTexture.MipLevels = 1;
 		descTexture.ArraySize = 1;
-		descTexture.SampleDesc.Count = 1;
+		descTexture.SampleDesc = { 1, 0, };
 		descTexture.Usage = D3D11_USAGE_DEFAULT;
 		descTexture.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <hash_map>
+#include <unordered_map>
 #include <lucid/core/Error.h>
 #include <lucid/gigl/Primitive.h>
 
@@ -47,7 +47,7 @@ namespace gigl {
 		void add(std::string const &name, Primitive const &parameter);
 
 	private:
-		std::hash_map<std::string, Primitive> _values;
+		std::unordered_map<std::string, Primitive> _values;
 
 		void initialize(::lucid::core::Reader &reader);
 

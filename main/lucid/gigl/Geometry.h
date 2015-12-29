@@ -49,6 +49,14 @@ namespace gigl {
 
 		core::Identity const &identity() const;
 
+		::lucid::gal::Pipeline::TOPOLOGY topology() const;
+
+		uint32_t vertexCount() const;
+
+		uint32_t indexCount() const;
+
+		uint32_t primitiveCount() const;
+
 		void draw() const;
 
 		void drawInstanced(int32_t count) const;
@@ -60,7 +68,7 @@ namespace gigl {
 	private:
 		core::Identity const _identity;
 
-		::lucid::gal::Pipeline::TOPOLOGY _topology = gal::Pipeline::TOPOLOGY_TRIANGLELIST;
+		::lucid::gal::Pipeline::TOPOLOGY _topology = ::lucid::gal::Pipeline::TOPOLOGY_TRIANGLE_LIST;
 
 		std::unique_ptr<::lucid::gal::VertexFormat> _format;
 		std::unique_ptr<::lucid::gal::VertexBuffer> _vertices;
@@ -77,6 +85,11 @@ namespace gigl {
 	inline core::Identity const &Geometry::identity() const
 	{
 		return _identity;
+	}
+
+	inline ::lucid::gal::Pipeline::TOPOLOGY Geometry::topology() const
+	{
+		return _topology;
 	}
 
 }	///	gigl

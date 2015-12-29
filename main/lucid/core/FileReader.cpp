@@ -28,7 +28,7 @@ namespace core {
 
 	void FileReader::read(void *data, int size)
 	{
-		LUCID_VALIDATE(isOpen(), "attempt to read from an unopened file");
+		LUCID_VALIDATE(is_open(), "attempt to read from an unopened file");
 		_file.read((char *)data, size);
 	}
 

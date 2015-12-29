@@ -30,17 +30,22 @@ namespace gal {
 		{
 			FORMAT_UNDEFINED = -1,
 
-			FORMAT_FLOAT1,
+			FORMAT_FLOAT1 = 0,
 			FORMAT_FLOAT2,
 			FORMAT_FLOAT3,
 			FORMAT_FLOAT4,
+
+			FORMAT_UINT1,
+			FORMAT_UINT2,
+			FORMAT_UINT3,
+			FORMAT_UINT4,
 		};
 
 		enum TYPE
 		{
 			TYPE_UNDEFINED = -1,
 
-			TYPE_VERTEX,
+			TYPE_VERTEX = 0,
 			TYPE_INSTANCE,
 		};
 
@@ -71,6 +76,8 @@ namespace gal {
 		static VertexFormat *create(VertexElement const *layout, int32_t count);
 
 		static VertexFormat *create(std::vector<VertexElement> const &layout);
+
+		static VertexFormat *create(std::string const &path);
 
 		static VertexFormat *create(::lucid::core::Reader &reader);
 

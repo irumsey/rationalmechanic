@@ -24,6 +24,7 @@ namespace core {
 namespace lucid {
 namespace gal {
 
+	class Unordered2D;
 	class Texture2D;
 	class RenderTarget2D;
 
@@ -42,8 +43,9 @@ namespace gigl {
 	class Primitive final
 	{
 	public:
-		typedef std::shared_ptr<::lucid::gal::Texture2D> shared_texture2d_t;
-		typedef std::shared_ptr<::lucid::gal::RenderTarget2D> shared_target2d_t;
+		typedef std::shared_ptr<::lucid::gal::   Unordered2D> shared_unordered2d_t;
+		typedef std::shared_ptr<::lucid::gal::     Texture2D>   shared_texture2d_t;
+		typedef std::shared_ptr<::lucid::gal::RenderTarget2D>    shared_target2d_t;
 
 		struct UNKNOWN final {};
 		struct UNDEFINED final {};
@@ -66,7 +68,9 @@ namespace gigl {
 		template<>        struct Type<       shared_target2d_t> { enum { VALUE = 14 }; };
 		template<>        struct Type<         std::    string> { enum { VALUE = 15 }; };
 
-		enum { TYPE_COUNT = 16 };
+		template<>        struct Type<    shared_unordered2d_t> { enum { VALUE = 16 }; };
+
+		enum { TYPE_COUNT = 17 };
 
 		struct Info
 		{

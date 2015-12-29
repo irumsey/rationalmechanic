@@ -7,6 +7,9 @@
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Geometry.h" />
+    <ClInclude Include="Camera2D.h" />
+    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Stage.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Primitive.cpp" />
@@ -15,5 +18,7 @@
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Geometry.cpp" />
+    <ClCompile Include="Camera2D.cpp" />
+    <ClCompile Include="Renderer.cpp" />
   </ItemGroup>
 </Project>

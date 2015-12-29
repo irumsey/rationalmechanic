@@ -31,6 +31,8 @@ namespace d3d11 {
 			TYPE_CONSTANT = 0,
 			TYPE_TEXTURE = 1,
 			TYPE_SAMPLER = 2,
+
+			TYPE_TEXTURE_RANDOM_ACCESS = 3,
 		};
 
 		TYPE type = TYPE_UNDEFINED;
@@ -150,6 +152,40 @@ namespace d3d11 {
 	};
 
 	inline ID3D11VertexShader *VertexShader::d3dShader() const
+	{
+		return _d3dShader;
+	}
+
+	///
+	///
+	///
+	class GeometryShader : public Shader
+	{
+	public:
+		GeometryShader(std::string const &path);
+
+		virtual ~GeometryShader();
+
+		virtual void setTexture(int32_t position, ID3D11ShaderResourceView *d3dResource) override;
+
+		virtual void setSampler(int32_t position, ID3D11SamplerState *d3dState) override;
+
+		virtual void onBegin() const override;
+
+		virtual void onEnd() const override;
+
+		virtual void onDraw() const override;
+
+		ID3D11GeometryShader *d3dShader() const;
+
+	private:
+		ID3D11GeometryShader *_d3dShader = nullptr;
+
+		LUCID_PREVENT_COPY(GeometryShader);
+		LUCID_PREVENT_ASSIGNMENT(GeometryShader);
+	};
+
+	inline ID3D11GeometryShader *GeometryShader::d3dShader() const
 	{
 		return _d3dShader;
 	}
