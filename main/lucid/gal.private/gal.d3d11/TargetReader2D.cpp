@@ -77,8 +77,8 @@ namespace d3d11 {
 
 	uint8_t const *TargetReader2D::sample(int32_t x, int32_t y, int32_t width, int32_t height) const
 	{
-		x = math::clamp(x, 0, (_srcWidth - 1) - width);
-		y = math::clamp(y, 0, (_srcHeight - 1) - height);
+		x = math::clamp(x, 0,  _srcWidth - 1);
+		y = math::clamp(y, 0, _srcHeight - 1);
 
 		D3D11_BOX box = { UINT(x), UINT(y), 0, UINT(x + width), UINT(y + height), 1, };
 		d3d11ConcreteContext->CopySubresourceRegion(_stagingTexture, 0, 0, 0, 0, _srcTexture, 0, &box);

@@ -115,7 +115,7 @@ void RenderTest::render(float32_t time, float32_t interpolant)
 	///
 	///
 
-	int32_t count = _particles.size();
+	int32_t count = int32_t(_particles.size());
 	if (0 < count)
 	{
 		std::shared_ptr<gal::Program> program = _mesh->program();
@@ -204,7 +204,7 @@ void RenderTest::updateParticles(float32_t t, float32_t dt)
 
 	_particles.erase(std::remove_if(_particles.begin(), _particles.end(), updateParticle), _particles.end());
 
-	int32_t count = _particles.size();
+	int32_t count = int32_t(_particles.size());
 	if (0 < count)
 	{
 		::memcpy(_instances->lock(), &_particles[0], count * sizeof(Particle));
