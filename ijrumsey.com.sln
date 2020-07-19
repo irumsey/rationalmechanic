@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "rnd", "rnd", "{919E3B51-6AE5-4C7A-962F-F5AB57B715C1}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "main", "main", "{1D890CC8-E541-4435-B6EB-95CA5B48F03F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lucid", "lucid", "{9ECDD0E9-A738-4037-A4C5-F5B9F7426513}"
