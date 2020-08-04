@@ -7,12 +7,12 @@
 ///
 ///
 ///
-class MathTest : public Test
+class CoreTest : public Test
 {
 public:
-	MathTest() = default;
+	CoreTest() = default;
 
-	virtual ~MathTest() = default;
+	virtual ~CoreTest() = default;
 
 	virtual bool passed() const override;
 
@@ -25,11 +25,11 @@ public:
 private:
 	bool _passed = true;
 
-	LUCID_PREVENT_COPY(MathTest);
-	LUCID_PREVENT_ASSIGNMENT(MathTest);
+	LUCID_PREVENT_COPY(CoreTest);
+	LUCID_PREVENT_ASSIGNMENT(CoreTest);
 };
 
-inline bool MathTest::passed() const
+inline bool CoreTest::passed() const
 {
 	return _passed;
 }

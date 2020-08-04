@@ -23,6 +23,7 @@
     <ClInclude Include="Algorithm.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Frustum.h" />
+    <ClInclude Include="Integer.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="Quaternion.h" />

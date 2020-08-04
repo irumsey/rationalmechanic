@@ -5,17 +5,22 @@
 #include <lucid/math/Matrix.h>
 #include <lucid/math/Vector.h>
 #include <lucid/math/Scalar.h>
+#include <lucid/math/Integer.h>
 #include <lucid/math/Constants.h>
+#include <lucid/core/Profiler.h>
 
 ///
 ///
 ///
 
 namespace constants = lucid::math::constants;
+namespace core = lucid::core;
 namespace math = lucid::math;
 
 namespace /* anonymous */
 {
+
+	typedef math::Integer<256> int256_t;
 
 	template<class T> inline bool validate(std::string const &test, T const &value, T const &target)
 	{
@@ -45,6 +50,21 @@ bool MathTest::update(float64_t t, float64_t dt)
 	float32_t const theta = 37.3f * constants::pi<float32_t>() / 180.f;
 	float32_t const half_pi = constants::half_pi<float32_t>();
 	float32_t const quarter_pi = constants::quarter_pi<float32_t>();
+
+	///
+	///	large integer number tests...
+	///
+	int256_t a = "1,000,000,000,000,000";
+	int256_t b =                  "-250";
+	int256_t c =                     "3";
+
+	_passed &= validate(  "large integer negate",    -a, int256_t(  "-1,000,000,000,000,000"));
+	_passed &= validate(     "large integer add", a + b, int256_t(     "999,999,999,999,750"));
+	_passed &= validate("large integer subtract", a - b, int256_t(   "1,000,000,000,000,250"));
+	_passed &= validate("large integer multiply", a * b, int256_t("-250,000,000,000,000,000"));
+	_passed &= validate(  "large integer divide", a / b, int256_t(      "-4,000,000,000,000"));
+	_passed &= validate(  "large integer divide", a / c, int256_t(     "333,333,333,333,333"));
+	_passed &= validate(  "large integer modulo", a % c, int256_t(                       "1"));
 
 	///
 	///	Vector tests...

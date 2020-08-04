@@ -2,7 +2,6 @@
 
 #include <string>
 #include <lucid/core/Types.h>
-#include <lucid/core/Error.h>
 
 ///
 ///
@@ -11,7 +10,7 @@
 #define LUCID_MATH_CONSTANT(name,value)				\
 	template<class T> static T name()				\
 	{												\
-		LUCID_THROW("bad cast");					\
+		static_assert(false, "bad cast");			\
 		return T();									\
 	}												\
 	template<> static float32_t name()				\

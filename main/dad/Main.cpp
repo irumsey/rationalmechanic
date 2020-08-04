@@ -3,6 +3,7 @@
 ///
 #include <windows.h>
 
+#include <sstream>
 #include "Utility.h"
 #include "UserInput.h"
 #include "SessionState.h"
@@ -10,6 +11,7 @@
 #include <lucid/gal/Pipeline.h>
 #include <lucid/gal/System.h>
 #include <lucid/core/Clock.h>
+#include <lucid/core/Profiler.h>
 
 ///
 ///	Constants...
@@ -137,11 +139,14 @@ LRESULT WINAPI onMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	return ::DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
+
 ///	WinMain
 ///
 ///
 INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR cmdln, INT)
 {
+	LUCID_PROFILER_INITIALIZE();
+
 	///
 	///
 	///
@@ -279,5 +284,7 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR cmdln, INT)
 	coreLogger.removeListener(&coreFileLog);
 
 	///	Done
+	LUCID_PROFILER_SHUTDOWN();
+
 	return exitCode;
 }

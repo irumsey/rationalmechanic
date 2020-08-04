@@ -18,6 +18,10 @@
     <ClInclude Include="Queue.h" />
     <ClInclude Include="Stack.h" />
     <ClInclude Include="Profiler.h" />
+    <ClInclude Include="Array.h" />
+    <ClInclude Include="Meta.h" />
+    <ClInclude Include="Noncreatable.h" />
+    <ClInclude Include="String.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Error.cpp" />

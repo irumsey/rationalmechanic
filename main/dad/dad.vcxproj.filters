@@ -8,6 +8,7 @@
     <ClCompile Include="MathTest.cpp" />
     <ClCompile Include="RenderTest.cpp" />
     <ClCompile Include="Link.cpp" />
+    <ClCompile Include="CoreTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Session.h" />
@@ -18,6 +19,7 @@
     <ClInclude Include="MathTest.h" />
     <ClInclude Include="UserInput.h" />
     <ClInclude Include="RenderTest.h" />
+    <ClInclude Include="CoreTest.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="content">

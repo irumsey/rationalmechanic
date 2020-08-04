@@ -105,7 +105,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>LUCID_PROFILE_ENABLE;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -133,7 +133,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>LUCID_PROFILE_ENABLE;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -160,6 +160,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CoreTest.cpp" />
     <ClCompile Include="Link.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MathTest.cpp" />
@@ -169,6 +170,7 @@
     <ClCompile Include="Tests.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CoreTest.h" />
     <ClInclude Include="MathTest.h" />
     <ClInclude Include="RenderTest.h" />
     <ClInclude Include="Session.h" />

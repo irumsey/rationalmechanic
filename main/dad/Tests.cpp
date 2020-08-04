@@ -1,6 +1,7 @@
 #include "Tests.h"
 #include "RenderTest.h"
 #include "MathTest.h"
+#include "CoreTest.h"
 #include "Test.h"
 #include <lucid/core/Ctor.h>
 
@@ -18,6 +19,7 @@
 
 Tests::Tests()
 {
+	DAD_ADD_TEST(  "Core",   CoreTest);
 	DAD_ADD_TEST(  "Math",   MathTest);
 	DAD_ADD_TEST("Render", RenderTest);
 }

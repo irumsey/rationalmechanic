@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Array.h" />
     <ClInclude Include="Cache.h" />
     <ClInclude Include="Clock.h" />
     <ClInclude Include="Ctor.h" />
@@ -29,11 +30,14 @@
     <ClInclude Include="FileWriter.h" />
     <ClInclude Include="Identity.h" />
     <ClInclude Include="Logger.h" />
+    <ClInclude Include="Meta.h" />
     <ClInclude Include="Noncopyable.h" />
+    <ClInclude Include="Noncreatable.h" />
     <ClInclude Include="Profiler.h" />
     <ClInclude Include="Queue.h" />
     <ClInclude Include="Reader.h" />
     <ClInclude Include="Stack.h" />
+    <ClInclude Include="String.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="Writer.h" />
   </ItemGroup>
@@ -127,7 +131,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>LUCID_PROFILE_ENABLE;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -155,7 +159,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>LUCID_PROFILE_ENABLE;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
