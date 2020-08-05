@@ -15,7 +15,9 @@ namespace math {
 
 	///
 	///
-	///
+	///  Note: the number of bits, N, must be a multiple of 16.
+	///	 this uses uint16_t as a "digit", therefore, can be treated
+	///	 as a base 65536 integer.
 	template<size_t N> struct Integer
 	{
 		enum { BITS = N };
@@ -329,13 +331,14 @@ namespace math {
 				shift = 0;
 				while (_leq(D, R))
 				{
-					/// TBD: be more aggressive with the left shift, but careful not to shift off the end...
-					_lsh(D, D, 2);
-					shift += 2;
+					///	aggressively shift left until D passes R
+					_lsh(D, D, 10);
+					shift += 10;
 				}
 				while (_gt(D, R))
 				{
-					_rsh(D,D,1);
+					/// shift right by one until D passes "just below" R 
+					_rsh(D, D, 1);
 					shift -= 1;
 				}
 
@@ -408,7 +411,7 @@ namespace math {
 	};
 
 	///
-	///	break out equal and not equal methods for symmetry (matrix, vector, quaternion, etc.. all define this)
+	///	break out equal and not equal methods for symmetry (matrix, vector, quaternion, scalar, etc.. all define these)
 	///
 
 	template<size_t N> inline bool equ(Integer<N> const lhs, Integer<N> const rhs)
