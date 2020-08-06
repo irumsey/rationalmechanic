@@ -398,16 +398,17 @@ namespace math {
 		static void _rsh(self_t &lval, self_t const &lhs, uint16_t bits)
 		{
 			lval = lhs;
-
-			size_t const shift = SHIFT - 1;
-			for (size_t i = 0; i < bits; ++i)
+			while (bits > 0)
 			{
-				uint32_t c = 0;
-				for (size_t j = 0, k = LAST; j < COUNT; ++j, --k)
+				uint16_t shift = math::min(bits, uint16_t(SHIFT));
+				bits -= shift;
+
+				uint32_t carry = 0;
+				for (size_t i = 0, k = LAST; i < COUNT; ++i, --k)
 				{
-					uint32_t x = uint32_t(lval.data[k]);
-					lval.data[k] = uint16_t(MASK & (c | (x >> 1)));
-					c = ((0x01 & x) << shift);
+					uint32_t shifted = uint32_t(lval.data[k]) << (SHIFT - shift);
+					lval.data[k] = ((0xFFFF0000 & shifted) >> SHIFT) | carry;
+					carry = (0x0000FFFF & shifted);
 				}
 			}
 		}
