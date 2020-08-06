@@ -6,6 +6,7 @@
 #include <string>
 #include <lucid/core/Error.h>
 #include <lucid/core/Array.h>
+#include <lucid/math/Algorithm.h>
 
 ///
 ///
@@ -20,10 +21,10 @@ namespace math {
 	///	 as a base 65536 integer.
 	template<size_t N> struct Integer
 	{
-		enum { BITS = N };
+		enum {  BITS = N };
 		enum { COUNT = N >> 4 };
-		enum { LAST = COUNT - 1 };
-		enum { MASK = 0xFFFF };
+		enum {  LAST = COUNT - 1 };
+		enum {  MASK = 0x0000FFFF };
 		enum { SHIFT = 16 };
 
 		typedef typename Integer<N> self_t;
@@ -83,7 +84,6 @@ namespace math {
 
 				_mul(value, self_t(digit), magnitude);
 				_add(lval, lval, value);
-
 				_mul(magnitude, magnitude, ten);
 			}
 
@@ -91,7 +91,20 @@ namespace math {
 				_neg(lval, lval);
 		}
 
-		static void _set(std::string &lval, self_t const &rhs)
+		/// just for symmetry
+		static void _set(self_t &lval, self_t const &rhs)
+		{
+			lval = rhs;
+		}
+
+		/// utility for setting "small" values
+		static void _set(self_t &lval, uint16_t rhs)
+		{
+			lval.data = data_t();
+			lval.data[0] = rhs;
+		}
+
+		static void _repr(std::string &lval, self_t const &rhs)
 		{
 			static char const c[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', };
 
@@ -122,17 +135,6 @@ namespace math {
 				lval.push_back('-');
 
 			std::reverse(lval.begin(), lval.end());
-		}
-
-		static void _set(self_t &lval, self_t const &rhs)
-		{
-			lval = rhs;
-		}
-
-		static void _set(self_t &lval, uint16_t rhs)
-		{
-			lval.data = data_t();
-			lval.data[0] = rhs;
 		}
 
 		static bool _equ(self_t const &lhs, self_t const &rhs)
@@ -378,15 +380,17 @@ namespace math {
 		static void _lsh(self_t &lval, self_t const &lhs, uint16_t bits)
 		{
 			lval = lhs;
-
-			for (size_t i = 0; i < bits; ++i)
+			while (bits > 0)
 			{
-				uint32_t c = 0;
-				for (size_t j = 0; j < COUNT; ++j)
+				uint16_t shift = math::min(bits, uint16_t(SHIFT));
+				bits -= shift;
+
+				uint32_t carry = 0;
+				for (size_t i = 0; i < COUNT; ++i)
 				{
-					uint32_t x = (c | (uint32_t(lval.data[j]) << 1));
-					c = ((0x10000 & x) >> SHIFT);
-					lval.data[j] = uint16_t(MASK & x);
+					uint32_t shifted = uint32_t(lval.data[i]) << shift;
+					lval.data[i] = (0x0000FFFF & shifted) | carry;
+					carry = (0xFFFF0000 & shifted) >> SHIFT;
 				}
 			}
 		}
@@ -428,105 +432,105 @@ namespace math {
 } // lucid
 
 #pragma push_macro("NUMBER")
-#define NUMBER(T) ::lucid::math::Integer<N>
+#define NUMBER(N) ::lucid::math::Integer<N>
 
 template<size_t N> inline bool operator==(NUMBER(N) const &lhs, NUMBER(N) const &rhs)
 {
-	return NUMBER(T)::_equ(lhs, rhs);
+	return NUMBER(N)::_equ(lhs, rhs);
 }
 
 template<size_t N> inline bool operator!=(NUMBER(N) const &lhs, NUMBER(N) const &rhs)
 {
-	return NUMBER(T)::_neq(lhs, rhs);
+	return NUMBER(N)::_neq(lhs, rhs);
 }
 
 template<size_t N> inline bool operator<(NUMBER(N) const &lhs, NUMBER(N) const &rhs)
 {
-	return NUMBER(T)::_lt(lhs, rhs);
+	return NUMBER(N)::_lt(lhs, rhs);
 }
 
 template<size_t N> inline bool operator<=(NUMBER(N) const &lhs, NUMBER(N) const &rhs)
 {
-	return NUMBER(T)::_leq(lhs, rhs);
+	return NUMBER(N)::_leq(lhs, rhs);
 }
 
 template<size_t N> inline bool operator>(NUMBER(N) const &lhs, NUMBER(N) const &rhs)
 {
-	return NUMBER(T)::_gt(lhs, rhs);
+	return NUMBER(N)::_gt(lhs, rhs);
 }
 
 template<size_t N> inline bool operator>=(NUMBER(N) const &lhs, NUMBER(N) const &rhs)
 {
-	return NUMBER(T)::_geq(lhs, rhs);
+	return NUMBER(N)::_geq(lhs, rhs);
 }
 
 template<size_t N> inline NUMBER(N) operator-(NUMBER(N) const &rhs)
 {
 	NUMBER(N) result;
-	NUMBER(T)::_neg(result, rhs);
+	NUMBER(N)::_neg(result, rhs);
 	return result;
 }
 
 template<size_t N> inline NUMBER(N) operator+(NUMBER(N) const &lhs, NUMBER(N) const &rhs)
 {
 	NUMBER(N) result;
-	NUMBER(T)::_add(result, lhs, rhs);
+	NUMBER(N)::_add(result, lhs, rhs);
 	return result;
 }
 
 template<size_t N> inline NUMBER(N) operator-(NUMBER(N) const &lhs, NUMBER(N) const &rhs)
 {
 	NUMBER(N) result;
-	NUMBER(T)::_sub(result, lhs, rhs);
+	NUMBER(N)::_sub(result, lhs, rhs);
 	return result;
 }
 
 template<size_t N> inline NUMBER(N) operator*(NUMBER(N) const &lhs, NUMBER(N) const &rhs)
 {
 	NUMBER(N) result;
-	NUMBER(T)::_mul(result, lhs, rhs);
+	NUMBER(N)::_mul(result, lhs, rhs);
 	return result;
 }
 
 template<size_t N> inline NUMBER(N) operator/(NUMBER(N) const &lhs, NUMBER(N) const &rhs)
 {
 	NUMBER(N) result;
-	NUMBER(T)::_div(result, lhs, rhs);
+	NUMBER(N)::_div(result, lhs, rhs);
 	return result;
 }
 
 template<size_t N> inline NUMBER(N) operator%(NUMBER(N) const &lhs, NUMBER(N) const &rhs)
 {
 	NUMBER(N) result;
-	NUMBER(T)::_mod(result, lhs, rhs);
+	NUMBER(N)::_mod(result, lhs, rhs);
 	return result;
 }
 
 template<size_t N> inline NUMBER(N) operator&(NUMBER(N) const &lhs, NUMBER(N) const &rhs)
 {
 	NUMBER(N) result;
-	NUMBER(T)::_and(result, lhs, rhs);
+	NUMBER(N)::_and(result, lhs, rhs);
 	return result;
 }
 
 template<size_t N> inline NUMBER(N) operator|(NUMBER(N) const &lhs, NUMBER(N) const &rhs)
 {
 	NUMBER(N) result;
-	NUMBER(T)::_or(result, lhs, rhs);
+	NUMBER(N)::_or(result, lhs, rhs);
 	return result;
 }
 
 template<size_t N> inline NUMBER(N) operator<<(NUMBER(N) const &lhs, uint16_t rhs)
 {
 	NUMBER(N) result;
-	NUMBER(T)::_lsh(result, lhs, rhs);
+	NUMBER(N)::_lsh(result, lhs, rhs);
 	return result;
 }
 
 template<size_t N> inline NUMBER(N) operator>>(NUMBER(N) const &lhs, uint16_t rhs)
 {
 	NUMBER(N) result;
-	NUMBER(T)::_rsh(result, lhs, rhs);
+	NUMBER(N)::_rsh(result, lhs, rhs);
 	return result;
 }
 

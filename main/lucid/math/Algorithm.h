@@ -15,6 +15,20 @@
 namespace lucid {
 namespace math {
 
+	/// min / max
+	///
+	///
+	
+	template<class T> inline T min(T const &x, T const &y)
+	{
+		return (x <= y) ? x : y;
+	}
+
+	template<class T> inline T max(T const &x, T const &y)
+	{
+		return (x >= y) ? x : y;
+	}
+
 	///	clamp
 	///
 	///	clamp value between values a and b

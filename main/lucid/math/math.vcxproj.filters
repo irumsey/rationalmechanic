@@ -12,5 +12,6 @@
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="AABB.h" />
     <ClInclude Include="Integer.h" />
+    <ClInclude Include="Fixed.h" />
   </ItemGroup>
 </Project>
