@@ -56,27 +56,29 @@ bool MathTest::update(float64_t t, float64_t dt)
 	///
 	///	large integer number tests...
 	///
+	{
+		int256_t a = "1,000,000,000,000,000";
+		int256_t b =                  "-250";
+		int256_t c =                     "3";
 
-	int256_t a = "1,000,000,000,000,000";
-	int256_t b =                  "-250";
-	int256_t c =                     "3";
-
-	_passed &= validate(  "large integer negate",    -a, int256_t(  "-1,000,000,000,000,000"));
-	_passed &= validate(     "large integer add", a + b, int256_t(     "999,999,999,999,750"));
-	_passed &= validate("large integer subtract", a - b, int256_t(   "1,000,000,000,000,250"));
-	_passed &= validate("large integer multiply", a * b, int256_t("-250,000,000,000,000,000"));
-	_passed &= validate(  "large integer divide", a / b, int256_t(      "-4,000,000,000,000"));
-	_passed &= validate(  "large integer divide", a / c, int256_t(     "333,333,333,333,333"));
-	_passed &= validate(  "large integer modulo", a % c, int256_t(                       "1"));
+		_passed &= validate(  "large integer negate",    -a, int256_t(  "-1,000,000,000,000,000"));
+		_passed &= validate(     "large integer add", a + b, int256_t(     "999,999,999,999,750"));
+		_passed &= validate("large integer subtract", a - b, int256_t(   "1,000,000,000,000,250"));
+		_passed &= validate("large integer multiply", a * b, int256_t("-250,000,000,000,000,000"));
+		_passed &= validate(  "large integer divide", a / b, int256_t(      "-4,000,000,000,000"));
+		_passed &= validate(  "large integer divide", a / c, int256_t(     "333,333,333,333,333"));
+		_passed &= validate(  "large integer modulo", a % c, int256_t(                       "1"));
+	}
 
 	///
 	///	Fixed point number tests...
 	///
-	fixed256_t d = math::constants::pi<float32_t>();
-	fixed256_t e = d / d;
-	fixed256_t f = d * d;
+	{
+		fixed256_t pi = "3.14159";
+		fixed256_t  r = "5,999,400,000,000.000";
 
-	f = "333.33333";
+		_passed &= validate("large fixed point", pi * r * r, fixed256_t( "113074488643178100585937500.0"));
+	}
 
 	///
 	///	Vector tests...

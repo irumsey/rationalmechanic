@@ -416,7 +416,7 @@ namespace math {
 	};
 
 	///
-	///	break out equal and not equal methods for symmetry (matrix, vector, quaternion, scalar, etc.. all define these)
+	///	expose equal and not equal methods for symmetry (matrix, vector, quaternion, scalar, etc.. all define these)
 	///
 
 	template<size_t N> inline bool equ(Integer<N> const lhs, Integer<N> const rhs)

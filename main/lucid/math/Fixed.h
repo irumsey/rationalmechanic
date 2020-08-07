@@ -52,6 +52,16 @@ namespace math {
 			return *this;
 		}
 
+		/// TBD: figure out a clever way of making this a constant
+		static integer_t blah()
+		{
+			integer_t const ten(10);
+			integer_t value(1);
+			for (size_t i = 0; i < DECIMAL_BITS; ++i)
+				integer_t::_mul(value, value, ten);
+			return value;
+		}
+
 		static void _set(self_t &lval, std::string const &rhs)
 		{
 			lval.raw = integer_t();
@@ -108,7 +118,23 @@ namespace math {
 
 		static void _repr(std::string &lval, self_t const &rhs)
 		{
-			/// TBD: implement
+			integer_t whole;
+			integer_t::_rsh (whole, rhs.raw, DECIMAL_BITS);
+			integer_t::_repr( lval,   whole);
+
+			lval.push_back('.');
+
+			integer_t frac;
+			integer_t::_lsh(whole,   whole,  DECIMAL_BITS);
+			integer_t::_sub( frac, rhs.raw,         whole);
+
+			integer_t::_mul(frac, frac, blah());
+			integer_t::_rsh(frac, frac, DECIMAL_BITS);
+
+			std::string decimal;
+			integer_t::_repr( decimal,   frac);
+
+			lval = lval + decimal;
 		}
 
 		static void _neg(self_t &lval, self_t const &rhs)
@@ -139,6 +165,20 @@ namespace math {
 		}
 
 	};
+
+	///
+	///	expose equal and not equal methods for symmetry (matrix, vector, quaternion, scalar, etc.. all define these)
+	///
+
+	template<size_t N, size_t D> inline bool equ(Fixed<N,D> const lhs, Fixed<N,D> const rhs)
+	{
+		return Fixed<N,D>::integer_t::_equ(lhs.raw, rhs.raw);
+	}
+
+	template<size_t N, size_t D> inline bool neq(Fixed<N,D> const lhs, Fixed<N,D> const rhs)
+	{
+		return Fixed<N,D>::integer_t::_neq(lhs.raw, rhs.raw);
+	}
 
 }	/// math
 }	/// lucid
