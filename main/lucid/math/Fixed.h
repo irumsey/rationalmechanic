@@ -134,6 +134,8 @@ namespace math {
 			std::string decimal;
 			integer_t::_repr( decimal,   frac);
 
+			decimal = (0 == decimal.size()) ? "0" : decimal;
+
 			lval = lval + decimal;
 		}
 
