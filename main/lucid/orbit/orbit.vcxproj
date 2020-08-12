@@ -19,9 +19,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Ephemeris.h" />
+    <ClInclude Include="Frame.h" />
     <ClInclude Include="Orbit.h" />
+    <ClInclude Include="Types.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Ephemeris.cpp" />
+    <ClCompile Include="Frame.cpp" />
     <ClCompile Include="Orbit.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

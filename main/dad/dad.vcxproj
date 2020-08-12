@@ -168,6 +168,7 @@
     <ClCompile Include="Session.cpp" />
     <ClCompile Include="SessionState.cpp" />
     <ClCompile Include="Tests.cpp" />
+    <ClCompile Include="Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CoreTest.h" />

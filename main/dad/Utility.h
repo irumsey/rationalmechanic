@@ -11,3 +11,8 @@ inline void log(std::string const &category, std::string const &message)
 
 	logger.log(category, message);
 }
+
+///
+///
+///
+void dumpProfileData(std::string const &path);

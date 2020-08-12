@@ -9,6 +9,7 @@
     <ClCompile Include="RenderTest.cpp" />
     <ClCompile Include="Link.cpp" />
     <ClCompile Include="CoreTest.cpp" />
+    <ClCompile Include="Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Session.h" />

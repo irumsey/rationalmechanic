@@ -57,6 +57,8 @@ bool MathTest::update(float64_t t, float64_t dt)
 	///	large integer number tests...
 	///
 	{
+		LUCID_PROFILE_BEGIN("large integer test");
+
 		int256_t a = "1,000,000,000,000,000";
 		int256_t b =                  "-250";
 		int256_t c =                     "3";
@@ -68,16 +70,22 @@ bool MathTest::update(float64_t t, float64_t dt)
 		_passed &= validate(  "large integer divide", a / b, int256_t(      "-4,000,000,000,000"));
 		_passed &= validate(  "large integer divide", a / c, int256_t(     "333,333,333,333,333"));
 		_passed &= validate(  "large integer modulo", a % c, int256_t(                       "1"));
+
+		LUCID_PROFILE_END();
 	}
 
 	///
 	///	Fixed point number tests...
 	///
 	{
+		LUCID_PROFILE_BEGIN("large fixed point test");
+
 		fixed256_t pi = "3.14159";
 		fixed256_t  r = "5,999,400,000,000.000";
 
 		_passed &= validate("large fixed point", pi * r * r, fixed256_t( "113074488643178100585937500.0"));
+
+		LUCID_PROFILE_END();
 	}
 
 	///

@@ -87,7 +87,11 @@ void handleMouseInput(HRAWINPUT rawInput)
 ///	(ie no part of the game should use its own clock.)
 void onUpdate()
 {
+	LUCID_PROFILE_BEGIN("Simulation");
+
 	session.onUpdate(simTime, TIME_STEP);
+
+	LUCID_PROFILE_END();
 }
 
 ///	onRender
@@ -95,11 +99,15 @@ void onUpdate()
 ///
 void onRender()
 {
+	LUCID_PROFILE_BEGIN("Render");
+
 	lucid::gal::Pipeline &pipeline = lucid::gal::Pipeline::instance();
 
 	pipeline.beginScene();
 	session.onRender((float32_t)wallTime, frameInterpolant);
 	pipeline.endScene();
+
+	LUCID_PROFILE_END();
 }
 
 ///	onMessage
@@ -237,6 +245,8 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR cmdln, INT)
 			}
 			else
 			{
+				LUCID_PROFILE_BEGIN("Frame");
+
 				///	update time...
 				wallTime = wallClock->time();
 				float64_t wallTimeElapsed = wallTime - wallTimeLast;
@@ -258,8 +268,12 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR cmdln, INT)
 				}
 
 				frameInterpolant = (float32_t)(wallTimeAccum / TIME_STEP);
+
+				LUCID_PROFILE_END();
 			}
 		}
+
+		::dumpProfileData("profile.log");
 
 		exitCode = session.passed() ? 0 : 1;
 	}

@@ -2,8 +2,13 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="Orbit.h" />
+    <ClInclude Include="Frame.h" />
+    <ClInclude Include="Types.h" />
+    <ClInclude Include="Ephemeris.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Orbit.cpp" />
+    <ClCompile Include="Frame.cpp" />
+    <ClCompile Include="Ephemeris.cpp" />
   </ItemGroup>
 </Project>
