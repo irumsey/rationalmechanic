@@ -582,6 +582,30 @@ def bootCameraFromFile(srcPath, dstPath):
 	bootCamera(open(dstPath, 'wb'), json.load(open(srcPath)))
 
 #
+#
+#
+def bootEphemerisFrame(dst, frame):
+	bootString(dst, frame['name'])
+	bootString(dst, frame['reference'])
+	bootVector2(dst, frame['semi-major axis'])
+	bootVector2(dst, frame['eccentricity'])
+	bootVector2(dst, frame['inclination'])
+	bootVector2(dst, frame['mean longitude'])
+	bootVector2(dst, frame['periapsis longitude'])
+	bootVector2(dst, frame['ascending longitude'])
+
+def bootEphemeris(dst, ephemeris):
+	bootFloat(dst, ephemeris['Epoch'])
+
+	frames = ephemeris['Frames']
+	bootInteger(dst, len(frames))
+	for frame in frames:
+		bootEphemerisFrame(dst, frame)
+
+def bootEphemerisFromFile(srcPath, dstPath):
+	bootEphemeris(open(dstPath, 'wb'), json.load(open(srcPath)))
+
+#
 #	
 #
 bootContent = {
@@ -592,6 +616,7 @@ bootContent = {
 	    '.mesh' : bootMeshFromFile,
       '.camera' : bootCameraFromFile,
 	 '.context' : bootContextFromFile,
+   '.ephemeris' : bootEphemerisFromFile,
 }
 
 #	bootstrap all
@@ -623,6 +648,7 @@ def main():
 	optionParser.add_option('-M', '--mesh', action = 'store_const', const = '.mesh', dest = 'kind')
 	optionParser.add_option('-c', '--camera', action = 'store_const', const = '.camera', dest = 'kind')
 	optionParser.add_option('-C', '--context', action = 'store_const', const = '.context', dest = 'kind')
+	optionParser.add_option('-E', '--ephemeris', action = 'store_const', const ='.ephemeris', dest = 'kind')
 	(opts, args) = optionParser.parse_args()
 
 	if 'all' == opts.kind:

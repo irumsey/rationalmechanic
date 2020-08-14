@@ -10,6 +10,7 @@
     <ClCompile Include="Link.cpp" />
     <ClCompile Include="CoreTest.cpp" />
     <ClCompile Include="Utility.cpp" />
+    <ClCompile Include="OrbitTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Session.h" />
@@ -21,6 +22,7 @@
     <ClInclude Include="UserInput.h" />
     <ClInclude Include="RenderTest.h" />
     <ClInclude Include="CoreTest.h" />
+    <ClInclude Include="OrbitTest.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="content">

@@ -1,5 +1,6 @@
 #include "Tests.h"
 #include "RenderTest.h"
+#include "OrbitTest.h"
 #include "MathTest.h"
 #include "CoreTest.h"
 #include "Test.h"
@@ -21,6 +22,7 @@ Tests::Tests()
 {
 	DAD_ADD_TEST(  "Core",   CoreTest);
 	DAD_ADD_TEST(  "Math",   MathTest);
+	DAD_ADD_TEST( "Orbit",  OrbitTest);
 	DAD_ADD_TEST("Render", RenderTest);
 }
 

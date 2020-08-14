@@ -164,6 +164,7 @@
     <ClCompile Include="Link.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MathTest.cpp" />
+    <ClCompile Include="OrbitTest.cpp" />
     <ClCompile Include="RenderTest.cpp" />
     <ClCompile Include="Session.cpp" />
     <ClCompile Include="SessionState.cpp" />
@@ -173,6 +174,7 @@
   <ItemGroup>
     <ClInclude Include="CoreTest.h" />
     <ClInclude Include="MathTest.h" />
+    <ClInclude Include="OrbitTest.h" />
     <ClInclude Include="RenderTest.h" />
     <ClInclude Include="Session.h" />
     <ClInclude Include="SessionState.h" />

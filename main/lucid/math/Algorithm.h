@@ -29,6 +29,14 @@ namespace math {
 		return (x >= y) ? x : y;
 	}
 
+	///	interpolate
+	///
+	///	linear interpolation from a to b.
+	template<class T> inline T interp(T const &t, T const &a, T const &b)
+	{
+		return (b - a) * t + a;
+	}
+
 	///	clamp
 	///
 	///	clamp value between values a and b
