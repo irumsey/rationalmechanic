@@ -24,55 +24,99 @@ namespace orbit {
 	{
 		core::FileReader reader(path);
 
-		reader.read(_epoch);
-
-		int32_t count = 0;
-		reader.read(count);
-
-		for (int32_t i = 0; i < count; ++i)
+		int32_t bodyCount = 0;
+		reader.read(bodyCount);
+		for (int32_t bodyIndex = 0; bodyIndex < bodyCount; ++bodyIndex)
 		{
-			std::string name;
-			reader.read(name);
+			std::string target;
+			reader.read(target);
 
-			Elements elements;
-			reader.read(elements.reference);
-			reader.read(elements.     semimajorAxis, 2 * sizeof(float32_t));
-			reader.read(elements.      eccentricity, 2 * sizeof(float32_t));
-			reader.read(elements.       inclination, 2 * sizeof(float32_t));
-			reader.read(elements.     meanLongitude, 2 * sizeof(float32_t));
-			reader.read(elements.periapsisLongitude, 2 * sizeof(float32_t));
-			reader.read(elements.ascendingLongitude, 2 * sizeof(float32_t));
+			Entry entry;
+			reader.read(entry.center);
 
-			LUCID_VALIDATE(_map.end() == _map.find(name), "duplidate frame, " + name + ", specified in ephemeris");
+			int32_t elementsCount = 0;
+			reader.read(elementsCount);
 
-			_map.insert(std::make_pair(name, elements));
+			LUCID_VALIDATE(elementsCount > 1, "target '" + target + "' does not define more than one set of orbital elements");
+
+			for (int32_t elementsIndex = 0; elementsIndex < elementsCount; ++elementsIndex)
+			{
+				Elements elements;
+				reader.read(&elements, sizeof(elements));
+				entry.elements.push_back(elements);
+			}
+
+			_entries.insert(std::make_pair(target, entry));
 		}
 	}
 
-	Elements Ephemeris::lookup(float32_t date, std::string const &frame) const
+	void Ephemeris::lookup(Elements &elements, std::string const &target, float32_t jdn) const
 	{
-		float32_t t = (date - _epoch) / 36525.f;
+		auto iter = _entries.find(target);
+		LUCID_VALIDATE(iter != _entries.end(), "unknown target '" + target + "' specified");
 
-		auto iter = _map.find(frame);
-		LUCID_VALIDATE(iter != _map.end(), "unknown frame," + frame + ", specified");
+		Entry const &entry = iter->second;
 
-		Elements const &entry = iter->second;
-		Elements result;
+		size_t const count = entry.elements.size();
+		size_t const firstIndex = 0;
+		size_t const lastIndex = count - 1;
 
-		result.     semimajorAxis[0] = entry.     semimajorAxis[0] + t * entry.     semimajorAxis[1];
-		result.      eccentricity[0] = entry.      eccentricity[0] + t * entry.      eccentricity[1];
-		result.       inclination[0] = entry.       inclination[0] + t * entry.       inclination[1];
-		result.     meanLongitude[0] = entry.     meanLongitude[0] + t * entry.     meanLongitude[1];
-		result.ascendingLongitude[0] = entry.ascendingLongitude[0] + t * entry.ascendingLongitude[1];
-		result.periapsisLongitude[0] = entry.periapsisLongitude[0] + t * entry.periapsisLongitude[1];
+		///	sanity check (should have been discovered during initialization)
+		LUCID_VALIDATE(count > 1, "target '" + target + "' does not define more than one set of orbital elements");
 
-		return result;
+		if (jdn < entry.elements[firstIndex].JDN)
+		{
+			interpolate(elements, jdn, entry.elements[firstIndex], entry.elements[firstIndex + 1]);
+		}
+		else if (entry.elements[lastIndex].JDN <= jdn)
+		{
+			interpolate(elements, jdn, entry.elements[lastIndex - 1], entry.elements[lastIndex]);
+		}
+		else
+		{
+			bool found = false;
+			
+			for (size_t index = firstIndex; index < lastIndex; ++index)
+			{
+				Elements const & first = entry.elements[index + 0];
+				Elements const &second = entry.elements[index + 1];
+
+				if ((first.JDN <= jdn) && (jdn < second.JDN))
+				{
+					interpolate(elements, jdn, first, second);
+					found = true;
+					break;
+				}
+			}
+
+			LUCID_VALIDATE(found, "unable to interpolate orbital elements for target '" + target + "'");
+		}
 	}
 
 	Ephemeris &Ephemeris::instance()
 	{
 		static Ephemeris theInstance;
 		return theInstance;
+	}
+
+	void Ephemeris::interpolate(Elements &result, float32_t jdn, Elements const &a, Elements const &b) const
+	{
+		float32_t u = (jdn - a.JDN) / (b.JDN - a.JDN);
+
+		result.JDN = jdn;
+
+		result.EC = math::interp(u, a.EC, b.EC);
+		result.QR = math::interp(u, a.QR, b.QR);
+		result.IN = math::interp(u, a.IN, b.IN);
+		result.OM = math::interp(u, a.OM, b.OM);
+		result. W = math::interp(u, a. W, b. W);
+		result.Tp = math::interp(u, a.Tp, b.Tp);
+		result. N = math::interp(u, a. N, b. N);
+		result.MA = math::interp(u, a.MA, b.MA);
+		result.TA = math::interp(u, a.TA, b.TA);
+		result. A = math::interp(u, a. A, b. A);
+		result.AD = math::interp(u, a.AD, b.AD);
+		result.PR = math::interp(u, a.PR, b.PR);
 	}
 
 }	///	orbit

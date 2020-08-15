@@ -19,9 +19,9 @@ namespace /* anonymous */
 
 }	///	anonymous
 
-	///
-	///
-	///
+///
+///
+///
 
 void OrbitTest::begin(float64_t t)
 {
@@ -35,7 +35,10 @@ bool OrbitTest::update(float64_t t, float64_t dt)
 	LUCID_PROFILE_BEGIN("ephemeris test");
 	orbit::Ephemeris &ephemeris = orbit::Ephemeris::instance();
 	ephemeris.initialize("content/j2000.ephemeris");
-	orbit::Elements elements = ephemeris.lookup(2451545.f, "Earth");
+
+	orbit::Elements elements;
+	ephemeris.lookup(elements, "Earth", 2451545.f);
+	
 	LUCID_PROFILE_END();
 
 	return true;

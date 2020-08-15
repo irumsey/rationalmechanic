@@ -584,23 +584,24 @@ def bootCameraFromFile(srcPath, dstPath):
 #
 #
 #
-def bootEphemerisFrame(dst, frame):
-	bootString(dst, frame['name'])
-	bootString(dst, frame['reference'])
-	bootVector2(dst, frame['semi-major axis'])
-	bootVector2(dst, frame['eccentricity'])
-	bootVector2(dst, frame['inclination'])
-	bootVector2(dst, frame['mean longitude'])
-	bootVector2(dst, frame['periapsis longitude'])
-	bootVector2(dst, frame['ascending longitude'])
+def bootEphemerisBody(dst, body):
+	bootString(dst, body['target'])
+	bootString(dst, body['center'])
+
+	elements = body['elements']
+	bootInteger(dst, len(elements))
+
+	for entry in elements:
+		if 13 != len(entry):
+			raise Exception('invalid number of elements in ephemeris file')
+		for value in entry:
+			bootFloat(dst, value)
 
 def bootEphemeris(dst, ephemeris):
-	bootFloat(dst, ephemeris['Epoch'])
-
-	frames = ephemeris['Frames']
-	bootInteger(dst, len(frames))
-	for frame in frames:
-		bootEphemerisFrame(dst, frame)
+	bodies = ephemeris['bodies']
+	bootInteger(dst, len(bodies))
+	for body in bodies:
+		bootEphemerisBody(dst, body)
 
 def bootEphemerisFromFile(srcPath, dstPath):
 	bootEphemeris(open(dstPath, 'wb'), json.load(open(srcPath)))

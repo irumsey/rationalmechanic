@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Elements.h" />
     <ClInclude Include="Ephemeris.h" />
     <ClInclude Include="Frame.h" />
     <ClInclude Include="Orbit.h" />

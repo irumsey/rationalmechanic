@@ -5,6 +5,7 @@
     <ClInclude Include="Frame.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="Ephemeris.h" />
+    <ClInclude Include="Elements.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Orbit.cpp" />
