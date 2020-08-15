@@ -5,7 +5,6 @@
 #include <unordered_map>
 #include <lucid/core/Noncopyable.h>
 #include <lucid/orbit/Types.h>
-#include <lucid/orbit/Elements.h>
 
 ///
 ///
@@ -13,6 +12,9 @@
 
 namespace lucid {
 namespace orbit {
+
+	struct Properties;
+	struct Elements;
 
 	///	Ephemeris
 	///
@@ -24,7 +26,15 @@ namespace orbit {
 
 		void initialize(std::string const &path);
 
-		void lookup(Elements &elements, std::string const &target, float32_t jdn) const;
+		size_t lookup(std::string const &target) const;
+
+		void   lookup(Properties &properties, std::string const &target) const;
+
+		void   lookup(Properties &properties, size_t target) const;
+
+		size_t lookup(Elements &elements, std::string const &target, float32_t jdn) const;
+
+		size_t lookup(Elements &elements, size_t target, float32_t jdn) const;
 
 		static Ephemeris &instance();
 
@@ -36,15 +46,17 @@ namespace orbit {
 
 		struct Entry
 		{
-			std::string center;
+			size_t center = 0;
 			elements_vec_t elements;
 		};
 
-		typedef std::unordered_map<std::string, Entry> entry_map_t;
+		typedef std::unordered_map<std::string, size_t> name_map_t;
+		typedef std::unordered_map<size_t, Properties> properties_map_t;
+		typedef std::unordered_map<size_t, Entry> entry_map_t;
 
+		name_map_t _names;
+		properties_map_t _properties;
 		entry_map_t _entries;
-
-		void interpolate(Elements &result, float32_t jdn, Elements const &a, Elements const &b) const;
 
 		LUCID_PREVENT_COPY(Ephemeris);
 		LUCID_PREVENT_ASSIGNMENT(Ephemeris);

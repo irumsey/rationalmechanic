@@ -6,6 +6,7 @@
     <ClInclude Include="Types.h" />
     <ClInclude Include="Ephemeris.h" />
     <ClInclude Include="Elements.h" />
+    <ClInclude Include="Properties.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Orbit.cpp" />

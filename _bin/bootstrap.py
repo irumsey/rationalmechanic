@@ -585,11 +585,19 @@ def bootCameraFromFile(srcPath, dstPath):
 #
 #
 def bootEphemerisBody(dst, body):
+	bootUnsigned(dst, body['hid'])
+
 	bootString(dst, body['target'])
-	bootString(dst, body['center'])
+	bootUnsigned(dst, body['center'])
+
+	properties = body['properties']
+
+	bootString(dst, properties['description'])
+	bootFloat(dst, properties['mass'])
+	bootFloat(dst, properties['radius'])
 
 	elements = body['elements']
-	bootInteger(dst, len(elements))
+	bootUnsigned(dst, len(elements))
 
 	for entry in elements:
 		if 13 != len(entry):
@@ -599,7 +607,7 @@ def bootEphemerisBody(dst, body):
 
 def bootEphemeris(dst, ephemeris):
 	bodies = ephemeris['bodies']
-	bootInteger(dst, len(bodies))
+	bootUnsigned(dst, len(bodies))
 	for body in bodies:
 		bootEphemerisBody(dst, body)
 

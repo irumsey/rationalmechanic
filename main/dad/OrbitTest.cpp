@@ -1,6 +1,8 @@
 #include "OrbitTest.h"
 #include "Utility.h"
 #include <lucid/orbit/Ephemeris.h>
+#include <lucid/orbit/Elements.h>
+#include <lucid/orbit/Properties.h>
 #include <lucid/gal/Pipeline.h>
 #include <lucid/core/Profiler.h>
 #include <lucid/core/String.h>
@@ -33,11 +35,15 @@ bool OrbitTest::update(float64_t t, float64_t dt)
 	_passed = true;
 
 	LUCID_PROFILE_BEGIN("ephemeris test");
+
 	orbit::Ephemeris &ephemeris = orbit::Ephemeris::instance();
 	ephemeris.initialize("content/j2000.ephemeris");
 
+	orbit::Properties properties;
+	ephemeris.lookup(properties, "Earth");
+
 	orbit::Elements elements;
-	ephemeris.lookup(elements, "Earth", 2451545.f);
+	size_t center = ephemeris.lookup(elements, "Earth", 3524593.5f);
 	
 	LUCID_PROFILE_END();
 

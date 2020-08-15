@@ -1,4 +1,6 @@
 #include "Ephemeris.h"
+#include "Elements.h"
+#include "Properties.h"
 #include <lucid/math/Algorithm.h>
 #include <lucid/core/FileReader.h>
 
@@ -14,6 +16,14 @@ namespace orbit {
 
 	Ephemeris::Ephemeris()
 	{
+		///	create the 'special' entry that defines the 'center' of the system
+
+		Properties properties;
+		properties.description = "solar system barycenter";
+
+		_names.insert(std::make_pair("SSB", 0));
+		_properties.insert(std::make_pair(0, properties));
+		_entries.insert(std::make_pair(0, Entry()));
 	}
 
 	Ephemeris::~Ephemeris()
@@ -24,99 +34,109 @@ namespace orbit {
 	{
 		core::FileReader reader(path);
 
-		int32_t bodyCount = 0;
+		size_t bodyCount = 0;
 		reader.read(bodyCount);
-		for (int32_t bodyIndex = 0; bodyIndex < bodyCount; ++bodyIndex)
+		for (size_t bodyIndex = 0; bodyIndex < bodyCount; ++bodyIndex)
 		{
+			Properties properties;
+			Entry entry;
+
+			size_t hid = 0;
+			reader.read(hid);
+
 			std::string target;
 			reader.read(target);
 
-			Entry entry;
 			reader.read(entry.center);
+			LUCID_VALIDATE(_properties.end() != _properties.find(entry.center), "'" + target + "' specifies unknown center object");
 
-			int32_t elementsCount = 0;
+			reader.read(properties.description);
+			reader.read(properties.mass);
+			reader.read(properties.radius);
+
+			size_t elementsCount = 0;
 			reader.read(elementsCount);
 
-			LUCID_VALIDATE(elementsCount > 1, "target '" + target + "' does not define more than one set of orbital elements");
-
-			for (int32_t elementsIndex = 0; elementsIndex < elementsCount; ++elementsIndex)
+			for (size_t elementsIndex = 0; elementsIndex < elementsCount; ++elementsIndex)
 			{
 				Elements elements;
 				reader.read(&elements, sizeof(elements));
 				entry.elements.push_back(elements);
 			}
 
-			_entries.insert(std::make_pair(target, entry));
+			_names.insert(std::make_pair(target, hid));
+			_properties.insert(std::make_pair(hid, properties));
+			_entries.insert(std::make_pair(hid, entry));
 		}
 	}
 
-	void Ephemeris::lookup(Elements &elements, std::string const &target, float32_t jdn) const
+	size_t Ephemeris::lookup(std::string const &target) const
+	{
+		auto iter = _names.find(target);
+		LUCID_VALIDATE(iter != _names.end(), "unknown target '" + target + "' specified");
+
+		return iter->second;
+	}
+
+	void Ephemeris::lookup(Properties &properties, std::string const &target) const
+	{
+		lookup(properties, lookup(target));
+	}
+
+	void Ephemeris::lookup(Properties &properties, size_t target) const
+	{
+		auto iter = _properties.find(target);
+		LUCID_VALIDATE(iter != _properties.end(), "unknown target id specified");
+
+		properties = iter->second;
+	}
+
+	size_t Ephemeris::lookup(Elements &elements, std::string const &target, float32_t jdn) const
+	{
+		return lookup(elements, lookup(target), jdn);
+	}
+
+	size_t Ephemeris::lookup(Elements &elements, size_t target, float32_t jdn) const
 	{
 		auto iter = _entries.find(target);
-		LUCID_VALIDATE(iter != _entries.end(), "unknown target '" + target + "' specified");
+		LUCID_VALIDATE(iter != _entries.end(), "unknown target id specified");
 
 		Entry const &entry = iter->second;
-
 		size_t const count = entry.elements.size();
-		size_t const firstIndex = 0;
-		size_t const lastIndex = count - 1;
 
-		///	sanity check (should have been discovered during initialization)
-		LUCID_VALIDATE(count > 1, "target '" + target + "' does not define more than one set of orbital elements");
+		LUCID_VALIDATE(0 < count, "target does not define orbital elements");
 
-		if (jdn < entry.elements[firstIndex].JDN)
+		///	find the closest entry to the given julian day.
+		///	for now, it is a simple linear scan through the list.
+		///	test { 
+
+		size_t index = 0;
+		float32_t a = ::fabsf(entry.elements[index].JDN - jdn);
+		for (size_t i = 1; i < count; ++i)
 		{
-			interpolate(elements, jdn, entry.elements[firstIndex], entry.elements[firstIndex + 1]);
-		}
-		else if (entry.elements[lastIndex].JDN <= jdn)
-		{
-			interpolate(elements, jdn, entry.elements[lastIndex - 1], entry.elements[lastIndex]);
-		}
-		else
-		{
-			bool found = false;
-			
-			for (size_t index = firstIndex; index < lastIndex; ++index)
+			float32_t b = ::fabsf(entry.elements[i].JDN - jdn);
+			if (b < a)
 			{
-				Elements const & first = entry.elements[index + 0];
-				Elements const &second = entry.elements[index + 1];
-
-				if ((first.JDN <= jdn) && (jdn < second.JDN))
-				{
-					interpolate(elements, jdn, first, second);
-					found = true;
-					break;
-				}
+				index = i;
+				a = b;
 			}
-
-			LUCID_VALIDATE(found, "unable to interpolate orbital elements for target '" + target + "'");
+			else
+			{
+				break;
+			}
 		}
+
+		///	} test
+
+		elements = entry.elements[index];
+
+		return entry.center;
 	}
 
 	Ephemeris &Ephemeris::instance()
 	{
 		static Ephemeris theInstance;
 		return theInstance;
-	}
-
-	void Ephemeris::interpolate(Elements &result, float32_t jdn, Elements const &a, Elements const &b) const
-	{
-		float32_t u = (jdn - a.JDN) / (b.JDN - a.JDN);
-
-		result.JDN = jdn;
-
-		result.EC = math::interp(u, a.EC, b.EC);
-		result.QR = math::interp(u, a.QR, b.QR);
-		result.IN = math::interp(u, a.IN, b.IN);
-		result.OM = math::interp(u, a.OM, b.OM);
-		result. W = math::interp(u, a. W, b. W);
-		result.Tp = math::interp(u, a.Tp, b.Tp);
-		result. N = math::interp(u, a. N, b. N);
-		result.MA = math::interp(u, a.MA, b.MA);
-		result.TA = math::interp(u, a.TA, b.TA);
-		result. A = math::interp(u, a. A, b. A);
-		result.AD = math::interp(u, a.AD, b.AD);
-		result.PR = math::interp(u, a.PR, b.PR);
 	}
 
 }	///	orbit

@@ -1,8 +1,5 @@
 #pragma once
 
-#include <lucid/core/Types.h>
-#include <lucid/orbit/Types.h>
-
 ///
 ///
 ///

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <lucid/core/Types.h>
 #include <lucid/math/Fixed.h>
 
 namespace lucid {

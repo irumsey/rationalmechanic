@@ -23,6 +23,7 @@
     <ClInclude Include="Ephemeris.h" />
     <ClInclude Include="Frame.h" />
     <ClInclude Include="Orbit.h" />
+    <ClInclude Include="Properties.h" />
     <ClInclude Include="Types.h" />
   </ItemGroup>
   <ItemGroup>
