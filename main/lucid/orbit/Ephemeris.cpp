@@ -15,22 +15,6 @@ namespace orbit = ::lucid::orbit;
 
 namespace { /// anonymous
 
-	inline orbit::matrix3x3_t Rx(float32_t theta)
-	{
-		float32_t c = ::cosf(theta);
-		float32_t s = ::sinf(theta);
-
-		return orbit::matrix3x3_t(1, 0, 0, 0, c, s, 0, -s, c);
-	}
-
-	inline orbit::matrix3x3_t Rz(float32_t theta)
-	{
-		float32_t c = ::cosf(theta);
-		float32_t s = ::sinf(theta);
-
-		return orbit::matrix3x3_t(c, s, 0, -s, c, 0, 0, 0, 1);
-	}
-
 }	///	anonymous
 
 ///
@@ -204,7 +188,7 @@ namespace orbit {
 		position = r * vector3_t(::cosf(TA), ::sinf(TA), 0.f);
 		velocity = ::sqrtf(GM * a) / r * vector3_t(-::sinf(EA[0]), ::sqrt(1.f - e * e) * ::cosf(EA[0]), 0.f);
 
-		matrix3x3_t R = Rz(-elements.OM) * Rx(-elements.IN) * Rz(-elements.W);
+		matrix3x3_t R = math::rotateAboutZ(elements.OM) * math::rotateAboutX(elements.IN) * math::rotateAboutZ(elements.W);
 
 		position = R * position;
 		velocity = R * velocity;
