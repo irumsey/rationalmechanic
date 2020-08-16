@@ -29,7 +29,11 @@
     "Line 21" : "        AD     Apoapsis distance (au)",
     "Line 22" : "        PR     Sidereal orbit period (day)",
 
-    "Line 23" : "Geometric states/elements have no aberrations applied"
+    "Line 23" : "Geometric states/elements have no aberrations applied",
+
+    "Line 24" : "Mass in kg",
+    "Line 25" : "Radius in meters",
+    "Line 26" : "GM in m^3/s^2"
   },
 
 	"bodies" :
@@ -41,8 +45,9 @@
       "properties" :
       {
         "description" : "",
-        "mass" : 1988500.0E24,
-        "radius" : 696340.0
+        "GM" : 1.3271244004193938e20,
+        "mass" : 1.988500e30,
+        "radius" : 6.96340000e08
       },
       "elements" :
       [
@@ -59,8 +64,9 @@
       "properties" :
       {
         "description" : "",
-        "mass" : 3.302E23,
-        "radius" : 2440.0
+        "GM" : 2.203178e13,
+        "mass" : 3.302e23,
+        "radius" : 2.440000e06
       },
       "elements" :
       [
@@ -77,8 +83,9 @@
       "properties" :
       {
         "description" : "",
-        "mass" : 48.685E23,
-        "radius" : 6051.84
+        "GM" : 3.24858592e14,
+        "mass" : 4.8685e24,
+        "radius" : 6.051840e06
       },
       "elements" :
       [
@@ -95,8 +102,9 @@
       "properties" :
       {
         "description" : "",
-        "mass" : 5.97219E24,
-        "radius" : 6371.01
+        "GM" : 3.98600435436e14,
+        "mass" : 5.97219e24,
+        "radius" : 6.37101e06
       },
       "elements" :
       [
@@ -113,8 +121,9 @@
       "properties" :
       {
         "description" : "",
-        "mass" : 7.349E22,
-        "radius" : 1737.53
+        "GM" : 4.902800066e12,
+        "mass" : 7.349e22,
+        "radius" : 1.737530e06
       },
       "elements" :
       [
@@ -131,8 +140,9 @@
       "properties" :
       {
         "description" : "",
-        "mass" : 6.4171E23,
-        "radius" : 3389.92
+        "GM" : 4.2828375214e13,
+        "mass" : 6.4171e23,
+        "radius" : 3.38992e06
       },
       "elements" :
       [
@@ -149,8 +159,9 @@
       "properties" :
       {
         "description" : "",
-        "mass" : 1898.13E24,
-        "radius" : 69911.0
+        "GM" : 1.26686534911e17,
+        "mass" : 1.89813e27,
+        "radius" : 6.991100e07
       },
       "elements" :
       [
@@ -167,8 +178,9 @@
       "properties" :
       {
         "description" : "",
-        "mass" : 5.6834E26,
-        "radius" : 60268
+        "GM" : 3.7931206159e16,
+        "mass" : 5.6834e26,
+        "radius" : 6.0268e07
       },
       "elements" :
       [
@@ -184,8 +196,9 @@
       "properties" :
       {
         "description" : "",
-        "mass" : 86.813E24,
-        "radius" : 25362.0
+        "GM" : 5.793951322e15,
+        "mass" : 8.6813e25,
+        "radius" : 2.5362e07
       },
       "elements" :
       [
@@ -202,8 +215,9 @@
       "properties" :
       {
         "description" : "",
-        "mass" : 102.413E+24,
-        "radius" : 24624.0
+        "GM" : 6.83510227e15,
+        "mass" : 1.02413e26,
+        "radius" : 2.4624e07
       },
       "elements" :
       [
@@ -218,8 +232,9 @@
       "properties" :
       {
         "description" : "",
-        "mass" : 1.307E22,
-        "radius" : 1188.3
+        "GM" : 8.6933907803e11,
+        "mass" : 1.307e22,
+        "radius" : 1.1883e06
       },
       "elements" :
       [

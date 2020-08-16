@@ -51,6 +51,7 @@ namespace orbit {
 			LUCID_VALIDATE(_properties.end() != _properties.find(entry.center), "'" + target + "' specifies unknown center object");
 
 			reader.read(properties.description);
+			reader.read(properties.GM);
 			reader.read(properties.mass);
 			reader.read(properties.radius);
 

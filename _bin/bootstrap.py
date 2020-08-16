@@ -177,6 +177,13 @@ topology = {
 }
 
 #
+#	conversions
+#
+
+def deg2rad(deg):
+	return 0.01745329251994329576923690768489 * deg
+
+#
 #	bootstrap basic types
 #
 
@@ -207,6 +214,9 @@ def bootUnsigned(dst, value):
 
 def bootFloat(dst, value):
 	dst.write(struct.pack('f', value))
+
+def bootDegreesAsRadians(dst, value):
+	bootFloat(dst, deg2rad(value))
 
 def bootVector2(dst, value):
 	dst.write(struct.pack('f', value[0]))
@@ -584,6 +594,23 @@ def bootCameraFromFile(srcPath, dstPath):
 #
 #
 #
+
+onOrbitalElement = [
+	bootFloat,
+	bootFloat,
+	bootFloat,
+	bootDegreesAsRadians,
+	bootDegreesAsRadians,
+	bootDegreesAsRadians,
+	bootFloat,
+	bootDegreesAsRadians,
+	bootDegreesAsRadians,
+	bootDegreesAsRadians,
+	bootFloat,
+	bootFloat,
+	bootFloat
+]
+
 def bootEphemerisBody(dst, body):
 	bootUnsigned(dst, body['hid'])
 
@@ -593,6 +620,7 @@ def bootEphemerisBody(dst, body):
 	properties = body['properties']
 
 	bootString(dst, properties['description'])
+	bootFloat(dst, properties['GM'])
 	bootFloat(dst, properties['mass'])
 	bootFloat(dst, properties['radius'])
 
@@ -602,8 +630,10 @@ def bootEphemerisBody(dst, body):
 	for entry in elements:
 		if 13 != len(entry):
 			raise Exception('invalid number of elements in ephemeris file')
+		index = 0
 		for value in entry:
-			bootFloat(dst, value)
+			onOrbitalElement[index](dst, value)
+			index = index + 1
 
 def bootEphemeris(dst, ephemeris):
 	bodies = ephemeris['bodies']
