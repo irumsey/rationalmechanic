@@ -173,11 +173,12 @@ namespace orbit {
 		Properties centerProperties;
 		lookup(centerProperties, cid);
 
-		float32_t const spd = 86400.f;
-		float32_t const  dt = spd * (jdn - elements.JDN);
-		float32_t const  GM = centerProperties.GM;
-		float32_t const   e = elements.EC;
-		float32_t const   a = elements.A;
+		float32_t const tolsq = math::constants::tol_tol<float32_t>();
+		float32_t const   spd = 86400.f;
+		float32_t const    dt = spd * (jdn - elements.JDN);
+		float32_t const    GM = centerProperties.GM;
+		float32_t const     e = elements.EC;
+		float32_t const     a = elements.A;
 
 		float32_t MA = elements.MA + dt * ::sqrtf(GM / ::powf(a, 3.f));
 		MA = ::fmodf(MA, math::constants::two_pi<float32_t>());
@@ -185,13 +186,16 @@ namespace orbit {
 
 		float32_t EA[2] = { MA, 0.f };
 
-		///	TBD: determine completion criteria
-		float32_t err = 1.f;
-		while (err > math::constants::tol<float32_t>())
+		float32_t err = EA[0] - EA[1];
+		size_t iter = 0;
+
+		while (((err * err) > tolsq) && (iter < 5))
 		{
 			EA[1] = EA[0] - (EA[0] - e * ::sinf(EA[0]) - MA) / (1.f - e * ::cosf(EA[0]));
+			err = EA[1] - EA[0];
 			std::swap(EA[0], EA[1]);
-			err = 0.f;
+
+			++iter;
 		}
 		
 		float32_t TA = 2.f * ::atan2f(::sqrtf(1.f + e) * ::sinf(0.5f * EA[0]), ::sqrtf(1.f - e) * ::cosf(0.5f * EA[0]));
