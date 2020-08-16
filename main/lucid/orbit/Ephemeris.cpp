@@ -2,10 +2,36 @@
 #include "Elements.h"
 #include "Properties.h"
 #include <lucid/math/Algorithm.h>
+#include <lucid/math/Constants.h>
 #include <lucid/core/FileReader.h>
 
-namespace core = ::lucid::core;
-namespace math = ::lucid::math;
+namespace  core = ::lucid:: core;
+namespace  math = ::lucid:: math;
+namespace orbit = ::lucid::orbit;
+
+///
+///
+///
+
+namespace { /// anonymous
+
+	inline orbit::matrix3x3_t Rx(float32_t theta)
+	{
+		float32_t c = ::cosf(theta);
+		float32_t s = ::sinf(theta);
+
+		return orbit::matrix3x3_t(1, 0, 0, 0, c, s, 0, -s, c);
+	}
+
+	inline orbit::matrix3x3_t Rz(float32_t theta)
+	{
+		float32_t c = ::cosf(theta);
+		float32_t s = ::sinf(theta);
+
+		return orbit::matrix3x3_t(c, s, 0, -s, c, 0, 0, 0, 1);
+	}
+
+}	///	anonymous
 
 ///
 ///
@@ -132,6 +158,52 @@ namespace orbit {
 		elements = entry.elements[index];
 
 		return entry.center;
+	}
+
+	void Ephemeris::compute(vector3_t &position, vector3_t &velocity, std::string const &target, float32_t jdn) const
+	{
+		compute(position, velocity, lookup(target), jdn);
+	}
+
+	void Ephemeris::compute(vector3_t &position, vector3_t &velocity, size_t target, float32_t jdn) const
+	{
+		Elements elements;
+		size_t cid = lookup(elements, target, jdn);
+
+		Properties centerProperties;
+		lookup(centerProperties, cid);
+
+		float32_t const spd = 86400.f;
+		float32_t const  dt = spd * (jdn - elements.JDN);
+		float32_t const  GM = centerProperties.GM;
+		float32_t const   e = elements.EC;
+		float32_t const   a = elements.A;
+
+		float32_t MA = elements.MA + dt * ::sqrtf(GM / ::powf(a, 3.f));
+		MA = ::fmodf(MA, math::constants::two_pi<float32_t>());
+		MA = (MA < 0.f) ? MA + math::constants::two_pi<float32_t>(): MA;
+
+		float32_t EA[2] = { MA, 0.f };
+
+		///	TBD: determine completion criteria
+		float32_t err = 1.f;
+		while (err > math::constants::tol<float32_t>())
+		{
+			EA[1] = EA[0] - (EA[0] - e * ::sinf(EA[0]) - MA) / (1.f - e * ::cosf(EA[0]));
+			std::swap(EA[0], EA[1]);
+			err = 0.f;
+		}
+		
+		float32_t TA = 2.f * ::atan2f(::sqrtf(1.f + e) * ::sinf(0.5f * EA[0]), ::sqrtf(1.f - e) * ::cosf(0.5f * EA[0]));
+		float32_t  r = a * (1.f - e * ::cosf(EA[0]));
+
+		position = r * vector3_t(::cosf(TA), ::sinf(TA), 0.f);
+		velocity = ::sqrtf(GM * a) / r * vector3_t(-::sinf(EA[0]), ::sqrt(1.f - e * e) * ::cosf(EA[0]), 0.f);
+
+		matrix3x3_t R = Rz(-elements.OM) * Rx(-elements.IN) * Rz(-elements.W);
+
+		position = R * position;
+		velocity = R * velocity;
 	}
 
 	Ephemeris &Ephemeris::instance()

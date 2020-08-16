@@ -183,6 +183,9 @@ topology = {
 def deg2rad(deg):
 	return 0.01745329251994329576923690768489 * deg
 
+def au2meter(au):
+	return 1.496e11 * au
+
 #
 #	bootstrap basic types
 #
@@ -217,6 +220,9 @@ def bootFloat(dst, value):
 
 def bootDegreesAsRadians(dst, value):
 	bootFloat(dst, deg2rad(value))
+
+def bootAUsAsMeters(dst, value):
+	bootFloat(dst, au2meter(value))
 
 def bootVector2(dst, value):
 	dst.write(struct.pack('f', value[0]))
@@ -598,7 +604,7 @@ def bootCameraFromFile(srcPath, dstPath):
 onOrbitalElement = [
 	bootFloat,
 	bootFloat,
-	bootFloat,
+	bootAUsAsMeters,
 	bootDegreesAsRadians,
 	bootDegreesAsRadians,
 	bootDegreesAsRadians,
@@ -606,8 +612,8 @@ onOrbitalElement = [
 	bootDegreesAsRadians,
 	bootDegreesAsRadians,
 	bootDegreesAsRadians,
-	bootFloat,
-	bootFloat,
+	bootAUsAsMeters,
+	bootAUsAsMeters,
 	bootFloat
 ]
 

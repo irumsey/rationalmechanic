@@ -44,7 +44,16 @@ bool OrbitTest::update(float64_t t, float64_t dt)
 
 	orbit::Elements elements;
 	size_t center = ephemeris.lookup(elements, "Earth", 3524593.5f);
-	
+
+	orbit::vector3_t position;
+	orbit::vector3_t velocity;
+	ephemeris.compute(position, velocity, "Earth", 2451544.5f);
+
+	/// test {
+	///	convert to au and au/day to verify against Horizons
+	position = position / 1.495978e11f;
+	velocity = 86400.f * velocity / 1.495978e11f;
+	/// } test
 	LUCID_PROFILE_END();
 
 	return true;

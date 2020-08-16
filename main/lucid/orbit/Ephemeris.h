@@ -36,6 +36,10 @@ namespace orbit {
 
 		size_t lookup(Elements &elements, size_t target, float32_t jdn) const;
 
+		void compute(vector3_t &position, vector3_t &velocity, std::string const &target, float32_t jdn) const;
+
+		void compute(vector3_t &position, vector3_t &velocity, size_t target, float32_t jdn) const;
+
 		static Ephemeris &instance();
 
 	protected:
