@@ -22,6 +22,7 @@
     <ClInclude Include="Meta.h" />
     <ClInclude Include="Noncreatable.h" />
     <ClInclude Include="String.h" />
+    <ClInclude Include="Constants.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Error.cpp" />

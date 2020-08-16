@@ -184,7 +184,7 @@ def deg2rad(deg):
 	return 0.01745329251994329576923690768489 * deg
 
 def au2meter(au):
-	return 1.496e11 * au
+	return 149597870700.0 * au
 
 #
 #	bootstrap basic types
@@ -218,11 +218,14 @@ def bootUnsigned(dst, value):
 def bootFloat(dst, value):
 	dst.write(struct.pack('f', value))
 
+def bootDouble(dst, value):
+	dst.write(struct.pack('d', value))
+
 def bootDegreesAsRadians(dst, value):
-	bootFloat(dst, deg2rad(value))
+	bootDouble(dst, deg2rad(value))
 
 def bootAUsAsMeters(dst, value):
-	bootFloat(dst, au2meter(value))
+	bootDouble(dst, au2meter(value))
 
 def bootVector2(dst, value):
 	dst.write(struct.pack('f', value[0]))
@@ -602,19 +605,19 @@ def bootCameraFromFile(srcPath, dstPath):
 #
 
 onOrbitalElement = [
-	bootFloat,
-	bootFloat,
+	bootDouble,
+	bootDouble,
 	bootAUsAsMeters,
 	bootDegreesAsRadians,
 	bootDegreesAsRadians,
 	bootDegreesAsRadians,
-	bootFloat,
+	bootDouble,
 	bootDegreesAsRadians,
 	bootDegreesAsRadians,
 	bootDegreesAsRadians,
 	bootAUsAsMeters,
 	bootAUsAsMeters,
-	bootFloat
+	bootDouble
 ]
 
 def bootEphemerisBody(dst, body):
@@ -626,9 +629,9 @@ def bootEphemerisBody(dst, body):
 	properties = body['properties']
 
 	bootString(dst, properties['description'])
-	bootFloat(dst, properties['GM'])
-	bootFloat(dst, properties['mass'])
-	bootFloat(dst, properties['radius'])
+	bootDouble(dst, properties['GM'])
+	bootDouble(dst, properties['mass'])
+	bootDouble(dst, properties['radius'])
 
 	elements = body['elements']
 	bootUnsigned(dst, len(elements))

@@ -3,6 +3,7 @@
 #include <lucid/orbit/Ephemeris.h>
 #include <lucid/orbit/Elements.h>
 #include <lucid/orbit/Properties.h>
+#include <lucid/orbit/Constants.h>
 #include <lucid/gal/Pipeline.h>
 #include <lucid/core/Profiler.h>
 #include <lucid/core/String.h>
@@ -51,9 +52,13 @@ bool OrbitTest::update(float64_t t, float64_t dt)
 
 	/// test {
 	///	convert to au and au/day to verify against Horizons
-	position = position / 1.495978e11f;
-	velocity = 86400.f * velocity / 1.495978e11f;
+	orbit::scalar_t const meters_per_au = orbit::constants::meters_per_au<orbit::scalar_t>();
+	orbit::scalar_t const seconds_per_day = orbit::constants::seconds_per_day<orbit::scalar_t>();
+
+	position = position / meters_per_au;
+	velocity = seconds_per_day * velocity / meters_per_au;
 	/// } test
+
 	LUCID_PROFILE_END();
 
 	return true;

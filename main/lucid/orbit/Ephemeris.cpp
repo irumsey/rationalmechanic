@@ -1,6 +1,7 @@
 #include "Ephemeris.h"
 #include "Elements.h"
 #include "Properties.h"
+#include "Constants.h"
 #include <lucid/math/Algorithm.h>
 #include <lucid/math/Constants.h>
 #include <lucid/core/FileReader.h>
@@ -102,12 +103,12 @@ namespace orbit {
 		properties = iter->second;
 	}
 
-	size_t Ephemeris::lookup(Elements &elements, std::string const &target, float32_t jdn) const
+	size_t Ephemeris::lookup(Elements &elements, std::string const &target, scalar_t jdn) const
 	{
 		return lookup(elements, lookup(target), jdn);
 	}
 
-	size_t Ephemeris::lookup(Elements &elements, size_t target, float32_t jdn) const
+	size_t Ephemeris::lookup(Elements &elements, size_t target, scalar_t jdn) const
 	{
 		auto iter = _entries.find(target);
 		LUCID_VALIDATE(iter != _entries.end(), "unknown target id specified");
@@ -118,14 +119,15 @@ namespace orbit {
 		LUCID_VALIDATE(0 < count, "target does not define orbital elements");
 
 		///	find the closest entry to the given julian day.
-		///	for now, it is a simple linear scan through the list.
+		///	for now, it is a simple linear scan through the list which
+		///	exits when the difference would increase.
 		///	test { 
 
 		size_t index = 0;
-		float32_t a = ::fabsf(entry.elements[index].JDN - jdn);
+		scalar_t a = ::fabs(entry.elements[index].JDN - jdn);
 		for (size_t i = 1; i < count; ++i)
 		{
-			float32_t b = ::fabsf(entry.elements[i].JDN - jdn);
+			scalar_t b = ::fabs(entry.elements[i].JDN - jdn);
 			if (b < a)
 			{
 				index = i;
@@ -144,12 +146,12 @@ namespace orbit {
 		return entry.center;
 	}
 
-	void Ephemeris::compute(vector3_t &position, vector3_t &velocity, std::string const &target, float32_t jdn) const
+	void Ephemeris::compute(vector3_t &position, vector3_t &velocity, std::string const &target, scalar_t jdn) const
 	{
 		compute(position, velocity, lookup(target), jdn);
 	}
 
-	void Ephemeris::compute(vector3_t &position, vector3_t &velocity, size_t target, float32_t jdn) const
+	void Ephemeris::compute(vector3_t &position, vector3_t &velocity, size_t target, scalar_t jdn) const
 	{
 		Elements elements;
 		size_t cid = lookup(elements, target, jdn);
@@ -157,36 +159,37 @@ namespace orbit {
 		Properties centerProperties;
 		lookup(centerProperties, cid);
 
-		float32_t const tolsq = math::constants::tol_tol<float32_t>();
-		float32_t const   spd = 86400.f;
-		float32_t const    dt = spd * (jdn - elements.JDN);
-		float32_t const    GM = centerProperties.GM;
-		float32_t const     e = elements.EC;
-		float32_t const     a = elements.A;
+		scalar_t const twopi = math::constants::two_pi<scalar_t>();
+		scalar_t const tolsq = math::constants::tol_tol<scalar_t>();
+		scalar_t const    dt = constants::seconds_per_day<scalar_t>() * (jdn - elements.JDN);
+		scalar_t const    GM = centerProperties.GM;
+		scalar_t const     e = elements.EC;
+		scalar_t const     a = elements.A;
 
-		float32_t MA = elements.MA + dt * ::sqrtf(GM / ::powf(a, 3.f));
-		MA = ::fmodf(MA, math::constants::two_pi<float32_t>());
-		MA = (MA < 0.f) ? MA + math::constants::two_pi<float32_t>(): MA;
+		scalar_t MA = elements.MA + dt * ::sqrt(GM / ::pow(a, 3.f));
+		MA = ::fmod(MA, twopi);
+		MA = (MA < 0.f) ? MA + twopi: MA;
 
-		float32_t EA[2] = { MA, 0.f };
+		scalar_t EA[2] = { MA, 0.f };
 
-		float32_t err = EA[0] - EA[1];
+		size_t const limit = 10;
 		size_t iter = 0;
 
-		while (((err * err) > tolsq) && (iter < 5))
+		scalar_t err = EA[0] - EA[1];
+		while (((err * err) > tolsq) && (iter < limit))
 		{
-			EA[1] = EA[0] - (EA[0] - e * ::sinf(EA[0]) - MA) / (1.f - e * ::cosf(EA[0]));
+			EA[1] = EA[0] - (EA[0] - e * ::sin(EA[0]) - MA) / (1.f - e * ::cos(EA[0]));
 			err = EA[1] - EA[0];
-			std::swap(EA[0], EA[1]);
 
+			std::swap(EA[0], EA[1]);
 			++iter;
 		}
 		
-		float32_t TA = 2.f * ::atan2f(::sqrtf(1.f + e) * ::sinf(0.5f * EA[0]), ::sqrtf(1.f - e) * ::cosf(0.5f * EA[0]));
-		float32_t  r = a * (1.f - e * ::cosf(EA[0]));
+		scalar_t TA = 2.f * ::atan2(::sqrt(1.f + e) * ::sin(0.5f * EA[0]), ::sqrt(1.f - e) * ::cos(0.5f * EA[0]));
+		scalar_t  r = a * (1.f - e * ::cos(EA[0]));
 
-		position = r * vector3_t(::cosf(TA), ::sinf(TA), 0.f);
-		velocity = ::sqrtf(GM * a) / r * vector3_t(-::sinf(EA[0]), ::sqrt(1.f - e * e) * ::cosf(EA[0]), 0.f);
+		position = r * vector3_t(::cos(TA), ::sin(TA), 0.f);
+		velocity = ::sqrt(GM * a) / r * vector3_t(-::sin(EA[0]), ::sqrt(1.f - e * e) * ::cos(EA[0]), 0.f);
 
 		matrix3x3_t R = math::rotateAboutZ(elements.OM) * math::rotateAboutX(elements.IN) * math::rotateAboutZ(elements.W);
 

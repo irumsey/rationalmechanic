@@ -24,7 +24,7 @@ namespace orbit {
 	public:
 		virtual ~Ephemeris();
 
-		void initialize(std::string const &path);
+		void   initialize(std::string const &path);
 
 		size_t lookup(std::string const &target) const;
 
@@ -32,13 +32,13 @@ namespace orbit {
 
 		void   lookup(Properties &properties, size_t target) const;
 
-		size_t lookup(Elements &elements, std::string const &target, float32_t jdn) const;
+		size_t lookup(Elements &elements, std::string const &target, scalar_t jdn) const;
 
-		size_t lookup(Elements &elements, size_t target, float32_t jdn) const;
+		size_t lookup(Elements &elements, size_t target, scalar_t jdn) const;
 
-		void compute(vector3_t &position, vector3_t &velocity, std::string const &target, float32_t jdn) const;
-
-		void compute(vector3_t &position, vector3_t &velocity, size_t target, float32_t jdn) const;
+		void   compute(vector3_t &position, vector3_t &velocity, std::string const &target, scalar_t jdn) const;
+			   
+		void   compute(vector3_t &position, vector3_t &velocity, size_t target, scalar_t jdn) const;
 
 		static Ephemeris &instance();
 

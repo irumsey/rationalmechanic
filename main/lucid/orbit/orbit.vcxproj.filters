@@ -7,6 +7,8 @@
     <ClInclude Include="Ephemeris.h" />
     <ClInclude Include="Elements.h" />
     <ClInclude Include="Properties.h" />
+    <ClInclude Include="Constants.h" />
+    <ClInclude Include="Algorithm.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Orbit.cpp" />

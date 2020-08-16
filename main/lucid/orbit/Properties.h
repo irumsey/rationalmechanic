@@ -13,9 +13,9 @@ namespace orbit {
 	{
 		std::string description;
 
-		float32_t GM = 0.f;
-		float32_t mass = 0.f;
-		float32_t radius = 0.f;
+		scalar_t GM = 0.f;
+		scalar_t mass = 0.f;
+		scalar_t radius = 0.f;
 	};
 
 }	///	orbit

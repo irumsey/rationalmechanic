@@ -22,6 +22,7 @@
     <ClInclude Include="Array.h" />
     <ClInclude Include="Cache.h" />
     <ClInclude Include="Clock.h" />
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="Ctor.h" />
     <ClInclude Include="Error.h" />
     <ClInclude Include="Factory.h" />
