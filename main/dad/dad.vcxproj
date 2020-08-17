@@ -169,6 +169,7 @@
     <ClCompile Include="Session.cpp" />
     <ClCompile Include="SessionState.cpp" />
     <ClCompile Include="Tests.cpp" />
+    <ClCompile Include="UnitsTest.cpp" />
     <ClCompile Include="Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -180,6 +181,7 @@
     <ClInclude Include="SessionState.h" />
     <ClInclude Include="Test.h" />
     <ClInclude Include="Tests.h" />
+    <ClInclude Include="UnitsTest.h" />
     <ClInclude Include="UserInput.h" />
     <ClInclude Include="Utility.h" />
   </ItemGroup>

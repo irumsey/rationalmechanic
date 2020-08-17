@@ -11,6 +11,7 @@
     <ClCompile Include="CoreTest.cpp" />
     <ClCompile Include="Utility.cpp" />
     <ClCompile Include="OrbitTest.cpp" />
+    <ClCompile Include="UnitsTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Session.h" />
@@ -23,6 +24,7 @@
     <ClInclude Include="RenderTest.h" />
     <ClInclude Include="CoreTest.h" />
     <ClInclude Include="OrbitTest.h" />
+    <ClInclude Include="UnitsTest.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="content">

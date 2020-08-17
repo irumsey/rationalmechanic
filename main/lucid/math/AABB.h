@@ -14,7 +14,7 @@ namespace math {
 	///
 	///
 	///
-	template<class T, int DIM> struct AABB
+	template<typename T, int DIM> struct AABB
 	{
 		Vector<T, DIM> min = Vector<T, DIM>(constants::pos_inf<T>(), constants::pos_inf<T>(), constants::pos_inf<T>());
 		Vector<T, DIM> max = Vector<T, DIM>(constants::neg_inf<T>(), constants::neg_inf<T>(), constants::neg_inf<T>());
@@ -41,7 +41,7 @@ namespace math {
 	///	fit
 	///
 	///	expand the given box to include the specified point.
-	template<class T, int DIM> inline void fit(AABB<T, DIM> &box, Vector<T, DIM> const &point)
+	template<typename T, int DIM> inline void fit(AABB<T, DIM> &box, Vector<T, DIM> const &point)
 	{
 		for (int i = 0; i < DIM; ++i)
 		{
@@ -53,7 +53,7 @@ namespace math {
 	///	fit
 	///
 	///	convienience method for creating a box which fits a triangle.
-	template<class T, int DIM> inline AABB<T, DIM> fit(Vector<T, DIM> const &v_i, Vector<T, DIM> const &v_j, Vector<T, DIM> const &v_k)
+	template<typename T, int DIM> inline AABB<T, DIM> fit(Vector<T, DIM> const &v_i, Vector<T, DIM> const &v_j, Vector<T, DIM> const &v_k)
 	{
 		AABB<T, DIM> box;
 
@@ -67,7 +67,7 @@ namespace math {
 	///	contains
 	///
 	///
-	template<class T, int DIM> inline bool contains(AABB<T, DIM> const &box, Vector<T, DIM> const &point)
+	template<typename T, int DIM> inline bool contains(AABB<T, DIM> const &box, Vector<T, DIM> const &point)
 	{
 		for (int i = 0; i < DIM; ++i)
 		{
@@ -80,7 +80,7 @@ namespace math {
 	///
 	///
 	///
-	template<class T, int DIM> inline bool looselyContains(AABB<T, DIM> const &box, Vector<T, DIM> const &v_i, Vector<T, DIM> const &v_j, Vector<T, DIM> const &v_k)
+	template<typename T, int DIM> inline bool looselyContains(AABB<T, DIM> const &box, Vector<T, DIM> const &v_i, Vector<T, DIM> const &v_j, Vector<T, DIM> const &v_k)
 	{
 		AABB<T, DIM> faceBox = fit(v_i, v_j, v_k);
 		Vector<T, DIM> faceCenter = faceBox.center();

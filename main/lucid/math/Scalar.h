@@ -16,13 +16,13 @@ namespace math {
 	///	note: relies upon the "tolerance" constant
 	///
 
-	template<class T> inline bool equ(T lhs, T rhs)
+	template<typename T> inline bool equ(T lhs, T rhs)
 	{
 		T delta = lhs - rhs;
 		return (delta * delta) < constants::tol_tol<T>();
 	}
 	
-	template<class T> inline bool neq(T lhs, T rhs)
+	template<typename T> inline bool neq(T lhs, T rhs)
 	{
 		return !equ(lhs, rhs);
 	}
@@ -31,7 +31,7 @@ namespace math {
 	///	square root "wrapper"
 	///
 
-	template<class T> inline T sqrt(T x)
+	template<typename T> inline T sqrt(T x)
 	{
 		return std::sqrt(x);
 	}
@@ -40,12 +40,12 @@ namespace math {
 	///	cosine "wrappers"
 	///
 
-	template<class T> inline T cos(T theta)
+	template<typename T> inline T cos(T theta)
 	{
 		return std::cos(theta);
 	}
 
-	template<class T> inline T acos(T x)
+	template<typename T> inline T acos(T x)
 	{
 		return std::acos(x);
 	}
@@ -54,12 +54,12 @@ namespace math {
 	///	sine "wrappers"
 	///
 
-	template<class T> inline T sin(T theta)
+	template<typename T> inline T sin(T theta)
 	{
 		return std::sin(theta);
 	}
 
-	template<class T> inline T asin(T x)
+	template<typename T> inline T asin(T x)
 	{
 		return std::asin(x);
 	}
@@ -68,17 +68,17 @@ namespace math {
 	///	tangent "wrappers"
 	///
 
-	template<class T> inline T tan(T theta)
+	template<typename T> inline T tan(T theta)
 	{
 		return std::tan(theta);
 	}
 
-	template<class T> inline T atan(T x)
+	template<typename T> inline T atan(T x)
 	{
 		return std::atan(x);
 	}
 
-	template<class T> inline T atan2(T y, T x)
+	template<typename T> inline T atan2(T y, T x)
 	{
 		return std::atan2(y, x);
 	}

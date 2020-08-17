@@ -14,7 +14,7 @@ namespace math {
 	///	Matrix<T,ROWS,COLS>
 	///
 	///	general matrix template
-	template<class T, int ROWS, int COLS> struct Matrix
+	template<typename T, int ROWS, int COLS> struct Matrix
 	{
 		static int const COUNT = ROWS * COLS;
 
@@ -39,7 +39,7 @@ namespace math {
 	///
 	///	2x2 specialization of Matrix<>
 	///	providing named members.
-	template<class T> struct Matrix<T,2,2>
+	template<typename T> struct Matrix<T,2,2>
 	{
 		static int const COUNT = 4;
 
@@ -82,7 +82,7 @@ namespace math {
 	///
 	///	3x3 specialization of Matrix<>
 	///	providing named members.
-	template<class T> struct Matrix<T,3,3>
+	template<typename T> struct Matrix<T,3,3>
 	{
 		static int const COUNT = 9;
 
@@ -128,7 +128,7 @@ namespace math {
 	///
 	///	4x4 specialization of Matrix<>
 	///	providing named members.
-	template<class T> struct Matrix<T,4,4>
+	template<typename T> struct Matrix<T,4,4>
 	{
 		static int const COUNT = 16;
 
@@ -189,7 +189,7 @@ namespace math {
 ///
 ///
 ///
-template<class T, int ROWS, int COLS> inline MATRIX(T,ROWS,COLS) operator-(MATRIX(T,ROWS,COLS) const &rhs)
+template<typename T, int ROWS, int COLS> inline MATRIX(T,ROWS,COLS) operator-(MATRIX(T,ROWS,COLS) const &rhs)
 {
 	MATRIX(T,ROWS,COLS) result;
 
@@ -205,7 +205,7 @@ template<class T, int ROWS, int COLS> inline MATRIX(T,ROWS,COLS) operator-(MATRI
 ///
 ///
 ///
-template<class T, int ROWS, int COLS> inline MATRIX(T,ROWS,COLS) operator+(MATRIX(T,ROWS,COLS) const &lhs, MATRIX(T,ROWS,COLS) const &rhs)
+template<typename T, int ROWS, int COLS> inline MATRIX(T,ROWS,COLS) operator+(MATRIX(T,ROWS,COLS) const &lhs, MATRIX(T,ROWS,COLS) const &rhs)
 {
 	MATRIX(T,ROWS,COLS) result;
 
@@ -221,7 +221,7 @@ template<class T, int ROWS, int COLS> inline MATRIX(T,ROWS,COLS) operator+(MATRI
 ///
 ///
 ///
-template<class T, int ROWS, int COLS> inline MATRIX(T,ROWS,COLS) operator-(MATRIX(T,ROWS,COLS) const &lhs, MATRIX(T,ROWS,COLS) const &rhs)
+template<typename T, int ROWS, int COLS> inline MATRIX(T,ROWS,COLS) operator-(MATRIX(T,ROWS,COLS) const &lhs, MATRIX(T,ROWS,COLS) const &rhs)
 {
 	MATRIX(T,ROWS,COLS) result;
 
@@ -237,7 +237,7 @@ template<class T, int ROWS, int COLS> inline MATRIX(T,ROWS,COLS) operator-(MATRI
 ///
 ///
 ///
-template<class T, int ROWS, int COLS> inline MATRIX(T,ROWS,COLS) operator*(MATRIX(T,ROWS,COLS) const &lhs, T const &rhs)
+template<typename T, int ROWS, int COLS> inline MATRIX(T,ROWS,COLS) operator*(MATRIX(T,ROWS,COLS) const &lhs, T const &rhs)
 {
 	MATRIX(T,ROWS,COLS) result;
 
@@ -253,7 +253,7 @@ template<class T, int ROWS, int COLS> inline MATRIX(T,ROWS,COLS) operator*(MATRI
 ///
 ///
 ///
-template<class T, int ROWS, int COLS> inline MATRIX(T,ROWS,COLS) operator*(T const &lhs, MATRIX(T,ROWS,COLS) const &rhs)
+template<typename T, int ROWS, int COLS> inline MATRIX(T,ROWS,COLS) operator*(T const &lhs, MATRIX(T,ROWS,COLS) const &rhs)
 {
 	MATRIX(T,ROWS,COLS) result;
 
@@ -269,7 +269,7 @@ template<class T, int ROWS, int COLS> inline MATRIX(T,ROWS,COLS) operator*(T con
 ///
 ///
 ///
-template<class T, int ROWS, int COLS> inline MATRIX(T,ROWS,COLS) operator/(MATRIX(T,ROWS,COLS) const &lhs, T const &rhs)
+template<typename T, int ROWS, int COLS> inline MATRIX(T,ROWS,COLS) operator/(MATRIX(T,ROWS,COLS) const &lhs, T const &rhs)
 {
 	MATRIX(T,ROWS,COLS) result;
 
@@ -287,7 +287,7 @@ template<class T, int ROWS, int COLS> inline MATRIX(T,ROWS,COLS) operator/(MATRI
 ///
 ///
 ///	row vector times matrix: p = q * R
-template<class T, int ROWS, int COLS> inline VECTOR(T,COLS) operator*(VECTOR(T,ROWS) const &lhs, MATRIX(T,ROWS,COLS) const &rhs)
+template<typename T, int ROWS, int COLS> inline VECTOR(T,COLS) operator*(VECTOR(T,ROWS) const &lhs, MATRIX(T,ROWS,COLS) const &rhs)
 {
 	VECTOR(T,COLS) result;
 
@@ -306,7 +306,7 @@ template<class T, int ROWS, int COLS> inline VECTOR(T,COLS) operator*(VECTOR(T,R
 ///
 ///
 ///	matrix times column vector: p = R * q
-template<class T, int ROWS, int COLS> inline VECTOR(T,ROWS) operator*(MATRIX(T,ROWS,COLS) const &lhs, VECTOR(T,COLS) const &rhs)
+template<typename T, int ROWS, int COLS> inline VECTOR(T,ROWS) operator*(MATRIX(T,ROWS,COLS) const &lhs, VECTOR(T,COLS) const &rhs)
 {
 	VECTOR(T,ROWS) result;
 
@@ -325,7 +325,7 @@ template<class T, int ROWS, int COLS> inline VECTOR(T,ROWS) operator*(MATRIX(T,R
 ///
 ///
 ///
-template<class T, int ROWS, int INNER, int COLS> inline MATRIX(T,ROWS,COLS) operator*(MATRIX(T,ROWS,INNER) const &lhs, MATRIX(T,INNER,COLS) const &rhs)
+template<typename T, int ROWS, int INNER, int COLS> inline MATRIX(T,ROWS,COLS) operator*(MATRIX(T,ROWS,INNER) const &lhs, MATRIX(T,INNER,COLS) const &rhs)
 {
 	MATRIX(T,ROWS,COLS) result;
 
@@ -363,7 +363,7 @@ namespace math {
 	///	trace
 	///
 	///	compute the trace of a square matrix
-	template<class T, int DIM> inline T trace(Matrix<T,DIM,DIM> const &rhs)
+	template<typename T, int DIM> inline T trace(Matrix<T,DIM,DIM> const &rhs)
 	{
 		T result = rhs[0][0];
 
@@ -379,7 +379,7 @@ namespace math {
 	///
 	///	equality tests
 
-	template<class T, int ROWS, int COLS> inline bool equ(Matrix<T,ROWS,COLS> const &lhs, Matrix<T,ROWS,COLS> const &rhs)
+	template<typename T, int ROWS, int COLS> inline bool equ(Matrix<T,ROWS,COLS> const &lhs, Matrix<T,ROWS,COLS> const &rhs)
 	{
 		for (int32_t i = 0; i < rhs.COUNT; ++i)
 		{
@@ -391,7 +391,7 @@ namespace math {
 		return true;
 	}
 
-	template<class T, int ROWS, int COLS> inline bool neq(Matrix<T,ROWS,COLS> const &lhs, Matrix<T,ROWS,COLS> const &rhs)
+	template<typename T, int ROWS, int COLS> inline bool neq(Matrix<T,ROWS,COLS> const &lhs, Matrix<T,ROWS,COLS> const &rhs)
 	{
 		return !equ(lhs, rhs);
 	}
@@ -399,7 +399,7 @@ namespace math {
 	///	transpose
 	///
 	///	compute the transpose of a matrix
-	template<class T, int ROWS, int COLS> inline Matrix<T,COLS,ROWS> transpose(Matrix<T,ROWS,COLS> const &rhs)
+	template<typename T, int ROWS, int COLS> inline Matrix<T,COLS,ROWS> transpose(Matrix<T,ROWS,COLS> const &rhs)
 	{
 		Matrix<T,COLS,ROWS> result;
 
@@ -418,12 +418,12 @@ namespace math {
 	///
 	///	compute the determinate of a 2x2, 3x3, or 4x4 matrix
 
-	template<class T> inline T determinate(Matrix<T,2,2> const &rhs)
+	template<typename T> inline T determinate(Matrix<T,2,2> const &rhs)
 	{
 		return rhs.xx * rhs.yy - rhs.yx * rhs.xy;
 	}
 
-	template<class T> inline T determinate(Matrix<T,3,3> const &rhs)
+	template<typename T> inline T determinate(Matrix<T,3,3> const &rhs)
 	{
 		return
 			rhs.xx * (rhs.yy * rhs.zz - rhs.zy * rhs.yz) +
@@ -431,7 +431,7 @@ namespace math {
 			rhs.xz * (rhs.yx * rhs.zy - rhs.zx * rhs.yy);
 	}
 
-	template<class T> inline T determinate(Matrix<T,4,4> const &rhs)
+	template<typename T> inline T determinate(Matrix<T,4,4> const &rhs)
 	{
 		return
 			rhs.xw * rhs.yz * rhs.zy * rhs.wx - rhs.xz * rhs.yw * rhs.zy * rhs.wx - rhs.xw * rhs.yy * rhs.zz * rhs.wx + rhs.xy * rhs.yw * rhs.zz * rhs.wx +
@@ -446,7 +446,7 @@ namespace math {
 	///
 	///	compute the inverse of a 2x2, 3x3, or 4x4 matrix
 
-	template<class T> inline Matrix<T,2,2> inverse(Matrix<T,2,2> const &rhs)
+	template<typename T> inline Matrix<T,2,2> inverse(Matrix<T,2,2> const &rhs)
 	{
 		Matrix<T,2,2> lval;
 
@@ -461,7 +461,7 @@ namespace math {
 		return lval;
 	}
 
-	template<class T> inline Matrix<T,3,3> inverse(Matrix<T,3,3> const &rhs)
+	template<typename T> inline Matrix<T,3,3> inverse(Matrix<T,3,3> const &rhs)
 	{
 		Matrix<T,3,3> lval;
 
@@ -482,7 +482,7 @@ namespace math {
 		return lval;
 	}
 
-	template<class T> inline Matrix<T,4,4> inverse(Matrix<T,4,4> const &rhs)
+	template<typename T> inline Matrix<T,4,4> inverse(Matrix<T,4,4> const &rhs)
 	{
 		Matrix<T,4,4> lval;
 
@@ -516,7 +516,7 @@ namespace math {
 	///	compute a rotation matrix about the x axis
 	///
 	///	note: counter clockwise rotation assuming column vector, p = R * q
-	template<class T> inline Matrix<T,3,3> rotateAboutX(T theta)
+	template<typename T> inline Matrix<T,3,3> rotateAboutX(T theta)
 	{
 		Matrix<T,3,3> lval;
 
@@ -543,7 +543,7 @@ namespace math {
 	///	compute a rotation matrix about the y axis
 	///
 	///	note: counter clockwise rotation assuming column vector, p = R * q
-	template<class T> inline Matrix<T,3,3> rotateAboutY(T theta)
+	template<typename T> inline Matrix<T,3,3> rotateAboutY(T theta)
 	{
 		Matrix<T,3,3> lval;
 
@@ -570,7 +570,7 @@ namespace math {
 	///	compute a rotation matrix about the z axis
 	///
 	///	note: counter clockwise rotation assuming column vector, p = R * q
-	template<class T> inline Matrix<T,3,3> rotateAboutZ(T theta)
+	template<typename T> inline Matrix<T,3,3> rotateAboutZ(T theta)
 	{
 		Matrix<T,3,3> lval;
 
@@ -595,7 +595,7 @@ namespace math {
 	///	rotateUsingDirection (and up vector)
 	///
 	///
-	template<class T> inline Matrix<T,3,3> rotateUsingDirection(Vector<T,3> const &direction, Vector<T,3> const &up)
+	template<typename T> inline Matrix<T,3,3> rotateUsingDirection(Vector<T,3> const &direction, Vector<T,3> const &up)
 	{
 		Vector<T,3> xaxis = normalize(direction);
 		Vector<T,3> yaxis = normalize(cross(up, xaxis));
@@ -615,7 +615,7 @@ namespace math {
 	///
 	///	note: assumes column vector, p = P * q
 
-	template<class T> inline Matrix<T,4,4> orthographic(T width, T height, T znear, T zfar)
+	template<typename T> inline Matrix<T,4,4> orthographic(T width, T height, T znear, T zfar)
 	{
 		return Matrix<T,4,4>
 		(
@@ -626,7 +626,7 @@ namespace math {
 		);
 	}
 
-	template<class T> inline Matrix<T,4,4> orthographic(T left, T right, T bottom, T top, T znear, T zfar)
+	template<typename T> inline Matrix<T,4,4> orthographic(T left, T right, T bottom, T top, T znear, T zfar)
 	{
 		return Matrix<T,4,4>
 		(
@@ -643,7 +643,7 @@ namespace math {
 	///
 	///	note: assumes column vector, p = P * q
 
-	template<class T> inline Matrix<T,4,4> perspective(T fov, T aspect, T znear, T zfar)
+	template<typename T> inline Matrix<T,4,4> perspective(T fov, T aspect, T znear, T zfar)
 	{
 		T yscale = constants::one<T>() / tan(constants::half<T>() * fov);
 		T xscale = yscale / aspect;
@@ -657,7 +657,7 @@ namespace math {
 		);
 	}
 
-	template<class T> inline Matrix<T,4,4> perspective(T left, T right, T bottom, T top, T znear, T zfar)
+	template<typename T> inline Matrix<T,4,4> perspective(T left, T right, T bottom, T top, T znear, T zfar)
 	{
 		return Matrix<T,4,4>
 		(
@@ -673,7 +673,7 @@ namespace math {
 	///	compute a "look at" transformation matrix
 	///
 	///	note: assumes column vector, p = V * q
-	template<class T> inline Matrix<T,4,4> look(Vector<T,3> const &eye, Vector<T,3> const &focus, Vector<T,3> const &up)
+	template<typename T> inline Matrix<T,4,4> look(Vector<T,3> const &eye, Vector<T,3> const &focus, Vector<T,3> const &up)
 	{
 		Vector<T,3> zaxis = normalize(eye - focus);
 		Vector<T,3> xaxis = normalize(cross(up, zaxis));
@@ -691,7 +691,7 @@ namespace math {
 	///
 	///
 	///
-	template<class T> inline Vector<T, 3> transform(Matrix<T, 4, 4> const &lhs, Vector<T, 3> const &rhs)
+	template<typename T> inline Vector<T, 3> transform(Matrix<T, 4, 4> const &lhs, Vector<T, 3> const &rhs)
 	{
 		Vector<T, 4> result = lhs * Vector<T, 4>(rhs.x, rhs.y, rhs.z, constants::one<T>());
 		return Vector<T, 3>(result.x, result.y, result.z) / result.w;

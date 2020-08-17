@@ -19,12 +19,12 @@ namespace math {
 	///
 	///
 	
-	template<class T> inline T min(T const &x, T const &y)
+	template<typename T> inline T min(T const &x, T const &y)
 	{
 		return (x <= y) ? x : y;
 	}
 
-	template<class T> inline T max(T const &x, T const &y)
+	template<typename T> inline T max(T const &x, T const &y)
 	{
 		return (x >= y) ? x : y;
 	}
@@ -32,7 +32,7 @@ namespace math {
 	///	interpolate
 	///
 	///	linear interpolation from a to b.
-	template<class T> inline T interp(T const &t, T const &a, T const &b)
+	template<typename T> inline T interp(T const &t, T const &a, T const &b)
 	{
 		return (b - a) * t + a;
 	}
@@ -41,7 +41,7 @@ namespace math {
 	///
 	///	clamp value between values a and b
 	///	where a < b
-	template<class T> inline T clamp(T const &x, T const &a, T const &b)
+	template<typename T> inline T clamp(T const &x, T const &a, T const &b)
 	{
 		return std::min(std::max(a, x), b);
 	}
@@ -50,7 +50,7 @@ namespace math {
 	///
 	///	range of exclusion for the value x defined by a and b
 	///	where a < b
-	template<class T> inline T exclude(T const &x, T const &a, T const &b)
+	template<typename T> inline T exclude(T const &x, T const &a, T const &b)
 	{
 		if ((x < a) || (b < x))
 			return x;
@@ -64,7 +64,7 @@ namespace math {
 	///	intersects
 	///
 	///	Sphere intersects AABB
-	template<class T> inline bool intersects(Sphere<T, 3> const &sphere, AABB<T, 3> const &aabb)
+	template<typename T> inline bool intersects(Sphere<T, 3> const &sphere, AABB<T, 3> const &aabb)
 	{
 		float32_t RR = sphere.radius * sphere.radius;
 
@@ -103,7 +103,7 @@ namespace math {
 	///	intersects
 	///
 	///	Frustum intersects AABB
-	template<class T> inline bool intersects(Frustum<T> const &frustum, AABB<T, 3> const &aabb)
+	template<typename T> inline bool intersects(Frustum<T> const &frustum, AABB<T, 3> const &aabb)
 	{
 		int const ELEMENT_COUNT = 3;
 		int const CORNER_COUNT = Frustum<T>::CORNER_COUNT;
@@ -161,7 +161,7 @@ namespace math {
 	///	project
 	///
 	///	project a specified number of 3D points onto an axis and return a min/max range.
-	template<class T> inline std::pair<T, T> project(Vector<T, 3> const *vertices, int32_t vertexCount, Vector<T, 3> const &axis)
+	template<typename T> inline std::pair<T, T> project(Vector<T, 3> const *vertices, int32_t vertexCount, Vector<T, 3> const &axis)
 	{
 		std::pair<T, T> result(0, 0);
 
@@ -182,7 +182,7 @@ namespace math {
 	///	intersect
 	///
 	///	3D AABB intersects 3D triangle
-	template<class T> inline bool intersect(AABB<T, 3> const &box, Vector<T, 3> const &v_i, Vector<T, 3> const &v_j, Vector<T, 3> const &v_k)
+	template<typename T> inline bool intersect(AABB<T, 3> const &box, Vector<T, 3> const &v_i, Vector<T, 3> const &v_j, Vector<T, 3> const &v_k)
 	{
 		Vector<T, 3> const boxNormals[] =
 		{
@@ -248,7 +248,7 @@ namespace math {
 	///	contains
 	///
 	///	3D Frustum contains 3D AABB
-	template<class T> inline bool contains(Frustum<T> const &frustum, AABB<T, 3> const &aabb)
+	template<typename T> inline bool contains(Frustum<T> const &frustum, AABB<T, 3> const &aabb)
 	{
 		int const CORNER_COUNT = 8;
 
@@ -281,7 +281,7 @@ namespace math {
 	///	areaProjected
 	///
 	///
-	template<class T> inline T areaProjected(Matrix<T, 4, 4> const &viewProjMatrix, T const &znear, AABB<T, 3> const &aabb)
+	template<typename T> inline T areaProjected(Matrix<T, 4, 4> const &viewProjMatrix, T const &znear, AABB<T, 3> const &aabb)
 	{
 		int const CORNER_COUNT = 8;
 

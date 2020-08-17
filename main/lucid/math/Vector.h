@@ -13,11 +13,13 @@ namespace math {
 	///	Vector<T,DIM>
 	///
 	///	general vector template
-	template<class T, int DIM> struct Vector
+	template<typename T, int DIM> struct Vector
 	{
 		T elements[DIM];
 
 		Vector() = default;
+
+		~Vector() = default;
 
 		T &operator[](int32_t i)
 		{
@@ -36,7 +38,7 @@ namespace math {
 	///
 	///	2D specialization of Vector<>
 	///	providing (x,y) members.
-	template<class T> struct Vector<T,2>
+	template<typename T> struct Vector<T,2>
 	{
 		union
 		{
@@ -45,6 +47,8 @@ namespace math {
 		};
 
 		Vector() = default;
+
+		~Vector() = default;
 
 		Vector(T const &x, T const &y)
 			: x(x), y(y)
@@ -68,7 +72,7 @@ namespace math {
 	///
 	///	3D specialization of Vector<>
 	///	providing (x,y,z) members.
-	template<class T> struct Vector<T,3>
+	template<typename T> struct Vector<T,3>
 	{
 		union
 		{
@@ -77,6 +81,8 @@ namespace math {
 		};
 
 		Vector() = default;
+
+		~Vector() = default;
 
 		Vector(T const &x, T const &y, T const &z)
 			: x(x), y(y), z(z)
@@ -100,7 +106,7 @@ namespace math {
 	///
 	///	4D specialization of Vector<>
 	///	providing (x,y,z,w) members.
-	template<class T> struct Vector<T,4>
+	template<typename T> struct Vector<T,4>
 	{
 		union
 		{
@@ -109,6 +115,8 @@ namespace math {
 		};
 
 		Vector() = default;
+
+		~Vector() = default;
 
 		Vector(T const &x, T const &y, T const &z, T const &w)
 			: x(x), y(y), z(z), w(w)
@@ -140,7 +148,7 @@ namespace math {
 ///
 ///
 ///
-template<class T, int DIM> inline VECTOR(T,DIM) operator-(VECTOR(T,DIM) const &rhs)
+template<typename T, int DIM> inline VECTOR(T,DIM) operator-(VECTOR(T,DIM) const &rhs)
 {
 	VECTOR(T,DIM) result;
 
@@ -156,7 +164,7 @@ template<class T, int DIM> inline VECTOR(T,DIM) operator-(VECTOR(T,DIM) const &r
 ///
 ///
 ///
-template<class T, int DIM> inline VECTOR(T,DIM) operator+(VECTOR(T,DIM) const &lhs, VECTOR(T,DIM) const &rhs)
+template<typename T, int DIM> inline VECTOR(T,DIM) operator+(VECTOR(T,DIM) const &lhs, VECTOR(T,DIM) const &rhs)
 {
 	VECTOR(T,DIM) result;
 
@@ -172,7 +180,7 @@ template<class T, int DIM> inline VECTOR(T,DIM) operator+(VECTOR(T,DIM) const &l
 ///
 ///
 ///
-template<class T, int DIM> inline VECTOR(T,DIM) operator-(VECTOR(T,DIM) const &lhs, VECTOR(T,DIM) const &rhs)
+template<typename T, int DIM> inline VECTOR(T,DIM) operator-(VECTOR(T,DIM) const &lhs, VECTOR(T,DIM) const &rhs)
 {
 	VECTOR(T,DIM) result;
 
@@ -188,7 +196,7 @@ template<class T, int DIM> inline VECTOR(T,DIM) operator-(VECTOR(T,DIM) const &l
 ///
 ///
 ///
-template<class T, int DIM> inline VECTOR(T,DIM) operator*(VECTOR(T,DIM) const &lhs, T const &rhs)
+template<typename T, int DIM> inline VECTOR(T,DIM) operator*(VECTOR(T,DIM) const &lhs, T const &rhs)
 {
 	VECTOR(T,DIM) result;
 
@@ -204,7 +212,7 @@ template<class T, int DIM> inline VECTOR(T,DIM) operator*(VECTOR(T,DIM) const &l
 ///
 ///
 ///
-template<class T, int DIM> inline VECTOR(T,DIM) operator*(T const &lhs, VECTOR(T,DIM) const &rhs)
+template<typename T, int DIM> inline VECTOR(T,DIM) operator*(T const &lhs, VECTOR(T,DIM) const &rhs)
 {
 	VECTOR(T,DIM) result;
 
@@ -220,7 +228,7 @@ template<class T, int DIM> inline VECTOR(T,DIM) operator*(T const &lhs, VECTOR(T
 ///
 ///
 ///
-template<class T, int DIM> inline VECTOR(T,DIM) operator/(VECTOR(T,DIM) const &lhs, T const &rhs)
+template<typename T, int DIM> inline VECTOR(T,DIM) operator/(VECTOR(T,DIM) const &lhs, T const &rhs)
 {
 	VECTOR(T,DIM) result;
 
@@ -250,7 +258,7 @@ namespace math {
 	///	dot
 	///
 	///	dot product
-	template<class T, int DIM> inline T dot(Vector<T,DIM> const &lhs, Vector<T,DIM> const &rhs)
+	template<typename T, int DIM> inline T dot(Vector<T,DIM> const &lhs, Vector<T,DIM> const &rhs)
 	{
 		T result = lhs.elements[0] * rhs.elements[0];
 
@@ -265,7 +273,7 @@ namespace math {
 	///	lsq
 	///
 	///	length squared
-	template<class T, int DIM> inline T lsq(Vector<T,DIM> const &rhs)
+	template<typename T, int DIM> inline T lsq(Vector<T,DIM> const &rhs)
 	{
 		return dot(rhs, rhs);
 	}
@@ -273,7 +281,7 @@ namespace math {
 	///	len
 	///
 	///	length
-	template<class T, int DIM> inline T len(Vector<T,DIM> const &rhs)
+	template<typename T, int DIM> inline T len(Vector<T,DIM> const &rhs)
 	{
 		return sqrt(dot(rhs, rhs));
 	}
@@ -281,7 +289,7 @@ namespace math {
 	///	normalize
 	///
 	///	normalize vector
-	template<class T, int DIM> inline Vector<T,DIM> normalize(Vector<T,DIM> const &rhs)
+	template<typename T, int DIM> inline Vector<T,DIM> normalize(Vector<T,DIM> const &rhs)
 	{
 		return rhs / len(rhs);
 	}
@@ -289,7 +297,7 @@ namespace math {
 	///	cross
 	///
 	///	3D vector cross product
-	template<class T> inline Vector<T,3> cross(Vector<T,3> const &lhs, Vector<T,3> const &rhs)
+	template<typename T> inline Vector<T,3> cross(Vector<T,3> const &lhs, Vector<T,3> const &rhs)
 	{
 		return Vector<T,3>
 		(
@@ -303,12 +311,12 @@ namespace math {
 	///
 	///	equality tests
 
-	template<class T, int DIM> inline bool equ(Vector<T,DIM> const &lhs, Vector<T,DIM> const &rhs)
+	template<typename T, int DIM> inline bool equ(Vector<T,DIM> const &lhs, Vector<T,DIM> const &rhs)
 	{
 		return lsq(lhs - rhs) < constants::tol_tol<T>();
 	}
 
-	template<class T, int DIM> inline bool neq(Vector<T,DIM> const &lhs, Vector<T,DIM> const &rhs)
+	template<typename T, int DIM> inline bool neq(Vector<T,DIM> const &lhs, Vector<T,DIM> const &rhs)
 	{
 		return !equ(lhs, rhs);
 	}

@@ -8,7 +8,7 @@ namespace math {
 	///
 	///
 	///
-	template<class T, int DIM> struct Sphere
+	template<typename T, int DIM> struct Sphere
 	{
 		Vector<T, DIM> center;
 		T radius = T();

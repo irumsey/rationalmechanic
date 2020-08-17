@@ -10,7 +10,7 @@ namespace math {
 	///	Frustum
 	///
 	///	3D view frustum.
-	template<class T> struct Frustum
+	template<typename T> struct Frustum
 	{
 		enum PLANE
 		{

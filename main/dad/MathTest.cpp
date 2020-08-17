@@ -84,9 +84,9 @@ bool MathTest::update(float64_t t, float64_t dt)
 		fixed256_t  pi = "3.14159";
 		fixed256_t   r = "5,999,400,000,000.000";
 
-		LUCID_PROFILE_BEGIN("arithmetic");
-		fixed256_t circ = two * pi * r;
-		fixed256_t area = pi * r * r;
+		LUCID_PROFILE_BEGIN("simple arithmetic");
+			fixed256_t circ = two * pi * r;
+			fixed256_t area = pi * r * r;
 		LUCID_PROFILE_END();
 
 		_passed &= validate("large fixed point", area, fixed256_t( "113074488643178100585937500.0"));

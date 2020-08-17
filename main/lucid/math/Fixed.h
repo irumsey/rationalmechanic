@@ -52,16 +52,6 @@ namespace math {
 			return *this;
 		}
 
-		/// TBD: figure out a clever way of making this a constant
-		static integer_t blah()
-		{
-			integer_t const ten(10);
-			integer_t value(1);
-			for (size_t i = 0; i < DECIMAL_BITS; ++i)
-				integer_t::_mul(value, value, ten);
-			return value;
-		}
-
 		static void _set(self_t &lval, std::string const &rhs)
 		{
 			lval.raw = integer_t();
@@ -116,6 +106,16 @@ namespace math {
 			lval.raw.data[1] = (0xFFFF0000 & value) >> integer_t::SHIFT;
 		}
 
+		/// TBD: figure out a clever way of making this a constant
+		static integer_t decimal_magnitude()
+		{
+			integer_t const ten(10);
+			integer_t value(1);
+			for (size_t i = 0; i < DECIMAL_BITS; ++i)
+				integer_t::_mul(value, value, ten);
+			return value;
+		}
+
 		static void _repr(std::string &lval, self_t const &rhs)
 		{
 			integer_t whole;
@@ -128,7 +128,7 @@ namespace math {
 			integer_t::_lsh(whole,   whole,  DECIMAL_BITS);
 			integer_t::_sub( frac, rhs.raw,         whole);
 
-			integer_t::_mul(frac, frac, blah());
+			integer_t::_mul(frac, frac, decimal_magnitude());
 			integer_t::_rsh(frac, frac, DECIMAL_BITS);
 
 			std::string decimal;
