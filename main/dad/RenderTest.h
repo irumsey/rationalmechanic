@@ -85,6 +85,8 @@ private:
 	std::shared_ptr<lucid::gigl::Mesh> _mesh;
 	std::shared_ptr<lucid::gal::VertexBuffer> _instances;
 
+	std::shared_ptr<lucid::gigl::Mesh> _ring;
+
 	void emitParticles(float32_t t, float32_t dt);
 
 	void emitParticle(float32_t t, float32_t dt);

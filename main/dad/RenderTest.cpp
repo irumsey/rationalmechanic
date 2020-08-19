@@ -55,6 +55,8 @@ void RenderTest::begin(float64_t t)
 	_context = gigl::Context("content/test.context");
 	_mesh = gigl::Resources::get<gigl::Mesh>("content/particle.mesh");
 
+	_ring = gigl::Resources::get<gigl::Mesh>("content/ring.mesh");
+
 	_instances.reset(gal::VertexBuffer::create(gal::VertexBuffer::USAGE_DYNAMIC, PARTICLE_MAXIMUM, sizeof(Particle)));
 }
 
@@ -110,6 +112,19 @@ void RenderTest::render(float32_t time, float32_t interpolant)
 	_context["viewMatrix"] = viewMatrix;
 	_context["projMatrix"] = projMatrix;
 	_context["viewProjMatrix"] = projMatrix * viewMatrix;
+
+	///
+	///	render a ring
+	///
+
+	{
+		std::shared_ptr<gal::Program> program = _ring->program();
+		std::shared_ptr<gigl::Material> material = _ring->material();
+
+		material->begin(_context);
+		_ring->draw();
+		material->end();
+	}
 
 	///
 	///
