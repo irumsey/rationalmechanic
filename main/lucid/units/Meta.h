@@ -12,7 +12,7 @@ namespace units {
 	///
 	///
 	///
-	template<typename LHS, typename RHS> struct add
+	template<typename LHS, typename RHS> struct qty_add
 	{
 		typedef typename Quantity
 		<
@@ -29,7 +29,7 @@ namespace units {
 	///
 	///
 	///
-	template<typename LHS, typename RHS> struct sub
+	template<typename LHS, typename RHS> struct qty_sub
 	{
 		typedef typename Quantity
 		<
@@ -46,7 +46,7 @@ namespace units {
 	///
 	///
 	///
-	template<typename LHS, typename RHS> struct mul
+	template<typename LHS, typename RHS> struct qty_mul
 	{
 		typedef typename Quantity
 		<
@@ -63,7 +63,7 @@ namespace units {
 	///
 	///
 	///
-	template<typename LHS, typename RHS> struct div
+	template<typename LHS, typename RHS> struct qty_div
 	{
 		typedef typename Quantity
 		<
