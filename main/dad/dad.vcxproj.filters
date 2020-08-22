@@ -51,4 +51,9 @@
       <Filter>content</Filter>
     </FxCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\_bin\main\dad\content\orbit.header.hlsl">
+      <Filter>content</Filter>
+    </None>
+  </ItemGroup>
 </Project>
