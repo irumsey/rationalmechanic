@@ -1,4 +1,5 @@
 #include "RenderTest.h"
+#include "UserInput.h"
 #include "Utility.h"
 #include <lucid/gigl/Mesh.h>
 #include <lucid/gigl/Material.h>
@@ -27,6 +28,7 @@ namespace gigl = lucid::gigl;
 ///
 ///
 ///
+
 namespace /* anonymous */
 {
 
@@ -55,9 +57,12 @@ void RenderTest::begin(float64_t t)
 	_context = gigl::Context("content/test.context");
 	_mesh = gigl::Resources::get<gigl::Mesh>("content/particle.mesh");
 
-	_orbit = gigl::Resources::get<gigl::Mesh>("content/orbit.mesh");
-
 	_instances.reset(gal::VertexBuffer::create(gal::VertexBuffer::USAGE_DYNAMIC, PARTICLE_MAXIMUM, sizeof(Particle)));
+}
+
+void RenderTest::onInput(MouseEvent const &event)
+{
+	///	TBD: update view
 }
 
 bool RenderTest::update(float64_t t, float64_t dt)
@@ -114,22 +119,8 @@ void RenderTest::render(float32_t time, float32_t interpolant)
 	_context["viewProjMatrix"] = projMatrix * viewMatrix;
 
 	///
-	///	render an orbit
-	///
-
-	{
-		std::shared_ptr<gal::Program> program = _orbit->program();
-		std::shared_ptr<gigl::Material> material = _orbit->material();
-
-		material->begin(_context);
-			_orbit->draw();
-		material->end();
-	}
-
-	///
 	///	render smoke particles
 	///
-#if false
 	int32_t count = int32_t(_particles.size());
 	if (0 < count)
 	{
@@ -141,7 +132,6 @@ void RenderTest::render(float32_t time, float32_t interpolant)
 				_mesh->drawInstanced(count);
 		material->end();
 	}
-#endif
 
 	++_frameCount;
 }

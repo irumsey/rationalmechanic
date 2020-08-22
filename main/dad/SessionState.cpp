@@ -104,6 +104,7 @@ void SessionTesting::onLeave(Session *session)
 
 void SessionTesting::onInput(Session *session, MouseEvent const &event)
 {
+	session->_test->onInput(event);
 }
 
 void SessionTesting::onUpdate(Session *session, float64_t t, float64_t dt)

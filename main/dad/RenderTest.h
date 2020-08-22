@@ -34,6 +34,8 @@ namespace gigl {
 }	///	gigl
 }	///	lucid
 
+struct MouseEvent;
+
 ///	RenderTest
 ///
 ///
@@ -47,6 +49,8 @@ public:
 	virtual bool passed() const override;
 
 	virtual void begin(float64_t t) override;
+
+	virtual void onInput(MouseEvent const &event) override;
 
 	virtual bool update(float64_t t, float64_t dt) override;
 
@@ -84,8 +88,6 @@ private:
 
 	std::shared_ptr<lucid::gigl::Mesh> _mesh;
 	std::shared_ptr<lucid::gal::VertexBuffer> _instances;
-
-	std::shared_ptr<lucid::gigl::Mesh> _orbit;
 
 	void emitParticles(float32_t t, float32_t dt);
 

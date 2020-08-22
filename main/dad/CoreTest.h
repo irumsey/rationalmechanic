@@ -4,6 +4,8 @@
 #include <lucid/core/Noncopyable.h>
 #include <dad/Test.h>
 
+struct MouseEvent;
+
 ///
 ///
 ///
@@ -17,6 +19,8 @@ public:
 	virtual bool passed() const override;
 
 	virtual void begin(float64_t t) override;
+
+	virtual void onInput(MouseEvent const &event) override;
 
 	virtual bool update(float64_t t, float64_t dt) override;
 
@@ -32,4 +36,9 @@ private:
 inline bool CoreTest::passed() const
 {
 	return _passed;
+}
+
+inline void CoreTest::onInput(MouseEvent const &event)
+{
+	///	nop
 }

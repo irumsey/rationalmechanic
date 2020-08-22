@@ -3,6 +3,8 @@
 #include <lucid/core/Types.h>
 #include <lucid/core/Noncopyable.h>
 
+struct MouseEvent;
+
 ///
 ///
 ///
@@ -14,6 +16,8 @@ public:
 	virtual bool passed() const = 0;
 
 	virtual void begin(float64_t t) = 0;
+
+	virtual void onInput(MouseEvent const &event) = 0;
 
 	virtual bool update(float64_t t, float64_t dt) = 0;
 
