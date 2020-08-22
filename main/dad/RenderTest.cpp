@@ -55,7 +55,7 @@ void RenderTest::begin(float64_t t)
 	_context = gigl::Context("content/test.context");
 	_mesh = gigl::Resources::get<gigl::Mesh>("content/particle.mesh");
 
-	_ring = gigl::Resources::get<gigl::Mesh>("content/ring.mesh");
+	_orbit = gigl::Resources::get<gigl::Mesh>("content/orbit.mesh");
 
 	_instances.reset(gal::VertexBuffer::create(gal::VertexBuffer::USAGE_DYNAMIC, PARTICLE_MAXIMUM, sizeof(Particle)));
 }
@@ -95,7 +95,7 @@ void RenderTest::render(float32_t time, float32_t interpolant)
 
 	pipeline.clear(true, true, true, ::lucid::gal::Color(0.9f, 0.9f, 0.9f, 1));
 
-	Matrix4x4 viewMatrix = math::look(Vector3(11, 11, 5), Vector3(0, 0, 5), Vector3(0, 0, 1));
+	Matrix4x4 viewMatrix = math::look(Vector3(-20.f, 0, 40.f), Vector3(-20.f, 0, 0), Vector3(0, 1, 0));
 	Matrix4x4 projMatrix = math::perspective(fov, aspect, 1.f, 1000.f);
 
 	Matrix4x4 invViewMatrix = math::inverse(viewMatrix);
@@ -114,22 +114,22 @@ void RenderTest::render(float32_t time, float32_t interpolant)
 	_context["viewProjMatrix"] = projMatrix * viewMatrix;
 
 	///
-	///	render a ring
+	///	render an orbit
 	///
 
 	{
-		std::shared_ptr<gal::Program> program = _ring->program();
-		std::shared_ptr<gigl::Material> material = _ring->material();
+		std::shared_ptr<gal::Program> program = _orbit->program();
+		std::shared_ptr<gigl::Material> material = _orbit->material();
 
 		material->begin(_context);
-		_ring->draw();
+			_orbit->draw();
 		material->end();
 	}
 
 	///
+	///	render smoke particles
 	///
-	///
-
+#if false
 	int32_t count = int32_t(_particles.size());
 	if (0 < count)
 	{
@@ -141,6 +141,7 @@ void RenderTest::render(float32_t time, float32_t interpolant)
 				_mesh->drawInstanced(count);
 		material->end();
 	}
+#endif
 
 	++_frameCount;
 }

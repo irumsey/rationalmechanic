@@ -44,5 +44,11 @@
     <FxCompile Include="..\..\_bin\main\dad\content\ring.vertex.hlsl">
       <Filter>content</Filter>
     </FxCompile>
+    <FxCompile Include="..\..\_bin\main\dad\content\orbit.pixel.hlsl">
+      <Filter>content</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\dad\content\orbit.vertex.hlsl">
+      <Filter>content</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

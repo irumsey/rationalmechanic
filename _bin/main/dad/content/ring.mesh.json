@@ -51,9 +51,9 @@
 		[
 			{ "name": "viewProjMatrix",     "query":              "viewProjMatrix" },
 
-			{ "name":         "radius",     "float":                          10.0 },
-			{ "name":          "width",     "float":                           0.5 },
-			{ "name":      "innerEdge",     "float":                          9.75 },
+			{ "name":         "radius",     "float":                          10.000 },
+			{ "name":          "width",     "float":                           0.250 },
+			{ "name":      "innerEdge",     "float":                           9.875 },
 		
 			{ "name":  "lookupTexture", "texture2d":  "content/ringLookup.texture" }
     ]
