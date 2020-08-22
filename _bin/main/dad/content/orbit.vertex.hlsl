@@ -4,26 +4,23 @@ OutputVertex main(InputVertex input)
 {
 	OutputVertex output = (OutputVertex)0;
 
-	/// test {
-	///	constants
-	float      pi = 3.1415926;
-	float half_pi = 0.5 * pi;
-	float  two_pi = 2.0 * pi;
-	//// } test
+	float2 adapted = (input.adapted - input.position) * clamp(eccentricity, 0, 1) + input.position;
+	float2 theta = (domain.yy - domain.xx) * adapted.xy + domain.xx;
 
-	float2 adapted = (input.adapted - input.position) * e + input.position;
+	float2 curvePosition = computeConicPoint(theta.x);
+	float2 curveTangent = computeConicPoint(theta.y) - curvePosition;
+	float2 curveNormal = -normalize(float2(-curveTangent.y, curveTangent.x));
 
-	float2 position = computeConicPoint(two_pi * adapted.x);
-	float2 tangent = computeConicPoint(two_pi * adapted.y) - position;
-	float2 normal = -normalize(float2(-tangent.y, tangent.x));
+	float2 vertexDelta = 0.5 * lineWidth * curveNormal;
+	float2 innerVertex = curvePosition - vertexDelta;
+	float2 outerVertex = curvePosition + vertexDelta;
 
-	float2 delta = lineWidth * normal;
-	float2 inner = position - delta;
-	float2 outer = position + delta;
+	float2 meshVertex = input.select.x * innerVertex + input.select.y * outerVertex;
 
-	output.position = input.select.x * inner + input.select.y * outer;
-	output.normal = normal;
-	output.ppsPosition = mul(viewProjMatrix, float4(output.position, 0, 1));
+	output.position = curvePosition;
+	output.normal = curveNormal;
+	output.vertex = meshVertex;
+	output.ppsPosition = mul(viewProjMatrix, float4(meshVertex, 0, 1));
 
 	return output;
 }

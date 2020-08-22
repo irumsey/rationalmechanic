@@ -95,7 +95,7 @@ void RenderTest::render(float32_t time, float32_t interpolant)
 
 	pipeline.clear(true, true, true, ::lucid::gal::Color(0.9f, 0.9f, 0.9f, 1));
 
-	Matrix4x4 viewMatrix = math::look(Vector3(-20.f, 0, 40.f), Vector3(-20.f, 0, 0), Vector3(0, 1, 0));
+	Matrix4x4 viewMatrix = math::look(Vector3(-20.f, 0, 30.f), Vector3(-20.f, 0, 0), Vector3(0, 1, 0));
 	Matrix4x4 projMatrix = math::perspective(fov, aspect, 1.f, 1000.f);
 
 	Matrix4x4 invViewMatrix = math::inverse(viewMatrix);
