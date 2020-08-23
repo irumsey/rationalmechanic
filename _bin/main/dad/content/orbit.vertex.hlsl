@@ -20,7 +20,9 @@ OutputVertex main(InputVertex input)
 	output.position = curvePosition;
 	output.normal = curveNormal;
 	output.vertex = meshVertex;
-	output.ppsPosition = mul(viewProjMatrix, float4(meshVertex, 0, 1));
+
+	float4 worldPosition = mul(worldMatrix, float4(meshVertex, 0, 1));
+	output.ppsPosition = mul(viewProjMatrix, worldPosition);
 
 	return output;
 }

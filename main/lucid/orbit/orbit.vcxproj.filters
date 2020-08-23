@@ -14,5 +14,6 @@
     <ClCompile Include="Orbit.cpp" />
     <ClCompile Include="Frame.cpp" />
     <ClCompile Include="Ephemeris.cpp" />
+    <ClCompile Include="Algorithm.cpp" />
   </ItemGroup>
 </Project>

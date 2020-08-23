@@ -29,6 +29,7 @@
     <ClInclude Include="Types.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Algorithm.cpp" />
     <ClCompile Include="Ephemeris.cpp" />
     <ClCompile Include="Frame.cpp" />
     <ClCompile Include="Orbit.cpp" />

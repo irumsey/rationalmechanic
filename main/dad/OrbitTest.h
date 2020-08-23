@@ -4,6 +4,7 @@
 #include <lucid/core/Noncopyable.h>
 #include <lucid/math/Vector.h>
 #include <lucid/math/Matrix.h>
+#include <lucid/gal/Parameter.h>
 #include <lucid/gigl/Context.h>
 #include <lucid/gigl/Mesh.h>
 #include <lucid/orbit/Properties.h>
@@ -49,16 +50,26 @@ private:
 	typedef ::lucid::math::Vector<float32_t,4> Vector4;
 	typedef ::lucid::math::Matrix<float32_t,4,4> Matrix4x4;
 
+	struct RenderParameters
+	{
+		lucid::gal::Parameter const           *hu = nullptr;
+		lucid::gal::Parameter const *eccentricity = nullptr;
+		lucid::gal::Parameter const       *domain = nullptr;
+		lucid::gal::Parameter const    *lineColor = nullptr;
+		lucid::gal::Parameter const  *worldMatrix = nullptr;
+	};
+
 	bool _passed = true;
 
-	::lucid::orbit::Properties _bodyProperties;
-	::lucid::orbit::Elements _orbitElements;
+	lucid::gigl::Context _context;
 
 	Vector3 _viewPosition;
 	Vector3 _viewDirection;
 
-	lucid::gigl::Context _context;
-	std::shared_ptr<lucid::gigl::Mesh> _orbit;
+	std::shared_ptr<lucid::gigl::Mesh> _orbitMesh;
+	RenderParameters _renderParameters;
+
+	void renderOrbit(std::string const &target, float32_t jdn) const;
 
 	LUCID_PREVENT_COPY(OrbitTest);
 	LUCID_PREVENT_ASSIGNMENT(OrbitTest);

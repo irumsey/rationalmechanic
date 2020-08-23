@@ -4,6 +4,7 @@ float2       domain;
 float     lineWidth;
 float4    lineColor;
 
+float4x4 worldMatrix;
 float4x4 viewProjMatrix;
 
 struct InputVertex

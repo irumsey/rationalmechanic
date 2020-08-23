@@ -49,12 +49,8 @@
 
 		"attributes":
 		[
-			{ "name" :                "hu",     "float" :                      8.00 },
-			{ "name" :      "eccentricity",     "float" :                      0.00 },
-      { "name" :            "domain",   "vector2" : [ -3.1415926, 3.1415926 ] }, 
-			{ "name" :         "lineWidth",     "float" :                       0.3 },
-			{ "name" :         "lineColor",     "color" :            [ 0, 0, 1, 1 ] },
-			{ "name" :    "viewProjMatrix",     "query" :          "viewProjMatrix" }	
+			{ "name" :         "lineWidth",     "float" :              0.5 },
+			{ "name" :    "viewProjMatrix",     "query" : "viewProjMatrix" }	
     ]
 	},
 
