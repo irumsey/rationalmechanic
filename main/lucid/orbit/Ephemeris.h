@@ -36,9 +36,17 @@ namespace orbit {
 
 		size_t lookup(Elements &elements, size_t target, scalar_t jdn) const;
 
+		void   compute(matrix3x3_t &rotation, std::string const &target, scalar_t jdn) const;
+
+		void   compute(matrix3x3_t &rotation, size_t target, scalar_t jdn) const;
+
+		void   compute(matrix3x3_t &rotation, Elements const &elements) const;
+
 		void   compute(vector3_t &position, vector3_t &velocity, std::string const &target, scalar_t jdn) const;
 			   
 		void   compute(vector3_t &position, vector3_t &velocity, size_t target, scalar_t jdn) const;
+
+		void   compute(vector3_t &position, vector3_t &velocity, Properties const &centerProperties, Elements const &targetElements, scalar_t jdn) const;
 
 		static Ephemeris &instance();
 
@@ -65,6 +73,7 @@ namespace orbit {
 		LUCID_PREVENT_COPY(Ephemeris);
 		LUCID_PREVENT_ASSIGNMENT(Ephemeris);
 	};
+
 
 }	///	orbit
 }	///	lucid

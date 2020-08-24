@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Algorithm.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Elements.h" />
     <ClInclude Include="Ephemeris.h" />
@@ -29,7 +28,6 @@
     <ClInclude Include="Types.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Algorithm.cpp" />
     <ClCompile Include="Ephemeris.cpp" />
     <ClCompile Include="Frame.cpp" />
     <ClCompile Include="Orbit.cpp" />

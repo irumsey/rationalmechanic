@@ -8,12 +8,10 @@
     <ClInclude Include="Elements.h" />
     <ClInclude Include="Properties.h" />
     <ClInclude Include="Constants.h" />
-    <ClInclude Include="Algorithm.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Orbit.cpp" />
     <ClCompile Include="Frame.cpp" />
     <ClCompile Include="Ephemeris.cpp" />
-    <ClCompile Include="Algorithm.cpp" />
   </ItemGroup>
 </Project>

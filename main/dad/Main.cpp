@@ -47,26 +47,22 @@ void registerMouseDevice(HWND hWindow)
 	RAWINPUTDEVICE rid[1];
 	rid[0].usUsagePage = HID_USAGE_PAGE_GENERIC;
 	rid[0].usUsage = HID_USAGE_GENERIC_MOUSE;
-	rid[0].dwFlags = RIDEV_INPUTSINK;
+	rid[0].dwFlags = 0;
 	rid[0].hwndTarget = hWindow;
-	::RegisterRawInputDevices(rid, 1, sizeof(rid[0]));
+	::RegisterRawInputDevices(rid, 1, sizeof(RAWINPUTDEVICE));
 }
 
-void handleMouseInput(HRAWINPUT rawInput)
+void handleMouseInput(HRAWINPUT hInput)
 {
-	UINT const SIZE = 40;
+	UINT size = sizeof(RAWINPUT);
+	RAWINPUT rawInput;
 
-	UINT size = SIZE;
-	static BYTE buffer[SIZE];
+	::GetRawInputData(hInput, RID_INPUT, &rawInput, &size, sizeof(RAWINPUTHEADER));
 
-	::GetRawInputData(rawInput, RID_INPUT, buffer, &size, sizeof(RAWINPUTHEADER));
-
-	RAWINPUT const *raw = (RAWINPUT const *)buffer;
-	RAWINPUTHEADER const &header = raw->header;
-
+	RAWINPUTHEADER const &header = rawInput.header;
 	if (RIM_TYPEMOUSE == header.dwType)
 	{
-		RAWMOUSE const &mouse = raw->data.mouse;
+		RAWMOUSE const &mouse = rawInput.data.mouse;
 
 		MouseEvent event;
 		event.x = mouse.lLastX;
