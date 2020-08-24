@@ -12,13 +12,11 @@ OutputVertex main(InputVertex input)
 	position = position + viewRight * corner.xxx + viewUp * corner.yyy;
 	output.ppsPosition = mul(viewProjMatrix, float4(position, 1));
 
-	///	create a rotation which transforms the light direction from
-	///	world space to texture space
 	float3x3 R = float3x3(viewRight, -viewForward, -viewUp);
 
 	output.lightDirection = mul(R, lightPosition - position);;
-	output.       diffuse = float4(1, 1, 0, 1);
+	output.       diffuse = input.color;
 	output.      texcoord = input.corner.zw;
-
+	 
 	return output; 
 }

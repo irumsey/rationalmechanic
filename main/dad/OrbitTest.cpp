@@ -32,6 +32,13 @@ namespace /* anonymous */
 	orbit::scalar_t const au_per_meters = 1.0 / meters_per_au;
 	orbit::scalar_t const meters_per_ru = meters_per_au / 100.0;
 	orbit::scalar_t const ru_per_meters = 1.0 / meters_per_ru;
+
+	struct Instance
+	{
+		gal::Color color;
+		gal::Vector4 position;
+	};
+
 }	///	anonymous
 
 ///
@@ -47,7 +54,7 @@ void OrbitTest::begin(float64_t t)
 	_context = gigl::Context("content/test.context");
 
 	_sphereMesh = gigl::Resources::get<gigl::Mesh>("content/sphere.mesh");
-	_sphereInstances.reset(gal::VertexBuffer::create(gal::VertexBuffer::USAGE_DYNAMIC, SPHERE_MAXIMUM, sizeof(gal::Vector4)));
+	_sphereInstances.reset(gal::VertexBuffer::create(gal::VertexBuffer::USAGE_DYNAMIC, SPHERE_MAXIMUM, sizeof(Instance)));
 
 	_orbitMesh = gigl::Resources::get<gigl::Mesh>("content/orbit.mesh");
 
@@ -237,7 +244,7 @@ void OrbitTest::renderBodies(float32_t time, float32_t interpolant) const
 
 	gal::Pipeline &pipeline = lucid::gal::Pipeline::instance();
 
-	gal::Vector4 *instances = (gal::Vector4 *)_sphereInstances->lock();
+	Instance *instances = (Instance *)_sphereInstances->lock();
 	int32_t count = 0;
 	for (auto iter = _bodies.begin(); iter != _bodies.end(); ++iter)
 	{
@@ -248,7 +255,8 @@ void OrbitTest::renderBodies(float32_t time, float32_t interpolant) const
 		orbit::vector3_t position = body.position * ru_per_meters;
 		orbit::vector3_t velocity = body.velocity * ru_per_meters;
 
-		instances[count] = gal::Vector4(float32_t(position.x), float32_t(position.y), float32_t(position.z), 5);
+		instances[count].color = gal::Color(0, 1, 0, 1);
+		instances[count].position = gal::Vector4(float32_t(position.x), float32_t(position.y), float32_t(position.z), 5);
 		++count;
 	}
 	_sphereInstances->unlock();
