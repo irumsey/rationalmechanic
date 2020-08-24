@@ -17,8 +17,7 @@ struct InputVertex
 struct OutputVertex
 {
 	float2    position :   POSITION0;
-	float2      normal :   POSITION1;
-	float2      vertex :   POSITION2;
+	float        theta :   POSITION1;
 	float4 ppsPosition : SV_POSITION;
 };
 

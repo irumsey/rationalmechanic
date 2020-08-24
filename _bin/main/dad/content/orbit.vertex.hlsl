@@ -17,9 +17,8 @@ OutputVertex main(InputVertex input)
 
 	float2 meshVertex = input.select.x * innerVertex + input.select.y * outerVertex;
 
-	output.position = curvePosition;
-	output.normal = curveNormal;
-	output.vertex = meshVertex;
+	output.position = meshVertex;
+	output.theta = theta.x;
 
 	float4 worldPosition = mul(worldMatrix, float4(meshVertex, 0, 1));
 	output.ppsPosition = mul(viewProjMatrix, worldPosition);
