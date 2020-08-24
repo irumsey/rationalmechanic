@@ -95,37 +95,40 @@ void OrbitTest::begin(float64_t t)
 
 void OrbitTest::onInput(MouseEvent const &event)
 {
-	if (!event.btnDownLeft)
-		return;
+	if (event.btnDownLeft)
+	{
+		float32_t theta = 0.01f * event.x;
+		float32_t   phi = 0.01f * event.y;
+		_viewDirection = math::normalize(math::rotateAboutX(phi) * math::rotateAboutZ(theta) * _viewDirection);
+	}
 
-	float32_t theta = 0.01f * event.x;
-	float32_t   phi = 0.01f * event.y;
-
-	_viewDirection = math::normalize(math::rotateAboutX(phi) * math::rotateAboutZ(theta) * _viewDirection);
+	if (event.btnDownRight)
+	{
+		_viewPosition = -0.3f * event.y * _viewDirection + _viewPosition;
+	}
 }
 
 bool OrbitTest::update(float64_t t, float64_t dt)
 {
 	_passed = true;
 
-	float32_t const fov = math::constants::half_pi<float32_t>();
+	float32_t const    fov = math::constants::quarter_pi<float32_t>();
 	float32_t const aspect = gal::System::instance().aspect();
 
-	Vector3 left = math::cross(Vector3(0, 0, 1), _viewDirection);
-	Vector3   up = math::cross(_viewDirection, left);
+	Vector3 e1 = _viewDirection;
+	Vector3 e2 = Vector3(0, 0, 1);
+	Vector3 e0 = math::cross(_viewDirection, e2);
+	        e2 = math::cross(e0, e1);
 
-	Matrix4x4 viewMatrix = math::look(_viewPosition, _viewPosition + 5.f * _viewDirection, up);
+	Matrix4x4 viewMatrix = math::look(_viewPosition, _viewPosition + 5.f * _viewDirection, e2);
 	Matrix4x4 projMatrix = math::perspective(fov, aspect, 1.f, 1000.f);
 
 	Matrix4x4 invViewMatrix = math::inverse(viewMatrix);
 
-	Vector4 e0 = invViewMatrix * Vector4(1, 0, 0, 0);
-	Vector4 e2 = invViewMatrix * Vector4(0, 1, 0, 0);
-	Vector4 e3 = invViewMatrix * Vector4(0, 0, 1, 0);
-
-	_context["viewRight"] = Vector3(e0.x, e0.y, e0.z);
-	_context["viewUp"] = Vector3(e2.x, e2.y, e2.z);
-	_context["viewForward"] = Vector3(e3.x, e3.y, e3.z);
+	_context[   "viewRight"] = e0;
+	_context[ "viewForward"] = e1;
+	_context[      "viewUp"] = e2;
+	_context["viewPosition"] = _viewPosition;
 
 	_context["viewMatrix"] = viewMatrix;
 	_context["projMatrix"] = projMatrix;

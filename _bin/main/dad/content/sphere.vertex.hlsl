@@ -9,12 +9,16 @@ OutputVertex main(InputVertex input)
 
 	float2 corner = scale.xx * input.corner.xy;
 
-	position = position + corner.xxx * viewRight + corner.yyy * viewUp;
+	position = position + viewRight * corner.xxx + viewUp * corner.yyy;
 	output.ppsPosition = mul(viewProjMatrix, float4(position, 1));
 
-	output.lightDirection = normalize(lightPosition - position);
-	output.diffuse = float4(1, 1, 0, 1);
-	output.texcoord = input.corner.zw;
+	///	create a rotation which transforms the light direction from
+	///	world space to texture space
+	float3x3 R = float3x3(viewRight, -viewForward, -viewUp);
 
-	return output;
+	output.lightDirection = mul(R, lightPosition - position);;
+	output.       diffuse = float4(1, 1, 0, 1);
+	output.      texcoord = input.corner.zw;
+
+	return output; 
 }

@@ -9,6 +9,7 @@
 		{ "name":       "viewForward", "vector3": [ 0, 0, 0 ] },
 		{ "name":         "viewRight", "vector3": [ 0, 0, 0 ] },
 		{ "name":            "viewUp", "vector3": [ 0, 0, 0 ] },
+		{ "name":      "viewPosition", "vector3": [ 0, 0, 0 ] },
 
 		{ "name":        "viewMatrix", "matrix4x4": [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ] },
 		{ "name":        "projMatrix", "matrix4x4": [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ] },

@@ -28,6 +28,9 @@ float64_t simTime = 0;
 float64_t wallTime = 0;
 float32_t frameInterpolant = 0;
 
+bool mouseLeftDown = false;
+bool mouseRightDown = false;
+
 Session session;
 
 ///
@@ -47,7 +50,7 @@ void registerMouseDevice(HWND hWindow)
 	RAWINPUTDEVICE rid[1];
 	rid[0].usUsagePage = HID_USAGE_PAGE_GENERIC;
 	rid[0].usUsage = HID_USAGE_GENERIC_MOUSE;
-	rid[0].dwFlags = 0;
+	rid[0].dwFlags = RIDEV_INPUTSINK;
 	rid[0].hwndTarget = hWindow;
 	::RegisterRawInputDevices(rid, 1, sizeof(RAWINPUTDEVICE));
 }
@@ -64,13 +67,16 @@ void handleMouseInput(HRAWINPUT hInput)
 	{
 		RAWMOUSE const &mouse = rawInput.data.mouse;
 
+		mouseLeftDown  = ( RI_MOUSE_LEFT_BUTTON_DOWN & mouse.ulButtons) ?  true :  mouseLeftDown;
+		mouseLeftDown  = (   RI_MOUSE_LEFT_BUTTON_UP & mouse.ulButtons) ? false :  mouseLeftDown;
+		mouseRightDown = (RI_MOUSE_RIGHT_BUTTON_DOWN & mouse.ulButtons) ?  true : mouseRightDown;
+		mouseRightDown = (  RI_MOUSE_RIGHT_BUTTON_UP & mouse.ulButtons) ? false : mouseRightDown;
+
 		MouseEvent event;
 		event.x = mouse.lLastX;
 		event.y = mouse.lLastY;
-		event.z = (RI_MOUSE_WHEEL & mouse.ulButtons) ? (int16_t)(mouse.usButtonData) : 0;
-		event.btnDownLeft = RI_MOUSE_LEFT_BUTTON_DOWN & mouse.ulButtons;
-		event.btnDownMiddle = 0 != (RI_MOUSE_MIDDLE_BUTTON_DOWN & mouse.ulButtons);
-		event.btnDownRight = 0 != (RI_MOUSE_RIGHT_BUTTON_DOWN & mouse.ulButtons);
+		event.btnDownLeft = mouseLeftDown;
+		event.btnDownRight = mouseRightDown;
 
 		session.onInput(event);
 	}

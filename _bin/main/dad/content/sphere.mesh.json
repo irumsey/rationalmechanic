@@ -56,7 +56,9 @@
 			{ "name":  "lightPosition", "query":      "lightPosition" },
 
 			{ "name":      "viewRight", "query":          "viewRight" },
+			{ "name":    "viewForward", "query":        "viewForward" },
 			{ "name":         "viewUp", "query":             "viewUp" },
+			{ "name":   "viewPosition", "query":       "viewPosition" },
 			{ "name": "viewProjMatrix", "query":     "viewProjMatrix" },
 
 			{ "name": "normalsTexture", "texture2d": "content/sphereNormals.texture" }
@@ -82,10 +84,10 @@
 			"stride" : 4,
 			"data" :
 			[
-				-1.0, -1.0, 0.0, 0.0,
-				-1.0,  1.0, 0.0, 1.0,
-				 1.0, -1.0, 1.0, 0.0,
-				 1.0,  1.0, 1.0, 1.0
+				-1.0, -1.0, 0.0, 1.0,
+				-1.0,  1.0, 0.0, 0.0,
+				 1.0, -1.0, 1.0, 1.0,
+				 1.0,  1.0, 1.0, 0.0
 			]
 		},
 	 
@@ -97,3 +99,5 @@
 		}
 	}
 }
+
+

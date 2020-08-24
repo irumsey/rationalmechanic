@@ -1,9 +1,11 @@
 float time;
 float interpolant;
 
+float3 viewPosition;
 float3 lightPosition;
 
 float3 viewRight;
+float3 viewForward;
 float3 viewUp;
 float4x4 viewProjMatrix;
 
