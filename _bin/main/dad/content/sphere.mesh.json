@@ -28,7 +28,7 @@
 
 				"DepthStencilMode" :
 				{
-					"DepthEnabled" : true,
+					"DepthEnabled" : false,
 					"DepthWrite" : "DEPTH_WRITE_DISABLED",
 					"DepthFunction" : "COMPARISON_LESS",
 					"StencilEnabled" : false,

@@ -33,7 +33,7 @@ namespace /* anonymous */
 	orbit::scalar_t const meters_per_ru = meters_per_au / 100.0;
 	orbit::scalar_t const ru_per_meters = 1.0 / meters_per_ru;
 
-	struct Instance
+	struct SphereInstance
 	{
 		gal::Color color;
 		gal::Vector4 position;
@@ -54,7 +54,10 @@ void OrbitTest::begin(float64_t t)
 	_context = gigl::Context("content/test.context");
 
 	_sphereMesh = gigl::Resources::get<gigl::Mesh>("content/sphere.mesh");
-	_sphereInstances.reset(gal::VertexBuffer::create(gal::VertexBuffer::USAGE_DYNAMIC, SPHERE_MAXIMUM, sizeof(Instance)));
+	_sphereInstances.reset(gal::VertexBuffer::create(gal::VertexBuffer::USAGE_DYNAMIC, SPHERE_MAXIMUM, sizeof(SphereInstance)));
+
+	_maskMesh = gigl::Resources::get<gigl::Mesh>("content/orbitMask.mesh");
+	_maskInstances.reset(gal::VertexBuffer::create(gal::VertexBuffer::USAGE_DYNAMIC, SPHERE_MAXIMUM, sizeof(Vector4)));
 
 	_orbitMesh = gigl::Resources::get<gigl::Mesh>("content/orbit.mesh");
 
@@ -156,8 +159,9 @@ void OrbitTest::render(float32_t time, float32_t interpolant)
 
 	pipeline.clear(true, true, true, gal::Color(0, 0, 0, 1));;
 
-	renderOrbits(time, interpolant);
 	renderBodies(time, interpolant);
+	renderMasks(time, interpolant);
+	renderOrbits(time, interpolant);
 
 	LUCID_PROFILE_END();
 }
@@ -203,6 +207,7 @@ void OrbitTest::renderOrbit(Body const &target) const
 
 	gal::Pipeline &pipeline = lucid::gal::Pipeline::instance();
 
+
 	orbit::Ephemeris const &ephemeris = orbit::Ephemeris::instance();
 	orbit::matrix3x3_t R;
 	ephemeris.compute(R, target.elements);
@@ -236,6 +241,39 @@ void OrbitTest::renderOrbit(Body const &target) const
 	LUCID_PROFILE_END();
 }
 
+void OrbitTest::renderMasks(float32_t time, float32_t interpolant) const
+{
+	LUCID_PROFILE_BEGIN("render masks");
+
+	orbit::Ephemeris &ephemeris = orbit::Ephemeris::instance();
+
+	gal::Pipeline &pipeline = lucid::gal::Pipeline::instance();
+
+	Vector4 *instances = (Vector4 *)_maskInstances->lock();
+	int32_t count = 0;
+	for (auto iter = _bodies.begin(); iter != _bodies.end(); ++iter)
+	{
+		Body const &body = iter->second;
+		if (0 == body.id)
+			continue;
+
+		orbit::vector3_t position = body.position * ru_per_meters;
+		orbit::vector3_t velocity = body.velocity * ru_per_meters;
+
+		instances[count] = gal::Vector4(float32_t(position.x), float32_t(position.y), float32_t(position.z), 5);
+		++count;
+	}
+	_maskInstances->unlock();
+
+	std::shared_ptr<gigl::Material> material = _maskMesh->material();
+	material->begin(_context);
+	pipeline.setVertexStream(1, _maskInstances.get());
+		_maskMesh->drawInstanced(count);
+	material->end();
+
+	LUCID_PROFILE_END();
+}
+
 void OrbitTest::renderBodies(float32_t time, float32_t interpolant) const
 {
 	LUCID_PROFILE_BEGIN("render bodies");
@@ -244,7 +282,7 @@ void OrbitTest::renderBodies(float32_t time, float32_t interpolant) const
 
 	gal::Pipeline &pipeline = lucid::gal::Pipeline::instance();
 
-	Instance *instances = (Instance *)_sphereInstances->lock();
+	SphereInstance *instances = (SphereInstance *)_sphereInstances->lock();
 	int32_t count = 0;
 	for (auto iter = _bodies.begin(); iter != _bodies.end(); ++iter)
 	{

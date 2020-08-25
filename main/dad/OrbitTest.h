@@ -91,6 +91,9 @@ private:
 	std::shared_ptr<lucid::gigl::Mesh> _sphereMesh;
 	std::shared_ptr<lucid::gal::VertexBuffer> _sphereInstances;
 
+	std::shared_ptr<lucid::gigl::Mesh> _maskMesh;
+	std::shared_ptr<lucid::gal::VertexBuffer> _maskInstances;
+
 	std::shared_ptr<lucid::gigl::Mesh> _orbitMesh;
 	RenderParameters _renderParameters;
 
@@ -99,6 +102,8 @@ private:
 	void renderOrbits(float32_t time, float32_t interpolant) const;
 
 	void renderOrbit(Body const &target) const;
+
+	void renderMasks(float32_t time, float32_t interpolant) const;
 
 	void renderBodies(float32_t time, float32_t interpolant) const;
 
