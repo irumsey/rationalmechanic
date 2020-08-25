@@ -107,8 +107,8 @@ void OrbitTest::onInput(MouseEvent const &event)
 {
 	if (event.btnDownLeft)
 	{
-		float32_t theta = 0.01f * event.x;
-		float32_t   phi = 0.01f * event.y;
+		float32_t theta = 0.03f * event.x;
+		float32_t   phi = 0.03f * event.y;
 		_viewDirection = math::normalize(math::rotateAboutX(phi) * math::rotateAboutZ(theta) * _viewDirection);
 	}
 
@@ -205,19 +205,17 @@ void OrbitTest::renderOrbit(Body const &target) const
 {
 	LUCID_PROFILE_BEGIN("render orbit");
 
-	gal::Pipeline &pipeline = lucid::gal::Pipeline::instance();
-
-
 	orbit::Ephemeris const &ephemeris = orbit::Ephemeris::instance();
 	orbit::matrix3x3_t R;
 	ephemeris.compute(R, target.elements);
 
-	///	TBD: add position of center body
+	Vector3 center = computeAbsoluePosition(target.cid);
+
 	gal::Matrix4x4 worldMatrix(
-		R.xx, R.xy, R.xz,    0,
-		R.yx, R.yy, R.yz,    0,
-		R.zx, R.zy, R.zz,    0,
-		   0,    0,    0,    1
+		R.xx, R.xy, R.xz, center.x,
+		R.yx, R.yy, R.yz, center.y,
+		R.zx, R.zy, R.zz, center.z,
+		   0,    0,    0,        1
 	);
 	gal::Vector2 domain(-math::constants::pi<float32_t>(), math::constants::pi<float32_t>());
 	float32_t a = float32_t(target.elements.A * ru_per_meters);
@@ -257,8 +255,11 @@ void OrbitTest::renderMasks(float32_t time, float32_t interpolant) const
 		if (0 == body.id)
 			continue;
 
-		orbit::vector3_t position = body.position * ru_per_meters;
-		orbit::vector3_t velocity = body.velocity * ru_per_meters;
+		if (10 == body.id)
+			continue;
+
+		float32_t    scale = 300 * body.properties.radius * ru_per_meters;
+		Vector3   position = computeAbsoluePosition(body.id);;
 
 		instances[count] = gal::Vector4(float32_t(position.x), float32_t(position.y), float32_t(position.z), 5);
 		++count;
@@ -290,11 +291,12 @@ void OrbitTest::renderBodies(float32_t time, float32_t interpolant) const
 		if (0 == body.id)
 			continue;
 
-		orbit::vector3_t position = body.position * ru_per_meters;
-		orbit::vector3_t velocity = body.velocity * ru_per_meters;
+		float32_t    scale = 300 * body.properties.radius * ru_per_meters;
+		Vector3   position = computeAbsoluePosition(body.id);;
 
 		instances[count].color = gal::Color(0, 1, 0, 1);
 		instances[count].position = gal::Vector4(float32_t(position.x), float32_t(position.y), float32_t(position.z), 5);
+
 		++count;
 	}
 	_sphereInstances->unlock();
@@ -306,4 +308,23 @@ void OrbitTest::renderBodies(float32_t time, float32_t interpolant) const
 	material->end();
 
 	LUCID_PROFILE_END();
+}
+
+OrbitTest::Vector3 OrbitTest::computeAbsoluePosition(size_t target) const
+{
+	auto iter = _bodies.find(target);
+	LUCID_VALIDATE(iter != _bodies.end(), "invalid target specified");
+
+	orbit::vector3_t ov = iter->second.position;
+	Vector3 position = Vector3(float32_t(ov.x), float32_t(ov.y), float32_t(ov.z));
+
+	iter = _bodies.find(iter->second.cid);
+	while ((iter != _bodies.end()) && (0 != iter->second.id))
+	{
+		ov = iter->second.position;
+		position = position + Vector3(float32_t(ov.x), float32_t(ov.y), float32_t(ov.z));
+		iter = _bodies.find(iter->second.cid);
+	}
+
+	return float32_t(ru_per_meters) * position;
 }

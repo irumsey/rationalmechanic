@@ -107,6 +107,8 @@ private:
 
 	void renderBodies(float32_t time, float32_t interpolant) const;
 
+	Vector3 computeAbsoluePosition(size_t target) const;
+
 	LUCID_PREVENT_COPY(OrbitTest);
 	LUCID_PREVENT_ASSIGNMENT(OrbitTest);
 };
