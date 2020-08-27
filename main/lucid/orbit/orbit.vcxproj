@@ -19,18 +19,24 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Algorithm.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Elements.h" />
     <ClInclude Include="Ephemeris.h" />
     <ClInclude Include="Frame.h" />
-    <ClInclude Include="Orbit.h" />
     <ClInclude Include="Properties.h" />
+    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Simulator.h" />
+    <ClInclude Include="System.h" />
     <ClInclude Include="Types.h" />
+    <ClInclude Include="Utility.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Ephemeris.cpp" />
     <ClCompile Include="Frame.cpp" />
-    <ClCompile Include="Orbit.cpp" />
+    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Simulator.cpp" />
+    <ClCompile Include="System.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{70F54DED-6034-471B-A9FA-EBDC3CD6C6DB}</ProjectGuid>

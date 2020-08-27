@@ -36,15 +36,23 @@
     "Line 26" : "GM in m^3/s^2"
   },
 
-	"bodies" :
+	"frames" :
 	[
     {
+      "type" : "dynamic_point",
+      "hid" : 0,
+      "target" : "SSB",
+      "description" : "Solar System Barycenter",
+      "center" : "NONE"
+    },
+    {
+      "type" : "orbital_body",
       "hid" : 10,
       "target" : "Sun",
-      "center" : 0,
+      "description" : "",
+      "center" : "SSB",
       "properties" :
       {
-        "description" : "",
         "GM" : 1.3271244004193938e20,
         "mass" : 1.988500e30,
         "radius" : 6.96340000e08
@@ -58,12 +66,13 @@
       ]
     },
     {
+      "type" : "orbital_body",
       "hid" : 199,
       "target" : "Mercury",
-      "center" : 10,
+      "description" : "",
+      "center" : "Sun",
       "properties" :
       {
-        "description" : "",
         "GM" : 2.203178e13,
         "mass" : 3.302e23,
         "radius" : 2.440000e06
@@ -77,12 +86,13 @@
       ]
     },
     {
+      "type" : "orbital_body",
       "hid" : 299,
       "target" : "Venus",
-      "center" : 10,
+      "description" : "",
+      "center" : "Sun",
       "properties" :
       {
-        "description" : "",
         "GM" : 3.24858592e14,
         "mass" : 4.8685e24,
         "radius" : 6.051840e06
@@ -96,12 +106,13 @@
       ]
     },    
     {
+      "type" : "orbital_body",
       "hid" : 399,
       "target" : "Earth",
-      "center" : 10,
+      "description" : "",
+      "center" : "Sun",
       "properties" :
       {
-        "description" : "",
         "GM" : 3.98600435436e14,
         "mass" : 5.97219e24,
         "radius" : 6.37101e06
@@ -116,12 +127,13 @@
       ]
     },
     {
+      "type" : "orbital_body",
       "hid" : 301,
       "target" : "Moon",
-      "center" : 399,
+      "description" : "",
+      "center" : "Earth",
       "properties" :
       {
-        "description" : "",
         "GM" : 4.902800066e12,
         "mass" : 7.349e22,
         "radius" : 1.737530e06
@@ -135,12 +147,13 @@
       ]
     },
     {
+      "type" : "orbital_body",
       "hid" : 499,
       "target" : "Mars",
-      "center" : 10,
+      "description" : "",
+      "center" : "Sun",
       "properties" :
       {
-        "description" : "",
         "GM" : 4.2828375214e13,
         "mass" : 6.4171e23,
         "radius" : 3.38992e06
@@ -154,12 +167,13 @@
       ]
     },
     {
+      "type" : "orbital_body",
       "hid" : 599,
       "target" : "Jupiter",
-      "center" : 10,
+      "description" : "",
+      "center" : "Sun",
       "properties" :
       {
-        "description" : "",
         "GM" : 1.26686534911e17,
         "mass" : 1.89813e27,
         "radius" : 6.991100e07
@@ -173,12 +187,13 @@
       ]
     },
     {
+      "type" : "orbital_body",
       "hid" : 699,
       "target" : "Saturn",
-      "center" : 10,
+      "description" : "",
+      "center" : "Sun",
       "properties" :
       {
-        "description" : "",
         "GM" : 3.7931206159e16,
         "mass" : 5.6834e26,
         "radius" : 6.0268e07
@@ -191,12 +206,13 @@
       ]
     },
     {
+      "type" : "orbital_body",
       "hid" : 799,
       "target" : "Uranus",
-      "center" : 10,
+      "description" : "",
+      "center" : "Sun",
       "properties" :
       {
-        "description" : "",
         "GM" : 5.793951322e15,
         "mass" : 8.6813e25,
         "radius" : 2.5362e07
@@ -210,12 +226,13 @@
       ]
     },
     {
+      "type" : "orbital_body",
       "hid" : 899,
       "target" : "Neptune",
-      "center" : 10,
+      "description" : "",
+      "center" : "Sun",
       "properties" :
       {
-        "description" : "",
         "GM" : 6.83510227e15,
         "mass" : 1.02413e26,
         "radius" : 2.4624e07
@@ -227,12 +244,13 @@
       ]
     },
     {
+      "type" : "orbital_body",
       "hid" : 999,
       "target" : "Pluto",
-      "center" : 10,
+      "description" : "",
+      "center" : "Sun",
       "properties" :
       {
-        "description" : "",
         "GM" : 8.6933907803e11,
         "mass" : 1.307e22,
         "radius" : 1.1883e06

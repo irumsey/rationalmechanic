@@ -1,4 +1,5 @@
 #include "Ephemeris.h"
+#include "Frame.h"
 #include "Elements.h"
 #include "Properties.h"
 #include "Constants.h"
@@ -27,14 +28,6 @@ namespace orbit {
 
 	Ephemeris::Ephemeris()
 	{
-		///	create the 'special' entry that defines the 'center' of the system
-
-		Properties properties;
-		properties.description = "solar system barycenter";
-
-		_names.insert(std::make_pair("SSB", 0));
-		_properties.insert(std::make_pair(0, properties));
-		_entries.insert(std::make_pair(0, Entry()));
 	}
 
 	Ephemeris::~Ephemeris()
@@ -45,89 +38,79 @@ namespace orbit {
 	{
 		core::FileReader reader(path);
 
-		size_t bodyCount = 0;
-		reader.read(bodyCount);
-		for (size_t bodyIndex = 0; bodyIndex < bodyCount; ++bodyIndex)
+		size_t frameCount = 0;
+		reader.read(frameCount);
+		for (size_t frameIndex = 0; frameIndex < frameCount; ++frameIndex)
 		{
-			Properties properties;
 			Entry entry;
 
-			size_t hid = 0;
-			reader.read(hid);
+			reader.read(&entry.type, sizeof(Entry::TYPE));
+			reader.read(entry.id);
+			reader.read(entry.name);
+			reader.read(entry.description);
+			
+			std::string center;
+			reader.read(center);
 
-			std::string target;
-			reader.read(target);
+			_order.push_back(entry.name);
+			_entries.insert(std::make_pair(entry.name, entry));
 
-			reader.read(entry.center);
-			LUCID_VALIDATE(_properties.end() != _properties.find(entry.center), "'" + target + "' specifies unknown center object");
-
-			reader.read(properties.description);
-			reader.read(properties.GM);
-			reader.read(properties.mass);
-			reader.read(properties.radius);
-
-			size_t elementsCount = 0;
-			reader.read(elementsCount);
-
-			for (size_t elementsIndex = 0; elementsIndex < elementsCount; ++elementsIndex)
+			///	TBD: break this, and the other types, out into their own functions...
+			///	for now, the only other type, dynamic body, is not implemented
+			if (Entry::TYPE_ORBITAL_BODY == entry.type)
 			{
-				Elements elements;
-				reader.read(&elements, sizeof(elements));
-				entry.elements.push_back(elements);
-			}
+				Properties properties;
 
-			_names.insert(std::make_pair(target, hid));
-			_properties.insert(std::make_pair(hid, properties));
-			_entries.insert(std::make_pair(hid, entry));
+				reader.read(properties.GM);
+				reader.read(properties.mass);
+				reader.read(properties.radius);
+
+				_properties.insert(std::make_pair(entry.id, properties));
+
+				size_t elementsCount = 0;
+				reader.read(elementsCount);
+
+				elements_vec_t blah(elementsCount);
+				for (size_t i = 0; i < elementsCount; ++i)
+					reader.read(&blah[i], sizeof(Elements));
+				_elements.insert(std::make_pair(entry.id, blah));
+			}
 		}
 	}
 
-	size_t Ephemeris::lookup(std::string const &target) const
-	{
-		auto iter = _names.find(target);
-		LUCID_VALIDATE(iter != _names.end(), "unknown target '" + target + "' specified");
-
-		return iter->second;
-	}
-
-	void Ephemeris::lookup(Properties &properties, std::string const &target) const
-	{
-		lookup(properties, lookup(target));
-	}
-
-	void Ephemeris::lookup(Properties &properties, size_t target) const
+	bool Ephemeris::lookup(Properties &properties, size_t target) const
 	{
 		auto iter = _properties.find(target);
-		LUCID_VALIDATE(iter != _properties.end(), "unknown target id specified");
+		if (iter == _properties.end())
+			return false;
 
 		properties = iter->second;
+
+		return true;
 	}
 
-	size_t Ephemeris::lookup(Elements &elements, std::string const &target, scalar_t jdn) const
+	bool Ephemeris::lookup(Elements &elements, size_t target, scalar_t jdn) const
 	{
-		return lookup(elements, lookup(target), jdn);
-	}
+		auto iter = _elements.find(target);
+		if (iter == _elements.end())
+			return false;
 
-	size_t Ephemeris::lookup(Elements &elements, size_t target, scalar_t jdn) const
-	{
-		auto iter = _entries.find(target);
-		LUCID_VALIDATE(iter != _entries.end(), "unknown target id specified");
+		elements_vec_t const &entries = iter->second;
+		size_t const count = entries.size();
 
-		Entry const &entry = iter->second;
-		size_t const count = entry.elements.size();
+		if (0 == count)
+			return false;
 
-		LUCID_VALIDATE(0 < count, "target does not define orbital elements");
-
-		///	find the closest entry to the given julian day.
+		///	find the closest entry to the given day number.
 		///	for now, it is a simple linear scan through the list which
 		///	exits when the difference would increase.
 		///	test { 
 
 		size_t index = 0;
-		scalar_t a = ::fabs(entry.elements[index].JDN - jdn);
+		scalar_t a = ::fabs(entries[index].JDN - jdn);
 		for (size_t i = 1; i < count; ++i)
 		{
-			scalar_t b = ::fabs(entry.elements[i].JDN - jdn);
+			scalar_t b = ::fabs(entries[i].JDN - jdn);
 			if (b < a)
 			{
 				index = i;
@@ -141,84 +124,9 @@ namespace orbit {
 
 		///	} test
 
-		elements = entry.elements[index];
+		elements = entries[index];
 
-		return entry.center;
-	}
-
-	void Ephemeris::compute(matrix3x3_t &rotation, std::string const &target, scalar_t jdn) const
-	{
-		compute(rotation, lookup(target), jdn);
-	}
-	
-	void Ephemeris::compute(matrix3x3_t &rotation, size_t target, scalar_t jdn) const
-	{
-		Elements elements;
-		lookup(elements, target, jdn);
-
-		compute(rotation, elements);
-	}
-
-	void Ephemeris::compute(matrix3x3_t &rotation, Elements const &elements) const
-	{
-		rotation = math::rotateAboutZ(elements.OM) * math::rotateAboutX(elements.IN) * math::rotateAboutZ(elements.W);
-	}
-
-	void Ephemeris::compute(vector3_t &position, vector3_t &velocity, std::string const &target, scalar_t jdn) const
-	{
-		compute(position, velocity, lookup(target), jdn);
-	}
-
-	void Ephemeris::compute(vector3_t &position, vector3_t &velocity, size_t target, scalar_t jdn) const
-	{
-		Elements targetElements;
-		size_t cid = lookup(targetElements, target, jdn);
-
-		Properties centerProperties;
-		lookup(centerProperties, cid);
-
-		compute(position, velocity, centerProperties, targetElements, jdn);
-	}
-
-	void Ephemeris::compute(vector3_t &position, vector3_t &velocity, Properties const &centerProperties, Elements const &targetElements, scalar_t jdn) const
-	{
-		scalar_t const twopi = math::constants::two_pi<scalar_t>();
-		scalar_t const tolsq = math::constants::tol_tol<scalar_t>();
-		scalar_t const    dt = constants::seconds_per_day<scalar_t>() * (jdn - targetElements.JDN);
-		scalar_t const    GM = centerProperties.GM;
-		scalar_t const     e = targetElements.EC;
-		scalar_t const     a = targetElements.A;
-
-		scalar_t MA = targetElements.MA + dt * ::sqrt(GM / ::pow(a, 3.f));
-		MA = std::fmod(MA, twopi);
-		MA = (MA < 0.f) ? MA + twopi: MA;
-
-		scalar_t EA[2] = { MA, 0.f };
-
-		size_t const limit = 10;
-		size_t iter = 0;
-
-		scalar_t err = EA[0] - EA[1];
-		while (((err * err) > tolsq) && (iter < limit))
-		{
-			EA[1] = EA[0] - (EA[0] - e * ::sin(EA[0]) - MA) / (1.f - e * ::cos(EA[0]));
-			err = EA[1] - EA[0];
-
-			std::swap(EA[0], EA[1]);
-			++iter;
-		}
-
-		scalar_t TA = 2.f * ::atan2(::sqrt(1.f + e) * ::sin(0.5f * EA[0]), ::sqrt(1.f - e) * ::cos(0.5f * EA[0]));
-		scalar_t  r = a * (1.f - e * ::cos(EA[0]));
-
-		position = r * vector3_t(::cos(TA), ::sin(TA), 0.f);
-		velocity = ::sqrt(GM * a) / r * vector3_t(-::sin(EA[0]), ::sqrt(1.f - e * e) * ::cos(EA[0]), 0.f);
-
-		matrix3x3_t R;
-		compute(R, targetElements);
-
-		position = R * position;
-		velocity = R * velocity;
+		return true;
 	}
 
 	Ephemeris &Ephemeris::instance()

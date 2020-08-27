@@ -604,6 +604,12 @@ def bootCameraFromFile(srcPath, dstPath):
 #
 #
 
+orbitalFrameType = {
+	'dynamic_point' : 1,
+	'orbital_body'  : 2,
+	'dynamic_body'  : 3
+}
+
 onOrbitalElement = [
 	bootDouble,
 	bootDouble,
@@ -620,20 +626,27 @@ onOrbitalElement = [
 	bootDouble
 ]
 
-def bootEphemerisBody(dst, body):
-	bootUnsigned(dst, body['hid'])
+def bootFrameDynamicPoint(dst, frame):
+	bootUnsigned(dst, orbitalFrameType['dynamic_point'])
+	bootUnsigned(dst, frame['hid'])
+	bootString(dst, frame['target'])
+	bootString(dst, frame['description'])
+	bootString(dst, frame['center'])
 
-	bootString(dst, body['target'])
-	bootUnsigned(dst, body['center'])
+def bootFrameOrbitalBody(dst, frame):
+	bootUnsigned(dst, orbitalFrameType['orbital_body'])
+	bootUnsigned(dst, frame['hid'])
+	bootString(dst, frame['target'])
+	bootString(dst, frame['description'])
+	bootString(dst, frame['center'])
 
-	properties = body['properties']
+	properties = frame['properties']
 
-	bootString(dst, properties['description'])
 	bootDouble(dst, properties['GM'])
 	bootDouble(dst, properties['mass'])
 	bootDouble(dst, properties['radius'])
 
-	elements = body['elements']
+	elements = frame['elements']
 	bootUnsigned(dst, len(elements))
 
 	for entry in elements:
@@ -644,11 +657,27 @@ def bootEphemerisBody(dst, body):
 			onOrbitalElement[index](dst, value)
 			index = index + 1
 
+def bootFrameDynamicBody(dst, frame):
+	bootUnsigned(dst, orbitalFrameType['dynamic_body'])
+	bootUnsigned(dst, frame['hid'])
+	bootString(dst, frame['target'])
+	bootString(dst, frame['description'])
+	bootString(dst, frame['center'])
+
+bootFrameType = {
+	'dynamic_point' : bootFrameDynamicPoint,
+	 'orbital_body' : bootFrameOrbitalBody,
+	 'dynamic_body' : bootFrameDynamicBody
+}
+
+def bootEphemerisFrame(dst, frame):
+	bootFrameType[frame['type']](dst, frame)
+
 def bootEphemeris(dst, ephemeris):
-	bodies = ephemeris['bodies']
-	bootUnsigned(dst, len(bodies))
-	for body in bodies:
-		bootEphemerisBody(dst, body)
+	frames = ephemeris['frames']
+	bootUnsigned(dst, len(frames))
+	for frame in frames:
+		bootEphemerisFrame(dst, frame)
 
 def bootEphemerisFromFile(srcPath, dstPath):
 	bootEphemeris(open(dstPath, 'wb'), json.load(open(srcPath)))

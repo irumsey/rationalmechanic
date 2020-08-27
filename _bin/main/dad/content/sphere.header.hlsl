@@ -15,8 +15,8 @@ SamplerState theSampler;
 struct InputVertex
 {
 	float4   corner : LOCATION0;
-	float4    color : LOCATION1;
-	float4 position : LOCATION2;
+	float4 position : LOCATION1;
+	float4    color : LOCATION2;
 };
 
 struct OutputVertex
