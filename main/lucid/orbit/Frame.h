@@ -17,11 +17,11 @@ namespace orbit {
 	///	Frame
 	///
 	///	a frame of reference
-	///	note: position/velocity are relative to parent
 	class Frame
 	{
 	public:
 		Frame *centerFrame = nullptr;
+
 		Frame *firstChild = nullptr;
 		Frame *nextSibling = nullptr;
 
@@ -29,8 +29,10 @@ namespace orbit {
 		std::string name;
 		std::string description;
 
-		vector3_t position[2];
-		vector3_t velocity[2];
+		vector3_t relativePosition[2];
+		vector3_t relativeVelocity[2];
+
+		vector3_t absolutePosition[2];
 
 		virtual ~Frame();
 

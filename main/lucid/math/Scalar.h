@@ -1,12 +1,13 @@
 #pragma once
 
+#include <algorithm>
 #include <cmath>
-#include <lucid/core/Types.h>
-#include <lucid/math/Constants.h>
 
-///
-///
-///
+#ifdef min
+#	undef min
+#	undef max
+#endif
+
 namespace lucid {
 namespace math {
 
@@ -21,10 +22,56 @@ namespace math {
 		T delta = lhs - rhs;
 		return (delta * delta) < constants::tol_tol<T>();
 	}
-	
+
 	template<typename T> inline bool neq(T lhs, T rhs)
 	{
 		return !equ(lhs, rhs);
+	}
+
+	/// min / max
+	///
+	///
+
+	template<typename T> inline T min(T const &x, T const &y)
+	{
+		return (x <= y) ? x : y;
+	}
+
+	template<typename T> inline T max(T const &x, T const &y)
+	{
+		return (x >= y) ? x : y;
+	}
+
+	///	interpolate
+	///
+	///	linear interpolation from a to b.
+	template<typename T> inline T interp(T const &t, T const &a, T const &b)
+	{
+		return (b - a) * t + a;
+	}
+
+	///	clamp
+	///
+	///	clamp value between values a and b
+	///	where a < b
+	template<typename T> inline T clamp(T const &x, T const &a, T const &b)
+	{
+		return std::min(std::max(a, x), b);
+	}
+
+	///	exclude
+	///
+	///	range of exclusion for the value x defined by a and b
+	///	where a < b
+	template<typename T> inline T exclude(T const &x, T const &a, T const &b)
+	{
+		if ((x < a) || (b < x))
+			return x;
+
+		if ((b - x) > (x - a))
+			return a;
+
+		return b;
 	}
 
 	///
@@ -35,7 +82,7 @@ namespace math {
 	{
 		return std::sqrt(x);
 	}
-	
+
 	///
 	///	cosine "wrappers"
 	///

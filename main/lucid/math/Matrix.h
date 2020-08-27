@@ -2,7 +2,6 @@
 
 #include <cassert>
 #include <lucid/math/Constants.h>
-#include <lucid/math/Scalar.h>
 #include <lucid/math/Vector.h>
 
 ///

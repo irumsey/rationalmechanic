@@ -13,8 +13,9 @@ namespace orbit {
 		, name(name)
 		, description(description)
 	{
-		::memset(position, 0, 2 * sizeof(vector3_t));
-		::memset(velocity, 0, 2 * sizeof(vector3_t));
+		::memset(relativePosition, 0, 2 * sizeof(vector3_t));
+		::memset(relativeVelocity, 0, 2 * sizeof(vector3_t));
+		::memset(absolutePosition, 0, 2 * sizeof(vector3_t));
 	}
 
 	Frame::~Frame()

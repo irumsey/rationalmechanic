@@ -9,7 +9,7 @@
 #include <lucid/gigl/Resources.h>
 #include <lucid/gal/VertexBuffer.h>
 #include <lucid/gal/Pipeline.h>
-#include <lucid/math/Algorithm.h>
+#include <lucid/math/Scalar.h>
 
 namespace  math = ::lucid:: math;
 namespace   gal = ::lucid::  gal;
@@ -18,28 +18,35 @@ namespace orbit = ::lucid::orbit;
 
 namespace { /// anonymous
 
-	///	 ru = render unit
-	///	rus = plural render unit
-
 	orbit::scalar_t const meters_per_ru = orbit::constants::meters_per_ru<orbit::scalar_t>();
 	orbit::scalar_t const rus_per_meter = orbit::constants::rus_per_meter<orbit::scalar_t>();
 
+	inline float32_t cast(orbit::scalar_t rhs)
+	{
+		return float32_t(rhs);
+	}
+
 	inline float32_t scale(orbit::scalar_t rhs)
 	{
-		return float32_t(rhs * rus_per_meter);
+		return cast(rhs * rus_per_meter);
+	}
+
+	inline gal::Vector3 cast(orbit::vector3_t const &rhs)
+	{
+		return gal::Vector3(cast(rhs.x), cast(rhs.y), cast(rhs.z));
 	}
 
 	inline gal::Vector3 scale(orbit::vector3_t const &rhs)
 	{
-		return gal::Vector3(scale(rhs.x), scale(rhs.y), scale(rhs.z));
+		return cast(rhs * rus_per_meter);
 	}
 
-	inline gal::Matrix3x3 scale(orbit::matrix3x3_t const &rhs)
+	inline gal::Matrix3x3 cast(orbit::matrix3x3_t const &rhs)
 	{
 		return gal::Matrix3x3(
-			scale(rhs.xx), scale(rhs.xy), scale(rhs.xz),
-			scale(rhs.yx), scale(rhs.yy), scale(rhs.yz),
-			scale(rhs.zx), scale(rhs.zy), scale(rhs.zz)
+			cast(rhs.xx), cast(rhs.xy), cast(rhs.xz),
+			cast(rhs.yx), cast(rhs.yy), cast(rhs.yz),
+			cast(rhs.zx), cast(rhs.zy), cast(rhs.zz)
 		);
 	}
 
@@ -95,16 +102,17 @@ namespace orbit {
 		///	TBD: use interpolant to interpolate between elements0 and elements1
 		///	TBD: data drive the sphere's scale and color
 		///	TBD: data drive line width and color
+		///	TBD: data drive domain of orbit
 		///	TBD: note not all orbital bodies will be spheres (they might be cool spacecraft)
 
 		Elements const &elements = body->elements[1];
 
 		float32_t  a = scale(elements. A);
-		float32_t  e = scale(elements.EC);
+		float32_t  e = cast (elements.EC);
 		float32_t hu = a * (1.f - e * e);
 
 		SphereInstance sphere;
-		sphere.position = scale(body->position[1]);
+		sphere.position = scale(body->absolutePosition[1]);
 		sphere.scale = 5.f;
 		sphere.color = gal::Color(0, 1, 0, 1);
 		_sphereBuffer.push_back(sphere);
@@ -117,9 +125,9 @@ namespace orbit {
 		OrbitInstance orbit;
 		orbit.parameters = gal::Vector4(hu, e, -3.1415926f, 3.1415926f);
 		orbit.lineColor = gal::Color(0, 0, 1, 1);
-		orbit.lineWidth = 0.3f;
-		orbit.position = gal::Vector3(0, 0, 0);
-		/// orbit.rotation = scale(rotationFromElements(elements));
+		orbit.lineWidth = 0.5f;
+		orbit.position = sphere.position;
+		orbit.rotation = math::quaternionFromMatrix(cast(rotationFromElements(elements)));
 		_orbitBuffer.push_back(orbit);
 	}
 

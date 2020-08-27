@@ -2,7 +2,7 @@
 #include "RenderTarget2D.h"
 #include "System.h"
 #include "Utility.h"
-#include <lucid/math/Algorithm.h>
+#include <lucid/math/Scalar.h>
 
 namespace /* anonymous */
 {

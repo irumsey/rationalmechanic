@@ -48,11 +48,15 @@ namespace orbit {
 		Properties centerProperties;
 		theEphemeris().lookup(centerProperties, center->id);
 
-		kinematicsFromElements(body->position[0], body->velocity[0], centerProperties, body->elements[0], _dayNumber);
+		kinematicsFromElements(body->relativePosition[0], body->relativeVelocity[0], centerProperties, body->elements[0], _dayNumber);
+		body->absolutePosition[0] = body->relativePosition[0] + center->absolutePosition[0];
 
 		std::swap(body->elements[0], body->elements[1]);
-		std::swap(body->position[0], body->position[1]);
-		std::swap(body->velocity[0], body->velocity[1]);
+
+		std::swap(body->relativePosition[0], body->relativePosition[1]);
+		std::swap(body->absolutePosition[0], body->absolutePosition[1]);
+
+		std::swap(body->relativeVelocity[0], body->relativeVelocity[1]);
 
 		LUCID_PROFILE_END();
 	}

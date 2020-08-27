@@ -64,5 +64,8 @@
     <None Include="..\..\_bin\main\dad\content\sphere.header.hlsl">
       <Filter>content</Filter>
     </None>
+    <None Include="..\..\_bin\main\dad\content\utility.header.hlsl">
+      <Filter>content</Filter>
+    </None>
   </ItemGroup>
 </Project>

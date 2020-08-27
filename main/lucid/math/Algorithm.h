@@ -2,7 +2,10 @@
 
 #include <algorithm>
 #include <lucid/math/Constants.h>
+#include <lucid/math/Scalar.h>
 #include <lucid/math/Vector.h>
+#include <lucid/math/Matrix.h>
+#include <lucid/math/Quaternion.h>
 #include <lucid/math/Sphere.h>
 #include <lucid/math/AABB.h>
 #include <lucid/math/Frustum.h>
@@ -15,50 +18,44 @@
 namespace lucid {
 namespace math {
 
-	/// min / max
+	///	quaternion to matrix
 	///
 	///
-	
-	template<typename T> inline T min(T const &x, T const &y)
+	template<typename T> Matrix<T,3,3> matrixFromQuaternion(Quaternion<T> const &q) 
 	{
-		return (x <= y) ? x : y;
+		float xx = q.x * q.x;
+		float xy = q.x * q.y;
+		float xz = q.x * q.z;
+		float xw = q.x * q.w;
+		float yy = q.y * q.y;
+		float yz = q.y * q.z;
+		float yw = q.y * q.w;
+		float zz = q.z * q.z;
+		float zw = q.z * q.w;
+
+		return Matrix<T,3,3>(
+			1 - 2 * ( yy + zz ),     2 * ( xy - zw ),     2 * ( xz + yw ), 0,
+			    2 * ( xy + zw ), 1 - 2 * ( xx + zz ),     2 * ( yz - xw ), 0,
+			    2 * ( xz - yw ),     2 * ( yz + xw ), 1 - 2 * ( xx + yy ), 0,
+			                  0,                   0,                   0, 1
+		);
 	}
 
-	template<typename T> inline T max(T const &x, T const &y)
-	{
-		return (x >= y) ? x : y;
-	}
-
-	///	interpolate
+	///	matrix to quaternion
 	///
-	///	linear interpolation from a to b.
-	template<typename T> inline T interp(T const &t, T const &a, T const &b)
-	{
-		return (b - a) * t + a;
-	}
-
-	///	clamp
 	///
-	///	clamp value between values a and b
-	///	where a < b
-	template<typename T> inline T clamp(T const &x, T const &a, T const &b)
+	template<typename T> Quaternion<T> quaternionFromMatrix(Matrix<T,3,3> const &R)
 	{
-		return std::min(std::max(a, x), b);
-	}
+		Quaternion<T> q;
 
-	///	exclude
-	///
-	///	range of exclusion for the value x defined by a and b
-	///	where a < b
-	template<typename T> inline T exclude(T const &x, T const &a, T const &b)
-	{
-		if ((x < a) || (b < x))
-			return x;
+		q.w = 0.5f * sqrt(1.f + R.xx + R.yy + R.zz);
+		T coeff = 1.f / (4.f * q.w);
 
-		if ((b - x) > (x - a))
-			return a;
+		q.x = coeff * (R.zy - R.yz);
+		q.y = coeff * (R.xz - R.zx);
+		q.z = coeff * (R.yx - R.xy);
 
-		return b;
+		return q;
 	}
 
 	///	intersects

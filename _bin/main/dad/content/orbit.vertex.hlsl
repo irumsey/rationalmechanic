@@ -1,3 +1,4 @@
+#include "utility.header.hlsl"
 #include "orbit.header.hlsl"
 
 OutputVertex main(InputVertex input)
@@ -15,7 +16,7 @@ OutputVertex main(InputVertex input)
 	float2 curveTangent = computeConicPoint(hu, eccentricity, theta.y) - curvePosition;
 	float2 curveNormal = -normalize(float2(-curveTangent.y, curveTangent.x));
 
-	float2 vertexDelta = 0.5 * input.lineWidth * curveNormal;
+	float2 vertexDelta = input.lineWidth * curveNormal;
 	float2 innerVertex = curvePosition - vertexDelta;
 	float2 outerVertex = curvePosition + vertexDelta;
 
@@ -27,8 +28,9 @@ OutputVertex main(InputVertex input)
 	output.lineWidth = input.lineWidth;
 	output.lineColor = input.lineColor;
 
-	// float4 worldPosition = mul(worldMatrix, float4(meshVertex, 0, 1));
-	float4 worldPosition = float4(meshVertex, 0, 1);
+	float4x4 worldMatrix = matrixFromQuaternion(input.rotation);
+	float4 worldPosition = mul(worldMatrix, float4(meshVertex, 0, 1));
+	
 	output.ppsPosition = mul(viewProjMatrix, worldPosition);
 
 	return output;
