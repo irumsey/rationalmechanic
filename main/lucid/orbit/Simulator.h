@@ -3,6 +3,7 @@
 #include <string>
 #include <lucid/core/Profiler.h>
 #include <lucid/core/Noncopyable.h>
+#include <lucid/orbit/Constants.h>
 #include <lucid/orbit/Types.h>
 #include <lucid/orbit/Algorithm.h>
 
@@ -34,7 +35,7 @@ namespace orbit {
 		void simulate(Frame *root, scalar_t dayNumber, scalar_t delta);
 
 	private:
-		scalar_t _dayNumber = 2451544.0;
+		scalar_t _dayNumber = constants::j2000<scalar_t>();
 		scalar_t _delta = 0.0;
 
 		void simulate(Frame *frame);

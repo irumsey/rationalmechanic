@@ -24,8 +24,8 @@ namespace { /// anonymous
 		return orbit::Ephemeris::instance();
 	}
 
-	orbit::scalar_t const meters_per_ru = orbit::constants::meters_per_ru<orbit::scalar_t>();
-	orbit::scalar_t const rus_per_meter = orbit::constants::rus_per_meter<orbit::scalar_t>();
+	orbit::scalar_t const meters_per_RU = orbit::constants::meters_per_RU<orbit::scalar_t>();
+	orbit::scalar_t const RUs_per_meter = orbit::constants::RUs_per_meter<orbit::scalar_t>();
 
 	inline float32_t cast(orbit::scalar_t rhs)
 	{
@@ -34,7 +34,7 @@ namespace { /// anonymous
 
 	inline float32_t scale(orbit::scalar_t rhs)
 	{
-		return cast(rhs * rus_per_meter);
+		return cast(rhs * RUs_per_meter);
 	}
 
 	inline gal::Vector3 cast(orbit::vector3_t const &rhs)
@@ -44,7 +44,7 @@ namespace { /// anonymous
 
 	inline gal::Vector3 scale(orbit::vector3_t const &rhs)
 	{
-		return cast(rhs * rus_per_meter);
+		return cast(rhs * RUs_per_meter);
 	}
 
 	inline gal::Matrix3x3 cast(orbit::matrix3x3_t const &rhs)
@@ -107,8 +107,14 @@ namespace orbit {
 		///	TBD: data drive domain of orbit
 		///	TBD: note not all orbital bodies will be spheres (they might be cool spacecraft)
 
-		RenderProperties properties;
-		theEphemeris().lookup(properties, body->id);
+		if (cull(body))
+			return;
+
+		PhysicalProperties physicalProperties;
+		theEphemeris().lookup(physicalProperties, body->id);
+
+		RenderProperties renderProperties;
+		theEphemeris().lookup(renderProperties, body->id);
 
 		Elements const *elements = body->elements;
 
@@ -128,9 +134,9 @@ namespace orbit {
 
 		SphereInstance sphere;
 		sphere.position = math::lerp(_interpolant, position[0], position[1]);
-		sphere.scale = properties.scale;
-		sphere.color = properties.color;
-		sphere.color.a = properties.emit;
+		sphere.scale = renderProperties.scale * scale(physicalProperties.radius);
+		sphere.color = renderProperties.color;
+		sphere.color.a = renderProperties.emit;
 		_sphereBuffer.push_back(sphere);
 
 		MaskInstance mask;
@@ -176,6 +182,58 @@ namespace orbit {
 
 		_orbitMesh.reset();
 		_orbitInstances.reset();
+	}
+
+	void Renderer::render(Frame *root, ::lucid::gigl::Context const &context, float32_t time, float32_t interpolant)
+	{
+		LUCID_PROFILE_BEGIN("rendering orbital objects");
+
+		_time = time;
+		_interpolant = interpolant;
+
+		_viewPosition = context.lookup("viewPosition").as<gal::Vector3>();
+		_viewProjMatrix = context.lookup("viewProjMatrix").as<gal::Matrix4x4>();
+
+		_sphereBuffer.clear();
+		_maskBuffer.clear();
+		_orbitBuffer.clear();
+
+		batch(root);
+		render(context);
+
+		LUCID_PROFILE_END();
+	}
+
+	bool Renderer::cull(Frame *frame) const
+	{
+		///	TBD: more sophistication
+		///	for now, just based upon distance to center body
+
+		///	(32 pixels / 1024 pixels)^2
+		///	so, if the screen is 1024 pixels wide, anything less then 32ish pixels will be culled
+		float32_t const magic = math::pow(32.f / 1024.f, 2.f);
+
+		Frame *center = frame->centerFrame;
+		if (nullptr == center)
+			return true;
+
+		///	don't cull the sun
+		if (10 == frame->id)
+			return false;
+
+		///	measuring the distance from the target frame to its attracting center
+
+		gal::Vector4 ppsPosition[2] = {
+			_viewProjMatrix * gal::Vector4(scale(center->absolutePosition[1]), 1.f),
+			_viewProjMatrix * gal::Vector4(scale(frame->absolutePosition[1]), 1.f),
+		};
+
+		gal::Vector2 screenPosition[2] = {
+			gal::Vector2(ppsPosition[0].x, ppsPosition[0].y) / ppsPosition[0].w,
+			gal::Vector2(ppsPosition[1].x, ppsPosition[1].y) / ppsPosition[1].w,
+		};
+
+		return (math::lsq(screenPosition[1] - screenPosition[0]) < 0.004f); 
 	}
 
 	void Renderer::batch(Frame *frame)

@@ -122,6 +122,12 @@ namespace math {
 		{
 		}
 
+		Vector(Vector<T,3> const &v, T const &w)
+			: x(v.x), y(v.y), z(v.z)
+			, w(w)
+		{
+		}
+
 		T &operator[](int32_t i)
 		{
 			assert(i < 4);

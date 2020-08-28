@@ -75,6 +75,15 @@ namespace math {
 	}
 
 	///
+	///	power "wrapper"
+	///
+
+	template<typename T> inline T pow(T x, T e)
+	{
+		return std::pow(x,e);
+	}
+
+	///
 	///	square root "wrapper"
 	///
 

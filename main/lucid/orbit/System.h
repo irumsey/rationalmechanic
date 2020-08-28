@@ -3,6 +3,7 @@
 #include <lucid/core/Types.h>
 #include <lucid/orbit/Types.h>
 #include <lucid/core/Noncopyable.h>
+#include <lucid/orbit/Constants.h>
 #include <lucid/orbit/Simulator.h>
 #include <lucid/orbit/Renderer.h>
 
@@ -48,7 +49,7 @@ namespace orbit {
 		void render(::lucid::gigl::Context const &context, float32_t time, float32_t interpolant);
 
 	private:
-		scalar_t _dayNumber[2] = { 2451544.0, 2451544.0, };
+		scalar_t _dayNumber[2] = { constants::j2000<scalar_t>(), constants::j2000<scalar_t>(), };
 
 		Simulator _simulator;
 		Renderer _renderer;

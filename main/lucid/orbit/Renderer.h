@@ -82,6 +82,9 @@ namespace orbit {
 		float32_t _time = 0.f;
 		float32_t _interpolant = 0.f;
 
+		::lucid::gal::Vector3 _viewPosition;
+		::lucid::gal::Matrix4x4 _viewProjMatrix;
+
 		std::vector<SphereInstance> _sphereBuffer;
 		std::shared_ptr<lucid::gigl::Mesh> _sphereMesh;
 		std::shared_ptr<lucid::gal::VertexBuffer> _sphereInstances;
@@ -94,6 +97,8 @@ namespace orbit {
 		std::shared_ptr<lucid::gigl::Mesh> _orbitMesh;
 		std::shared_ptr<lucid::gal::VertexBuffer> _orbitInstances;
 
+		bool cull(Frame *frame) const;
+
 		void batch(Frame *frame);
 
 		void render(::lucid::gigl::Context const &context);
@@ -101,23 +106,6 @@ namespace orbit {
 		LUCID_PREVENT_COPY(Renderer);
 		LUCID_PREVENT_ASSIGNMENT(Renderer);
 	};
-
-	inline void Renderer::render(Frame *root, ::lucid::gigl::Context const &context, float32_t time, float32_t interpolant)
-	{
-		LUCID_PROFILE_BEGIN("rendering orbital objects");
-
-		_time = time;
-		_interpolant = interpolant;
-
-		_sphereBuffer.clear();
-		_maskBuffer.clear();
-		_orbitBuffer.clear();
-
-		batch(root);
-		render(context);
-
-		LUCID_PROFILE_END();
-	}
 
 }	///	orbit
 }	///	lucid

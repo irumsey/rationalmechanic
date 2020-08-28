@@ -44,7 +44,7 @@ void OrbitTest::begin(float64_t t)
 	LUCID_PROFILE_BEGIN("ephemeris test");
 
 	theEphemeris().initialize("content/j2000.ephemeris");
-	_orbitalSystem.initialize(2451544.0);
+	_orbitalSystem.initialize(orbit::constants::j2000<orbit::scalar_t>());
 
 	LUCID_PROFILE_END();
 
