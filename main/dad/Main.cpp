@@ -19,6 +19,7 @@
 int32_t   const SCREEN_WIDTH = 1280;
 int32_t   const SCREEN_HEIGHT = 720;
 float64_t const TIME_STEP = 0.1;
+float64_t const TIME_LIMIT = 0.3;
 
 ///
 ///	Globals (sigh)...
@@ -253,6 +254,7 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR cmdln, INT)
 				float64_t wallTimeElapsed = wallTime - wallTimeLast;
 				wallTimeLast = wallTime;
 
+				wallTimeElapsed = (wallTimeElapsed > TIME_LIMIT) ? TIME_LIMIT: wallTimeElapsed;
 				wallTimeAccum += wallTimeElapsed;
 				while (wallTimeAccum >= TIME_STEP)
 				{

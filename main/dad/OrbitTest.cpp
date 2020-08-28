@@ -96,6 +96,10 @@ bool OrbitTest::update(float64_t t, float64_t dt)
 	_context["projMatrix"] = projMatrix;
 	_context["viewProjMatrix"] = projMatrix * viewMatrix;
 
+	///	dt is in seconds.  however, orbit::System::update() takes
+	///	a time step of days.  therefore, if dt is 0.1 that translates
+	///	to 8640 seconds (where 86400s is one day).  this happens 10 times
+	///	a second, so, 1 day ticks off per second on screen.
 	_orbitalSystem.update(dt);
 
 	///	return true to exit testing (false to continue)

@@ -10,6 +10,7 @@
 #include <lucid/gal/VertexBuffer.h>
 #include <lucid/gal/Pipeline.h>
 #include <lucid/math/Scalar.h>
+#include <algorithm>
 
 namespace  math = ::lucid:: math;
 namespace   gal = ::lucid::  gal;
@@ -191,6 +192,29 @@ namespace orbit {
 
 	void Renderer::render(gigl::Context const &context)
 	{
+		/// test {
+		///	sort spheres back to front (for alpha blending)
+		gal::Vector3 viewPosition = context.lookup("viewPosition").as<gal::Vector3>();
+		struct Predicate
+		{
+			gal::Vector3 viewPosition;
+
+			Predicate(gal::Vector3 const &viewPosition)
+				: viewPosition(viewPosition)
+			{
+			}
+
+			inline bool operator()(SphereInstance const &lhs, SphereInstance const &rhs) const
+			{
+				gal::Vector3 a = lhs.position - viewPosition;
+				gal::Vector3 b = rhs.position - viewPosition;
+
+				return math::lsq(a) > math::lsq(b);
+			}
+		};
+		std::sort(_sphereBuffer.begin(), _sphereBuffer.end(), Predicate(viewPosition));
+		/// } test
+
 		batchedRender(context, _sphereBuffer, _sphereMesh.get(), _sphereInstances.get(), size_t(BATCH_MAXIMUM));
 		batchedRender(context,   _maskBuffer,   _maskMesh.get(),   _maskInstances.get(), size_t(BATCH_MAXIMUM));
 		batchedRender(context,  _orbitBuffer,  _orbitMesh.get(),  _orbitInstances.get(), size_t(BATCH_MAXIMUM));
