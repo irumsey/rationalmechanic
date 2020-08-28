@@ -25,7 +25,8 @@ namespace core {
 namespace lucid {
 namespace orbit {
 
-	struct Properties;
+	struct PhysicalProperties;
+	struct RenderProperties;
 	struct Elements;
 	class  Frame;
 
@@ -68,10 +69,14 @@ namespace orbit {
 
 		bool lookup(Entry &entry, std::string const &target) const;
 			 			 
-		bool lookup(Properties &properties, std::string const &target) const;
+		bool lookup(PhysicalProperties &properties, std::string const &target) const;
 			 
-		bool lookup(Properties &properties, size_t target) const;
+		bool lookup(PhysicalProperties &properties, size_t target) const;
 			 
+		bool lookup(RenderProperties &properties, std::string const &target) const;
+
+		bool lookup(RenderProperties &properties, size_t target) const;
+
 		bool lookup(Elements &elements, std::string const &target, scalar_t jdn) const;
 			 
 		bool lookup(Elements &elements, size_t target, scalar_t jdn) const;
@@ -85,12 +90,14 @@ namespace orbit {
 		typedef std::vector<Elements> elements_vec_t;
 
 		typedef std::unordered_map<std::string, Entry> entry_map_t;
-		typedef std::unordered_map<size_t, Properties> properties_map_t;
+		typedef std::unordered_map<size_t, PhysicalProperties> physical_properties_map_t;
+		typedef std::unordered_map<size_t, RenderProperties> render_properties_map_t;
 		typedef std::unordered_map<size_t, elements_vec_t> elements_map_t;
 
 		ordinal_vec_t _order;
 		entry_map_t _entries;
-		properties_map_t _properties;
+		physical_properties_map_t _physicalProperties;
+		render_properties_map_t _renderProperties;
 		elements_map_t _elements;
 
 		LUCID_PREVENT_COPY(Ephemeris);
@@ -118,7 +125,18 @@ namespace orbit {
 		return true;
 	}
 
-	inline bool Ephemeris::lookup(Properties &properties, std::string const &target) const
+	inline bool Ephemeris::lookup(PhysicalProperties &properties, std::string const &target) const
+	{
+		auto iter = _entries.find(target);
+		if (iter == _entries.end())
+			return false;
+
+		Entry const &entry = iter->second;
+
+		return lookup(properties, entry.id);
+	}
+
+	inline bool Ephemeris::lookup(RenderProperties &properties, std::string const &target) const
 	{
 		auto iter = _entries.find(target);
 		if (iter == _entries.end())

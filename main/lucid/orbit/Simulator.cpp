@@ -45,17 +45,15 @@ namespace orbit {
 
 		theEphemeris().lookup(body->elements[0], body->id, _dayNumber);
 
-		Properties centerProperties;
+		PhysicalProperties centerProperties;
 		theEphemeris().lookup(centerProperties, center->id);
 
 		kinematicsFromElements(body->relativePosition[0], body->relativeVelocity[0], centerProperties, body->elements[0], _dayNumber);
-		body->absolutePosition[0] = body->relativePosition[0] + center->absolutePosition[0];
+		body->absolutePosition[0] = body->relativePosition[0] + center->absolutePosition[1];
 
-		std::swap(body->elements[0], body->elements[1]);
-
+		std::swap(body->        elements[0], body->        elements[1]);
 		std::swap(body->relativePosition[0], body->relativePosition[1]);
 		std::swap(body->absolutePosition[0], body->absolutePosition[1]);
-
 		std::swap(body->relativeVelocity[0], body->relativeVelocity[1]);
 
 		LUCID_PROFILE_END();
@@ -74,6 +72,7 @@ namespace orbit {
 	{
 		shutdown();
 
+		///	TBD: implement
 	}
 
 	void Simulator::shutdown()
@@ -88,8 +87,7 @@ namespace orbit {
 		frame->apply(this);
 		for (Frame *child = frame->firstChild; nullptr != child; child = child->nextSibling)
 		{
-			///	recursive, i doubt the tree will be too "deep"
-			///	example: sun <- earth <- moon <- apollo lander (arrow points to parent so, in this example, depth of 4) 
+			///	recursive example: sun <- earth <- moon <- apollo lander (arrow points to parent so, in this example, depth of 4) 
 			simulate(child);
 		}
 	}

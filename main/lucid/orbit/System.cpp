@@ -116,7 +116,7 @@ namespace /* anonymous */ {
 	{
 		LUCID_VALIDATE(nullptr != _root, "attempt to use uninitialized system");
 
-		_dayNumber[0] = _dayNumber[0] + delta;
+		_dayNumber[0] = _dayNumber[1] + delta;
 		std::swap(_dayNumber[0], _dayNumber[1]);
 
 		_simulator.simulate(_root, _dayNumber[1], delta);

@@ -96,7 +96,7 @@ bool OrbitTest::update(float64_t t, float64_t dt)
 	_context["projMatrix"] = projMatrix;
 	_context["viewProjMatrix"] = projMatrix * viewMatrix;
 
-	_orbitalSystem.update(0.1);
+	_orbitalSystem.update(dt);
 
 	///	return true to exit testing (false to continue)
 	return false;

@@ -57,8 +57,8 @@ bufferUsage = {
 
 #	index buffer format
 indexBufferFormat = {
-	"FORMAT_UINT16" : 0,
-	"FORMAT_UINT32" : 1,
+	'FORMAT_UINT16' : 0,
+	'FORMAT_UINT32' : 1,
 }
 
 #	filter state
@@ -605,9 +605,9 @@ def bootCameraFromFile(srcPath, dstPath):
 #
 
 orbitalFrameType = {
-	'dynamic_point' : 1,
-	'orbital_body'  : 2,
-	'dynamic_body'  : 3
+	'DYNAMIC_POINT' : 1,
+	'ORBITAL_BODY'  : 2,
+	'DYNAMIC_BODY'  : 3
 }
 
 onOrbitalElement = [
@@ -627,14 +627,14 @@ onOrbitalElement = [
 ]
 
 def bootFrameDynamicPoint(dst, frame):
-	bootUnsigned(dst, orbitalFrameType['dynamic_point'])
+	bootUnsigned(dst, orbitalFrameType['DYNAMIC_POINT'])
 	bootUnsigned(dst, frame['hid'])
 	bootString(dst, frame['target'])
 	bootString(dst, frame['description'])
 	bootString(dst, frame['center'])
 
 def bootFrameOrbitalBody(dst, frame):
-	bootUnsigned(dst, orbitalFrameType['orbital_body'])
+	bootUnsigned(dst, orbitalFrameType['ORBITAL_BODY'])
 	bootUnsigned(dst, frame['hid'])
 	bootString(dst, frame['target'])
 	bootString(dst, frame['description'])
@@ -642,9 +642,13 @@ def bootFrameOrbitalBody(dst, frame):
 
 	properties = frame['properties']
 
-	bootDouble(dst, properties['GM'])
-	bootDouble(dst, properties['mass'])
-	bootDouble(dst, properties['radius'])
+	bootDouble(dst, properties['physical']['GM'])
+	bootDouble(dst, properties['physical']['mass'])
+	bootDouble(dst, properties['physical']['radius'])
+
+	bootColor(dst, properties['render']['color'])
+	bootFloat(dst, properties['render']['emit'])
+	bootFloat(dst, properties['render']['scale'])
 
 	elements = frame['elements']
 	bootUnsigned(dst, len(elements))
@@ -658,16 +662,16 @@ def bootFrameOrbitalBody(dst, frame):
 			index = index + 1
 
 def bootFrameDynamicBody(dst, frame):
-	bootUnsigned(dst, orbitalFrameType['dynamic_body'])
+	bootUnsigned(dst, orbitalFrameType['DYNAMIC_BODY'])
 	bootUnsigned(dst, frame['hid'])
 	bootString(dst, frame['target'])
 	bootString(dst, frame['description'])
 	bootString(dst, frame['center'])
 
 bootFrameType = {
-	'dynamic_point' : bootFrameDynamicPoint,
-	 'orbital_body' : bootFrameOrbitalBody,
-	 'dynamic_body' : bootFrameDynamicBody
+	'DYNAMIC_POINT' : bootFrameDynamicPoint,
+	 'ORBITAL_BODY' : bootFrameOrbitalBody,
+	 'DYNAMIC_BODY' : bootFrameDynamicBody
 }
 
 def bootEphemerisFrame(dst, frame):

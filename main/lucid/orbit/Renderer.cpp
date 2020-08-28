@@ -18,6 +18,11 @@ namespace orbit = ::lucid::orbit;
 
 namespace { /// anonymous
 
+	inline orbit::Ephemeris &theEphemeris()
+	{
+		return orbit::Ephemeris::instance();
+	}
+
 	orbit::scalar_t const meters_per_ru = orbit::constants::meters_per_ru<orbit::scalar_t>();
 	orbit::scalar_t const rus_per_meter = orbit::constants::rus_per_meter<orbit::scalar_t>();
 
@@ -97,24 +102,34 @@ namespace orbit {
 
 	void Renderer::evaluate(OrbitalBody *body)
 	{
-		///	TBD: use interpolant to interpolate between position0 and position1
-		///	TBD: use interpolant to interpolate between rotation0 and rotation1
-		///	TBD: use interpolant to interpolate between elements0 and elements1
-		///	TBD: data drive the sphere's scale and color
 		///	TBD: data drive line width and color
 		///	TBD: data drive domain of orbit
 		///	TBD: note not all orbital bodies will be spheres (they might be cool spacecraft)
 
-		Elements const &elements = body->elements[1];
+		RenderProperties properties;
+		theEphemeris().lookup(properties, body->id);
 
-		float32_t  a = scale(elements. A);
-		float32_t  e = cast (elements.EC);
+		Elements const *elements = body->elements;
+
+		float32_t  a = math::lerp(_interpolant, scale(elements[0]. A), scale(elements[1]. A));
+		float32_t  e = math::lerp(_interpolant, cast (elements[0].EC), cast (elements[1].EC));
 		float32_t hu = a * (1.f - e * e);
 
+		gal::Quaternion rotation[2] = {
+			math::quaternionFromMatrix(cast(rotationFromElements(elements[0]))),
+			math::quaternionFromMatrix(cast(rotationFromElements(elements[1])))
+		};
+
+		gal::Vector3 position[2] = {
+			scale(body->absolutePosition[0]),
+			scale(body->absolutePosition[1]),
+		};
+
 		SphereInstance sphere;
-		sphere.position = scale(body->absolutePosition[1]);
-		sphere.scale = 5.f;
-		sphere.color = gal::Color(0, 1, 0, 1);
+		sphere.position = math::lerp(_interpolant, position[0], position[1]);
+		sphere.scale = properties.scale;
+		sphere.color = properties.color;
+		sphere.color.a = properties.emit;
 		_sphereBuffer.push_back(sphere);
 
 		MaskInstance mask;
@@ -127,7 +142,7 @@ namespace orbit {
 		orbit.lineColor = gal::Color(0, 0, 1, 1);
 		orbit.lineWidth = 0.5f;
 		orbit.position = sphere.position;
-		orbit.rotation = math::quaternionFromMatrix(cast(rotationFromElements(elements)));
+		orbit.rotation = math::slerp(_interpolant, rotation[0], rotation[1]);
 		_orbitBuffer.push_back(orbit);
 	}
 

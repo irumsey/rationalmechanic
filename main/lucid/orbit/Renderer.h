@@ -1,11 +1,5 @@
 #pragma once
 
-///
-///	Important note: this is the only place non-orbit data types may be used.
-///	Justification : orbit uses it's own data types, such as scalar_t in an attempt
-///	at accuracy.  however, in order to render, gal uses types such as float32_t.
-///
-
 #include <memory>
 #include <vector>
 #include <lucid/core/Noncopyable.h>

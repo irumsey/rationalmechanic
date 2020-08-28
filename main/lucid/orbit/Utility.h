@@ -26,7 +26,7 @@ namespace orbit {
 	///
 	///
 	///
-	inline void kinematicsFromElements(vector3_t &position, vector3_t &velocity, Properties const &centerProperties, Elements const &targetElements, scalar_t jdn)
+	inline void kinematicsFromElements(vector3_t &position, vector3_t &velocity, PhysicalProperties const &centerProperties, Elements const &targetElements, scalar_t jdn)
 	{
 		scalar_t const twopi = lucid::math::constants::two_pi<scalar_t>();
 		scalar_t const tolsq = lucid::math::constants::tol_tol<scalar_t>();

@@ -42,46 +42,70 @@ namespace orbit {
 		reader.read(frameCount);
 		for (size_t frameIndex = 0; frameIndex < frameCount; ++frameIndex)
 		{
-			Entry entry;
+			Entry target;
 
-			reader.read(&entry.type, sizeof(Entry::TYPE));
-			reader.read(entry.id);
-			reader.read(entry.name);
-			reader.read(entry.description);
+			reader.read(&target.type, sizeof(Entry::TYPE));
+			reader.read(target.id);
+			reader.read(target.name);
+			reader.read(target.description);
 			
-			std::string center;
-			reader.read(center);
+			std::string centerName;
+			reader.read(centerName);
 
-			_order.push_back(entry.name);
-			_entries.insert(std::make_pair(entry.name, entry));
+			Entry center;
+			lookup(center, centerName);
+
+			target.cid = center.id;
+
+			_order.push_back(target.name);
+			_entries.insert(std::make_pair(target.name, target));
 
 			///	TBD: break this, and the other types, out into their own functions...
-			///	for now, the only other type, dynamic body, is not implemented
-			if (Entry::TYPE_ORBITAL_BODY == entry.type)
+			///	for now, orbital body is the only type with extra information
+			if (Entry::TYPE_ORBITAL_BODY == target.type)
 			{
-				Properties properties;
+				PhysicalProperties physicalProperties;
 
-				reader.read(properties.GM);
-				reader.read(properties.mass);
-				reader.read(properties.radius);
+				reader.read(physicalProperties.GM);
+				reader.read(physicalProperties.mass);
+				reader.read(physicalProperties.radius);
 
-				_properties.insert(std::make_pair(entry.id, properties));
+				_physicalProperties.insert(std::make_pair(target.id, physicalProperties));
+
+				RenderProperties renderProperties;
+
+				reader.read(&renderProperties.color, sizeof(gal::Color));
+				reader.read(renderProperties.emit);
+				reader.read(renderProperties.scale);
+				
+				_renderProperties.insert(std::make_pair(target.id, renderProperties));
 
 				size_t elementsCount = 0;
 				reader.read(elementsCount);
 
-				elements_vec_t blah(elementsCount);
+				elements_vec_t pluralElements(elementsCount);
 				for (size_t i = 0; i < elementsCount; ++i)
-					reader.read(&blah[i], sizeof(Elements));
-				_elements.insert(std::make_pair(entry.id, blah));
+					reader.read(&pluralElements[i], sizeof(Elements));
+				_elements.insert(std::make_pair(target.id, pluralElements));
 			}
 		}
 	}
 
-	bool Ephemeris::lookup(Properties &properties, size_t target) const
+	bool Ephemeris::lookup(PhysicalProperties &properties, size_t target) const
 	{
-		auto iter = _properties.find(target);
-		if (iter == _properties.end())
+		auto iter = _physicalProperties.find(target);
+		if (iter == _physicalProperties.end())
+			return false;
+
+		properties = iter->second;
+
+		return true;
+	}
+
+	bool Ephemeris::lookup(RenderProperties &properties, size_t target) const
+	{
+		auto iter = _renderProperties.find(target);
+		if (iter == _renderProperties.end())
 			return false;
 
 		properties = iter->second;
@@ -123,7 +147,6 @@ namespace orbit {
 		}
 
 		///	} test
-
 		elements = entries[index];
 
 		return true;

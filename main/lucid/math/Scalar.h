@@ -45,7 +45,7 @@ namespace math {
 	///	interpolate
 	///
 	///	linear interpolation from a to b.
-	template<typename T> inline T interp(T const &t, T const &a, T const &b)
+	template<typename T, typename U> inline U lerp(T const &t, U const &a, U const &b)
 	{
 		return (b - a) * t + a;
 	}

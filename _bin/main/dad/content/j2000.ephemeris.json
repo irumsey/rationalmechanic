@@ -39,23 +39,32 @@
 	"frames" :
 	[
     {
-      "type" : "dynamic_point",
+      "type" : "DYNAMIC_POINT",
       "hid" : 0,
       "target" : "SSB",
       "description" : "Solar System Barycenter",
       "center" : "NONE"
     },
     {
-      "type" : "orbital_body",
+      "type" : "ORBITAL_BODY",
       "hid" : 10,
       "target" : "Sun",
       "description" : "",
       "center" : "SSB",
       "properties" :
       {
-        "GM" : 1.3271244004193938e20,
-        "mass" : 1.988500e30,
-        "radius" : 6.96340000e08
+        "physical" :
+        {
+          "GM" : 1.3271244004193938e20,
+          "mass" : 1.988500e30,
+          "radius" : 6.96340000e08
+        },
+        "render" :
+        {
+          "color" : [ 1, 1, 0, 1 ],
+          "emit" : 1.0,
+          "scale" : 9.0
+        }
       },
       "elements" :
       [
@@ -66,16 +75,25 @@
       ]
     },
     {
-      "type" : "orbital_body",
+      "type" : "ORBITAL_BODY",
       "hid" : 199,
       "target" : "Mercury",
       "description" : "",
       "center" : "Sun",
       "properties" :
       {
-        "GM" : 2.203178e13,
-        "mass" : 3.302e23,
-        "radius" : 2.440000e06
+        "physical" :
+        {
+          "GM" : 2.203178e13,
+          "mass" : 3.302e23,
+          "radius" : 2.440000e06
+        },
+        "render" :
+        {
+          "color" : [ 0.7, 0.7, 0.7, 1 ],
+          "emit" : 0,
+          "scale" : 3.0
+        }
       },
       "elements" :
       [
@@ -86,16 +104,25 @@
       ]
     },
     {
-      "type" : "orbital_body",
+      "type" : "ORBITAL_BODY",
       "hid" : 299,
       "target" : "Venus",
       "description" : "",
       "center" : "Sun",
       "properties" :
       {
-        "GM" : 3.24858592e14,
-        "mass" : 4.8685e24,
-        "radius" : 6.051840e06
+        "physical" :
+        {
+          "GM" : 3.24858592e14,
+          "mass" : 4.8685e24,
+          "radius" : 6.051840e06
+        },
+        "render" :
+        {
+          "color" : [ 0, 1, 0, 1 ],
+          "emit" : 0,
+          "scale" : 3.0
+        }
       },
       "elements" :
       [
@@ -106,16 +133,25 @@
       ]
     },    
     {
-      "type" : "orbital_body",
+      "type" : "ORBITAL_BODY",
       "hid" : 399,
       "target" : "Earth",
       "description" : "",
       "center" : "Sun",
       "properties" :
       {
-        "GM" : 3.98600435436e14,
-        "mass" : 5.97219e24,
-        "radius" : 6.37101e06
+        "physical" :
+        {
+          "GM" : 3.98600435436e14,
+          "mass" : 5.97219e24,
+          "radius" : 6.37101e06
+        },
+        "render" :
+        {
+          "color" : [ 0, 0, 1, 1 ],
+          "emit" : 0,
+          "scale" : 3.0
+        }
       },
       "elements" :
       [
@@ -127,16 +163,25 @@
       ]
     },
     {
-      "type" : "orbital_body",
+      "type" : "ORBITAL_BODY",
       "hid" : 301,
       "target" : "Moon",
       "description" : "",
       "center" : "Earth",
       "properties" :
       {
-        "GM" : 4.902800066e12,
-        "mass" : 7.349e22,
-        "radius" : 1.737530e06
+        "physical" :
+        {
+          "GM" : 4.902800066e12,
+          "mass" : 7.349e22,
+          "radius" : 1.737530e06
+        },
+        "render" :
+        {
+          "color" : [ 0.9, 0.9, 0.9, 1 ],
+          "emit" : 0,
+          "scale" : 1.0
+        }
       },
       "elements" :
       [
@@ -147,16 +192,25 @@
       ]
     },
     {
-      "type" : "orbital_body",
+      "type" : "ORBITAL_BODY",
       "hid" : 499,
       "target" : "Mars",
       "description" : "",
       "center" : "Sun",
       "properties" :
       {
-        "GM" : 4.2828375214e13,
-        "mass" : 6.4171e23,
-        "radius" : 3.38992e06
+        "physical" :
+        {
+          "GM" : 4.2828375214e13,
+          "mass" : 6.4171e23,
+          "radius" : 3.38992e06
+        },
+        "render" :
+        {
+          "color" : [ 1, 0, 0, 1 ],
+          "emit" : 0,
+          "scale" : 3.0
+        }
       },
       "elements" :
       [
@@ -167,16 +221,25 @@
       ]
     },
     {
-      "type" : "orbital_body",
+      "type" : "ORBITAL_BODY",
       "hid" : 599,
       "target" : "Jupiter",
       "description" : "",
       "center" : "Sun",
       "properties" :
       {
-        "GM" : 1.26686534911e17,
-        "mass" : 1.89813e27,
-        "radius" : 6.991100e07
+        "physical" :
+        {
+          "GM" : 1.26686534911e17,
+          "mass" : 1.89813e27,
+          "radius" : 6.991100e07
+        },
+        "render" :
+        {
+          "color" : [ 0, 1, 0, 1 ],
+          "emit" : 0,
+          "scale" : 3.0
+        }
       },
       "elements" :
       [
@@ -187,16 +250,25 @@
       ]
     },
     {
-      "type" : "orbital_body",
+      "type" : "ORBITAL_BODY",
       "hid" : 699,
       "target" : "Saturn",
       "description" : "",
       "center" : "Sun",
       "properties" :
       {
-        "GM" : 3.7931206159e16,
-        "mass" : 5.6834e26,
-        "radius" : 6.0268e07
+        "physical" :
+        {
+          "GM" : 3.7931206159e16,
+          "mass" : 5.6834e26,
+          "radius" : 6.0268e07
+        },
+        "render" :
+        {
+          "color" : [ 0, 1, 0, 1 ],
+          "emit" : 0,
+          "scale" : 3.0
+        }
       },
       "elements" :
       [
@@ -206,16 +278,25 @@
       ]
     },
     {
-      "type" : "orbital_body",
+      "type" : "ORBITAL_BODY",
       "hid" : 799,
       "target" : "Uranus",
       "description" : "",
       "center" : "Sun",
       "properties" :
       {
-        "GM" : 5.793951322e15,
-        "mass" : 8.6813e25,
-        "radius" : 2.5362e07
+        "physical" :
+        {
+          "GM" : 5.793951322e15,
+          "mass" : 8.6813e25,
+          "radius" : 2.5362e07
+        },
+        "render" :
+        {
+          "color" : [ 0, 1, 0, 1 ],
+          "emit" : 0,
+          "scale" : 3.0
+        }
       },
       "elements" :
       [
@@ -226,16 +307,25 @@
       ]
     },
     {
-      "type" : "orbital_body",
+      "type" : "ORBITAL_BODY",
       "hid" : 899,
       "target" : "Neptune",
       "description" : "",
       "center" : "Sun",
       "properties" :
       {
-        "GM" : 6.83510227e15,
-        "mass" : 1.02413e26,
-        "radius" : 2.4624e07
+        "physical" :
+        {
+          "GM" : 6.83510227e15,
+          "mass" : 1.02413e26,
+          "radius" : 2.4624e07
+        },
+        "render" :
+        {
+          "color" : [ 0, 1, 0, 1 ],
+          "emit" : 0,
+          "scale" : 3.0
+        }
       },
       "elements" :
       [
@@ -244,16 +334,25 @@
       ]
     },
     {
-      "type" : "orbital_body",
+      "type" : "ORBITAL_BODY",
       "hid" : 999,
       "target" : "Pluto",
       "description" : "",
       "center" : "Sun",
       "properties" :
       {
-        "GM" : 8.6933907803e11,
-        "mass" : 1.307e22,
-        "radius" : 1.1883e06
+        "physical" :
+        {
+          "GM" : 8.6933907803e11,
+          "mass" : 1.307e22,
+          "radius" : 1.1883e06  
+        },
+        "render" :
+        {
+          "color" : [ 0, 1, 0, 1 ],
+          "emit" : 0,
+          "scale" : 3.0
+        }
       },
       "elements" :
       [

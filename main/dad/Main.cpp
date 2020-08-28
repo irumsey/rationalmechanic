@@ -89,7 +89,7 @@ void handleMouseInput(HRAWINPUT hInput)
 ///	(ie no part of the game should use its own clock.)
 void onUpdate()
 {
-	LUCID_PROFILE_BEGIN("Simulation");
+	LUCID_PROFILE_BEGIN("Update");
 
 	session.onUpdate(simTime, TIME_STEP);
 
@@ -249,27 +249,20 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR cmdln, INT)
 			{
 				LUCID_PROFILE_BEGIN("Frame");
 
-				///	update time...
 				wallTime = wallClock->time();
 				float64_t wallTimeElapsed = wallTime - wallTimeLast;
 				wallTimeLast = wallTime;
 
 				wallTimeAccum += wallTimeElapsed;
-
-				///	render...
-				::onRender();
-
-				///	TBD: user input...
-
-				///	simulate...
 				while (wallTimeAccum >= TIME_STEP)
 				{
 					simTime += TIME_STEP;
 					::onUpdate();
 					wallTimeAccum -= TIME_STEP;
 				}
-
 				frameInterpolant = (float32_t)(wallTimeAccum / TIME_STEP);
+
+				::onRender();
 
 				LUCID_PROFILE_END();
 			}
