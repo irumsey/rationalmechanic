@@ -11,9 +11,10 @@ namespace lucid {
 namespace math {
 namespace constants {
 
-		LUCID_CONSTANT(      zero, 0.0)
-		LUCID_CONSTANT(       one, 1.0)
-		LUCID_CONSTANT(      half, 0.5)
+		LUCID_CONSTANT(      zero, 0.00)
+		LUCID_CONSTANT(       one, 1.00)
+		LUCID_CONSTANT(      half, 0.50)
+		LUCID_CONSTANT(   quarter, 0.25)
 
 		LUCID_CONSTANT(    two_pi, 6.283185307179586476925286766559)
 		LUCID_CONSTANT(        pi, 3.141592653589793238462643383279)

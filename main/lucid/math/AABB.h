@@ -16,8 +16,8 @@ namespace math {
 	///
 	template<typename T, int DIM> struct AABB
 	{
-		Vector<T, DIM> min = Vector<T, DIM>(constants::pos_inf<T>(), constants::pos_inf<T>(), constants::pos_inf<T>());
-		Vector<T, DIM> max = Vector<T, DIM>(constants::neg_inf<T>(), constants::neg_inf<T>(), constants::neg_inf<T>());
+		Vector<T, DIM> min;
+		Vector<T, DIM> max;
 
 		AABB() = default;
 
@@ -33,6 +33,87 @@ namespace math {
 		}
 
 		Vector<T, DIM> extent() const
+		{
+			return constants::half<T>() * (max - min);
+		}
+	};
+
+	///
+	///
+	///
+	template<typename T> struct AABB<T,1>
+	{
+		T min = constants::neg_inf<T>();
+		T max = constants::pos_inf<T>();
+
+		AABB() = default;
+
+		AABB(T const &min, T const &max)
+			: min(min)
+			, max(max)
+		{
+		}
+
+		T center() const
+		{
+			return constants::half<T>() * (max + min);
+		}
+
+		T extent() const
+		{
+			return constants::half<T>() * (max - min);
+		}
+	};
+
+	///
+	///
+	///
+	template<typename T> struct AABB<T,2>
+	{
+		Vector<T, 2> min = Vector<T,2>(constants::neg_inf<T>(), constants::neg_inf<T>());
+		Vector<T, 2> max = Vector<T,2>(constants::pos_inf<T>(), constants::pos_inf<T>());
+
+		AABB() = default;
+
+		AABB(Vector<T, 2> const &min, Vector<T, 2> const &max)
+			: min(min)
+			, max(max)
+		{
+		}
+
+		Vector<T, 2> center() const
+		{
+			return constants::half<T>() * (max + min);
+		}
+
+		Vector<T, 2> extent() const
+		{
+			return constants::half<T>() * (max - min);
+		}
+	};
+
+	///
+	///
+	///
+	template<typename T> struct AABB<T,3>
+	{
+		Vector<T, 3> min = Vector<T,3>(constants::neg_inf<T>(), constants::neg_inf<T>(), constants::neg_inf<T>());
+		Vector<T, 3> max = Vector<T,3>(constants::pos_inf<T>(), constants::pos_inf<T>(), constants::pos_inf<T>());
+
+		AABB() = default;
+
+		AABB(Vector<T, 3> const &min, Vector<T, 3> const &max)
+			: min(min)
+			, max(max)
+		{
+		}
+
+		Vector<T, 3> center() const
+		{
+			return constants::half<T>() * (max + min);
+		}
+
+		Vector<T, 3> extent() const
 		{
 			return constants::half<T>() * (max - min);
 		}

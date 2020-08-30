@@ -318,8 +318,5 @@ namespace math {
 		return (xmax - xmin) * (ymax - ymin);
 	}
 
-
-
-
 }	///	math
 }	///	lucid

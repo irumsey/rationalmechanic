@@ -12,6 +12,7 @@
     <ClInclude Include="Utility.h" />
     <ClInclude Include="System.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Octree.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Frame.cpp" />
@@ -19,5 +20,6 @@
     <ClCompile Include="Simulator.cpp" />
     <ClCompile Include="System.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Octree.cpp" />
   </ItemGroup>
 </Project>

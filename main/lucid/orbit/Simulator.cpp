@@ -49,6 +49,8 @@ namespace orbit {
 		theEphemeris().lookup(centerProperties, center->id);
 
 		kinematicsFromElements(body->relativePosition[0], body->relativeVelocity[0], centerProperties, body->elements[0], _dayNumber);
+
+		///	the center, or parent, frame has already been updated and "swaped"
 		body->absolutePosition[0] = body->relativePosition[0] + center->absolutePosition[1];
 
 		std::swap(body->        elements[0], body->        elements[1]);
