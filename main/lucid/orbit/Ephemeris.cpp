@@ -74,8 +74,8 @@ namespace orbit {
 
 				RenderProperties renderProperties;
 
+				reader.read(renderProperties.mesh);
 				reader.read(&renderProperties.color, sizeof(gal::Color));
-				reader.read(renderProperties.emit);
 				reader.read(renderProperties.scale);
 				
 				_renderProperties.insert(std::make_pair(target.id, renderProperties));

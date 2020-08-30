@@ -105,7 +105,7 @@ namespace orbit {
 	///	DynamicBody
 	///
 	///	Body with complex orbital characteristics: long term thrust, perturbations via
-	///	multiple attractors, etc.
+	///	multiple attractors, firing thrusters all over the place, etc.
 	class DynamicBody : public Frame
 	{
 	public:

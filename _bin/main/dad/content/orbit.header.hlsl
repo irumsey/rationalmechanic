@@ -7,10 +7,10 @@ struct InputVertex
 	float2     select : LOCATION2;
 
 	float4 parameters : LOCATION3;
-	float1  lineWidth : LOCATION4;
-	float4  lineColor : LOCATION5;
-	float3     center : LOCATION6;
-	float4   rotation : LOCATION7;
+	float3     center : LOCATION4;
+	float4   rotation : LOCATION5;
+	float4  lineColor : LOCATION6;
+	float1  lineWidth : LOCATION7;
 };
 
 struct OutputVertex

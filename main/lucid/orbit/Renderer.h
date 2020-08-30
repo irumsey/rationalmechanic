@@ -72,11 +72,11 @@ namespace orbit {
 
 		struct OrbitInstance
 		{
-			::lucid::gal::Vector4 parameters; // hu, e, theta0, theta1
-			float32_t lineWidth;
-			::lucid::gal::Color lineColor;
+			::lucid::gal::Vector4 parameters; // hu, e, theta_0, theta_1
 			::lucid::gal::Vector3 position;
 			::lucid::gal::Quaternion rotation;
+			::lucid::gal::Color lineColor;
+			float32_t lineWidth;
 		};
 
 		float32_t _time = 0.f;

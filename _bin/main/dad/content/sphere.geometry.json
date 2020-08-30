@@ -1,0 +1,33 @@
+{
+	"topology" : "TOPOLOGY_TRIANGLE_STRIP",
+
+	"format" :
+	{
+		"elements" :
+		[
+			{ "format" : "FORMAT_FLOAT4", "type" :   "TYPE_VERTEX", "location" : 0, "stream" : 0, "offset" :  0 },
+			{ "format" : "FORMAT_FLOAT4", "type" : "TYPE_INSTANCE", "location" : 1, "stream" : 1, "offset" :  0 },
+			{ "format" : "FORMAT_FLOAT4", "type" : "TYPE_INSTANCE", "location" : 2, "stream" : 1, "offset" :  4 }
+		]
+	},
+
+	"vertices" :
+	{
+		"usage" : "USAGE_STATIC",
+		"stride" : 4,
+		"data" :
+		[
+			-1.0, -1.0, 0.0, 1.0,
+			-1.0,  1.0, 0.0, 0.0,
+				1.0, -1.0, 1.0, 1.0,
+				1.0,  1.0, 1.0, 0.0
+		]
+	},
+	 
+	"indices" :
+	{
+			"usage" :  "USAGE_STATIC",
+		"format" : "FORMAT_UINT16",
+			"data" : [ 0, 1, 2, 3 ]
+	}
+}

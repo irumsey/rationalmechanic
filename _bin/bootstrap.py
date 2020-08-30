@@ -646,8 +646,8 @@ def bootFrameOrbitalBody(dst, frame):
 	bootDouble(dst, properties['physical']['mass'])
 	bootDouble(dst, properties['physical']['radius'])
 
+	bootString(dst, properties['render']['mesh'])
 	bootColor(dst, properties['render']['color'])
-	bootFloat(dst, properties['render']['emit'])
 	bootFloat(dst, properties['render']['scale'])
 
 	elements = frame['elements']

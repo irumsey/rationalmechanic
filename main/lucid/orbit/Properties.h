@@ -22,8 +22,8 @@ namespace orbit {
 	///
 	struct RenderProperties
 	{
+		std::string mesh;
 		gal::Color color;
-		float32_t emit = 0.f;
 		float32_t scale = 0.f;
 	};
 

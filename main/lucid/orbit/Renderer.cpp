@@ -136,7 +136,6 @@ namespace orbit {
 		sphere.position = math::lerp(_interpolant, position[0], position[1]);
 		sphere.scale = renderProperties.scale * scale(physicalProperties.radius);
 		sphere.color = renderProperties.color;
-		sphere.color.a = renderProperties.emit;
 		_sphereBuffer.push_back(sphere);
 
 		MaskInstance mask;

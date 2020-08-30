@@ -61,8 +61,8 @@
         },
         "render" :
         {
+          "mesh"  : "content/sphere.mesh",
           "color" : [ 1, 1, 0, 1 ],
-          "emit" : 1.0,
           "scale" : 20.0
         }
       },
@@ -90,8 +90,8 @@
         },
         "render" :
         {
-          "color" : [ 0.7, 0.7, 0.7, 1 ],
-          "emit" : 0,
+          "mesh"  : "content/sphere.mesh",
+          "color" : [ 0.7, 0.7, 0.7, 0 ],
           "scale" : 1000.0
         }
       },
@@ -119,8 +119,8 @@
         },
         "render" :
         {
-          "color" : [ 0, 1, 0, 1 ],
-          "emit" : 0,
+          "mesh"  : "content/sphere.mesh",
+          "color" : [ 0, 1, 0, 0 ],
           "scale" : 1000.0
         }
       },
@@ -148,8 +148,8 @@
         },
         "render" :
         {
-          "color" : [ 0, 0, 1, 1 ],
-          "emit" : 0,
+          "mesh"  : "content/sphere.mesh",
+          "color" : [ 0, 0, 1, 0 ],
           "scale" : 1000.0
         }
       },
@@ -178,8 +178,8 @@
         },
         "render" :
         {
-          "color" : [ 0.9, 0.9, 0.9, 1 ],
-          "emit" : 0,
+          "mesh"  : "content/sphere.mesh",
+          "color" : [ 0.9, 0.9, 0.9, 0 ],
           "scale" : 1000.0
         }
       },
@@ -207,8 +207,8 @@
         },
         "render" :
         {
-          "color" : [ 1, 0, 0, 1 ],
-          "emit" : 0,
+          "mesh"  : "content/sphere.mesh",
+          "color" : [ 1, 0, 0, 0 ],
           "scale" : 1000.0
         }
       },
@@ -236,8 +236,8 @@
         },
         "render" :
         {
-          "color" : [ 0, 1, 0, 1 ],
-          "emit" : 0,
+          "mesh"  : "content/sphere.mesh",
+          "color" : [ 0, 1, 0, 0 ],
           "scale" : 1000.0
         }
       },
@@ -265,8 +265,8 @@
         },
         "render" :
         {
-          "color" : [ 0, 1, 0, 1 ],
-          "emit" : 0,
+          "mesh"  : "content/sphere.mesh",
+          "color" : [ 0, 1, 0, 0 ],
           "scale" : 1000.0
         }
       },
@@ -293,8 +293,8 @@
         },
         "render" :
         {
-          "color" : [ 0, 1, 0, 1 ],
-          "emit" : 0,
+          "mesh"  : "content/sphere.mesh",
+          "color" : [ 0, 1, 0, 0 ],
           "scale" : 1000.0
         }
       },
@@ -322,8 +322,8 @@
         },
         "render" :
         {
-          "color" : [ 0, 1, 0, 1 ],
-          "emit" : 0,
+          "mesh"  : "content/sphere.mesh",
+          "color" : [ 0, 1, 0, 0 ],
           "scale" : 1000.0
         }
       },
@@ -349,8 +349,8 @@
         },
         "render" :
         {
-          "color" : [ 0, 1, 0, 1 ],
-          "emit" : 0,
+          "mesh"  : "content/sphere.mesh",
+          "color" : [ 0, 1, 0, 0 ],
           "scale" : 1000.0
         }
       },
