@@ -3,6 +3,8 @@
 #include "Elements.h"
 #include "Properties.h"
 #include "Constants.h"
+#include <lucid/gigl/Resources.h>
+#include <lucid/gigl/Mesh.h>
 #include <lucid/math/Algorithm.h>
 #include <lucid/math/Constants.h>
 #include <lucid/core/FileReader.h>
@@ -72,9 +74,11 @@ namespace orbit {
 
 				_physicalProperties.insert(std::make_pair(target.id, physicalProperties));
 
+				std::string meshPath;
 				RenderProperties renderProperties;
 
-				reader.read(renderProperties.mesh);
+				reader.read(meshPath);
+				renderProperties.mesh = gigl::Resources::get<gigl::Mesh>(meshPath);
 				reader.read(&renderProperties.color, sizeof(gal::Color));
 				reader.read(renderProperties.scale);
 				

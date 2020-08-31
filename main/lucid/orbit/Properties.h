@@ -1,8 +1,17 @@
 #pragma once
 
+#include <memory>
 #include <lucid/core/Types.h>
 #include <lucid/gal/Types.h>
 #include <lucid/orbit/Types.h>
+
+namespace lucid {
+namespace gigl {
+
+	class Mesh;
+
+}	///	gigl
+}	///	lucid
 
 namespace lucid {
 namespace orbit {
@@ -22,7 +31,7 @@ namespace orbit {
 	///
 	struct RenderProperties
 	{
-		std::string mesh;
+		std::shared_ptr<gigl::Mesh> mesh;
 		gal::Color color;
 		float32_t scale = 0.f;
 	};

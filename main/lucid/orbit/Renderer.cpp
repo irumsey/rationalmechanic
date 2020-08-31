@@ -4,11 +4,8 @@
 #include "Utility.h"
 #include "Constants.h"
 #include <lucid/gigl/Mesh.h>
-#include <lucid/gigl/Material.h>
 #include <lucid/gigl/Context.h>
 #include <lucid/gigl/Resources.h>
-#include <lucid/gal/VertexBuffer.h>
-#include <lucid/gal/Pipeline.h>
 #include <lucid/math/Scalar.h>
 #include <algorithm>
 
@@ -24,68 +21,14 @@ namespace { /// anonymous
 		return orbit::Ephemeris::instance();
 	}
 
-	orbit::scalar_t const meters_per_RU = orbit::constants::meters_per_RU<orbit::scalar_t>();
-	orbit::scalar_t const RUs_per_meter = orbit::constants::RUs_per_meter<orbit::scalar_t>();
-
-	inline float32_t cast(orbit::scalar_t rhs)
-	{
-		return float32_t(rhs);
-	}
-
-	inline float32_t scale(orbit::scalar_t rhs)
-	{
-		return cast(rhs * RUs_per_meter);
-	}
-
-	inline gal::Vector3 cast(orbit::vector3_t const &rhs)
-	{
-		return gal::Vector3(cast(rhs.x), cast(rhs.y), cast(rhs.z));
-	}
-
-	inline gal::Vector3 scale(orbit::vector3_t const &rhs)
-	{
-		return cast(rhs * RUs_per_meter);
-	}
-
-	inline gal::Matrix3x3 cast(orbit::matrix3x3_t const &rhs)
-	{
-		return gal::Matrix3x3(
-			cast(rhs.xx), cast(rhs.xy), cast(rhs.xz),
-			cast(rhs.yx), cast(rhs.yy), cast(rhs.yz),
-			cast(rhs.zx), cast(rhs.zy), cast(rhs.zz)
-		);
-	}
-
-	template<typename I> void batchedRender(gigl::Context const &context, std::vector<I> const &buffer, gigl::Mesh *mesh, gal::VertexBuffer *batch, size_t batchMaximum)
-	{
-		gal::Pipeline &pipeline = gal::Pipeline::instance();
-
-		size_t totalCount = buffer.size();
-		size_t index = 0;
-
-		std::shared_ptr<gigl::Material> material = mesh->material();
-
-		while (index < totalCount)
-		{
-			size_t count = math::min(totalCount - index, batchMaximum);
-
-			I *instances = (I*)batch->lock();
-				::memcpy(instances, &buffer[index], count * sizeof(I));
-			batch->unlock();
-
-			material->begin(context);
-			pipeline.setVertexStream(1, batch);
-				mesh->drawInstanced(count);
-			material->end();
-
-			index += count;
-		}
-	}
-
 }	/// anonymous
 
 namespace lucid {
 namespace orbit {
+
+	///
+	///
+	///
 
 	Renderer::Renderer()
 	{
@@ -105,7 +48,6 @@ namespace orbit {
 	{
 		///	TBD: data drive line width and color
 		///	TBD: data drive domain of orbit
-		///	TBD: note not all orbital bodies will be spheres (they might be cool spacecraft)
 
 		if (cull(body))
 			return;
@@ -136,12 +78,12 @@ namespace orbit {
 		sphere.position = math::lerp(_interpolant, position[0], position[1]);
 		sphere.scale = renderProperties.scale * scale(physicalProperties.radius);
 		sphere.color = renderProperties.color;
-		_sphereBuffer.push_back(sphere);
+		_batched.addInstance(renderProperties.mesh, sphere);
 
 		MaskInstance mask;
 		mask.position = sphere.position;
 		mask.scale = sphere.scale;
-		_maskBuffer.push_back(mask);
+		_batched.addInstance(_orbitMask, mask);
 
 		OrbitInstance orbit;
 		orbit.parameters = gal::Vector4(hu, e, -3.1415926f, 3.1415926f);
@@ -149,7 +91,7 @@ namespace orbit {
 		orbit.lineWidth = 0.5f;
 		orbit.position = sphere.position;
 		orbit.rotation = math::slerp(_interpolant, rotation[0], rotation[1]);
-		_orbitBuffer.push_back(orbit);
+		_batched.addInstance(_orbitMesh, orbit);
 	}
 
 	void Renderer::evaluate(DynamicBody *body)
@@ -160,27 +102,21 @@ namespace orbit {
 	void Renderer::initialize()
 	{
 		shutdown();
+		_batched.initialize();
 
-		_sphereMesh = gigl::Resources::get<gigl::Mesh>("content/sphere.mesh");
-		_sphereInstances.reset(gal::VertexBuffer::create(gal::VertexBuffer::USAGE_DYNAMIC, BATCH_MAXIMUM, sizeof(SphereInstance)));
+		_batched.createBatch<SphereInstance>(gigl::Resources::get<gigl::Mesh>(     "content/star.mesh"), BATCH_MAXIMUM);
+		_batched.createBatch<SphereInstance>(gigl::Resources::get<gigl::Mesh>(   "content/sphere.mesh"), BATCH_MAXIMUM);
 
-		_maskMesh = gigl::Resources::get<gigl::Mesh>("content/orbitMask.mesh");
-		_maskInstances.reset(gal::VertexBuffer::create(gal::VertexBuffer::USAGE_DYNAMIC, BATCH_MAXIMUM, sizeof(MaskInstance)));
+		_orbitMask = gigl::Resources::get<gigl::Mesh>("content/orbitMask.mesh");
+		_batched.createBatch<  MaskInstance>(_orbitMask, BATCH_MAXIMUM);
 
 		_orbitMesh = gigl::Resources::get<gigl::Mesh>("content/orbit.mesh");
-		_orbitInstances.reset(gal::VertexBuffer::create(gal::VertexBuffer::USAGE_DYNAMIC, BATCH_MAXIMUM, sizeof(OrbitInstance)));
+		_batched.createBatch< OrbitInstance>(_orbitMesh, BATCH_MAXIMUM);
 	}
 
 	void Renderer::shutdown()
 	{
-		_sphereMesh.reset();
-		_sphereInstances.reset();
-
-		_maskMesh.reset();
-		_maskInstances.reset();
-
-		_orbitMesh.reset();
-		_orbitInstances.reset();
+		_batched.shutdown();
 	}
 
 	void Renderer::render(Frame *root, ::lucid::gigl::Context const &context, float32_t time, float32_t interpolant)
@@ -193,17 +129,26 @@ namespace orbit {
 		_viewPosition = context.lookup("viewPosition").as<gal::Vector3>();
 		_viewProjMatrix = context.lookup("viewProjMatrix").as<gal::Matrix4x4>();
 
-		_sphereBuffer.clear();
-		_maskBuffer.clear();
-		_orbitBuffer.clear();
-
-		batch(root);
-		render(context);
+		_batched.clear();
+			batch(root);
+		_batched.render(context);
 
 		LUCID_PROFILE_END();
 	}
 
-	bool Renderer::cull(Frame *frame) const
+	void Renderer::batch(Frame *frame)
+	{
+		if (nullptr == frame)
+			return;
+
+		frame->apply(this);
+		for (Frame *child = frame->firstChild; nullptr != child; child = child->nextSibling)
+		{
+			batch(child);
+		}
+	}
+
+	bool Renderer::cull(Frame *frame)
 	{
 		///	TBD: more sophistication
 		///	for now, just based upon distance to center body
@@ -233,48 +178,6 @@ namespace orbit {
 		};
 
 		return (math::lsq(screenPosition[1] - screenPosition[0]) < 0.004f); 
-	}
-
-	void Renderer::batch(Frame *frame)
-	{
-		if (nullptr == frame)
-			return;
-
-		frame->apply(this);
-		for (Frame *child = frame->firstChild; nullptr != child; child = child->nextSibling)
-		{
-			batch(child);
-		}
-	}
-
-	void Renderer::render(gigl::Context const &context)
-	{
-		/// test {
-		///	sort spheres back to front (for alpha blending)
-		gal::Vector3 viewPosition = context.lookup("viewPosition").as<gal::Vector3>();
-		struct Predicate
-		{
-			gal::Vector3 viewPosition;
-
-			Predicate(gal::Vector3 const &viewPosition)
-				: viewPosition(viewPosition)
-			{
-			}
-
-			inline bool operator()(SphereInstance const &lhs, SphereInstance const &rhs) const
-			{
-				gal::Vector3 a = lhs.position - viewPosition;
-				gal::Vector3 b = rhs.position - viewPosition;
-
-				return math::lsq(a) > math::lsq(b);
-			}
-		};
-		std::sort(_sphereBuffer.begin(), _sphereBuffer.end(), Predicate(viewPosition));
-		/// } test
-
-		batchedRender(context, _sphereBuffer, _sphereMesh.get(), _sphereInstances.get(), size_t(BATCH_MAXIMUM));
-		batchedRender(context,   _maskBuffer,   _maskMesh.get(),   _maskInstances.get(), size_t(BATCH_MAXIMUM));
-		batchedRender(context,  _orbitBuffer,  _orbitMesh.get(),  _orbitInstances.get(), size_t(BATCH_MAXIMUM));
 	}
 
 }	///	orbit

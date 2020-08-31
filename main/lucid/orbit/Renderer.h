@@ -5,15 +5,8 @@
 #include <lucid/core/Noncopyable.h>
 #include <lucid/core/Profiler.h>
 #include <lucid/gal/Types.h>
+#include <lucid/gigl/Batched.h>
 #include <lucid/orbit/Algorithm.h>
-
-namespace lucid {
-namespace gal {
-
-	class VertexBuffer;
-
-}	///	gal
-}	/// lucid
 
 namespace lucid {
 namespace gigl {
@@ -79,29 +72,20 @@ namespace orbit {
 			float32_t lineWidth;
 		};
 
+		std::shared_ptr<gigl::Mesh> _orbitMask;
+		std::shared_ptr<gigl::Mesh> _orbitMesh;
+
 		float32_t _time = 0.f;
 		float32_t _interpolant = 0.f;
 
 		::lucid::gal::Vector3 _viewPosition;
 		::lucid::gal::Matrix4x4 _viewProjMatrix;
 
-		std::vector<SphereInstance> _sphereBuffer;
-		std::shared_ptr<lucid::gigl::Mesh> _sphereMesh;
-		std::shared_ptr<lucid::gal::VertexBuffer> _sphereInstances;
-
-		std::vector<MaskInstance> _maskBuffer;
-		std::shared_ptr<lucid::gigl::Mesh> _maskMesh;
-		std::shared_ptr<lucid::gal::VertexBuffer> _maskInstances;
-
-		std::vector<OrbitInstance> _orbitBuffer;
-		std::shared_ptr<lucid::gigl::Mesh> _orbitMesh;
-		std::shared_ptr<lucid::gal::VertexBuffer> _orbitInstances;
-
-		bool cull(Frame *frame) const;
+		::lucid::gigl::Batched _batched;
 
 		void batch(Frame *frame);
 
-		void render(::lucid::gigl::Context const &context);
+		bool cull(Frame *frame);
 
 		LUCID_PREVENT_COPY(Renderer);
 		LUCID_PREVENT_ASSIGNMENT(Renderer);

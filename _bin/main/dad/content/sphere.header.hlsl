@@ -9,9 +9,6 @@ float3 viewForward;
 float3 viewUp;
 float4x4 viewProjMatrix;
 
-Texture2D normalsTexture;
-SamplerState theSampler;
-
 struct InputVertex
 {
 	float4   corner : LOCATION0;

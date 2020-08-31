@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Batched.h" />
     <ClInclude Include="Camera2D.h" />
     <ClInclude Include="Context.h" />
     <ClInclude Include="Geometry.h" />
@@ -30,6 +31,7 @@
     <ClInclude Include="Stage.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Batched.cpp" />
     <ClCompile Include="Camera2D.cpp" />
     <ClCompile Include="Context.cpp" />
     <ClCompile Include="Geometry.cpp" />

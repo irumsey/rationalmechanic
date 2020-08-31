@@ -1,5 +1,8 @@
 #include "sphere.header.hlsl"
 
+Texture2D normalsTexture;
+SamplerState theSampler;
+
 OutputPixel main(InputPixel input)
 {
 	OutputPixel output = (OutputPixel)0;

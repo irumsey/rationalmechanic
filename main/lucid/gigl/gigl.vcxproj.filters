@@ -10,6 +10,7 @@
     <ClInclude Include="Camera2D.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Stage.h" />
+    <ClInclude Include="Batched.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Primitive.cpp" />
@@ -20,5 +21,6 @@
     <ClCompile Include="Geometry.cpp" />
     <ClCompile Include="Camera2D.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Batched.cpp" />
   </ItemGroup>
 </Project>

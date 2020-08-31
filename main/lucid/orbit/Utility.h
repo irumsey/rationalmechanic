@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <lucid/math/Constants.h>
+#include <lucid/math/Vector.h>
 #include <lucid/math/Matrix.h>
 #include <lucid/orbit/Types.h>
 #include <lucid/orbit/Constants.h>
@@ -14,6 +15,39 @@
 
 namespace lucid {
 namespace orbit {
+
+	///
+	///
+	///
+
+	inline float32_t cast(scalar_t rhs)
+	{
+		return float32_t(rhs);
+	}
+
+	inline float32_t scale(scalar_t rhs)
+	{
+		return cast(rhs * constants::RUs_per_meter<scalar_t>());
+	}
+
+	inline ::lucid::gal::Vector3 cast(vector3_t const &rhs)
+	{
+		return ::lucid::gal::Vector3(cast(rhs.x), cast(rhs.y), cast(rhs.z));
+	}
+
+	inline ::lucid::gal::Vector3 scale(vector3_t const &rhs)
+	{
+		return cast(rhs * constants::RUs_per_meter<scalar_t>());
+	}
+
+	inline ::lucid::gal::Matrix3x3 cast(matrix3x3_t const &rhs)
+	{
+		return gal::Matrix3x3(
+			cast(rhs.xx), cast(rhs.xy), cast(rhs.xz),
+			cast(rhs.yx), cast(rhs.yy), cast(rhs.yz),
+			cast(rhs.zx), cast(rhs.zy), cast(rhs.zz)
+		);
+	}
 
 	///
 	///

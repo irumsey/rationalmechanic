@@ -31,9 +31,5 @@ namespace gigl {
 		LUCID_PREVENT_ASSIGNMENT(Stage);
 	};
 
-	///	
-	///
-	///
-
 }	///	gigl
 }	///	lucid
