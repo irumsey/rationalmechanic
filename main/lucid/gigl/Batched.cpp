@@ -33,7 +33,7 @@ namespace gigl {
 		for (auto iter = _batches.begin(); iter != _batches.end(); ++iter)
 		{
 			Key const &key = iter->first;
-			Batch *batch = iter->second;
+			BaseBatch *batch = iter->second;
 			
 			batch->render(context, key.mesh);
 		}
@@ -44,7 +44,7 @@ namespace gigl {
 		for (auto iter = _batches.begin(); iter != _batches.end(); ++iter)
 		{
 			Key const &key = iter->first;
-			Batch *batch = iter->second;
+			BaseBatch *batch = iter->second;
 
 			batch->clear();
 		}

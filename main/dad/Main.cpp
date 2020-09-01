@@ -210,7 +210,7 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR cmdln, INT)
 		RECT rect;
 		::GetClientRect(hWindow, &rect);
 
-		galSystem.initialize(true, rect.right - rect.left, rect.bottom - rect.top, 2, hWindow);
+		galSystem.initialize(true, rect.right - rect.left, rect.bottom - rect.top, 1, hWindow);
 
 		::ShowWindow(hWindow, SW_SHOW);
 

@@ -27,7 +27,7 @@ namespace gigl {
 
 		void shutdown();
 
-		template<typename I> void createBatch(std::shared_ptr<Mesh> mesh, size_t maximum);
+		template<typename I, typename Pred> void createBatch(std::shared_ptr<Mesh> mesh, size_t maximum);
 
 		template<typename I> void addInstance(std::shared_ptr<Mesh> mesh, I const &instance);
 
@@ -72,7 +72,7 @@ namespace gigl {
 
 		};
 
-		struct Hash
+		struct BatchHash
 		{
 			size_t operator()(Key const &key) const
 			{
@@ -80,7 +80,7 @@ namespace gigl {
 			}
 		};
 
-		struct Equal
+		struct BatchEqual
 		{
 			bool operator()(Key const &lhs, Key const &rhs) const
 			{
@@ -91,11 +91,11 @@ namespace gigl {
 		///
 		///
 		///
-		struct Batch
+		struct BaseBatch
 		{
-			Batch() = default;
+			BaseBatch() = default;
 
-			virtual ~Batch() = default;
+			virtual ~BaseBatch() = default;
 
 			virtual void clear() = 0;
 
@@ -104,25 +104,25 @@ namespace gigl {
 			virtual void render(Context const &context, std::shared_ptr<Mesh> mesh) = 0;
 		};
 
-		typedef std::unordered_map<Key, Batch*, Hash, Equal> batch_map_t;
+		typedef std::unordered_map<Key, BaseBatch*, BatchHash, BatchEqual> batch_map_t;
 		batch_map_t _batches;
 
 		///
 		///
 		///
-		template<typename I> struct Blah : public Batch
+		template<typename I, typename Pred> struct Batch : public BaseBatch
 		{
 			size_t maximum = 0;
 			std::shared_ptr<lucid::gal::VertexBuffer> batch;
 			std::vector<I> instances;
 
-			Blah(size_t maximum)
+			Batch(size_t maximum)
 				: maximum(maximum)
 			{
 				batch.reset(gal::VertexBuffer::create(gal::VertexBuffer::USAGE_DYNAMIC, maximum, sizeof(I)));
 			}
 
-			virtual ~Blah() = default;
+			virtual ~Batch() = default;
 
 			virtual void clear() override
 			{
@@ -138,6 +138,9 @@ namespace gigl {
 			virtual void render(Context const &context, std::shared_ptr<Mesh> mesh) override
 			{
 				lucid::gal::Pipeline &pipeline = lucid::gal::Pipeline::instance();
+
+				gal::Vector3 const &viewPosition = context.lookup("viewPosition").as<gal::Vector3>();
+				std::sort(instances.begin(), instances.end(), Pred(viewPosition));
 
 				size_t totalCount = instances.size();
 				size_t index = 0;
@@ -162,17 +165,17 @@ namespace gigl {
 		};
 	};
 
-	template<typename I> inline void Batched::createBatch(std::shared_ptr<Mesh> mesh, size_t maximum)
+	template<typename I, typename Pred> inline void Batched::createBatch(std::shared_ptr<Mesh> mesh, size_t maximum)
 	{
 		Key key = Key(mesh, TypeID::value<I>());
-		LUCID_VALIDATE(_batches.end() == _batches.find(key), "duplicate mesh found in batched render stage");
-		_batches.insert(std::make_pair(key, new Blah<I>(maximum)));
+		LUCID_VALIDATE(_batches.end() == _batches.find(key), "duplicate mesh/instance pair specified in batched renderer");
+		_batches.insert(std::make_pair(key, new Batch<I,Pred>(maximum)));
 	}
 
 	template<typename I> inline void Batched::addInstance(std::shared_ptr<Mesh> mesh, I const &instance)
 	{
 		auto iter = _batches.find(Key(mesh, TypeID::value<I>()));
-		LUCID_VALIDATE(iter != _batches.end(), "batched instance type not registered");
+		LUCID_VALIDATE(iter != _batches.end(), "batched mesh/instance pair not registered");
 		iter->second->push(&instance);
 	}
 

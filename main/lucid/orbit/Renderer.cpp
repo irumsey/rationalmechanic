@@ -21,6 +21,48 @@ namespace { /// anonymous
 		return orbit::Ephemeris::instance();
 	}
 
+	template<typename T> struct NullSort
+	{
+		NullSort(gal::Vector3 const & /* dummy */)
+		{
+		}
+
+		bool operator()(T const &, T const &) const
+		{
+			return false;
+		}
+	};
+
+	template<typename T> struct Back2Front
+	{
+		gal::Vector3 viewPosition;
+
+		Back2Front(gal::Vector3 const &viewPosition)
+			: viewPosition(viewPosition)
+		{
+		}
+
+		bool operator()(T const &lhs, T const &rhs) const
+		{
+			return math::lsq(lhs.position - viewPosition) > math::lsq(rhs.position - viewPosition);
+		}
+	};
+
+	template<typename T> struct Front2Back
+	{
+		gal::Vector3 viewPosition;
+
+		Front2Back(gal::Vector3 const &viewPosition)
+			: viewPosition(viewPosition)
+		{
+		}
+
+		bool operator()(T const &lhs, T const &rhs) const
+		{
+			return math::lsq(lhs.position - viewPosition) < math::lsq(rhs.position - viewPosition);
+		}
+	};
+
 }	/// anonymous
 
 namespace lucid {
@@ -104,14 +146,14 @@ namespace orbit {
 		shutdown();
 		_batched.initialize();
 
-		_batched.createBatch<SphereInstance>(gigl::Resources::get<gigl::Mesh>(     "content/star.mesh"), BATCH_MAXIMUM);
-		_batched.createBatch<SphereInstance>(gigl::Resources::get<gigl::Mesh>(   "content/sphere.mesh"), BATCH_MAXIMUM);
+		_batched.createBatch<SphereInstance, Back2Front<SphereInstance> >(gigl::Resources::get<gigl::Mesh>(     "content/star.mesh"), BATCH_MAXIMUM);
+		_batched.createBatch<SphereInstance, Back2Front<SphereInstance> >(gigl::Resources::get<gigl::Mesh>(   "content/sphere.mesh"), BATCH_MAXIMUM);
 
 		_orbitMask = gigl::Resources::get<gigl::Mesh>("content/orbitMask.mesh");
-		_batched.createBatch<  MaskInstance>(_orbitMask, BATCH_MAXIMUM);
+		_batched.createBatch<  MaskInstance, NullSort<MaskInstance> >(_orbitMask, BATCH_MAXIMUM);
 
 		_orbitMesh = gigl::Resources::get<gigl::Mesh>("content/orbit.mesh");
-		_batched.createBatch< OrbitInstance>(_orbitMesh, BATCH_MAXIMUM);
+		_batched.createBatch< OrbitInstance, NullSort<OrbitInstance> >(_orbitMesh, BATCH_MAXIMUM);
 	}
 
 	void Renderer::shutdown()

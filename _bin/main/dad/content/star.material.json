@@ -3,6 +3,19 @@
 	{
 		"Samplers" :
 		[
+        {
+          "name" : "theSampler",
+	        "Filter" : "FILTER_MIN_MAG_POINT_MIP_LINEAR",
+	        "AddressU" : "ADDRESS_WRAP",
+	        "AddressV" : "ADDRESS_WRAP",
+	        "AddressW" : "ADDRESS_WRAP",
+	        "lodMipBias" : 0,
+	        "MaxAnisotropy" : 1,
+	        "Compare" : "COMPARISON_NEVER",
+	        "BorderColor" : [0, 0, 0, 0],
+	        "MinLOD" : 0,
+          "MaxLOD" : 1
+        }
 		],
 
 		"RenderStates" :
