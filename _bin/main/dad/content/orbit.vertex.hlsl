@@ -16,7 +16,7 @@ OutputVertex main(InputVertex input)
 	float2 curveTangent = computeConicPoint(hu, eccentricity, theta.y) - curvePosition;
 	float2 curveNormal = -normalize(float2(-curveTangent.y, curveTangent.x));
 
-	float2 vertexDelta = input.lineWidth * curveNormal;
+	float2 vertexDelta = input.scale * curveNormal;
 	float2 innerVertex = curvePosition - vertexDelta;
 	float2 outerVertex = curvePosition + vertexDelta;
 
@@ -25,8 +25,8 @@ OutputVertex main(InputVertex input)
 	output.parameters = input.parameters;
 	output.position = meshVertex;
 	output.theta = theta.x;
-	output.lineWidth = input.lineWidth;
-	output.lineColor = input.lineColor;
+	output.lineWidth = input.scale;
+	output.lineColor = input.color;
 
 	float4x4 worldMatrix = matrixFromQuaternion(input.rotation);
 	float4 worldPosition = mul(worldMatrix, float4(meshVertex, 0, 1));

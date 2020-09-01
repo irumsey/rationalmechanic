@@ -116,23 +116,22 @@ namespace orbit {
 			scale(body->absolutePosition[1]),
 		};
 
-		SphereInstance sphere;
+		MeshInstance sphere;
 		sphere.position = math::lerp(_interpolant, position[0], position[1]);
 		sphere.scale = renderProperties.scale * scale(physicalProperties.radius);
+		sphere.rotation = gal::Quaternion(0, 0, 0, 1);
 		sphere.color = renderProperties.color;
+		sphere.parameters = gal::Vector4(0, 0, 0, 0);
 		_batched.addInstance(renderProperties.mesh, sphere);
 
-		MaskInstance mask;
-		mask.position = sphere.position;
-		mask.scale = sphere.scale;
-		_batched.addInstance(_orbitMask, mask);
+		_batched.addInstance(_orbitMask, sphere);
 
-		OrbitInstance orbit;
-		orbit.parameters = gal::Vector4(hu, e, -3.1415926f, 3.1415926f);
-		orbit.lineColor = gal::Color(0, 0, 1, 1);
-		orbit.lineWidth = 0.5f;
+		MeshInstance orbit;
 		orbit.position = sphere.position;
+		orbit.scale = 0.5f;
 		orbit.rotation = math::slerp(_interpolant, rotation[0], rotation[1]);
+		orbit.color = gal::Color(0, 0, 1, 1);
+		orbit.parameters = gal::Vector4(hu, e, -3.1415926f, 3.1415926f);
 		_batched.addInstance(_orbitMesh, orbit);
 	}
 
@@ -146,14 +145,13 @@ namespace orbit {
 		shutdown();
 		_batched.initialize();
 
-		_batched.createBatch<SphereInstance, Back2Front<SphereInstance> >(gigl::Resources::get<gigl::Mesh>(     "content/star.mesh"), BATCH_MAXIMUM);
-		_batched.createBatch<SphereInstance, Back2Front<SphereInstance> >(gigl::Resources::get<gigl::Mesh>(   "content/sphere.mesh"), BATCH_MAXIMUM);
+		_batched.createBatch<MeshInstance, Back2Front<MeshInstance> >(gigl::Resources::get<gigl::Mesh>(   "content/sphere.mesh"), BATCH_MAXIMUM);
 
 		_orbitMask = gigl::Resources::get<gigl::Mesh>("content/orbitMask.mesh");
-		_batched.createBatch<  MaskInstance, NullSort<MaskInstance> >(_orbitMask, BATCH_MAXIMUM);
+		_batched.createBatch<MeshInstance,   NullSort<MeshInstance> >(_orbitMask, BATCH_MAXIMUM);
 
 		_orbitMesh = gigl::Resources::get<gigl::Mesh>("content/orbit.mesh");
-		_batched.createBatch< OrbitInstance, NullSort<OrbitInstance> >(_orbitMesh, BATCH_MAXIMUM);
+		_batched.createBatch<MeshInstance,    NullSort<MeshInstance> >(_orbitMesh, BATCH_MAXIMUM);
 	}
 
 	void Renderer::shutdown()

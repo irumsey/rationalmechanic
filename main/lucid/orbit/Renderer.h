@@ -50,26 +50,13 @@ namespace orbit {
 	private:
 		enum { BATCH_MAXIMUM = 100 };
 
-		struct SphereInstance
+		struct MeshInstance
 		{
-			::lucid::gal::Vector3 position;
-			float32_t scale;
-			::lucid::gal::Color color;
-		};
-
-		struct MaskInstance
-		{
-			::lucid::gal::Vector3 position;
-			float32_t scale;
-		};
-
-		struct OrbitInstance
-		{
-			::lucid::gal::Vector4 parameters; // hu, e, theta_0, theta_1
-			::lucid::gal::Vector3 position;
-			::lucid::gal::Quaternion rotation;
-			::lucid::gal::Color lineColor;
-			float32_t lineWidth;
+			::lucid::gal::Vector3      position;
+			float32_t                     scale;
+			::lucid::gal::Quaternion   rotation;
+			::lucid::gal::Color           color;
+			::lucid::gal::Vector4    parameters;
 		};
 
 		std::shared_ptr<gigl::Mesh> _orbitMask;

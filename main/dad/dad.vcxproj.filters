@@ -56,9 +56,6 @@
     <FxCompile Include="..\..\_bin\main\dad\content\orbitMask.vertex.hlsl">
       <Filter>content</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\_bin\main\dad\content\star.pixel.hlsl">
-      <Filter>content</Filter>
-    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\_bin\main\dad\content\orbit.header.hlsl">

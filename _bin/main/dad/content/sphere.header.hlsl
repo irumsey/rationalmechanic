@@ -11,9 +11,13 @@ float4x4 viewProjMatrix;
 
 struct InputVertex
 {
-	float4   corner : LOCATION0;
-	float4 position : LOCATION1;
-	float4    color : LOCATION2;
+	float4     corner : LOCATION0;
+
+	float3   position : LOCATION1;
+	float       scale : LOCATION2;
+	float4   rotation : LOCATION3;
+	float4      color : LOCATION4;
+	float4 parameters : LOCATION5;
 };
 
 struct OutputVertex

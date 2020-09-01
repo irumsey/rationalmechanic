@@ -5,7 +5,7 @@ OutputVertex main(InputVertex input)
 	OutputVertex output = (OutputVertex)0;
 
 	float3 position = input.position.xyz;
-	float     scale = input.position.w;
+	float     scale = input.scale;
 
 	float2 corner = scale.xx * input.corner.xy;
 

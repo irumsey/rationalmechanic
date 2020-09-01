@@ -61,8 +61,8 @@
         },
         "render" :
         {
-          "mesh"  : "content/star.mesh",
-          "color" : [ 1, 1, 1, 1 ],
+          "mesh"  : "content/sphere.mesh",
+          "color" : [ 1, 1, 0, 1 ],
           "scale" : 20.0
         }
       },
