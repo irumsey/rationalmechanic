@@ -18,7 +18,7 @@ namespace gigl {
 	void Batched::initialize()
 	{
 		shutdown();
-		/// TBD
+		/// TBD: nothing to do???
 	}
 
 	void Batched::shutdown()
@@ -30,12 +30,10 @@ namespace gigl {
 
 	void Batched::render(Context const &context)
 	{
-		for (auto iter = _batches.begin(); iter != _batches.end(); ++iter)
+		for (auto iter = _order.begin(); iter != _order.end(); ++iter)
 		{
-			Key const &key = iter->first;
-			BaseBatch *batch = iter->second;
-			
-			batch->render(context, key.mesh);
+			Key const &key = *iter;
+			_batches[key]->render(context, key.mesh);
 		}
 	}
 
@@ -44,7 +42,7 @@ namespace gigl {
 		for (auto iter = _batches.begin(); iter != _batches.end(); ++iter)
 		{
 			Key const &key = iter->first;
-			BaseBatch *batch = iter->second;
+			BatchBase *batch = iter->second;
 
 			batch->clear();
 		}

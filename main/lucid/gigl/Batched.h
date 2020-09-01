@@ -16,6 +16,8 @@ namespace gigl {
 	///	Batched
 	///
 	///	Instanced batching
+	///	Note: first, batches are rendered in the order of batch creation.
+	///	Note: second, all instances within the batch are rendered in the order determined using the supplied predicate.
 	class Batched
 	{
 	public:
@@ -91,11 +93,11 @@ namespace gigl {
 		///
 		///
 		///
-		struct BaseBatch
+		struct BatchBase
 		{
-			BaseBatch() = default;
+			BatchBase() = default;
 
-			virtual ~BaseBatch() = default;
+			virtual ~BatchBase() = default;
 
 			virtual void clear() = 0;
 
@@ -104,13 +106,16 @@ namespace gigl {
 			virtual void render(Context const &context, std::shared_ptr<Mesh> mesh) = 0;
 		};
 
-		typedef std::unordered_map<Key, BaseBatch*, BatchHash, BatchEqual> batch_map_t;
+		typedef std::vector<Key> key_vec_t;
+		key_vec_t _order;
+
+		typedef std::unordered_map<Key, BatchBase*, BatchHash, BatchEqual> batch_map_t;
 		batch_map_t _batches;
 
 		///
 		///
 		///
-		template<typename I, typename Pred> struct Batch : public BaseBatch
+		template<typename I, typename Pred> struct Batch : public BatchBase
 		{
 			size_t maximum = 0;
 			std::shared_ptr<lucid::gal::VertexBuffer> batch;
@@ -169,6 +174,8 @@ namespace gigl {
 	{
 		Key key = Key(mesh, TypeID::value<I>());
 		LUCID_VALIDATE(_batches.end() == _batches.find(key), "duplicate mesh/instance pair specified in batched renderer");
+
+		_order.push_back(key);
 		_batches.insert(std::make_pair(key, new Batch<I,Pred>(maximum)));
 	}
 
@@ -176,6 +183,7 @@ namespace gigl {
 	{
 		auto iter = _batches.find(Key(mesh, TypeID::value<I>()));
 		LUCID_VALIDATE(iter != _batches.end(), "batched mesh/instance pair not registered");
+
 		iter->second->push(&instance);
 	}
 
