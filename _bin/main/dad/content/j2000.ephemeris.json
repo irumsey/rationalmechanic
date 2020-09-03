@@ -1,40 +1,40 @@
 {
   "comments" :
-  {
-    "Line  0" : "Generated using JPL Horizons database",
+  [
+    "Generated using JPL Horizons database",
 
-    "Line  1" : "Coordinate system description:",
+    "Coordinate system description:",
 
-    "Line  2" : "    Ecliptic at the standard reference epoch",
+    "    Ecliptic at the standard reference epoch",
 
-    "Line  3" : "        Reference epoch: J2000.0",
-    "Line  4" : "        X-Y plane: adopted Earth orbital plane at the reference epoch",
-    "Line  5" : "                   Note: obliquity of 84381.448 arcseconds (IAU76) wrt ICRF equator",
-    "Line  6" : "        X-axis   : ICRF",
-    "Line  7" : "        Z-axis   : perpendicular to the X-Y plane in the directional (+ or -) sense",
-    "Line  8" : "                   of Earth's north pole at the reference epoch.",
+    "        Reference epoch: J2000.0",
+    "        X-Y plane: adopted Earth orbital plane at the reference epoch",
+    "                   Note: obliquity of 84381.448 arcseconds (IAU76) wrt ICRF equator",
+    "        X-axis   : ICRF",
+    "        Z-axis   : perpendicular to the X-Y plane in the directional (+ or -) sense",
+    "                   of Earth's north pole at the reference epoch.",
 
-    "Line  9" : "    Symbol meaning [1 au= 149597870.700 km, 1 day= 86400.0 s]",
-    "Line 10" : "        JD     Julian day number, barycentric dynamical time",
-    "Line 11" : "        EC     Eccentricity, e",
-    "Line 12" : "        QR     Periapsis distance, q (au)",
-    "Line 13" : "        IN     Inclination w.r.t X-Y plane, i (degrees)",
-    "Line 14" : "        OM     Longitude of Ascending Node, OMEGA, (degrees)",
-    "Line 15" : "        W      Argument of Perifocus, w (degrees)",
-    "Line 16" : "        Tp     Time of periapsis (Julian Day Number)",
-    "Line 17" : "        N      Mean motion, n (degrees/day)",
-    "Line 18" : "        MA     Mean anomaly, M (degrees)",
-    "Line 19" : "        TA     True anomaly, nu (degrees)",
-    "Line 20" : "        A      Semi-major axis, a (au)",
-    "Line 21" : "        AD     Apoapsis distance (au)",
-    "Line 22" : "        PR     Sidereal orbit period (day)",
+    "    Symbol meaning [1 au= 149597870.700 km, 1 day= 86400.0 s]",
+    "        JD     Julian day number, barycentric dynamical time",
+    "        EC     Eccentricity, e",
+    "        QR     Periapsis distance, q (au)",
+    "        IN     Inclination w.r.t X-Y plane, i (degrees)",
+    "        OM     Longitude of Ascending Node, OMEGA, (degrees)",
+    "        W      Argument of Perifocus, w (degrees)",
+    "        Tp     Time of periapsis (Julian Day Number)",
+    "        N      Mean motion, n (degrees/day)",
+    "        MA     Mean anomaly, M (degrees)",
+    "        TA     True anomaly, nu (degrees)",
+    "        A      Semi-major axis, a (au)",
+    "        AD     Apoapsis distance (au)",
+    "        PR     Sidereal orbit period (day)",
 
-    "Line 23" : "Geometric states/elements have no aberrations applied",
+    "Geometric states/elements have no aberrations applied",
 
-    "Line 24" : "Mass in kg",
-    "Line 25" : "Radius in meters",
-    "Line 26" : "GM in m^3/s^2"
-  },
+    "Mass in kg",
+    "Radius in meters",
+    "GM in m^3/s^2"
+  ],
 
 	"frames" :
 	[
@@ -61,9 +61,30 @@
         },
         "render" :
         {
-          "mesh"  : "content/sphere.mesh",
-          "color" : [ 1, 1, 0, 1 ],
-          "scale" : 20.0
+          "LODs" :
+          [
+		        {
+			        "range"      : [ 0.0, 20.0 ],
+			        "mesh"       : "content/sphere.mesh",
+              "color"      : [ 1, 1, 0, 1],
+			        "scale"      : 20.0,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        },
+		        {
+			        "range"      : [ 18.0, 100.0 ],
+			        "mesh"       : "content/sphere.mesh",
+              "color"      : [ 1, 1, 0, 1],
+			        "scale"      : 20.0,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        },
+		        {
+			        "range"      : [ 95.0, 300.0 ],
+			        "mesh"       : "content/sphere.mesh",
+              "color"      : [ 1, 1, 0, 1],
+			        "scale"      : 20.0,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        }
+          ]
         }
       },
       "elements" :
@@ -90,9 +111,30 @@
         },
         "render" :
         {
-          "mesh"  : "content/sphere.mesh",
-          "color" : [ 0.7, 0.7, 0.7, 0 ],
-          "scale" : 1000.0
+          "LODs" :
+          [
+		        {
+			        "range"      : [ 0.0, 20.0 ],
+			        "mesh"       : "content/sphere.mesh",
+              "color"      : [ 0.7, 0.7, 0.7, 0],
+			        "scale"      : 750,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        },
+		        {
+			        "range"      : [ 18.0, 100.0 ],
+			        "mesh"       : "content/sphere.mesh",
+              "color"      : [ 0.7, 0.7, 0.7, 0],
+			        "scale"      : 750,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        },
+		        {
+			        "range"      : [ 95.0, 300.0 ],
+			        "mesh"       : "content/sphere.mesh",
+              "color"      : [ 0.7, 0.7, 0.7, 0],
+			        "scale"      : 750,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        }
+          ]
         }
       },
       "elements" :
@@ -119,9 +161,30 @@
         },
         "render" :
         {
-          "mesh"  : "content/sphere.mesh",
-          "color" : [ 0, 1, 0, 0 ],
-          "scale" : 1000.0
+          "LODs" :
+          [
+		        {
+			        "range"      : [ 0.0, 20.0 ],
+			        "mesh"       : "content/sphere.mesh",
+              "color"      : [ 0.7, 0.7, 0.7, 0],
+			        "scale"      : 750,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        },
+		        {
+			        "range"      : [ 18.0, 100.0 ],
+			        "mesh"       : "content/sphere.mesh",
+              "color"      : [ 0.7, 0.7, 0.7, 0],
+			        "scale"      : 750,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        },
+		        {
+			        "range"      : [ 95.0, 300.0 ],
+			        "mesh"       : "content/sphere.mesh",
+              "color"      : [ 0.7, 0.7, 0.7, 0],
+			        "scale"      : 750,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        }
+          ]
         }
       },
       "elements" :
@@ -148,9 +211,30 @@
         },
         "render" :
         {
-          "mesh"  : "content/sphere.mesh",
-          "color" : [ 0, 0, 1, 0 ],
-          "scale" : 1000.0
+          "LODs" :
+          [
+		        {
+			        "range"      : [ 0.0, 20.0 ],
+			        "mesh"       : "content/sphere.mesh",
+              "color"      : [ 0.2, 0.2, 1, 0],
+			        "scale"      : 750,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        },
+		        {
+			        "range"      : [ 18.0, 100.0 ],
+			        "mesh"       : "content/sphere.mesh",
+              "color"      : [ 0.2, 0.2, 1, 0],
+			        "scale"      : 750,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        },
+		        {
+			        "range"      : [ 95.0, 300.0 ],
+			        "mesh"       : "content/sphere.mesh",
+              "color"      : [ 0.2, 0.2, 1, 0],
+			        "scale"      : 750,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        }
+          ]
         }
       },
       "elements" :
@@ -178,9 +262,30 @@
         },
         "render" :
         {
-          "mesh"  : "content/sphere.mesh",
-          "color" : [ 0.9, 0.9, 0.9, 0 ],
-          "scale" : 1000.0
+          "LODs" :
+          [
+		        {
+			        "range"      : [ 0.0, 20.0 ],
+			        "mesh"       : "content/sphere.mesh",
+              "color"      : [ 0.7, 0.7, 0.7, 0],
+			        "scale"      : 750,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        },
+		        {
+			        "range"      : [ 18.0, 100.0 ],
+			        "mesh"       : "content/sphere.mesh",
+              "color"      : [ 0.7, 0.7, 0.7, 0],
+			        "scale"      : 750,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        },
+		        {
+			        "range"      : [ 95.0, 300.0 ],
+			        "mesh"       : "content/sphere.mesh",
+              "color"      : [ 0.7, 0.7, 0.7, 0],
+			        "scale"      : 750,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        }
+          ]
         }
       },
       "elements" :
@@ -207,9 +312,30 @@
         },
         "render" :
         {
-          "mesh"  : "content/sphere.mesh",
-          "color" : [ 1, 0, 0, 0 ],
-          "scale" : 1000.0
+          "LODs" :
+          [
+		        {
+			        "range"      : [ 0.0, 20.0 ],
+			        "mesh"       : "content/sphere.mesh",
+              "color"      : [ 0.7, 0.7, 0.7, 0],
+			        "scale"      : 750,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        },
+		        {
+			        "range"      : [ 18.0, 100.0 ],
+			        "mesh"       : "content/sphere.mesh",
+              "color"      : [ 0.7, 0.7, 0.7, 0],
+			        "scale"      : 750,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        },
+		        {
+			        "range"      : [ 95.0, 300.0 ],
+			        "mesh"       : "content/sphere.mesh",
+              "color"      : [ 0.7, 0.7, 0.7, 0],
+			        "scale"      : 750,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        }
+          ]
         }
       },
       "elements" :
@@ -236,9 +362,30 @@
         },
         "render" :
         {
-          "mesh"  : "content/sphere.mesh",
-          "color" : [ 0, 1, 0, 0 ],
-          "scale" : 1000.0
+          "LODs" :
+          [
+		        {
+			        "range"      : [ 0.0, 20.0 ],
+			        "mesh"       : "content/sphere.mesh",
+              "color"      : [ 0.7, 0.7, 0.7, 0],
+			        "scale"      : 750,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        },
+		        {
+			        "range"      : [ 18.0, 100.0 ],
+			        "mesh"       : "content/sphere.mesh",
+              "color"      : [ 0.7, 0.7, 0.7, 0],
+			        "scale"      : 750,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        },
+		        {
+			        "range"      : [ 95.0, 300.0 ],
+			        "mesh"       : "content/sphere.mesh",
+              "color"      : [ 0.7, 0.7, 0.7, 0],
+			        "scale"      : 750,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        }
+          ]
         }
       },
       "elements" :
@@ -265,9 +412,30 @@
         },
         "render" :
         {
-          "mesh"  : "content/sphere.mesh",
-          "color" : [ 0, 1, 0, 0 ],
-          "scale" : 1000.0
+          "LODs" :
+          [
+		        {
+			        "range"      : [ 0.0, 20.0 ],
+			        "mesh"       : "content/sphere.mesh",
+              "color"      : [ 0.7, 0.7, 0.7, 0],
+			        "scale"      : 750,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        },
+		        {
+			        "range"      : [ 18.0, 100.0 ],
+			        "mesh"       : "content/sphere.mesh",
+              "color"      : [ 0.7, 0.7, 0.7, 0],
+			        "scale"      : 750,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        },
+		        {
+			        "range"      : [ 95.0, 300.0 ],
+			        "mesh"       : "content/sphere.mesh",
+              "color"      : [ 0.7, 0.7, 0.7, 0],
+			        "scale"      : 750,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        }
+          ]
         }
       },
       "elements" :
@@ -293,9 +461,30 @@
         },
         "render" :
         {
-          "mesh"  : "content/sphere.mesh",
-          "color" : [ 0, 1, 0, 0 ],
-          "scale" : 1000.0
+          "LODs" :
+          [
+		        {
+			        "range"      : [ 0.0, 20.0 ],
+			        "mesh"       : "content/sphere.mesh",
+              "color"      : [ 0.7, 0.7, 0.7, 0],
+			        "scale"      : 750,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        },
+		        {
+			        "range"      : [ 18.0, 100.0 ],
+			        "mesh"       : "content/sphere.mesh",
+              "color"      : [ 0.7, 0.7, 0.7, 0],
+			        "scale"      : 750,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        },
+		        {
+			        "range"      : [ 95.0, 300.0 ],
+			        "mesh"       : "content/sphere.mesh",
+              "color"      : [ 0.7, 0.7, 0.7, 0],
+			        "scale"      : 750,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        }
+          ]
         }
       },
       "elements" :
@@ -322,9 +511,30 @@
         },
         "render" :
         {
-          "mesh"  : "content/sphere.mesh",
-          "color" : [ 0, 1, 0, 0 ],
-          "scale" : 1000.0
+          "LODs" :
+          [
+		        {
+			        "range"      : [ 0.0, 20.0 ],
+			        "mesh"       : "content/sphere.mesh",
+              "color"      : [ 0.7, 0.7, 0.7, 0],
+			        "scale"      : 750,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        },
+		        {
+			        "range"      : [ 18.0, 100.0 ],
+			        "mesh"       : "content/sphere.mesh",
+              "color"      : [ 0.7, 0.7, 0.7, 0],
+			        "scale"      : 750,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        },
+		        {
+			        "range"      : [ 95.0, 300.0 ],
+			        "mesh"       : "content/sphere.mesh",
+              "color"      : [ 0.7, 0.7, 0.7, 0],
+			        "scale"      : 750,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        }
+          ]
         }
       },
       "elements" :
@@ -349,9 +559,30 @@
         },
         "render" :
         {
-          "mesh"  : "content/sphere.mesh",
-          "color" : [ 0, 1, 0, 0 ],
-          "scale" : 1000.0
+          "LODs" :
+          [
+		        {
+			        "range"      : [ 0.0, 20.0 ],
+			        "mesh"       : "content/sphere.mesh",
+              "color"      : [ 0.7, 0.7, 0.7, 0],
+			        "scale"      : 750,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        },
+		        {
+			        "range"      : [ 18.0, 100.0 ],
+			        "mesh"       : "content/sphere.mesh",
+              "color"      : [ 0.7, 0.7, 0.7, 0],
+			        "scale"      : 750,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        },
+		        {
+			        "range"      : [ 95.0, 300.0 ],
+			        "mesh"       : "content/sphere.mesh",
+              "color"      : [ 0.7, 0.7, 0.7, 0],
+			        "scale"      : 750,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        }
+          ]
         }
       },
       "elements" :

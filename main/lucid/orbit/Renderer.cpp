@@ -94,12 +94,8 @@ namespace orbit {
 		if (cull(body))
 			return;
 
-		PhysicalProperties physicalProperties;
-		theEphemeris().lookup(physicalProperties, body->id);
-
-		RenderProperties renderProperties;
-		theEphemeris().lookup(renderProperties, body->id);
-
+		PhysicalProperties const &physicalProperties = body->physicalProperties;
+		RenderProperties &renderProperties = body->renderProperties;
 		Elements const *elements = body->elements;
 
 		float32_t  a = math::lerp(_interpolant, scale(elements[0]. A), scale(elements[1]. A));
@@ -116,14 +112,21 @@ namespace orbit {
 			scale(body->absolutePosition[1]),
 		};
 
+		DetailLevels &detailLevels = renderProperties.detailLevels;
+		size_t detailIndex = detailLevels.level(math::len(position[1] - _viewPosition));
+
+		if (DetailLevels::INVALID_LEVEL == detailIndex)
+			return;
+
+		DetailLevels::Level const &detailLevel = detailLevels[detailIndex];
+
 		MeshInstance sphere;
 		sphere.position = math::lerp(_interpolant, position[0], position[1]);
-		sphere.scale = renderProperties.scale * scale(physicalProperties.radius);
+		sphere.scale = detailLevel.scale * scale(physicalProperties.radius);
 		sphere.rotation = gal::Quaternion(0, 0, 0, 1);
-		sphere.color = renderProperties.color;
-		sphere.parameters = gal::Vector4(0, 0, 0, 0);
-		_batched.addInstance(renderProperties.mesh, sphere);
-
+		sphere.color = detailLevel.color;
+		sphere.parameters = detailLevel.parameters;
+		_batched.addInstance(detailLevel.mesh, sphere);
 		_batched.addInstance(_orbitMask, sphere);
 
 		MeshInstance orbit;

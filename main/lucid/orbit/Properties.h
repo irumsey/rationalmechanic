@@ -2,8 +2,10 @@
 
 #include <memory>
 #include <lucid/core/Types.h>
+#include <lucid/core/Reader.h>
 #include <lucid/gal/Types.h>
 #include <lucid/orbit/Types.h>
+#include <lucid/orbit/DetailLevels.h>
 
 namespace lucid {
 namespace gigl {
@@ -24,16 +26,45 @@ namespace orbit {
 		scalar_t GM = 0.0;
 		scalar_t mass = 0.0;
 		scalar_t radius = 0.0;
+
+		PhysicalProperties() = default;
+
+		PhysicalProperties(::lucid::core::Reader &reader)
+		{
+			read(reader);
+		}
+
+		~PhysicalProperties() = default;
+
+		void read(::lucid::core::Reader &reader)
+		{
+			reader.read(    GM);
+			reader.read(  mass);
+			reader.read(radius);
+		}
+
 	};
 
-	///	RenderProperties
+	///
 	///
 	///
 	struct RenderProperties
 	{
-		std::shared_ptr<gigl::Mesh> mesh;
-		gal::Color color;
-		float32_t scale = 0.f;
+		DetailLevels detailLevels;
+
+		RenderProperties() = default;
+
+		RenderProperties(::lucid::core::Reader &reader)
+		{
+			read(reader);
+		}
+
+		~RenderProperties() = default;
+
+		void read(::lucid::core::Reader &reader)
+		{
+			detailLevels.read(reader);
+		}
 	};
 
 }	///	orbit

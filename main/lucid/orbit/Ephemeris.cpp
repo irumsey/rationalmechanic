@@ -66,23 +66,8 @@ namespace orbit {
 			///	for now, orbital body is the only type with extra information
 			if (Entry::TYPE_ORBITAL_BODY == target.type)
 			{
-				PhysicalProperties physicalProperties;
-
-				reader.read(physicalProperties.GM);
-				reader.read(physicalProperties.mass);
-				reader.read(physicalProperties.radius);
-
-				_physicalProperties.insert(std::make_pair(target.id, physicalProperties));
-
-				std::string meshPath;
-				RenderProperties renderProperties;
-
-				reader.read(meshPath);
-				renderProperties.mesh = gigl::Resources::get<gigl::Mesh>(meshPath);
-				reader.read(&renderProperties.color, sizeof(gal::Color));
-				reader.read(renderProperties.scale);
-				
-				_renderProperties.insert(std::make_pair(target.id, renderProperties));
+				_physicalProperties.insert(std::make_pair(target.id, PhysicalProperties(reader)));
+				_renderProperties.insert(std::make_pair(target.id, RenderProperties(reader)));
 
 				size_t elementsCount = 0;
 				reader.read(elementsCount);

@@ -22,10 +22,10 @@ struct InputVertex
 
 struct OutputVertex
 {
-	float4    ppsPosition : SV_POSITION;
-	float3 lightDirection : POSITION0;
-	float4        diffuse : COLOR0;
-	float2       texcoord : TEXCOORD0;
+	float4     ppsPosition : SV_POSITION;
+	float3  lightDirection : POSITION0;
+	float4         diffuse : COLOR0;
+	float2        texcoord : TEXCOORD0;
 };
 
 typedef OutputVertex InputPixel;

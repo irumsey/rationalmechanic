@@ -1,5 +1,17 @@
 #include "Frame.h"
+#include "Ephemeris.h"
 #include "Algorithm.h"
+
+namespace orbit = ::lucid::orbit;
+
+namespace /* anonymous */ {
+
+	inline orbit::Ephemeris &theEphemeris()
+	{
+		return orbit::Ephemeris::instance();
+	}
+
+}	///	anonymous
 
 namespace lucid {
 namespace orbit {
@@ -49,6 +61,8 @@ namespace orbit {
 	OrbitalBody::OrbitalBody(size_t id, std::string const &name, std::string const &description)
 		: Frame(id, name, description)
 	{
+		theEphemeris().lookup(physicalProperties, id);
+		theEphemeris().lookup(renderProperties, id);
 	}
 
 	OrbitalBody::~OrbitalBody()

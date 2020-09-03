@@ -626,6 +626,13 @@ onOrbitalElement = [
 	bootDouble
 ]
 
+def bootLOD(dst, LOD):
+	bootVector2(dst, LOD['range'])
+	bootString(dst, LOD['mesh'])
+	bootColor(dst, LOD['color'])
+	bootFloat(dst, LOD['scale'])
+	bootVector4(dst, LOD['parameters'])
+
 def bootFrameDynamicPoint(dst, frame):
 	bootUnsigned(dst, orbitalFrameType['DYNAMIC_POINT'])
 	bootUnsigned(dst, frame['hid'])
@@ -646,9 +653,10 @@ def bootFrameOrbitalBody(dst, frame):
 	bootDouble(dst, properties['physical']['mass'])
 	bootDouble(dst, properties['physical']['radius'])
 
-	bootString(dst, properties['render']['mesh'])
-	bootColor(dst, properties['render']['color'])
-	bootFloat(dst, properties['render']['scale'])
+	LODs = properties['render']['LODs']
+	bootUnsigned(dst, len(LODs))
+	for LOD in LODs:
+		bootLOD(dst, LOD)
 
 	elements = frame['elements']
 	bootUnsigned(dst, len(elements))

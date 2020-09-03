@@ -17,6 +17,6 @@ OutputVertex main(InputVertex input)
 	output.lightDirection = mul(R, lightPosition - position);;
 	output.       diffuse = input.color;
 	output.      texcoord = input.corner.zw;
-	 
+
 	return output; 
 }

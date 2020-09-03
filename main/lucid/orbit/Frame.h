@@ -3,6 +3,7 @@
 #include <string>
 #include <lucid/core/Noncopyable.h>
 #include <lucid/orbit/Types.h>
+#include <lucid/orbit/Properties.h>
 #include <lucid/orbit/Elements.h>
 
 ///
@@ -90,6 +91,8 @@ namespace orbit {
 	class OrbitalBody : public Frame
 	{
 	public:
+		PhysicalProperties physicalProperties;
+		RenderProperties renderProperties;
 		Elements elements[2];
 
 		OrbitalBody(size_t id, std::string const &name, std::string const &description);
