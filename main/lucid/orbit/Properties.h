@@ -51,6 +51,7 @@ namespace orbit {
 	struct RenderProperties
 	{
 		DetailLevels detailLevels;
+		///	TBD: and others...
 
 		RenderProperties() = default;
 
@@ -64,6 +65,7 @@ namespace orbit {
 		void read(::lucid::core::Reader &reader)
 		{
 			detailLevels.read(reader);
+			///	TBD: and others...
 		}
 	};
 

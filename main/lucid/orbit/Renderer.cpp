@@ -148,7 +148,7 @@ namespace orbit {
 		shutdown();
 		_batched.initialize();
 
-		_batched.createBatch<MeshInstance, Back2Front<MeshInstance> >(gigl::Resources::get<gigl::Mesh>(   "content/sphere.mesh"), BATCH_MAXIMUM);
+		_batched.createBatch<MeshInstance, Back2Front<MeshInstance> >(gigl::Resources::get<gigl::Mesh>("content/sphere.mesh"), BATCH_MAXIMUM);
 
 		_orbitMask = gigl::Resources::get<gigl::Mesh>("content/orbitMask.mesh");
 		_batched.createBatch<MeshInstance,   NullSort<MeshInstance> >(_orbitMask, BATCH_MAXIMUM);
