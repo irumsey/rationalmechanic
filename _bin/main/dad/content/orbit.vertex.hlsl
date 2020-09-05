@@ -5,33 +5,36 @@ OutputVertex main(InputVertex input)
 {
 	OutputVertex output = (OutputVertex)0;
 
+	float4x4 worldMatrix = matrixFromQuaternion(input.rotation, input.focus);
+	 
 	float  hu = input.parameters.x;
 	float  eccentricity = input.parameters.y;
 	float2 domain = input.parameters.zw;
 
-	float2 adapted = (input.adapted - input.position) * clamp(eccentricity, 0, 1) + input.position;
+	float2 adapted = (input.adapted - input.vertex) * clamp(eccentricity, 0, 1) + input.vertex;
 	float2 theta = (domain.yy - domain.xx) * adapted.xy + domain.xx;
 
-	float2 curvePosition = computeConicPoint(hu, eccentricity, theta.x);
-	float2 curveTangent = computeConicPoint(hu, eccentricity, theta.y) - curvePosition;
-	float2 curveNormal = -normalize(float2(-curveTangent.y, curveTangent.x));
+	float4 curvePosition0 = mul(worldMatrix, float4(computeConicPoint(hu, eccentricity, theta.x), 0, 1));
+	float4 curvePosition1 = mul(worldMatrix, float4(computeConicPoint(hu, eccentricity, theta.y), 0, 1));
+	float3 curveTangent = normalize(curvePosition1.xyz - curvePosition0.xyz);
+	float3 viewDirection = normalize(viewPosition - curvePosition0.xyz);
+	float3 curveNormal = normalize(cross(curveTangent, viewDirection));
 
-	float2 vertexDelta = input.scale * curveNormal;
-	float2 innerVertex = curvePosition - vertexDelta;
-	float2 outerVertex = curvePosition + vertexDelta;
+	float3 vertexDelta = input.scale.xxx * curveNormal;
+	float3 innerVertex = curvePosition0.xyz - vertexDelta;
+	float3 outerVertex = curvePosition0.xyz + vertexDelta;
 
-	float2 meshVertex = input.select.x * innerVertex + input.select.y * outerVertex;
+	float3 meshVertex = input.select.xxx * innerVertex + input.select.yyy * outerVertex;
 
-	output.parameters = input.parameters;
-	output.position = meshVertex;
-	output.theta = theta.x;
-	output.lineWidth = input.scale;
-	output.lineColor = input.color;
+	output.parameters.xy = input.parameters.xy;
+	output.parameters. z = theta.x; 
+	output.parameters. w = input.scale;
+	output.        color = input.color;
+	output.     position = input.focus;
+	output.     rotation = input.rotation;
+	output.       vertex = meshVertex;
 
-	float4x4 worldMatrix = matrixFromQuaternion(input.rotation);
-	float4 worldPosition = mul(worldMatrix, float4(meshVertex, 0, 1));
-	
-	output.ppsPosition = mul(viewProjMatrix, worldPosition);
+	output.ppsPosition = mul(viewProjMatrix, float4(meshVertex, 1));
 
 	return output;
 }

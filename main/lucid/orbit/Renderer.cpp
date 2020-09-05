@@ -94,6 +94,9 @@ namespace orbit {
 		if (cull(body))
 			return;
 
+		Frame const *center = body->centerFrame;
+		gal::Vector3 centerPosition = math::lerp(_interpolant, scale(center->absolutePosition[1]), scale(center->absolutePosition[0]));
+
 		PhysicalProperties const &physicalProperties = body->physicalProperties;
 		RenderProperties &renderProperties = body->renderProperties;
 		Elements const *elements = body->elements;
@@ -130,7 +133,7 @@ namespace orbit {
 		_batched.addInstance(_orbitMask, sphere);
 
 		MeshInstance orbit;
-		orbit.position = sphere.position;
+		orbit.position = centerPosition;
 		orbit.scale = 0.5f;
 		orbit.rotation = math::slerp(_interpolant, rotation[0], rotation[1]);
 		orbit.color = gal::Color(0, 0, 1, 1);
@@ -148,9 +151,10 @@ namespace orbit {
 		shutdown();
 		_batched.initialize();
 
-		_batched.createBatch<MeshInstance, Back2Front<MeshInstance> >(gigl::Resources::get<gigl::Mesh>("content/sphere.mesh"), BATCH_MAXIMUM);
+		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>("content/hemisphere.mesh"), BATCH_MAXIMUM);
+		_batched.createBatch<MeshInstance, Back2Front<MeshInstance> >(gigl::Resources::get<gigl::Mesh>(    "content/sphere.mesh"), BATCH_MAXIMUM);
 
-		_orbitMask = gigl::Resources::get<gigl::Mesh>("content/orbitMask.mesh");
+		_orbitMask = gigl::Resources::get<gigl::Mesh>("content/mask.mesh");
 		_batched.createBatch<MeshInstance,   NullSort<MeshInstance> >(_orbitMask, BATCH_MAXIMUM);
 
 		_orbitMesh = gigl::Resources::get<gigl::Mesh>("content/orbit.mesh");

@@ -50,10 +50,13 @@
     <FxCompile Include="..\..\_bin\main\dad\content\sphere.vertex.hlsl">
       <Filter>content</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\_bin\main\dad\content\orbitMask.pixel.hlsl">
+    <FxCompile Include="..\..\_bin\main\dad\content\hemisphere.pixel.hlsl">
       <Filter>content</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\_bin\main\dad\content\orbitMask.vertex.hlsl">
+    <FxCompile Include="..\..\_bin\main\dad\content\hemisphere.vertex.hlsl">
+      <Filter>content</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\dad\content\mask.pixel.hlsl">
       <Filter>content</Filter>
     </FxCompile>
   </ItemGroup>
@@ -65,6 +68,9 @@
       <Filter>content</Filter>
     </None>
     <None Include="..\..\_bin\main\dad\content\utility.header.hlsl">
+      <Filter>content</Filter>
+    </None>
+    <None Include="..\..\_bin\main\dad\content\hemisphere.header.hlsl">
       <Filter>content</Filter>
     </None>
   </ItemGroup>

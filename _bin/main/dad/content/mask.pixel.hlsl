@@ -1,12 +1,4 @@
-struct InputPixel
-{
-	float4 ppsPosition : SV_POSITION;
-};
-
-struct OutputPixel
-{
-	float4 color : SV_TARGET0;
-};
+#include "hemisphere.header.hlsl"
 
 OutputPixel main(InputPixel input)
 {
