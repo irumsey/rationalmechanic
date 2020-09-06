@@ -9,7 +9,7 @@
 		{
 			"RasterMode" :
 			{
-				"Fill" : "FILL_WIREFRAME",
+				"Fill" : "FILL_SOLID",
 				"Cull" : "CULL_NONE",
 				"Multisample": false
 			},
@@ -26,7 +26,7 @@
 
 			"DepthStencilMode" :
 			{
-				"DepthEnabled" : false,
+				"DepthEnabled" : true,
 				"DepthWrite" : "DEPTH_WRITE_ENABLED",
 				"DepthFunction" : "COMPARISON_LESS",
 				"StencilEnabled" : false,

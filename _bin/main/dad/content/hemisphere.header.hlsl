@@ -20,7 +20,8 @@ struct InputVertex
 struct OutputVertex
 {
 	float4     ppsPosition : SV_POSITION;
-	float3  lightDirection : POSITION0;
+	float3          normal : POSITION0;
+	float3  lightDirection : POSITION1;
 	float4         diffuse : COLOR0;
 };
 

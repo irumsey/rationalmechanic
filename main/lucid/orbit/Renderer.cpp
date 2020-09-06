@@ -134,7 +134,7 @@ namespace orbit {
 
 		MeshInstance orbit;
 		orbit.position = centerPosition;
-		orbit.scale = 0.5f;
+		orbit.scale = 0.4f;
 		orbit.rotation = math::slerp(_interpolant, rotation[0], rotation[1]);
 		orbit.color = gal::Color(0, 0, 1, 1);
 		orbit.parameters = gal::Vector4(hu, e, -3.1415926f, 3.1415926f);

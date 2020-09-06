@@ -6,16 +6,17 @@ OutputVertex main(InputVertex input)
 	OutputVertex output = (OutputVertex)0;
 
 	float3 position = input.position.xyz;
+	float3   normal = input.normal;
 	float     scale = input.scale;
 	float3   vertex = scale.xxx * input.vertex;
 
 	position = position + viewRight * vertex.xxx + viewUp * vertex.yyy - viewForward * vertex.zzz;
-	output.ppsPosition = mul(viewProjMatrix, float4(position, 1));
+	normal = viewRight * normal.xxx + viewUp * normal.yyy - viewForward * normal.zzz;
 
-	float3x3 R = float3x3(viewRight, -viewForward, -viewUp);
-
-	output.lightDirection = mul(R, lightPosition - position);;
+	output.   ppsPosition = mul(viewProjMatrix, float4(position, 1));
+	output.        normal = normal;
 	output.       diffuse = input.color;
+	output.lightDirection = normalize(lightPosition - position);
 
 	return output; 
 }

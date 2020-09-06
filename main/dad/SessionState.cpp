@@ -104,6 +104,9 @@ void SessionTesting::onLeave(Session *session)
 
 void SessionTesting::onInput(Session *session, MouseEvent const &event)
 {
+	///	input may happen before complete initialization...
+	if (nullptr == session->_test)
+		return;
 	session->_test->onInput(event);
 }
 
