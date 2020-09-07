@@ -29,6 +29,8 @@
     <ClInclude Include="RenderTarget2D.h" />
     <ClInclude Include="TargetReader2D.h" />
     <ClInclude Include="Texture2D.h" />
+    <ClInclude Include="OrbitalMechanics.h" />
+    <ClInclude Include="Profiler.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp">
@@ -55,6 +57,8 @@
     <ClCompile Include="TargetReader2D.cpp" />
     <ClCompile Include="Texture2D.cpp" />
     <ClCompile Include="Types.cpp" />
+    <ClCompile Include="OrbitalMechanics.cpp" />
+    <ClCompile Include="Profiler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="app.ico">

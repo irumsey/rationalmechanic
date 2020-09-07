@@ -174,8 +174,10 @@
     <ClInclude Include="Material.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="OrbitalMechanics.h" />
     <ClInclude Include="Parameter.h" />
     <ClInclude Include="Pipeline.h" />
+    <ClInclude Include="Profiler.h" />
     <ClInclude Include="Program.h" />
     <ClInclude Include="RenderTarget2D.h" />
     <ClInclude Include="resource.h" />
@@ -199,8 +201,10 @@
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Math.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="OrbitalMechanics.cpp" />
     <ClCompile Include="Parameter.cpp" />
     <ClCompile Include="Pipeline.cpp" />
+    <ClCompile Include="Profiler.cpp" />
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="RenderTarget2D.cpp" />
     <ClCompile Include="TargetReader2D.cpp" />
