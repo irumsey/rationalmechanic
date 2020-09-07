@@ -19,13 +19,13 @@ namespace omp
 
             lucid.Profiler profiler = new lucid.Profiler();
 
-            MainForm mainForm = new MainForm();
-            mainForm.Show();
+            Planner planner = new Planner();
+            planner.Show();
 
-            while (!mainForm.IsDisposed)
+            while (!planner.IsDisposed)
             {
-                mainForm.advanceSimulation();
-                mainForm.render();
+                planner.updateSimulation();
+                planner.renderMainView();
                 Application.DoEvents();
             }
 

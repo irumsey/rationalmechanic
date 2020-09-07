@@ -1,6 +1,6 @@
 ﻿namespace omp
 {
-    partial class MainForm
+    partial class Planner
     {
         /// <summary>
         /// Required designer variable.
@@ -37,6 +37,8 @@
             this.mainMenuFileSaveAs = new System.Windows.Forms.ToolStripMenuItem();
             this.mainMenuFileExit = new System.Windows.Forms.ToolStripMenuItem();
             this.mainSplitter = new System.Windows.Forms.SplitContainer();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.mainMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mainSplitter)).BeginInit();
             this.mainSplitter.SuspendLayout();
@@ -65,8 +67,10 @@
             this.mainMenuFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mainMenuFileNewMission,
             this.mainMenuFileOpenMission,
+            this.toolStripSeparator1,
             this.mainMenuFileSave,
             this.mainMenuFileSaveAs,
+            this.toolStripSeparator2,
             this.mainMenuFileExit});
             this.mainMenuFile.Name = "mainMenuFile";
             this.mainMenuFile.Size = new System.Drawing.Size(37, 20);
@@ -77,6 +81,7 @@
             this.mainMenuFileNewMission.Name = "mainMenuFileNewMission";
             this.mainMenuFileNewMission.Size = new System.Drawing.Size(156, 22);
             this.mainMenuFileNewMission.Text = "New Mission...";
+            this.mainMenuFileNewMission.Click += new System.EventHandler(this.onFileNewMission);
             // 
             // mainMenuFileOpenMission
             // 
@@ -101,6 +106,7 @@
             this.mainMenuFileExit.Name = "mainMenuFileExit";
             this.mainMenuFileExit.Size = new System.Drawing.Size(156, 22);
             this.mainMenuFileExit.Text = "Exit";
+            this.mainMenuFileExit.Click += new System.EventHandler(this.onFileExit);
             // 
             // mainSplitter
             // 
@@ -115,7 +121,17 @@
             this.mainSplitter.SplitterDistance = 897;
             this.mainSplitter.TabIndex = 2;
             // 
-            // MainForm
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(153, 6);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(153, 6);
+            // 
+            // Planner
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -124,7 +140,7 @@
             this.Controls.Add(this.mainStatusStrip);
             this.Controls.Add(this.mainMenu);
             this.MainMenuStrip = this.mainMenu;
-            this.Name = "MainForm";
+            this.Name = "Planner";
             this.Text = "OMP (Orbital Mission Planner)";
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.onPaint);
             this.mainMenu.ResumeLayout(false);
@@ -147,6 +163,8 @@
         private System.Windows.Forms.ToolStripMenuItem mainMenuFileSaveAs;
         private System.Windows.Forms.ToolStripMenuItem mainMenuFileExit;
         private System.Windows.Forms.SplitContainer mainSplitter;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
     }
 }
 
