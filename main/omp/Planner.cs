@@ -37,6 +37,54 @@ namespace omp
             state.onEnter(this);
         }
 
+        private void onFormLoad(object sender, EventArgs e)
+        {
+            if (Properties.Settings.Default.Maximized)
+            {
+                WindowState = FormWindowState.Maximized;
+                Location = Properties.Settings.Default.Location;
+                Size = Properties.Settings.Default.Size;
+            }
+            else if (Properties.Settings.Default.Minimized)
+            {
+                WindowState = FormWindowState.Minimized;
+                Location = Properties.Settings.Default.Location;
+                Size = Properties.Settings.Default.Size;
+            }
+            else
+            {
+                Location = Properties.Settings.Default.Location;
+                Size = Properties.Settings.Default.Size;
+            }
+        }
+
+        private void onFormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (WindowState == FormWindowState.Maximized)
+            {
+                Properties.Settings.Default.Location = RestoreBounds.Location;
+                Properties.Settings.Default.Size = RestoreBounds.Size;
+                Properties.Settings.Default.Maximized = true;
+                Properties.Settings.Default.Minimized = false;
+            }
+            else if (WindowState == FormWindowState.Normal)
+            {
+                Properties.Settings.Default.Location = Location;
+                Properties.Settings.Default.Size = Size;
+                Properties.Settings.Default.Maximized = false;
+                Properties.Settings.Default.Minimized = false;
+            }
+            else
+            {
+                Properties.Settings.Default.Location = RestoreBounds.Location;
+                Properties.Settings.Default.Size = RestoreBounds.Size;
+                Properties.Settings.Default.Maximized = false;
+                Properties.Settings.Default.Minimized = true;
+            }
+
+            Properties.Settings.Default.Save();
+        }
+
         private void onPaint(object sender, PaintEventArgs e)
         {
             state.onPaint(this);
@@ -51,9 +99,25 @@ namespace omp
         {
         }
 
+        private void onFileOpenMission(object sender, EventArgs e)
+        {
+        }
+
+        private void onFileSave(object sender, EventArgs e)
+        {
+        }
+
+        private void onFileSaveAs(object sender, EventArgs e)
+        {
+        }
+
         private void onFileExit(object sender, EventArgs e)
         {
             changeState(Stopping.Instance);
+        }
+
+        private void onViewSettings(object sender, EventArgs e)
+        {
         }
 
         public void updateSimulation()
@@ -65,5 +129,6 @@ namespace omp
         {
             state.renderMainView(this);
         }
+
     }
 }
