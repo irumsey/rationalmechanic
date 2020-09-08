@@ -18,11 +18,13 @@ namespace omp
         private State state = Stopped.Instance;
 
         private float aspectRatio = 1.0f;
-        private lucid.Vector3 viewPosition = new lucid.Vector3(60.0f, 60.0f, 60.0f);
-        private lucid.Vector3 viewDirection = new lucid.Vector3(-0.577f, -0.577f, -0.577f);
+        private lucid.Camera2D camera = null;
         private lucid.Context renderContext = null;
 
         private lucid.OrbitalMechanics orbitalMechainics = null;
+
+        private lucid.OrbitalFrame trackedFrame = null;
+        private ListViewItem trackedFrameItem = null;
 
         public Planner()
         {
@@ -30,11 +32,17 @@ namespace omp
             changeState(Starting.Instance);
         }
 
-        private void changeState(State next)
+        private void setMainMenuDefaults()
         {
-            state.onLeave(this);
-            state = next;
-            state.onEnter(this);
+            mainMenuFileNewMission.Enabled = true;
+            mainMenuFileOpenMission.Enabled = true;
+
+            mainMenuFileSave.Enabled = false;
+            mainMenuFileSaveAs.Enabled = false;
+
+            mainMenuFileExit.Enabled = true;
+
+            mainMenuViewSettings.Enabled = true;
         }
 
         private void onFormLoad(object sender, EventArgs e)
@@ -42,20 +50,15 @@ namespace omp
             if (Properties.Settings.Default.Maximized)
             {
                 WindowState = FormWindowState.Maximized;
-                Location = Properties.Settings.Default.Location;
-                Size = Properties.Settings.Default.Size;
             }
             else if (Properties.Settings.Default.Minimized)
             {
                 WindowState = FormWindowState.Minimized;
-                Location = Properties.Settings.Default.Location;
-                Size = Properties.Settings.Default.Size;
             }
-            else
-            {
-                Location = Properties.Settings.Default.Location;
-                Size = Properties.Settings.Default.Size;
-            }
+
+            Location = Properties.Settings.Default.Location;
+            Size = Properties.Settings.Default.Size;
+            mainSplitter.SplitterDistance = Properties.Settings.Default.SplitterDistance;
         }
 
         private void onFormClosing(object sender, FormClosingEventArgs e)
@@ -81,8 +84,16 @@ namespace omp
                 Properties.Settings.Default.Maximized = false;
                 Properties.Settings.Default.Minimized = true;
             }
+            Properties.Settings.Default.SplitterDistance = mainSplitter.SplitterDistance;
 
             Properties.Settings.Default.Save();
+        }
+
+        private void changeState(State next)
+        {
+            state.onLeave(this);
+            state = next;
+            state.onEnter(this);
         }
 
         private void onPaint(object sender, PaintEventArgs e)
@@ -118,6 +129,43 @@ namespace omp
 
         private void onViewSettings(object sender, EventArgs e)
         {
+        }
+
+        private void onOrbitalFrameListClicked(object sender, MouseEventArgs e)
+        {
+            ListViewHitTestInfo hitTest = orbitalFrameList.HitTest(e.Location);
+            if (null == hitTest)
+                return;
+
+            int columnIndex = hitTest.Item.SubItems.IndexOf(hitTest.SubItem);
+            if ((null == hitTest.Item) || (0 != columnIndex))
+                return;
+
+            if (trackedFrameItem == hitTest.Item)
+            {
+                int stateIndex = (hitTest.Item.StateImageIndex + 1) % 2;
+                hitTest.Item.StateImageIndex = stateIndex;
+
+                if (0 == stateIndex)
+                    trackedFrameItem = null;
+            }
+            else
+            {
+                if (null != trackedFrameItem)
+                    trackedFrameItem.StateImageIndex = 0;
+                trackedFrameItem = hitTest.Item;
+                trackedFrameItem.StateImageIndex = 1;
+            }
+
+            if (null != trackedFrameItem)
+            {
+                uint id = uint.Parse(trackedFrameItem.SubItems[1].Text);
+                trackedFrame = orbitalMechainics.Frame(id);
+            }
+            else
+            {
+                trackedFrame = null;
+            }
         }
 
         public void updateSimulation()

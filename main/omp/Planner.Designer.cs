@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Planner));
             this.mainStatusStrip = new System.Windows.Forms.StatusStrip();
             this.mainMenu = new System.Windows.Forms.MenuStrip();
             this.mainMenuFile = new System.Windows.Forms.ToolStripMenuItem();
@@ -38,21 +40,28 @@
             this.mainMenuFileSaveAs = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.mainMenuFileExit = new System.Windows.Forms.ToolStripMenuItem();
-            this.mainSplitter = new System.Windows.Forms.SplitContainer();
             this.mainMenuEdit = new System.Windows.Forms.ToolStripMenuItem();
             this.mainMenuView = new System.Windows.Forms.ToolStripMenuItem();
-            this.mainMenuViewSettings = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.mainMenuViewSettings = new System.Windows.Forms.ToolStripMenuItem();
+            this.mainSplitter = new System.Windows.Forms.SplitContainer();
+            this.orbitalFrameList = new System.Windows.Forms.ListView();
+            this.orbitalFrameListTrack = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.orbitalFrameListID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.orbitFrameListName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.orbitalFrameListDescription = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.orbitalFrameListImages = new System.Windows.Forms.ImageList(this.components);
             this.mainMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mainSplitter)).BeginInit();
+            this.mainSplitter.Panel2.SuspendLayout();
             this.mainSplitter.SuspendLayout();
             this.SuspendLayout();
             // 
             // mainStatusStrip
             // 
-            this.mainStatusStrip.Location = new System.Drawing.Point(0, 582);
+            this.mainStatusStrip.Location = new System.Drawing.Point(0, 415);
             this.mainStatusStrip.Name = "mainStatusStrip";
-            this.mainStatusStrip.Size = new System.Drawing.Size(1197, 22);
+            this.mainStatusStrip.Size = new System.Drawing.Size(929, 22);
             this.mainStatusStrip.TabIndex = 0;
             this.mainStatusStrip.Text = "Status";
             // 
@@ -64,7 +73,7 @@
             this.mainMenuView});
             this.mainMenu.Location = new System.Drawing.Point(0, 0);
             this.mainMenu.Name = "mainMenu";
-            this.mainMenu.Size = new System.Drawing.Size(1197, 24);
+            this.mainMenu.Size = new System.Drawing.Size(929, 24);
             this.mainMenu.TabIndex = 1;
             this.mainMenu.Text = "menuStrip1";
             // 
@@ -127,20 +136,6 @@
             this.mainMenuFileExit.Text = "Exit";
             this.mainMenuFileExit.Click += new System.EventHandler(this.onFileExit);
             // 
-            // mainSplitter
-            // 
-            this.mainSplitter.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mainSplitter.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
-            this.mainSplitter.Location = new System.Drawing.Point(0, 24);
-            this.mainSplitter.Name = "mainSplitter";
-            // 
-            // mainSplitter.Panel1
-            // 
-            this.mainSplitter.Panel1.Resize += new System.EventHandler(this.onMainViewResize);
-            this.mainSplitter.Size = new System.Drawing.Size(1197, 558);
-            this.mainSplitter.SplitterDistance = 897;
-            this.mainSplitter.TabIndex = 2;
-            // 
             // mainMenuEdit
             // 
             this.mainMenuEdit.Name = "mainMenuEdit";
@@ -156,23 +151,89 @@
             this.mainMenuView.Size = new System.Drawing.Size(44, 20);
             this.mainMenuView.Text = "View";
             // 
-            // mainMenuViewSettings
-            // 
-            this.mainMenuViewSettings.Name = "mainMenuViewSettings";
-            this.mainMenuViewSettings.Size = new System.Drawing.Size(152, 22);
-            this.mainMenuViewSettings.Text = "Settings...";
-            this.mainMenuViewSettings.Click += new System.EventHandler(this.onViewSettings);
-            // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(122, 6);
+            // 
+            // mainMenuViewSettings
+            // 
+            this.mainMenuViewSettings.Name = "mainMenuViewSettings";
+            this.mainMenuViewSettings.Size = new System.Drawing.Size(125, 22);
+            this.mainMenuViewSettings.Text = "Settings...";
+            this.mainMenuViewSettings.Click += new System.EventHandler(this.onViewSettings);
+            // 
+            // mainSplitter
+            // 
+            this.mainSplitter.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mainSplitter.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
+            this.mainSplitter.Location = new System.Drawing.Point(0, 24);
+            this.mainSplitter.Name = "mainSplitter";
+            // 
+            // mainSplitter.Panel1
+            // 
+            this.mainSplitter.Panel1.Resize += new System.EventHandler(this.onMainViewResize);
+            // 
+            // mainSplitter.Panel2
+            // 
+            this.mainSplitter.Panel2.Controls.Add(this.orbitalFrameList);
+            this.mainSplitter.Size = new System.Drawing.Size(929, 391);
+            this.mainSplitter.SplitterDistance = 629;
+            this.mainSplitter.TabIndex = 2;
+            // 
+            // orbitalFrameList
+            // 
+            this.orbitalFrameList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.orbitalFrameListTrack,
+            this.orbitalFrameListID,
+            this.orbitFrameListName,
+            this.orbitalFrameListDescription});
+            this.orbitalFrameList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.orbitalFrameList.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.orbitalFrameList.FullRowSelect = true;
+            this.orbitalFrameList.Location = new System.Drawing.Point(0, 0);
+            this.orbitalFrameList.MultiSelect = false;
+            this.orbitalFrameList.Name = "orbitalFrameList";
+            this.orbitalFrameList.Size = new System.Drawing.Size(296, 391);
+            this.orbitalFrameList.StateImageList = this.orbitalFrameListImages;
+            this.orbitalFrameList.TabIndex = 0;
+            this.orbitalFrameList.UseCompatibleStateImageBehavior = false;
+            this.orbitalFrameList.View = System.Windows.Forms.View.Details;
+            this.orbitalFrameList.MouseClick += new System.Windows.Forms.MouseEventHandler(this.onOrbitalFrameListClicked);
+            // 
+            // orbitalFrameListTrack
+            // 
+            this.orbitalFrameListTrack.Text = "";
+            this.orbitalFrameListTrack.Width = 28;
+            // 
+            // orbitalFrameListID
+            // 
+            this.orbitalFrameListID.Text = "ID";
+            this.orbitalFrameListID.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.orbitalFrameListID.Width = 51;
+            // 
+            // orbitFrameListName
+            // 
+            this.orbitFrameListName.Text = "Name";
+            this.orbitFrameListName.Width = 79;
+            // 
+            // orbitalFrameListDescription
+            // 
+            this.orbitalFrameListDescription.Text = "Description";
+            this.orbitalFrameListDescription.Width = 152;
+            // 
+            // orbitalFrameListImages
+            // 
+            this.orbitalFrameListImages.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("orbitalFrameListImages.ImageStream")));
+            this.orbitalFrameListImages.TransparentColor = System.Drawing.Color.Transparent;
+            this.orbitalFrameListImages.Images.SetKeyName(0, "notLinked.png");
+            this.orbitalFrameListImages.Images.SetKeyName(1, "linked.png");
             // 
             // Planner
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1197, 604);
+            this.ClientSize = new System.Drawing.Size(929, 437);
             this.Controls.Add(this.mainSplitter);
             this.Controls.Add(this.mainStatusStrip);
             this.Controls.Add(this.mainMenu);
@@ -184,6 +245,7 @@
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.onPaint);
             this.mainMenu.ResumeLayout(false);
             this.mainMenu.PerformLayout();
+            this.mainSplitter.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.mainSplitter)).EndInit();
             this.mainSplitter.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -208,6 +270,12 @@
         private System.Windows.Forms.ToolStripMenuItem mainMenuView;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem mainMenuViewSettings;
+        private System.Windows.Forms.ListView orbitalFrameList;
+        private System.Windows.Forms.ColumnHeader orbitalFrameListTrack;
+        private System.Windows.Forms.ColumnHeader orbitalFrameListID;
+        private System.Windows.Forms.ColumnHeader orbitFrameListName;
+        private System.Windows.Forms.ColumnHeader orbitalFrameListDescription;
+        private System.Windows.Forms.ImageList orbitalFrameListImages;
     }
 }
 

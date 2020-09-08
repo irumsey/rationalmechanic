@@ -117,7 +117,6 @@ namespace orbit {
 		///	find the closest entry to the given day number.
 		///	for now, it is a simple linear scan through the list which
 		///	exits when the difference would increase.
-		///	test { 
 
 		size_t index = 0;
 		scalar_t a = ::fabs(entries[index].JDN - jdn);
@@ -135,7 +134,6 @@ namespace orbit {
 			}
 		}
 
-		///	} test
 		elements = entries[index];
 
 		return true;

@@ -1,7 +1,6 @@
 #include "System.h"
 #include "Ephemeris.h"
 #include "Frame.h"
-#include <unordered_map>
 
 namespace gigl = ::lucid::gigl;
 
@@ -69,7 +68,6 @@ namespace /* anonymous */ {
 		_simulator.initialize();
 		_renderer.initialize();
 
-		std::unordered_map<size_t, Frame *> frames;
 		for (Ephemeris::Iterator iter = theEphemeris().begin(); iter != theEphemeris().end(); ++iter)
 		{
 			Ephemeris::Entry entry;
@@ -77,20 +75,20 @@ namespace /* anonymous */ {
 
 			Frame *frame = createFrame[entry.type](entry);
 			
-			LUCID_VALIDATE(frames.end() == frames.find(entry.id), "duplicate frame id");
-			frames.insert(std::make_pair(frame->id, frame));
+			LUCID_VALIDATE(_frames.end() == _frames.find(entry.id), "duplicate frame id");
+			_frames.insert(std::make_pair(frame->id, frame));
 
 			if (entry.id == entry.cid)
 				continue;
 
-			auto find = frames.find(entry.cid);
-			LUCID_VALIDATE(find != frames.end(), "unable to find center frame for frame:" + entry.name);
+			auto find = _frames.find(entry.cid);
+			LUCID_VALIDATE(find != _frames.end(), "unable to find center frame for frame:" + entry.name);
 
 			Frame *parent = find->second;
 			parent->addChild(frame);
 		}
 
-		_root = frames[0];
+		_root = _frames[0];
 
 		///
 		///	bootstrap simulation
@@ -107,6 +105,8 @@ namespace /* anonymous */ {
 	{
 		_renderer.shutdown();
 		_simulator.shutdown();
+
+		_frames.clear();
 
 		delete _root;
 		_root = nullptr;

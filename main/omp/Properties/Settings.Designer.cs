@@ -70,5 +70,17 @@ namespace omp.Properties {
                 this["Minimized"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("600")]
+        public int SplitterDistance {
+            get {
+                return ((int)(this["SplitterDistance"]));
+            }
+            set {
+                this["SplitterDistance"] = value;
+            }
+        }
     }
 }

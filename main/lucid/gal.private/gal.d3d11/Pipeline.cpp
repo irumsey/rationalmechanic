@@ -165,8 +165,6 @@ namespace d3d11 {
 
 	void Pipeline::endGeometry(::lucid::gal::VertexFormat const *format)
 	{
-		///	TBD: is this ok ???
-
 		ID3D11Buffer *buffer[8] = { 0, 0, 0, 0, 0, 0, 0, 0, };
 		uint32_t dummy[8] = { 0, 0, 0, 0, 0, 0, 0, 0, };
 

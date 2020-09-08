@@ -1,5 +1,6 @@
 #pragma once
 
+#include <unordered_map>
 #include <lucid/core/Types.h>
 #include <lucid/orbit/Types.h>
 
@@ -18,6 +19,7 @@ namespace  core {
 namespace lucid {
 namespace orbit {
 
+	class Frame;
 	class System;
 
 }	///	orbit
@@ -25,8 +27,47 @@ namespace orbit {
 
 namespace lucid {
 
+	ref class Vector3;
 	ref class Context;
 
+	///	OrbitalFrame
+	///
+	///	Managed wrapper for an orbital frame
+	public ref class OrbitalFrame
+	{
+	public:
+		OrbitalFrame(::lucid::orbit::Frame const *frame);
+
+		~OrbitalFrame();
+
+		!OrbitalFrame();
+
+		property OrbitalFrame ^CenterFrame { OrbitalFrame ^get(); }
+
+		property OrbitalFrame ^FirstChild { OrbitalFrame ^get(); }
+
+		property OrbitalFrame ^NextSibling { OrbitalFrame ^get(); }
+
+		property size_t ID { size_t get(); }
+
+		property System::String ^Name { System::String ^get(); }
+
+		property System::String ^Description { System::String ^get(); }
+
+		property Vector3 ^Position { Vector3 ^get(); }
+
+		property ::lucid::orbit::Frame const &ref { ::lucid::orbit::Frame const &get() { return *_internal; } }
+
+		property ::lucid::orbit::Frame const *ptr { ::lucid::orbit::Frame const *get() { return  _internal; } }
+
+	private:
+		::lucid::orbit::Frame const *_internal = nullptr;
+
+	};
+
+	///
+	///
+	///
 	public ref class OrbitalMechanics
 	{
 	public:
@@ -38,11 +79,15 @@ namespace lucid {
 
 		!OrbitalMechanics();
 
-		void initialize(scalar_t dayNumber);
+		void Initialize(scalar_t dayNumber);
 
-		void update();
+		void Update();
 
-		void render(Context ^context);
+		void Render(Context ^context);
+
+		OrbitalFrame ^RootFrame();
+
+		OrbitalFrame ^Frame(size_t id);
 
 	private:
 		scalar_t const    TIME_STEP = 0.1;

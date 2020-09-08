@@ -22,8 +22,6 @@ inline void GAL_VALIDATE_HRESULT(HRESULT hr, std::string const &msg)
 		std::string reason;
 		for (TCHAR const *ptr = wstr; 0 != *ptr; ++ptr) { reason.push_back((char const)(*ptr)); }
 
-		///	TBD: log error
-
 		///	Note: the file and line value in core::Error will not be useful.
 		LUCID_THROW(msg);
 	}
