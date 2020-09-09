@@ -1,6 +1,7 @@
 #include "Frame.h"
 #include "Ephemeris.h"
 #include "Algorithm.h"
+#include <lucid/core/Error.h>
 
 namespace orbit = ::lucid::orbit;
 
@@ -30,22 +31,12 @@ namespace orbit {
 		::memset(absolutePosition, 0, 2 * sizeof(vector3_t));
 	}
 
-	Frame::~Frame()
-	{
-		delete firstChild;
-		delete nextSibling;
-	}
-
 	///
 	///
 	///
 
 	DynamicPoint::DynamicPoint(size_t id, std::string const &name, std::string const &description)
 		: Frame(id, name, description)
-	{
-	}
-
-	DynamicPoint::~DynamicPoint()
 	{
 	}
 
@@ -61,12 +52,8 @@ namespace orbit {
 	OrbitalBody::OrbitalBody(size_t id, std::string const &name, std::string const &description)
 		: Frame(id, name, description)
 	{
-		theEphemeris().lookup(physicalProperties, id);
-		theEphemeris().lookup(renderProperties, id);
-	}
-
-	OrbitalBody::~OrbitalBody()
-	{
+		LUCID_VALIDATE(theEphemeris().lookup(physicalProperties, id), "consistency error: properties not found for frame");
+		LUCID_VALIDATE(theEphemeris().lookup(  renderProperties, id), "consistency error: properties not found for frame");
 	}
 
 	void OrbitalBody::apply(Algorithm *algorithm)
@@ -80,10 +67,6 @@ namespace orbit {
 
 	DynamicBody::DynamicBody(size_t id, std::string const &name, std::string const &description)
 		: Frame(id, name, description)
-	{
-	}
-
-	DynamicBody::~DynamicBody()
 	{
 	}
 

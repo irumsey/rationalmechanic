@@ -83,11 +83,15 @@ namespace orbit {
 
 	void Renderer::evaluate(DynamicPoint *point)
 	{
+		LUCID_PROFILE_SCOPE("Renderer::evaluate(DynamicPoint)");
+
 		///	TBD: implement
 	}
 
 	void Renderer::evaluate(OrbitalBody *body)
 	{
+		LUCID_PROFILE_SCOPE("Renderer::evaluate(OrbitalBody)");
+
 		///	TBD: data drive line width and color
 		///	TBD: data drive domain of orbit
 
@@ -143,6 +147,7 @@ namespace orbit {
 
 	void Renderer::evaluate(DynamicBody *body)
 	{
+		LUCID_PROFILE_SCOPE("Renderer::evaluate(DynamicBody)");
 		///	TBD: implement
 	}
 
@@ -168,7 +173,7 @@ namespace orbit {
 
 	void Renderer::render(Frame *root, ::lucid::gigl::Context const &context, float32_t time, float32_t interpolant)
 	{
-		LUCID_PROFILE_BEGIN("rendering orbital objects");
+		LUCID_PROFILE_SCOPE("Renderer::render(...)");
 
 		_time = time;
 		_interpolant = interpolant;
@@ -179,12 +184,12 @@ namespace orbit {
 		_batched.clear();
 			batch(root);
 		_batched.render(context);
-
-		LUCID_PROFILE_END();
 	}
 
 	void Renderer::batch(Frame *frame)
 	{
+		LUCID_PROFILE_SCOPE("Renderer::batch(Frame)");
+
 		if (nullptr == frame)
 			return;
 
@@ -197,6 +202,9 @@ namespace orbit {
 
 	bool Renderer::cull(Frame *frame)
 	{
+		LUCID_PROFILE_SCOPE("Renderer::cull(Frame)");
+
+#if false
 		///	TBD: more sophistication
 		///	for now, just based upon distance to center body
 
@@ -225,6 +233,8 @@ namespace orbit {
 		};
 
 		return (math::lsq(screenPosition[1] - screenPosition[0]) < 0.004f); 
+#endif
+		return false;
 	}
 
 }	///	orbit

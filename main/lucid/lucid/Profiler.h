@@ -10,6 +10,9 @@ namespace lucid {
 		~Profiler();
 
 		!Profiler();
+
+		void dump(System::String ^path);
+
 	};
 
 }	///	lucid

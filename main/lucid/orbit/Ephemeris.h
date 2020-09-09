@@ -28,7 +28,6 @@ namespace orbit {
 	struct PhysicalProperties;
 	struct RenderProperties;
 	struct Elements;
-	class  Frame;
 
 	///	Ephemeris
 	///
@@ -44,6 +43,8 @@ namespace orbit {
 		///
 		struct Entry
 		{
+			///	the values are defined in the ephemeris file.
+			///	defining these to match.
 			enum TYPE
 			{
 				TYPE_UNDEFINED     = 0,
@@ -62,7 +63,9 @@ namespace orbit {
 		virtual ~Ephemeris();
 
 		void initialize(std::string const &path);
-		
+	
+		void shutdown();
+
 		Iterator begin() const;
 
 		Iterator end() const;

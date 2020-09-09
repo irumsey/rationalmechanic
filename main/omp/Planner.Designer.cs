@@ -199,7 +199,7 @@
             this.orbitalFrameList.TabIndex = 0;
             this.orbitalFrameList.UseCompatibleStateImageBehavior = false;
             this.orbitalFrameList.View = System.Windows.Forms.View.Details;
-            this.orbitalFrameList.MouseClick += new System.Windows.Forms.MouseEventHandler(this.onOrbitalFrameListClicked);
+            this.orbitalFrameList.MouseClick += new System.Windows.Forms.MouseEventHandler(this.onFrameListClicked);
             // 
             // orbitalFrameListTrack
             // 

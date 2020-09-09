@@ -28,46 +28,45 @@ namespace orbit {
 
 	void Simulator::evaluate(DynamicPoint *point)
 	{
-		LUCID_PROFILE_BEGIN("simulating dynamic points");
+		LUCID_PROFILE_SCOPE("Simulator::evaluate(DynamicPoint)");
 
-		///	TBD: implement
+		///	relative position 1 can be changed externally
+		point->relativePosition[0] = point->relativePosition[1];
 
-		LUCID_PROFILE_END();
+		Frame const *center = point->centerFrame;
+		if (nullptr == center)
+			return;
+
+		point->absolutePosition[0] = point->absolutePosition[1];
+		point->absolutePosition[1] = point->relativePosition[1] + center->absolutePosition[1];
 	}
 
 	void Simulator::evaluate(OrbitalBody *body)
 	{
-		LUCID_PROFILE_BEGIN("simulating orbital bodies");
+		LUCID_PROFILE_SCOPE("Simulator::evaluate(OrbitalBody)");
 
 		Frame const *center = body->centerFrame;
-		if (nullptr == center)
-			return;
+		LUCID_VALIDATE(nullptr != center, "orbital body has no center, attracting body, defined");
 
-		theEphemeris().lookup(body->elements[0], body->id, _dayNumber);
+		body->elements[0] = body->elements[1];
+		theEphemeris().lookup(body->elements[1], body->id, _dayNumber);
 
 		PhysicalProperties centerProperties;
 		theEphemeris().lookup(centerProperties, center->id);
 
-		kinematicsFromElements(body->relativePosition[0], body->relativeVelocity[0], centerProperties, body->elements[0], _dayNumber);
+		body->relativePosition[0] = body->relativePosition[1];
+		body->relativeVelocity[0] = body->relativeVelocity[1];
+		kinematicsFromElements(body->relativePosition[1], body->relativeVelocity[1], centerProperties, body->elements[1], _dayNumber);
 
-		///	the center, or parent, frame has already been updated and "swaped"
-		body->absolutePosition[0] = body->relativePosition[0] + center->absolutePosition[1];
-
-		std::swap(body->        elements[0], body->        elements[1]);
-		std::swap(body->relativePosition[0], body->relativePosition[1]);
-		std::swap(body->absolutePosition[0], body->absolutePosition[1]);
-		std::swap(body->relativeVelocity[0], body->relativeVelocity[1]);
-
-		LUCID_PROFILE_END();
+		body->absolutePosition[0] = body->absolutePosition[1];
+		body->absolutePosition[1] = body->relativePosition[1] + center->absolutePosition[1];
 	}
 
 	void Simulator::evaluate(DynamicBody *body)
 	{
-		LUCID_PROFILE_BEGIN("simulating dynamic bodies");
+		LUCID_PROFILE_SCOPE("Simulator::evaluate(DynamicBody)");
 
 		///	TBD: implement
-
-		LUCID_PROFILE_END();
 	}
 
 	void Simulator::initialize()

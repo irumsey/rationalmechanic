@@ -36,7 +36,7 @@ namespace lucid {
 	public ref class OrbitalFrame
 	{
 	public:
-		OrbitalFrame(::lucid::orbit::Frame const *frame);
+		OrbitalFrame(::lucid::orbit::Frame *frame);
 
 		~OrbitalFrame();
 
@@ -54,14 +54,16 @@ namespace lucid {
 
 		property System::String ^Description { System::String ^get(); }
 
-		property Vector3 ^Position { Vector3 ^get(); }
+		property Vector3 ^RelativePosition { Vector3 ^get(); void set(Vector3 ^value); }
 
-		property ::lucid::orbit::Frame const &ref { ::lucid::orbit::Frame const &get() { return *_internal; } }
+		property Vector3 ^AbsolutePosition { Vector3 ^get(); }
 
-		property ::lucid::orbit::Frame const *ptr { ::lucid::orbit::Frame const *get() { return  _internal; } }
+		property ::lucid::orbit::Frame &ref { ::lucid::orbit::Frame &get() { return *_internal; } }
+
+		property ::lucid::orbit::Frame *ptr { ::lucid::orbit::Frame *get() { return  _internal; } }
 
 	private:
-		::lucid::orbit::Frame const *_internal = nullptr;
+		::lucid::orbit::Frame *_internal = nullptr;
 
 	};
 
@@ -73,21 +75,31 @@ namespace lucid {
 	public:
 		typedef ::lucid::orbit::scalar_t scalar_t;
 
-		OrbitalMechanics(System::String ^pathEphemeris);
+		OrbitalMechanics(System::String ^ephemeris, scalar_t dayNumber);
 
 		~OrbitalMechanics();
 
 		!OrbitalMechanics();
 
-		void Initialize(scalar_t dayNumber);
+		void Initialize(System::String ^ephemeris, scalar_t dayNumber);
+
+		void Shutdown();
+
+		OrbitalFrame ^CreateFrame(size_t type, System::String ^name, System::String ^description);
+
+		void Attach(OrbitalFrame ^center, OrbitalFrame ^frame);
+
+		void Detach(OrbitalFrame ^frame);
+
+		OrbitalFrame ^RootFrame();
+
+		OrbitalFrame ^Frame(size_t id);
 
 		void Update();
 
 		void Render(Context ^context);
 
-		OrbitalFrame ^RootFrame();
-
-		OrbitalFrame ^Frame(size_t id);
+		Vector3 ^InterpolatePosition(OrbitalFrame ^frame);
 
 	private:
 		scalar_t const    TIME_STEP = 0.1;

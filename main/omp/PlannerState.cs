@@ -10,7 +10,6 @@ namespace omp
 {
 
     /// <summary>
-    /// 
     /// </summary>
     partial class Planner
     {
@@ -23,9 +22,11 @@ namespace omp
 
             public virtual void onLeave(Planner planner) { }
 
+            public virtual void onMainViewResize(Planner planner) { }
+
             public virtual void onPaint(Planner planner) { }
 
-            public virtual void onMainViewResize(Planner planner) { }
+            public virtual void onTrackFrame(Planner planner, ListViewItem item) { }
 
             public virtual void updateSimulation(Planner planner) { }
 
@@ -53,6 +54,7 @@ namespace omp
 
             private Starting() { }
 
+            // test {
             private void testPopulateListview(Planner planner, lucid.OrbitalFrame frame)
             {
                 ListViewItem item = new ListViewItem();
@@ -67,6 +69,7 @@ namespace omp
                     testPopulateListview(planner, childFrame);
                 }
             }
+            // } test
 
             public override void onEnter(Planner planner)
             {
@@ -75,24 +78,23 @@ namespace omp
 
                 unsafe { lucid.Pipeline.initialize(clientSize.Width, clientSize.Height, 2, panel.Handle.ToPointer()); }
 
-                planner.aspectRatio = (float)clientSize.Width / (float)clientSize.Height;
-                planner.camera = new lucid.Camera2D();
-                planner.renderContext = new lucid.Context("content/test.context");
-
-                planner.camera.InitPerspective(0.25f * 3.1415926f, planner.aspectRatio, 1, 1000);
-                planner.camera.Look(new lucid.Vector3(60, 60, 60), new lucid.Vector3(0, 0, 0), new lucid.Vector3(0, 0, 1));
-
                 // test {
                 // initial user action should be to specify an ephemeris
                 // or to have a default that is user specified.
-                planner.orbitalMechainics = new lucid.OrbitalMechanics("content/j2000.ephemeris");
-                planner.orbitalMechainics.Initialize(2451544.0);
+                planner.orbitalMechainics = new lucid.OrbitalMechanics("content/j2000.ephemeris", 2451544.0);
+                testPopulateListview(planner, planner.orbitalMechainics.RootFrame());
                 // } test
 
-                // test {
-                lucid.OrbitalFrame rootFrame = planner.orbitalMechainics.RootFrame();
-                testPopulateListview(planner, rootFrame);
-                // } test
+                planner.cameraFrame = planner.orbitalMechainics.CreateFrame(1, "camera", "dynamic frame for camera");
+                planner.orbitalMechainics.Attach(planner.orbitalMechainics.RootFrame(), planner.cameraFrame);
+                planner.cameraFrame.RelativePosition = new lucid.Vector3(10, 10, 3);
+
+                planner.aspectRatio = (float)clientSize.Width / (float)clientSize.Height;
+                planner.renderContext = new lucid.Context("content/test.context");
+
+                planner.camera = new lucid.Camera2D();
+                planner.camera.InitPerspective(0.25f * 3.1415926f, planner.aspectRatio, 1, 1000);
+                planner.camera.Look(new lucid.Vector3(30, 30, 5), new lucid.Vector3(0, 0, 0), new lucid.Vector3(0, 0, 1));
 
                 planner.setMainMenuDefaults();
                 planner.changeState(Editing.Instance);
@@ -113,11 +115,6 @@ namespace omp
 
             public override void onLeave(Planner planner) { }
 
-            public override void onPaint(Planner planner)
-            {
-                planner.renderMainView();
-            }
-
             public override void onMainViewResize(Planner planner)
             {
                 SplitterPanel panel = planner.mainSplitter.Panel1;
@@ -130,25 +127,62 @@ namespace omp
                 planner.renderMainView();
             }
 
+            public override void onPaint(Planner planner)
+            {
+                planner.renderMainView();
+            }
+
+            public override void onTrackFrame(Planner planner, ListViewItem item)
+            {
+                if (planner.trackedFrameItem == item)
+                {
+                    int stateIndex = (item.StateImageIndex + 1) % 2;
+                    item.StateImageIndex = stateIndex;
+
+                    if (0 == stateIndex)
+                        planner.trackedFrameItem = null;
+                }
+                else
+                {
+                    if (null != planner.trackedFrameItem)
+                        planner.trackedFrameItem.StateImageIndex = 0;
+                    planner.trackedFrameItem = item;
+                    planner.trackedFrameItem.StateImageIndex = 1;
+                }
+
+                planner.orbitalMechainics.Detach(planner.cameraFrame);
+                if (null != planner.trackedFrameItem)
+                {
+                    uint id = uint.Parse(planner.trackedFrameItem.SubItems[1].Text);
+                    planner.trackedFrame = planner.orbitalMechainics.Frame(id);
+                    planner.orbitalMechainics.Attach(planner.trackedFrame, planner.cameraFrame);
+                }
+                else
+                {
+                    planner.trackedFrame = null;
+                    planner.orbitalMechainics.Attach(planner.orbitalMechainics.RootFrame(), planner.cameraFrame);
+                }
+
+                planner.cameraFrame.RelativePosition = new lucid.Vector3(10, 10, 3);
+                planner.cameraFrame.RelativePosition = new lucid.Vector3(10, 10, 3);
+            }
+
             public override void updateSimulation(Planner planner)
             {
-                /// test {
-                lucid.Vector3 viewPosition = (null != planner.trackedFrame)
-                    ? planner.trackedFrame.Position + new lucid.Vector3(20, 20, 20)
-                    : planner.camera.position;
-                lucid.Vector3 focus = (null != planner.trackedFrame)
-                    ? planner.trackedFrame.Position
-                    : new lucid.Vector3(0, 0, 0);
-                /// } test
-                
-                planner.camera.Look(viewPosition, focus, new lucid.Vector3(0, 0, 1));
-                planner.renderContext.Set(planner.camera);
-
                 planner.orbitalMechainics.Update();
             }
 
             public override void renderMainView(Planner planner)
             {
+                /// test {
+                lucid.Vector3 position = planner.orbitalMechainics.InterpolatePosition(planner.cameraFrame);
+                lucid.Vector3    focus = (null != planner.trackedFrame)
+                    ? planner.orbitalMechainics.InterpolatePosition(planner.trackedFrame)
+                    : new lucid.Vector3(0, 0, 0);
+                planner.camera.Look(position, focus, new lucid.Vector3(0, 0, 1));
+                planner.renderContext.Set(planner.camera);
+                /// } test
+
                 lucid.Pipeline.beginScene();
                     lucid.Pipeline.clear(new lucid.Color(0, 0, 0, 0), 1.0f);
                     planner.orbitalMechainics.Render(planner.renderContext);
@@ -169,6 +203,7 @@ namespace omp
             public override void onEnter(Planner planner)
             {
                 // TBD: clean up work here...
+                planner.orbitalMechainics.Shutdown();
 
                 Application.Exit();
                 planner.changeState(Stopped.Instance);

@@ -17,11 +17,13 @@ namespace omp
     {
         private State state = Stopped.Instance;
 
+        private lucid.OrbitalMechanics orbitalMechainics = null;
+
         private float aspectRatio = 1.0f;
-        private lucid.Camera2D camera = null;
         private lucid.Context renderContext = null;
 
-        private lucid.OrbitalMechanics orbitalMechainics = null;
+        private lucid.Camera2D camera = null;
+        private lucid.OrbitalFrame cameraFrame = null;
 
         private lucid.OrbitalFrame trackedFrame = null;
         private ListViewItem trackedFrameItem = null;
@@ -131,7 +133,7 @@ namespace omp
         {
         }
 
-        private void onOrbitalFrameListClicked(object sender, MouseEventArgs e)
+        private void onFrameListClicked(object sender, MouseEventArgs e)
         {
             ListViewHitTestInfo hitTest = orbitalFrameList.HitTest(e.Location);
             if (null == hitTest)
@@ -141,31 +143,7 @@ namespace omp
             if ((null == hitTest.Item) || (0 != columnIndex))
                 return;
 
-            if (trackedFrameItem == hitTest.Item)
-            {
-                int stateIndex = (hitTest.Item.StateImageIndex + 1) % 2;
-                hitTest.Item.StateImageIndex = stateIndex;
-
-                if (0 == stateIndex)
-                    trackedFrameItem = null;
-            }
-            else
-            {
-                if (null != trackedFrameItem)
-                    trackedFrameItem.StateImageIndex = 0;
-                trackedFrameItem = hitTest.Item;
-                trackedFrameItem.StateImageIndex = 1;
-            }
-
-            if (null != trackedFrameItem)
-            {
-                uint id = uint.Parse(trackedFrameItem.SubItems[1].Text);
-                trackedFrame = orbitalMechainics.Frame(id);
-            }
-            else
-            {
-                trackedFrame = null;
-            }
+            state.onTrackFrame(this, hitTest.Item);
         }
 
         public void updateSimulation()

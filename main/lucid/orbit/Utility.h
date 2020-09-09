@@ -25,9 +25,19 @@ namespace orbit {
 		return float32_t(rhs);
 	}
 
+	inline scalar_t cast(float32_t rhs)
+	{
+		return scalar_t(rhs);
+	}
+
 	inline float32_t scale(scalar_t rhs)
 	{
 		return cast(rhs * constants::RUs_per_meter<scalar_t>());
+	}
+
+	inline scalar_t inv_scale(float32_t rhs)
+	{
+		return cast(rhs * constants::meters_per_RU<float32_t>());
 	}
 
 	inline ::lucid::gal::Vector3 cast(vector3_t const &rhs)
@@ -35,9 +45,19 @@ namespace orbit {
 		return ::lucid::gal::Vector3(cast(rhs.x), cast(rhs.y), cast(rhs.z));
 	}
 
+	inline vector3_t cast(::lucid::gal::Vector3 const &rhs)
+	{
+		return vector3_t(cast(rhs.x), cast(rhs.y), cast(rhs.z));
+	}
+
 	inline ::lucid::gal::Vector3 scale(vector3_t const &rhs)
 	{
 		return cast(rhs * constants::RUs_per_meter<scalar_t>());
+	}
+
+	inline vector3_t inv_scale(::lucid::gal::Vector3 const &rhs)
+	{
+		return cast(rhs * constants::meters_per_RU<float32_t>());
 	}
 
 	inline ::lucid::gal::Matrix3x3 cast(matrix3x3_t const &rhs)

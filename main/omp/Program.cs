@@ -29,7 +29,7 @@ namespace omp
                 Application.DoEvents();
             }
 
-            /// TBD: destroy profiler ???
+            profiler.dump("profile.log");
         }
     }
 }

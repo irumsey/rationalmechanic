@@ -2,6 +2,7 @@
 
 #include <string>
 #include <lucid/core/Noncopyable.h>
+#include <lucid/core/Error.h>
 #include <lucid/orbit/Types.h>
 #include <lucid/orbit/Properties.h>
 #include <lucid/orbit/Elements.h>
@@ -17,7 +18,9 @@ namespace orbit {
 
 	///	Frame
 	///
-	///	a frame of reference
+	///	A frame of reference.
+	///	Note: the "cascade delete behaviour" has been removed.  orbit::System, or other creator, now
+	///	takes complete ownership of its frames and must delete them.
 	class Frame
 	{
 	public:
@@ -35,11 +38,11 @@ namespace orbit {
 
 		vector3_t absolutePosition[2];
 
-		virtual ~Frame();
+		virtual ~Frame() = default;
 
 		void addChild(Frame *child);
 
-		void addSibling(Frame *sibling);
+		void removeChild(Frame *child);
 
 		virtual void apply(Algorithm *algorithm) = 0;
 
@@ -52,31 +55,45 @@ namespace orbit {
 
 	inline void Frame::addChild(Frame *child)
 	{
+		LUCID_VALIDATE(nullptr == child->centerFrame, "internal frame consistency error");
+		LUCID_VALIDATE(nullptr == child->nextSibling, "internal frame consistency error");
+
 		child->centerFrame = this;
 
-		if (nullptr == firstChild)
-			firstChild = child;
-		else
-			firstChild->addSibling(child);
+		child->nextSibling = firstChild;
+		firstChild = child;
 	}
 
-	inline void Frame::addSibling(Frame *sibling)
+	inline void Frame::removeChild(Frame *child)
 	{
-		if (nullptr == nextSibling)
-			nextSibling = sibling;
+		LUCID_VALIDATE(this == child->centerFrame, "internal frame consistency error");
+		child->centerFrame = nullptr;
+
+		if (child == firstChild)
+		{
+			firstChild = child->nextSibling;
+		}
 		else
-			nextSibling->addSibling(sibling);
+		{
+			Frame *scan = firstChild;
+			while (child != scan->nextSibling) scan = scan->nextSibling;
+			LUCID_VALIDATE(child == scan->nextSibling, "frame was not a parent to specified child");
+
+			scan->nextSibling = child->nextSibling;
+		}
+
+		child->nextSibling = nullptr;
 	}
 
 	///	Dynamic point
 	///
-	///	Point of reference such as solar system barycenter, earth/moon barycenter, etc
+	///	General point of reference such as solar system barycenter, earth/moon barycenter, etc.
 	class DynamicPoint : public Frame
 	{
 	public:
 		DynamicPoint(size_t id, std::string const &name, std::string const &description);
 
-		virtual ~DynamicPoint();
+		virtual ~DynamicPoint() = default;
 
 		virtual void apply(Algorithm *algorithm) override;
 
@@ -97,7 +114,7 @@ namespace orbit {
 
 		OrbitalBody(size_t id, std::string const &name, std::string const &description);
 
-		virtual ~OrbitalBody();
+		virtual ~OrbitalBody() = default;
 
 		virtual void apply(Algorithm *algorithm) override;
 
@@ -114,7 +131,7 @@ namespace orbit {
 	public:
 		DynamicBody(size_t id, std::string const &name, std::string const &description);
 
-		virtual ~DynamicBody();
+		virtual ~DynamicBody() = default;
 
 		virtual void apply(Algorithm *algorithm) override;
 

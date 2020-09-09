@@ -41,15 +41,21 @@ namespace orbit {
 
 		virtual ~System();
 
-		void initialize(scalar_t dayNumber /* creiteria for orbital body inclusion/exclusion */);
+		void initialize(scalar_t dayNumber /* add filter for frame inclusion/exclusion */);
 
 		void shutdown();
 
 		scalar_t currentDayNumber() const;
 
-		Frame const *root() const;
+		Frame *create(size_t type, std::string const &name, std::string const &description);
 
-		Frame const *frame(size_t id) const;
+		Frame *root() const;
+
+		Frame *frame(size_t id) const;
+
+		void attach(Frame *center, Frame *frame);
+
+		void detach(Frame *frame);
 
 		void update(scalar_t delta);
 
@@ -66,6 +72,9 @@ namespace orbit {
 		Frame *_root = nullptr;
 		frame_map_t _frames;
 
+		size_t _idNext = 1000;	///	TBD: need better id generation method
+		size_t genFrameID() { return ++_idNext; }
+
 		LUCID_PREVENT_COPY(System);
 		LUCID_PREVENT_ASSIGNMENT(System);
 	};
@@ -75,12 +84,12 @@ namespace orbit {
 		return _dayNumber[1];
 	}
 
-	inline Frame const *System::root() const
+	inline Frame *System::root() const
 	{
 		return _root;
 	}
 
-	inline Frame const *System::frame(size_t id) const
+	inline Frame *System::frame(size_t id) const
 	{
 		auto iter = _frames.find(id);
 		LUCID_VALIDATE(iter != _frames.end(), "unknown frame id specified");

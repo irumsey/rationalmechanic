@@ -26,6 +26,7 @@ namespace gigl {
 		for (auto iter = _batches.begin(); iter != _batches.end(); ++iter)
 			delete iter->second;
 		_batches.clear();
+		_order.clear();
 	}
 
 	void Batched::render(Context const &context)

@@ -1,5 +1,4 @@
 #include "Ephemeris.h"
-#include "Frame.h"
 #include "Elements.h"
 #include "Properties.h"
 #include "Constants.h"
@@ -34,10 +33,13 @@ namespace orbit {
 
 	Ephemeris::~Ephemeris()
 	{
+		shutdown();
 	}
 
 	void Ephemeris::initialize(std::string const &path)
 	{
+		shutdown();
+
 		core::FileReader reader(path);
 
 		size_t frameCount = 0;
@@ -78,6 +80,15 @@ namespace orbit {
 				_elements.insert(std::make_pair(target.id, pluralElements));
 			}
 		}
+	}
+
+	void Ephemeris::shutdown()
+	{
+		_order.clear();
+		_entries.clear();
+		_physicalProperties.clear();
+		_renderProperties.clear();
+		_elements.clear();
 	}
 
 	bool Ephemeris::lookup(PhysicalProperties &properties, size_t target) const

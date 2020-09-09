@@ -46,14 +46,12 @@ namespace orbit {
 
 	inline void Simulator::simulate(Frame *root, scalar_t dayNumber, scalar_t delta)
 	{
-		LUCID_PROFILE_BEGIN("orbital simulation");
+		LUCID_PROFILE_SCOPE("Simulator::simulate(...)");
 
 		_dayNumber = dayNumber;
 		_delta = delta;
 
 		simulate(root);
-
-		LUCID_PROFILE_END();
 	}
 
 }	///	orbit

@@ -14,35 +14,37 @@ namespace /* anonymous */ {
 		return Ephemeris::instance();
 	}
 
-	typedef Frame *(*create_func_t)(Ephemeris::Entry const &entry);
+	typedef Frame *(*create_func_t)(size_t id, std::string const &name, std::string const &description);
 
-	Frame *creationError(Ephemeris::Entry const &)
+	Frame *creationError(size_t, std::string const &, std::string const &)
 	{
 		LUCID_THROW("attempt to create invalid frame type");
 		return nullptr;
 	}
 
-	Frame *createDynamicPoint(Ephemeris::Entry const &entry)
+	Frame *createDynamicPoint(size_t id, std::string const &name, std::string const &description)
 	{
-		return new DynamicPoint(entry.id, entry.name, entry.description);
+		return new DynamicPoint(id, name, description);
 	}
 
-	Frame *createOrbitalBody(Ephemeris::Entry const &entry)
+	Frame *createOrbitalBody(size_t id, std::string const &name, std::string const &description)
 	{
-		return new OrbitalBody(entry.id, entry.name, entry.description);
+		return new OrbitalBody(id, name, description);
 	}
 
-	Frame *createDynamicBody(Ephemeris::Entry const &entry)
+	Frame *createDynamicBody(size_t id, std::string const &name, std::string const &description)
 	{
-		return new DynamicBody(entry.id, entry.name, entry.description);
+		return new DynamicBody(id, name, description);
 	}
 
+	///	ENUM LOOKUP
+	///	implicit use of Ephemeris::Entry::Type
 	create_func_t const createFrame[] =
 	{
-		creationError,
-		createDynamicPoint,
-		createOrbitalBody,
-		createDynamicBody,
+		creationError,			///	TYPE_UNDEFINED
+		createDynamicPoint,		///	TYPE_DYNAMIC_POINT
+		createOrbitalBody,		///	TYPE_ORBITAL_BODY
+		createDynamicBody,		///	TYPE_DYNAMIC_BODY
 	};
 
 }	///	anonymous
@@ -73,7 +75,7 @@ namespace /* anonymous */ {
 			Ephemeris::Entry entry;
 			LUCID_VALIDATE(theEphemeris().lookup(entry, *iter), "ephemeris consistency error (id exists without entry)");
 
-			Frame *frame = createFrame[entry.type](entry);
+			Frame *frame = createFrame[entry.type](entry.id, entry.name, entry.description);
 			
 			LUCID_VALIDATE(_frames.end() == _frames.find(entry.id), "duplicate frame id");
 			_frames.insert(std::make_pair(frame->id, frame));
@@ -106,18 +108,50 @@ namespace /* anonymous */ {
 		_renderer.shutdown();
 		_simulator.shutdown();
 
+		for each (auto iter in _frames)
+			delete iter.second;
 		_frames.clear();
 
-		delete _root;
 		_root = nullptr;
+	}
+
+	Frame *System::create(size_t type, std::string const &name, std::string const &description)
+	{
+		///	TBD: find better way (jpl horizons -> local file -> ephemeris -> frame type, plus c++ -> c#)
+		LUCID_VALIDATE((0 < type) && (type < 4), "frame type id out of range");
+
+		Frame *frame = createFrame[type](genFrameID(), name, description);
+		LUCID_VALIDATE(_frames.end() == _frames.find(frame->id), "internal error: new frame id clashes with an existing");
+
+		_frames.insert(std::make_pair(frame->id, frame));
+	
+		return frame;
+	}
+
+	void System::attach(Frame *center, Frame *frame)
+	{
+		LUCID_VALIDATE(_frames.end() != _frames.find(center->id), "attempt to attach to center not managed by system");
+		LUCID_VALIDATE(_frames.end() != _frames.find(frame ->id), "attempt to attach frame not managed by system");
+
+		center->addChild(frame);	
+	}
+
+	void System::detach(Frame *frame)
+	{
+		LUCID_VALIDATE(_frames.end() != _frames.find(frame->id), "attempt to detach frame not managed by system");
+
+		Frame *center = frame->centerFrame;
+		LUCID_VALIDATE(nullptr != center, "attempt to detach root frame");
+
+		center->removeChild(frame);
 	}
 
 	void System::update(scalar_t delta)
 	{
 		LUCID_VALIDATE(nullptr != _root, "attempt to use uninitialized system");
 
-		_dayNumber[0] = _dayNumber[1] + delta;
-		std::swap(_dayNumber[0], _dayNumber[1]);
+		_dayNumber[0] = _dayNumber[1];
+		_dayNumber[1] = _dayNumber[1] + delta;
 
 		_simulator.simulate(_root, _dayNumber[1], delta);
 	}

@@ -1,8 +1,8 @@
 #include "Resources.h"
 
 ///	there are issues if lucid is used with C#
-///	the gc screws up shutdown order
-///	#define GIGL_DELETE_RESOURCES
+///	the gc interferes shutdown order
+/// #define GIGL_DELETE_RESOURCES
 
 ///
 ///
