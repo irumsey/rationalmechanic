@@ -1,0 +1,4 @@
+{
+	"material" : "content/sun.material",
+	"geometry" : "content/sphere.geometry"
+}

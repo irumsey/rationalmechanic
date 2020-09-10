@@ -64,17 +64,17 @@
           "LODs" :
           [
 		        {
-			        "range"      : [ 0.0, 100.0 ],
-			        "mesh"       : "content/sphere.mesh",
-              "color"      : [ 1, 1, 0, 1],
-			        "scale"      : 20.0,
+			        "range"      : [ 0.0, 300.0 ],
+			        "mesh"       : "content/sun.mesh",
+              "color"      : [ 1, 1, 1, 1],
+			        "scale"      : 10.0,
 			        "parameters" : [ 0, 0, 0, 0 ]
 		        },
 		        {
-			        "range"      : [ 90.0, 1000.0 ],
+			        "range"      : [ 250.0, 500.0 ],
 			        "mesh"       : "content/sphere.mesh",
               "color"      : [ 1, 1, 0, 1],
-			        "scale"      : 20.0,
+			        "scale"      : 10.0,
 			        "parameters" : [ 0, 0, 0, 0 ]
 		        }
           ]
@@ -194,8 +194,8 @@
           [
 		        {
 			        "range"      : [ 0.0, 20.0 ],
-			        "mesh"       : "content/hemisphere.mesh",
-              "color"      : [ 0.2, 0.2, 1, 0],
+			        "mesh"       : "content/earth.mesh",
+              "color"      : [ 1, 1, 1, 0],
 			        "scale"      : 750,
 			        "parameters" : [ 0, 0, 0, 0 ]
 		        },

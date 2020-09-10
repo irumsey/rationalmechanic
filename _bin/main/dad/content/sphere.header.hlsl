@@ -1,18 +1,11 @@
-float time;
-float interpolant;
-
-float3 viewPosition;
-float3 lightPosition;
-
-float3 viewRight;
-float3 viewForward;
-float3 viewUp;
+float3    lightPosition;
+float3     viewPosition;
+float3           viewUp;
 float4x4 viewProjMatrix;
 
 struct InputVertex
 {
-	float4     corner : LOCATION0;
-
+	float2     vertex : LOCATION0;
 	float3   position : LOCATION1;
 	float       scale : LOCATION2;
 	float4   rotation : LOCATION3;

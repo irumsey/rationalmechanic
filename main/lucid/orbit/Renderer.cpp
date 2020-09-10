@@ -156,14 +156,18 @@ namespace orbit {
 		shutdown();
 		_batched.initialize();
 
-		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>("content/hemisphere.mesh"), BATCH_MAXIMUM);
-		_batched.createBatch<MeshInstance, Back2Front<MeshInstance> >(gigl::Resources::get<gigl::Mesh>(    "content/sphere.mesh"), BATCH_MAXIMUM);
+		/// test {
+		///	need a data driven method for registering these (just read the ephemeris stupid)
+		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>(   "content/sun.mesh"), BATCH_MAXIMUM);
+		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>( "content/earth.mesh"), BATCH_MAXIMUM);
+		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>("content/sphere.mesh"), BATCH_MAXIMUM);
+		/// } test
 
-		_orbitMask = gigl::Resources::get<gigl::Mesh>("content/mask.mesh");
-		_batched.createBatch<MeshInstance,   NullSort<MeshInstance> >(_orbitMask, BATCH_MAXIMUM);
+		_orbitMask = gigl::Resources::get<gigl::Mesh>("content/hemisphere.mesh");
+		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(_orbitMask, BATCH_MAXIMUM);
 
 		_orbitMesh = gigl::Resources::get<gigl::Mesh>("content/orbit.mesh");
-		_batched.createBatch<MeshInstance,    NullSort<MeshInstance> >(_orbitMesh, BATCH_MAXIMUM);
+		_batched.createBatch<MeshInstance, Back2Front<MeshInstance> >(_orbitMesh, BATCH_MAXIMUM);
 	}
 
 	void Renderer::shutdown()

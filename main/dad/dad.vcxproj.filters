@@ -56,9 +56,6 @@
     <FxCompile Include="..\..\_bin\main\dad\content\hemisphere.vertex.hlsl">
       <Filter>content</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\_bin\main\dad\content\mask.pixel.hlsl">
-      <Filter>content</Filter>
-    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\_bin\main\dad\content\orbit.header.hlsl">

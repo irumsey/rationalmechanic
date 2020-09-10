@@ -16,7 +16,7 @@
 
 			"BlendMode" :
 			{
-				"ColorWriteMask" : 15,
+				"ColorWriteMask" : 0,
 				"Enabled" : false,
 				"SrcBlend" : "BLEND_SRC_ALPHA",
 				"SrcBlendAlpha" : "BLEND_SRC_ALPHA",
@@ -45,14 +45,10 @@
 		"PixelShader" : { "Path" : "content/hemisphere.pixel.cso" }
 	},
 
-
 	"attributes":
 	[
-		{ "name":  "lightPosition", "query":      "lightPosition" },
-
-		{ "name":      "viewRight", "query":          "viewRight" },
-		{ "name":    "viewForward", "query":        "viewForward" },
-		{ "name":         "viewUp", "query":             "viewUp" },
-		{ "name": "viewProjMatrix", "query":     "viewProjMatrix" }
+		{ "name":   "viewPosition",     "query":               "viewPosition" },
+		{ "name":         "viewUp",     "query":                     "viewUp" },
+		{ "name": "viewProjMatrix",     "query":             "viewProjMatrix" }
 	]
 }
