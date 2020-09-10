@@ -1,0 +1,4 @@
+{
+	"material" : "content/disk.material",
+	"geometry" : "content/disk.geometry"
+}

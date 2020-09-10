@@ -41,8 +41,8 @@
 
 		},
 
-		"VertexShader" : { "Path" : "content/sphere.vertex.cso" },
-		"PixelShader" : { "Path" : "content/sphere.pixel.cso" }
+		"VertexShader" : { "Path" : "content/disk.vertex.cso" },
+		"PixelShader" : { "Path" : "content/disk.pixel.cso" }
 	},
 
 	"attributes":
@@ -52,7 +52,7 @@
 		{ "name":         "viewUp",     "query":                        "viewUp" },
 		{ "name": "viewProjMatrix",     "query":                "viewProjMatrix" },
 		{ "name": "diffuseTexture", "texture2d":    "content/sunDiffuse.texture" },
-		{ "name": "normalsTexture", "texture2d": "content/sphereNormals.texture" }
+		{ "name": "normalsTexture", "texture2d": "content/diskNormals.texture" }
 	]
 
 }
