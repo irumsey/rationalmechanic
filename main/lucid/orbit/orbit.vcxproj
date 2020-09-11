@@ -29,6 +29,7 @@
     <ClInclude Include="Properties.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Simulator.h" />
+    <ClInclude Include="StarCatalog.h" />
     <ClInclude Include="System.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="Utility.h" />
@@ -40,6 +41,7 @@
     <ClCompile Include="Octree.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Simulator.cpp" />
+    <ClCompile Include="StarCatalog.cpp" />
     <ClCompile Include="System.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

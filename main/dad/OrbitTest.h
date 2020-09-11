@@ -3,8 +3,20 @@
 #include <lucid/core/Noncopyable.h>
 #include <lucid/gal/Types.h>
 #include <lucid/gigl/Context.h>
+#include <lucid/orbit/StarCatalog.h>
 #include <lucid/orbit/System.h>
 #include <dad/Test.h>
+
+///
+///
+///
+namespace lucid {
+namespace gal {
+
+	class VertexBuffer;
+
+}	///	gigl
+}	///	lucid
 
 ///
 ///
@@ -47,6 +59,7 @@ private:
 	::lucid::gal::Vector3 _viewPosition;
 	::lucid::gal::Vector3 _viewDirection;
 
+	lucid::orbit::StarCatalog _starCatalog;
 	lucid::orbit::System _orbitalSystem;
 
 	LUCID_PREVENT_COPY(OrbitTest);

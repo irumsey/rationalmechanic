@@ -3,6 +3,7 @@
 #include "Math.h"
 #include <lucid/orbit/System.h>
 #include <lucid/orbit/Ephemeris.h>
+#include <lucid/orbit/StarCatalog.h>
 #include <lucid/orbit/Frame.h>
 #include <lucid/orbit/Utility.h>
 #include <lucid/core/Clock.h>
@@ -120,6 +121,8 @@ namespace lucid {
 
 		_clock = core::Clock::create();
 
+		_starCatalog = new orbit::StarCatalog("content/bsc5.starcatalog");
+
 		_orbitalSystem = new orbit::System();
 		_orbitalSystem->initialize(dayNumber);
 
@@ -134,6 +137,9 @@ namespace lucid {
 	{
 		delete _orbitalSystem;
 		_orbitalSystem = nullptr;
+
+		delete _starCatalog;
+		_starCatalog = nullptr;
 
 		delete _clock;
 		_clock = nullptr;
@@ -184,6 +190,7 @@ namespace lucid {
 		context->Set("time", float32_t(_wallTime));
 		context->Set("interpolant", _frameInterpolant);
 
+		_starCatalog->render(context->ref);
 		_orbitalSystem->render(context->ref, float32_t(_wallTime), _frameInterpolant);
 	}
 

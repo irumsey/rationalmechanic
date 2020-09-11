@@ -604,6 +604,23 @@ def bootCameraFromFile(srcPath, dstPath):
 #
 #
 
+def bootStarCatalog(dst, catalog):
+	stars = catalog['catalog']
+	bootInteger(dst, len(stars))
+	for star in stars:
+		bootInteger(dst, star['XNO'])
+		bootString(dst, star['TYPE'])
+		bootDouble(dst, star['RA'])
+		bootDouble(dst, star['DEC'])
+		bootFloat(dst, star['MAG'])
+
+def bootStarCatalogFromFile(srcPath, dstPath):
+	bootStarCatalog(open(dstPath, 'wb'), json.load(open(srcPath)))
+
+#
+#
+#
+
 orbitalFrameType = {
 	'DYNAMIC_POINT' : 1,
 	'ORBITAL_BODY'  : 2,
@@ -705,6 +722,7 @@ bootContent = {
 	    '.mesh' : bootMeshFromFile,
       '.camera' : bootCameraFromFile,
 	 '.context' : bootContextFromFile,
+ '.starcatalog' : bootStarCatalogFromFile,
    '.ephemeris' : bootEphemerisFromFile,
 }
 
@@ -737,6 +755,7 @@ def main():
 	optionParser.add_option('-M', '--mesh', action = 'store_const', const = '.mesh', dest = 'kind')
 	optionParser.add_option('-c', '--camera', action = 'store_const', const = '.camera', dest = 'kind')
 	optionParser.add_option('-C', '--context', action = 'store_const', const = '.context', dest = 'kind')
+	optionParser.add_option('-S', '--starcatalog', action = 'store_const', const ='.starcatalog', dest = 'kind')
 	optionParser.add_option('-E', '--ephemeris', action = 'store_const', const ='.ephemeris', dest = 'kind')
 	(opts, args) = optionParser.parse_args()
 

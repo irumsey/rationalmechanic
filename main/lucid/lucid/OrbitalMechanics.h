@@ -21,6 +21,7 @@ namespace orbit {
 
 	class Frame;
 	class System;
+	class StarCatalog;
 
 }	///	orbit
 }	///	lucid
@@ -111,8 +112,9 @@ namespace lucid {
 		scalar_t           _simTime = 0;
 		float32_t _frameInterpolant = 0;
 
-		::lucid::core::Clock              *_clock = nullptr;
-		::lucid::orbit::System    *_orbitalSystem = nullptr;
+		::lucid:: core::Clock               *_clock = nullptr;
+		::lucid::orbit::StarCatalog   *_starCatalog = nullptr;
+		::lucid::orbit::System      *_orbitalSystem = nullptr;
 
 	};
 

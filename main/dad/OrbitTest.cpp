@@ -2,7 +2,12 @@
 #include "UserInput.h"
 #include "Utility.h"
 #include <lucid/orbit/Ephemeris.h>
+#include <lucid/orbit/StarCatalog.h>
 #include <lucid/orbit/Constants.h>
+#include <lucid/orbit/Utility.h>
+#include <lucid/gigl/Resources.h>
+#include <lucid/gigl/Mesh.h>
+#include <lucid/gal/VertexBuffer.h>
 #include <lucid/gal/Pipeline.h>
 #include <lucid/gal/System.h>
 #include <lucid/math/Vector.h>
@@ -44,6 +49,8 @@ void OrbitTest::begin(float64_t t)
 	LUCID_PROFILE_BEGIN("ephemeris test");
 
 	theEphemeris().initialize("content/j2000.ephemeris");
+
+	_starCatalog.initialize("content/bsc5.starCatalog");
 	_orbitalSystem.initialize(orbit::constants::J2000<orbit::scalar_t>());
 
 	LUCID_PROFILE_END();
@@ -87,9 +94,9 @@ bool OrbitTest::update(float64_t t, float64_t dt)
 
 	gal::Matrix4x4 invViewMatrix = math::inverse(viewMatrix);
 
-	_context[   "viewRight"] = e0;
-	_context[ "viewForward"] = e1;
-	_context[      "viewUp"] = e2;
+	_context[   "viewRight"] = math::normalize(e0);
+	_context[ "viewForward"] = math::normalize(e1);
+	_context[      "viewUp"] = math::normalize(e2);
 	_context["viewPosition"] = _viewPosition;
 
 	_context["viewMatrix"] = viewMatrix;
@@ -117,6 +124,7 @@ void OrbitTest::render(float32_t time, float32_t interpolant)
 
 	pipeline.clear(true, true, true, gal::Color(0, 0, 0, 1));;
 
+	_starCatalog.render(_context);
 	_orbitalSystem.render(_context, time, interpolant);
 
 	LUCID_PROFILE_END();
