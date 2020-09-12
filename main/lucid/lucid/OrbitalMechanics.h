@@ -21,7 +21,6 @@ namespace orbit {
 
 	class Frame;
 	class System;
-	class StarCatalog;
 
 }	///	orbit
 }	///	lucid
@@ -76,13 +75,13 @@ namespace lucid {
 	public:
 		typedef ::lucid::orbit::scalar_t scalar_t;
 
-		OrbitalMechanics(System::String ^ephemeris, scalar_t dayNumber);
+		OrbitalMechanics(System::String ^catalog, System::String ^ephemeris, scalar_t dayNumber);
 
 		~OrbitalMechanics();
 
 		!OrbitalMechanics();
 
-		void Initialize(System::String ^ephemeris, scalar_t dayNumber);
+		void Initialize(System::String ^catalog, System::String ^ephemeris, scalar_t dayNumber);
 
 		void Shutdown();
 
@@ -113,7 +112,6 @@ namespace lucid {
 		float32_t _frameInterpolant = 0;
 
 		::lucid:: core::Clock               *_clock = nullptr;
-		::lucid::orbit::StarCatalog   *_starCatalog = nullptr;
 		::lucid::orbit::System      *_orbitalSystem = nullptr;
 
 	};

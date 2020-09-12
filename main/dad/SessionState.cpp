@@ -5,7 +5,6 @@
 #include "UserInput.h"
 #include "Utility.h"
 #include <lucid/gal/Pipeline.h>
-#include <lucid/gal/Types.h>
 #include <Windows.h>
 #include <cassert>
 
@@ -17,7 +16,7 @@ void SessionStarting::onEnter(Session *session)
 {
 	::log("INFO", "starting...");
 
-	///	TBD: any initialization code here
+	///	TBD: initialization code...
 }
 
 void SessionStarting::onLeave(Session *session)
@@ -36,7 +35,6 @@ void SessionStarting::onUpdate(Session *session, float64_t t, float64_t dt)
 void SessionStarting::onRender(Session *session, float32_t time, float32_t interpolant)
 {
 	lucid::gal::Pipeline &pipeline = lucid::gal::Pipeline::instance();
-
 	pipeline.clear(true, true, true, ::lucid::gal::Color(0, 1, 0, 1));;
 }
 
@@ -52,7 +50,7 @@ SessionState *SessionStarting::instance()
 
 void SessionStopping::onEnter(Session *session)
 {
-	///	TBD: any shutdown code here
+	///	TBD: clean up code here...
 
 	session->setState(nullptr);
 }

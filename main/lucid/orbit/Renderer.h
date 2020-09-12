@@ -7,6 +7,17 @@
 #include <lucid/gal/Types.h>
 #include <lucid/gigl/Batched.h>
 #include <lucid/orbit/Algorithm.h>
+#include <lucid/orbit/StarCatalog.h>
+
+namespace lucid {
+namespace gal {
+
+	class Parameter;
+	class VertexBuffer;
+	class RenderTarget2D;
+
+}	///	gal
+}	///	lucid
 
 namespace lucid {
 namespace gigl {
@@ -45,10 +56,27 @@ namespace orbit {
 
 		void shutdown();
 
-		void render(Frame *root, ::lucid::gigl::Context const &context, float32_t time, float32_t interpolant);
+		void render(Frame *root, gigl::Context const &context, float32_t time, float32_t interpolant);
 
 	private:
-		enum { BATCH_MAXIMUM = 100 };
+		enum { BATCH_MAXIMUM = 250 };
+
+		struct CopyParameters
+		{
+			gal::Parameter const *theSource = nullptr;
+		};
+
+		struct BlurParameters
+		{
+			gal::Parameter const *texelSize = nullptr;
+			gal::Parameter const *theSource = nullptr;
+		};
+
+		struct PostParameters
+		{
+			gal::Parameter const *colorTarget = nullptr;
+			gal::Parameter const *glowTarget = nullptr;
+		};
 
 		struct MeshInstance
 		{
@@ -59,20 +87,44 @@ namespace orbit {
 			::lucid::gal::Vector4    parameters;
 		};
 
-		std::shared_ptr<gigl::Mesh> _orbitMask;
-		std::shared_ptr<gigl::Mesh> _orbitMesh;
+		size_t _width = 0;
+		size_t _height = 0;
 
 		float32_t _time = 0.f;
 		float32_t _interpolant = 0.f;
 
-		::lucid::gal::Vector3 _viewPosition;
-		::lucid::gal::Matrix4x4 _viewProjMatrix;
+		gal::Vector3 _viewPosition;
+		gal::Matrix4x4 _viewProjMatrix;
 
-		::lucid::gigl::Batched _batched;
+		size_t _starCount = 0;
+		std::unique_ptr<gal::VertexBuffer> _starInstances;
+		std::unique_ptr<gigl::Mesh> _starMesh;
+
+		std::shared_ptr<gigl::Mesh> _orbitMask;
+		std::shared_ptr<gigl::Mesh> _orbitMesh;
+
+		gigl::Batched _batched;
+
+		std::unique_ptr<gal::RenderTarget2D> _colorTarget;
+		std::unique_ptr<gal::RenderTarget2D> _glowTarget;
+		std::unique_ptr<gal::RenderTarget2D> _blurTarget[2];
+
+		std::unique_ptr<gigl::Mesh> _clear;
+		
+		CopyParameters _copyParameters;
+		std::unique_ptr<gigl::Mesh> _copy;
+		
+		BlurParameters _blurParameters;
+		std::unique_ptr<gigl::Mesh> _blur;
+
+		PostParameters _postParameters;
+		std::unique_ptr<gigl::Mesh> _post;
 
 		void batch(Frame *frame);
 
 		bool cull(Frame *frame);
+
+		void resize();
 
 		LUCID_PREVENT_COPY(Renderer);
 		LUCID_PREVENT_ASSIGNMENT(Renderer);

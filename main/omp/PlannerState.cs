@@ -76,21 +76,22 @@ namespace omp
                 SplitterPanel panel = planner.mainSplitter.Panel1;
                 Size clientSize = panel.ClientSize;
 
-                unsafe { lucid.Pipeline.initialize(clientSize.Width, clientSize.Height, 2, panel.Handle.ToPointer()); }
+                unsafe { lucid.Pipeline.initialize(clientSize.Width, clientSize.Height, 1, panel.Handle.ToPointer()); }
 
                 // test {
                 // initial user action should be to specify an ephemeris
                 // or to have a default that is user specified.
-                planner.orbitalMechainics = new lucid.OrbitalMechanics("content/j2000.ephemeris", 2451544.0);
+                planner.orbitalMechainics = new lucid.OrbitalMechanics("content/bsc5.starcatalog", "content/j2000.ephemeris", 2451544.0);
                 testPopulateListview(planner, planner.orbitalMechainics.RootFrame());
                 // } test
+
+                planner.renderContext = new lucid.Context("content/test.context");
 
                 planner.cameraFrame = planner.orbitalMechainics.CreateFrame(1, "camera", "dynamic frame for camera");
                 planner.orbitalMechainics.Attach(planner.orbitalMechainics.RootFrame(), planner.cameraFrame);
                 planner.cameraFrame.RelativePosition = new lucid.Vector3(10, 10, 3);
 
                 planner.aspectRatio = (float)clientSize.Width / (float)clientSize.Height;
-                planner.renderContext = new lucid.Context("content/test.context");
 
                 planner.camera = new lucid.Camera2D();
                 planner.camera.InitPerspective(0.25f * 3.1415926f, planner.aspectRatio, 1, 1000);
@@ -110,10 +111,6 @@ namespace omp
             static Editing() { }
 
             private Editing() { }
-
-            public override void onEnter(Planner planner) { }
-
-            public override void onLeave(Planner planner) { }
 
             public override void onMainViewResize(Planner planner)
             {
@@ -184,7 +181,6 @@ namespace omp
                 /// } test
 
                 lucid.Pipeline.beginScene();
-                    lucid.Pipeline.clear(new lucid.Color(0, 0, 0, 0), 1.0f);
                     planner.orbitalMechainics.Render(planner.renderContext);
                 lucid.Pipeline.endScene();
             }

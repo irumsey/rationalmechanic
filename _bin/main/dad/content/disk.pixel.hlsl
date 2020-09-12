@@ -14,6 +14,7 @@ OutputPixel main(InputPixel input)
 	float   shade = clamp(dot(input.lightDirection, normal), 0, 1) + input.diffuse.a;
 
 	output.color = float4(shade * diffuse.rgb, 1);
+	output.glow = float4(0.8, 0, 0, 1);
 
 	return output;
 }

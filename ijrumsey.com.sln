@@ -70,6 +70,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "units", "main\lucid\units\units.vcxproj", "{0D4BB2E2-C773-4B1B-AB4D-ED0A9490C1BB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "omp", "main\omp\omp.csproj", "{0474B74A-7B93-42A6-BE88-A5DB079453AB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D7A8FE6A-0744-4D2C-ADF6-90CE54EE907F} = {D7A8FE6A-0744-4D2C-ADF6-90CE54EE907F}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -2,13 +2,8 @@
 #include "UserInput.h"
 #include "Utility.h"
 #include <lucid/orbit/Ephemeris.h>
-#include <lucid/orbit/StarCatalog.h>
 #include <lucid/orbit/Constants.h>
 #include <lucid/orbit/Utility.h>
-#include <lucid/gigl/Resources.h>
-#include <lucid/gigl/Mesh.h>
-#include <lucid/gal/VertexBuffer.h>
-#include <lucid/gal/Pipeline.h>
 #include <lucid/gal/System.h>
 #include <lucid/math/Vector.h>
 #include <lucid/core/Profiler.h>
@@ -19,13 +14,18 @@
 ///
 
 namespace  core = ::lucid:: core;
-namespace  math = ::lucid:: math;
 namespace   gal = ::lucid::  gal;
-namespace  gigl = ::lucid:: gigl;
+namespace  gigl = ::lucid:: gigl; 
+namespace  math = ::lucid:: math;
 namespace orbit = ::lucid::orbit;
 
 namespace /* anonymous */
 {
+
+	inline ::lucid::orbit::StarCatalog &theStarCatalog()
+	{
+		return ::lucid::orbit::StarCatalog::instance();
+	}
 
 	inline ::lucid::orbit::Ephemeris &theEphemeris()
 	{
@@ -46,14 +46,10 @@ void OrbitTest::begin(float64_t t)
 
 	_context = gigl::Context("content/test.context");
 
-	LUCID_PROFILE_BEGIN("ephemeris test");
-
+	theStarCatalog().initialize("content/bsc5.starcatalog");
 	theEphemeris().initialize("content/j2000.ephemeris");
 
-	_starCatalog.initialize("content/bsc5.starCatalog");
 	_orbitalSystem.initialize(orbit::constants::J2000<orbit::scalar_t>());
-
-	LUCID_PROFILE_END();
 
 	///	initial view positon/direction
 	_viewPosition = gal::Vector3(75, 75, 20);
@@ -64,6 +60,8 @@ void OrbitTest::begin(float64_t t)
 
 void OrbitTest::onInput(MouseEvent const &event)
 {
+	///	TBD: make better (since Dads A Diagnostic this is not a priority)
+	///	changing view direction is very clunky
 	if (event.btnDownLeft)
 	{
 		float32_t theta = 0.03f * event.x;
@@ -86,8 +84,8 @@ bool OrbitTest::update(float64_t t, float64_t dt)
 
 	gal::Vector3 e1 = _viewDirection;
 	gal::Vector3 e2 = gal::Vector3(0, 0, 1);
-	gal::Vector3 e0 = math::cross(_viewDirection, e2);
-	             e2 = math::cross(e0, e1);
+	gal::Vector3 e0 = math::normalize(math::cross(_viewDirection, e2));
+	             e2 = math::normalize(math::cross(e0, e1));
 
 	gal::Matrix4x4 viewMatrix = math::look(_viewPosition, _viewPosition + 5.f * _viewDirection, e2);
 	gal::Matrix4x4 projMatrix = math::perspective(fov, aspect, 1.f, 1000.f);
@@ -122,9 +120,6 @@ void OrbitTest::render(float32_t time, float32_t interpolant)
 	_context["time"] = time;
 	_context["interpolant"] = interpolant;
 
-	pipeline.clear(true, true, true, gal::Color(0, 0, 0, 1));;
-
-	_starCatalog.render(_context);
 	_orbitalSystem.render(_context, time, interpolant);
 
 	LUCID_PROFILE_END();

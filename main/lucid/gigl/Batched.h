@@ -151,7 +151,7 @@ namespace gigl {
 				size_t index = 0;
 
 				std::shared_ptr<Material> material = mesh->material();
-
+				material->begin(context);
 				while (index < totalCount)
 				{
 					size_t count = math::min(totalCount - index, maximum);
@@ -159,13 +159,12 @@ namespace gigl {
 					::memcpy((I*)(batch->lock()), &instances[index], count * sizeof(I));
 					batch->unlock();
 
-					material->begin(context);
-						pipeline.setVertexStream(1, batch.get());
-						mesh->drawInstanced(count);
-					material->end();
+					pipeline.setVertexStream(1, batch.get());
+					mesh->drawInstanced(count);
 
 					index += count;
 				}
+				material->end();
 			}
 		};
 	};

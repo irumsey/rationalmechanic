@@ -1,34 +1,15 @@
 #pragma once
 
-#include <memory>
 #include <string>
 #include <vector>
 #include <lucid/core/Noncopyable.h>
-
-namespace lucid {
-namespace gal {
-
-	class VertexBuffer;
-
-}	///	gal
-}	///	lucid
-
-namespace lucid {
-namespace gigl {
-
-	class Context;
-	class Mesh;
-
-}	///	gigl
-}	///	lucid
 
 namespace lucid {
 namespace orbit {
 
 	///	StarCatalog
 	///
-	///	The order of the stars is the order from the
-	///	Yale Bright Star Catalog BSC5.
+	///
 	class StarCatalog
 	{
 	public:
@@ -46,31 +27,42 @@ namespace orbit {
 		typedef std::vector<Entry> ordinal_vec_t;
 		typedef ordinal_vec_t::const_iterator Iterator;
 
-		StarCatalog() = default;
-
-		StarCatalog(std::string const &path);
-
 		virtual ~StarCatalog() = default;
 
 		void initialize(std::string const &path);
 
 		void shutdown();
 
+		size_t count() const;
+
+		Entry const &operator[](size_t index) const;
+
 		Iterator begin() const;
 
 		Iterator end() const;
 
-		void render(lucid::gigl::Context const &context) const;
+		static StarCatalog &instance();
+
+	protected:
+		StarCatalog() = default;
 
 	private:
-		ordinal_vec_t _ordinal;
 
-		std::shared_ptr<gal::VertexBuffer> _instances;
-		std::shared_ptr<gigl::Mesh> _mesh;
+		ordinal_vec_t _ordinal;
 
 		LUCID_PREVENT_COPY(StarCatalog);
 		LUCID_PREVENT_ASSIGNMENT(StarCatalog);
 	};
+
+	inline size_t StarCatalog::count() const
+	{
+		return _ordinal.size();
+	}
+
+	inline StarCatalog::Entry const &StarCatalog::operator[](size_t index) const
+	{
+		return _ordinal[index];
+	}
 
 	inline StarCatalog::Iterator StarCatalog::begin() const
 	{
@@ -80,6 +72,12 @@ namespace orbit {
 	inline StarCatalog::Iterator StarCatalog::end() const
 	{
 		return _ordinal.end();
+	}
+
+	inline StarCatalog &StarCatalog::instance()
+	{
+		static StarCatalog theInstance;
+		return theInstance;
 	}
 
 }	///	orbit

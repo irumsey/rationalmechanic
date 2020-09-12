@@ -1,5 +1,6 @@
 #include "System.h"
 #include "Ephemeris.h"
+#include "StarCatalog.h"
 #include "Frame.h"
 
 namespace gigl = ::lucid::gigl;

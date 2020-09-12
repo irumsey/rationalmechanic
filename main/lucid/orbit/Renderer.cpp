@@ -6,6 +6,10 @@
 #include <lucid/gigl/Mesh.h>
 #include <lucid/gigl/Context.h>
 #include <lucid/gigl/Resources.h>
+#include <lucid/gal/RenderTarget2D.h>
+#include <lucid/gal/VertexBuffer.h>
+#include <lucid/gal/Program.h>
+#include <lucid/gal/System.h>
 #include <lucid/math/Scalar.h>
 #include <algorithm>
 
@@ -15,6 +19,11 @@ namespace  gigl = ::lucid:: gigl;
 namespace orbit = ::lucid::orbit;
 
 namespace { /// anonymous
+
+	inline orbit::StarCatalog &theStarCatalog()
+	{
+		return orbit::StarCatalog::instance();
+	}
 
 	inline orbit::Ephemeris &theEphemeris()
 	{
@@ -154,13 +163,35 @@ namespace orbit {
 	void Renderer::initialize()
 	{
 		shutdown();
+
+		gal::System &galSystem = gal::System::instance();
+		_width = galSystem.width();
+		_height = galSystem.height();
+
+		_starCount = theStarCatalog().count();
+		_starMesh.reset(gigl::Mesh::create("content/star.mesh"));
+		_starInstances.reset(gal::VertexBuffer::create(gal::VertexBuffer::USAGE_STATIC, _starCount, sizeof(gal::Vector4)));
+
+		gal::Vector4 *starInstances = (gal::Vector4 *)(_starInstances->lock());
+		for (size_t i = 0; i < _starCount; ++i)
+		{
+			StarCatalog::Entry const &entry = theStarCatalog()[i];
+			gal::Vector4 &instance = starInstances[i];
+
+			instance.x = 0.3f;
+			instance.y = orbit::cast(entry.right_ascension);
+			instance.z = orbit::cast(entry.declination);
+			instance.w = entry.magnitude;
+		}
+		_starInstances->unlock();
+
 		_batched.initialize();
 
 		/// test {
 		///	need a data driven method for registering these (just read the ephemeris stupid)
+		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>( "content/disk.mesh"), BATCH_MAXIMUM);
 		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>(  "content/sun.mesh"), BATCH_MAXIMUM);
 		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>("content/earth.mesh"), BATCH_MAXIMUM);
-		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>( "content/disk.mesh"), BATCH_MAXIMUM);
 		/// } test
 
 		_orbitMask = gigl::Resources::get<gigl::Mesh>("content/hemisphere.mesh");
@@ -168,26 +199,102 @@ namespace orbit {
 
 		_orbitMesh = gigl::Resources::get<gigl::Mesh>("content/orbit.mesh");
 		_batched.createBatch<MeshInstance, Back2Front<MeshInstance> >(_orbitMesh, BATCH_MAXIMUM);
+
+		_colorTarget.reset(gal::RenderTarget2D::create(gal::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, _width, _height));
+		_glowTarget.reset(gal::RenderTarget2D::create(gal::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, _width, _height));
+		_blurTarget[0].reset(gal::RenderTarget2D::create(gal::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, _width, _height));
+		_blurTarget[1].reset(gal::RenderTarget2D::create(gal::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, _width, _height));
+
+		_clear.reset(gigl::Mesh::create("content/clear.mesh"));
+		_copy .reset(gigl::Mesh::create("content/copy.mesh"));
+		_blur .reset(gigl::Mesh::create("content/blur.mesh"));
+		_post .reset(gigl::Mesh::create("content/post.mesh"));
+
+		_copyParameters.  theSource = _copy->material()->program()->lookup(  "theSource");
+		_blurParameters.  texelSize = _blur->material()->program()->lookup(  "texelSize");
+		_blurParameters.  theSource = _blur->material()->program()->lookup(  "theSource");
+		_postParameters.colorTarget = _post->material()->program()->lookup("colorTarget");
+		_postParameters. glowTarget = _post->material()->program()->lookup( "glowTarget");
 	}
 
 	void Renderer::shutdown()
 	{
+		_starCount = 0;
+		_starInstances.reset();
+		_starMesh.reset();
+
+		_orbitMask.reset();
+		_orbitMesh.reset();
+
 		_batched.shutdown();
+
+		_colorTarget.reset();
+		_glowTarget.reset();
+		_blurTarget[0].reset(); _blurTarget[1].reset();
+
+		_clear.reset();
+		_copy.reset();
+		_blur.reset();
+		_post.reset();
 	}
 
-	void Renderer::render(Frame *root, ::lucid::gigl::Context const &context, float32_t time, float32_t interpolant)
+	void Renderer::render(Frame *root, gigl::Context const &context, float32_t time, float32_t interpolant)
 	{
 		LUCID_PROFILE_SCOPE("Renderer::render(...)");
 
+		resize();
+
+		gal::Pipeline &galPipeline = gal::Pipeline::instance();
+
 		_time = time;
 		_interpolant = interpolant;
-
 		_viewPosition = context.lookup("viewPosition").as<gal::Vector3>();
 		_viewProjMatrix = context.lookup("viewProjMatrix").as<gal::Matrix4x4>();
 
 		_batched.clear();
-			batch(root);
-		_batched.render(context);
+		batch(root);
+
+		galPipeline.setRenderTarget(0, _colorTarget.get());
+		galPipeline.setRenderTarget(1, _glowTarget. get());
+		_clear->render(context);
+			galPipeline.setVertexStream(1, _starInstances.get());
+			_starMesh->renderInstanced(context, _starCount);
+			_batched.render(context);
+		galPipeline.restoreBackBuffer();
+
+		/// test {
+		gal::Vector2 horizontal = gal::Vector2(1.f / _width, 0);
+		gal::Vector2 vertical = gal::Vector2(0, 1.f / _height);
+
+		galPipeline.setRenderTarget(0, _blurTarget[0].get());
+		galPipeline.updateTargets();
+		_copy->material()->program()->set(_copyParameters.theSource, _glowTarget.get());
+		_copy->render(context);
+
+		galPipeline.setRenderTarget(0, _blurTarget[1].get());
+		galPipeline.updateTargets();
+		_blur->material()->program()->set(_blurParameters.theSource, _blurTarget[0].get());
+		_blur->material()->program()->set(_blurParameters.texelSize, horizontal);
+		_blur->render(context);
+
+		galPipeline.setRenderTarget(0, _blurTarget[0].get());
+		galPipeline.updateTargets();
+		_blur->material()->program()->set(_blurParameters.theSource, _blurTarget[1].get());
+		_blur->material()->program()->set(_blurParameters.texelSize, vertical);
+		_blur->render(context);
+
+		galPipeline.setRenderTarget(0, _glowTarget.get());
+		galPipeline.updateTargets();
+		_copy->material()->program()->set(_copyParameters.theSource, _blurTarget[0].get());
+		_copy->render(context);
+
+		galPipeline.restoreBackBuffer();
+		galPipeline.updateTargets();
+		/// } test
+
+		_post->material()->program()->set(_postParameters.colorTarget, _colorTarget.get());
+		_post->material()->program()->set(_postParameters. glowTarget, _glowTarget. get());
+		_post->render(context);
 	}
 
 	void Renderer::batch(Frame *frame)
@@ -239,6 +346,21 @@ namespace orbit {
 		return (math::lsq(screenPosition[1] - screenPosition[0]) < 0.004f); 
 #endif
 		return false;
+	}
+
+	void Renderer::resize()
+	{
+		gal::System &galSystem = gal::System::instance();
+		if ((_width == galSystem.width()) && (_height == galSystem.height()))
+			return;
+
+		_width = galSystem.width();
+		_height = galSystem.height();
+
+		_colorTarget.reset(gal::RenderTarget2D::create(gal::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, _width, _height));
+		_glowTarget.reset(gal::RenderTarget2D::create(gal::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, _width, _height));
+		_blurTarget[0].reset(gal::RenderTarget2D::create(gal::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, _width, _height));
+		_blurTarget[1].reset(gal::RenderTarget2D::create(gal::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, _width, _height));
 	}
 
 }	///	orbit

@@ -16,6 +16,11 @@ namespace orbit = ::lucid::orbit;
 
 namespace /* anonymous */ {
 
+	inline orbit::StarCatalog &theStarCatalog()
+	{
+		return orbit::StarCatalog::instance();
+	}
+
 	inline orbit::Ephemeris &theEphemeris()
 	{
 		return orbit::Ephemeris::instance();
@@ -98,9 +103,9 @@ namespace lucid {
 	///
 	///
 
-	OrbitalMechanics::OrbitalMechanics(System::String ^ephemeris, scalar_t dayNumber)
+	OrbitalMechanics::OrbitalMechanics(System::String ^catalog, System::String ^ephemeris, scalar_t dayNumber)
 	{
-		Initialize(ephemeris, dayNumber);
+		Initialize(catalog, ephemeris, dayNumber);
 	}
 
 	OrbitalMechanics::~OrbitalMechanics()
@@ -113,15 +118,14 @@ namespace lucid {
 		Shutdown();
 	}
 
-	void OrbitalMechanics::Initialize(System::String ^ephemeris, scalar_t dayNumber)
+	void OrbitalMechanics::Initialize(System::String ^catalog, System::String ^ephemeris, scalar_t dayNumber)
 	{
 		Shutdown();
 
+		theStarCatalog().initialize(MI::marshal_as<std::string>(catalog));
 		theEphemeris().initialize(MI::marshal_as<std::string>(ephemeris));
 
 		_clock = core::Clock::create();
-
-		_starCatalog = new orbit::StarCatalog("content/bsc5.starcatalog");
 
 		_orbitalSystem = new orbit::System();
 		_orbitalSystem->initialize(dayNumber);
@@ -137,9 +141,6 @@ namespace lucid {
 	{
 		delete _orbitalSystem;
 		_orbitalSystem = nullptr;
-
-		delete _starCatalog;
-		_starCatalog = nullptr;
 
 		delete _clock;
 		_clock = nullptr;
@@ -190,7 +191,6 @@ namespace lucid {
 		context->Set("time", float32_t(_wallTime));
 		context->Set("interpolant", _frameInterpolant);
 
-		_starCatalog->render(context->ref);
 		_orbitalSystem->render(context->ref, float32_t(_wallTime), _frameInterpolant);
 	}
 

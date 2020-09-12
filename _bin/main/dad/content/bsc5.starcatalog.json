@@ -1,4 +1,9 @@
 {
+  "comments" :
+  [
+    "Data from the Yale Bright Star Catalog"
+  ],
+
 	"catalog" :
 	[
 		{

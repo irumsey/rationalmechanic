@@ -62,6 +62,21 @@
     <FxCompile Include="..\..\_bin\main\dad\content\star.pixel.hlsl">
       <Filter>content</Filter>
     </FxCompile>
+    <FxCompile Include="..\..\_bin\main\dad\content\post.pixel.hlsl">
+      <Filter>content</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\dad\content\screen.vertex.hlsl">
+      <Filter>content</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\dad\content\clear.pixel.hlsl">
+      <Filter>content</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\dad\content\blur.pixel.hlsl">
+      <Filter>content</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\dad\content\copy.pixel.hlsl">
+      <Filter>content</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\_bin\main\dad\content\orbit.header.hlsl">
@@ -77,6 +92,9 @@
       <Filter>content</Filter>
     </None>
     <None Include="..\..\_bin\main\dad\content\star.header.hlsl">
+      <Filter>content</Filter>
+    </None>
+    <None Include="..\..\_bin\main\dad\content\screen.header.hlsl">
       <Filter>content</Filter>
     </None>
   </ItemGroup>

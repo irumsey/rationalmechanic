@@ -15,6 +15,7 @@ OutputPixel main(InputPixel input)
 	float     u = clamp(delta / input.parameters.w, 0, 1);
 
 	output.color = float4(input.color.rgb, (1 - fog) * (1 - u * u));
+	output.glow = float4(0, 0, 0, 0);
 
 	return output;
 }

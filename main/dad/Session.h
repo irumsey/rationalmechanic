@@ -1,8 +1,29 @@
 #pragma once
 
+#include <memory>
 #include <lucid/core/Types.h>
 #include <lucid/core/Noncopyable.h>
 #include <dad/Tests.h>
+
+///
+///
+///
+
+namespace lucid {
+namespace gal {
+
+	class RenderTarget2D;
+
+}	///	gal
+}	///	lucid
+
+namespace lucid {
+namespace gigl {
+
+	class Mesh;
+
+}	///	gigl
+}	///	lucid
 
 ///
 ///
