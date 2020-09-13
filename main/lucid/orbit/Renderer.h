@@ -124,6 +124,14 @@ namespace orbit {
 
 		bool cull(Frame *frame);
 
+		void render(gigl::Context const &context);
+
+		void copy(gal::RenderTarget2D *dst, gal::RenderTarget2D *src, gigl::Context const &context);
+
+		void blur(gigl::Context const &context);
+
+		void post(gigl::Context const &context);
+
 		void resize();
 
 		LUCID_PREVENT_COPY(Renderer);

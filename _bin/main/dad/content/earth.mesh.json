@@ -54,6 +54,7 @@
 		  { "name":         "viewUp",     "query":                        "viewUp" },
 		  { "name": "viewProjMatrix",     "query":                "viewProjMatrix" },
 		  { "name": "diffuseTexture", "texture2d":  "content/earthDiffuse.texture" },
+		  { "name":    "glowTexture", "texture2d":     "content/earthGlow.texture" },
 		  { "name": "normalsTexture", "texture2d":   "content/diskNormals.texture" }
 	  ]
 

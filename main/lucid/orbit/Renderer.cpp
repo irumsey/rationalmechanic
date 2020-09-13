@@ -254,47 +254,15 @@ namespace orbit {
 		_batched.clear();
 		batch(root);
 
-		galPipeline.setRenderTarget(0, _colorTarget.get());
-		galPipeline.setRenderTarget(1, _glowTarget. get());
-		_clear->render(context);
-			galPipeline.setVertexStream(1, _starInstances.get());
-			_starMesh->renderInstanced(context, _starCount);
-			_batched.render(context);
-		galPipeline.restoreBackBuffer();
+		render(context);
+		copy  (_blurTarget[0].get(), _glowTarget.get(), context);
+		blur  (context);
+		copy  (_glowTarget.get(), _blurTarget[0].get(), context);
 
-		/// test {
-		gal::Vector2 horizontal = gal::Vector2(1.f / _width, 0);
-		gal::Vector2 vertical = gal::Vector2(0, 1.f / _height);
-
-		galPipeline.setRenderTarget(0, _blurTarget[0].get());
+		galPipeline.restoreBackBuffer(true, false, false);
 		galPipeline.updateTargets();
-		_copy->material()->program()->set(_copyParameters.theSource, _glowTarget.get());
-		_copy->render(context);
 
-		galPipeline.setRenderTarget(0, _blurTarget[1].get());
-		galPipeline.updateTargets();
-		_blur->material()->program()->set(_blurParameters.theSource, _blurTarget[0].get());
-		_blur->material()->program()->set(_blurParameters.texelSize, horizontal);
-		_blur->render(context);
-
-		galPipeline.setRenderTarget(0, _blurTarget[0].get());
-		galPipeline.updateTargets();
-		_blur->material()->program()->set(_blurParameters.theSource, _blurTarget[1].get());
-		_blur->material()->program()->set(_blurParameters.texelSize, vertical);
-		_blur->render(context);
-
-		galPipeline.setRenderTarget(0, _glowTarget.get());
-		galPipeline.updateTargets();
-		_copy->material()->program()->set(_copyParameters.theSource, _blurTarget[0].get());
-		_copy->render(context);
-
-		galPipeline.restoreBackBuffer();
-		galPipeline.updateTargets();
-		/// } test
-
-		_post->material()->program()->set(_postParameters.colorTarget, _colorTarget.get());
-		_post->material()->program()->set(_postParameters. glowTarget, _glowTarget. get());
-		_post->render(context);
+		post(context);
 	}
 
 	void Renderer::batch(Frame *frame)
@@ -346,6 +314,65 @@ namespace orbit {
 		return (math::lsq(screenPosition[1] - screenPosition[0]) < 0.004f); 
 #endif
 		return false;
+	}
+
+	void Renderer::render(gigl::Context const &context)
+	{
+		gal::Pipeline &galPipeline = gal::Pipeline::instance();
+
+		galPipeline.setRenderTarget(0, _colorTarget.get());
+		galPipeline.setRenderTarget(1, _glowTarget. get());
+		galPipeline.updateTargets();
+
+		_clear->render(context);
+
+		galPipeline.setVertexStream(1, _starInstances.get());
+		_starMesh->renderInstanced(context, _starCount);
+
+		_batched.render(context);
+		
+		galPipeline.restoreBackBuffer(true, false, false);
+		galPipeline.updateTargets();
+	}
+
+	void Renderer::copy(gal::RenderTarget2D *dst, gal::RenderTarget2D *src, gigl::Context const &context)
+	{
+		gal::Pipeline &galPipeline = gal::Pipeline::instance();
+
+		galPipeline.setRenderTarget(0, dst);
+		galPipeline.updateTargets();
+		
+		_copy->material()->program()->set(_copyParameters.theSource, src);
+		_copy->render(context);
+	}
+
+	void Renderer::blur(gigl::Context const &context)
+	{
+		gal::Pipeline &galPipeline = gal::Pipeline::instance();
+
+		gal::Vector2 horizontal = gal::Vector2(1.f / _width, 0);
+		gal::Vector2 vertical = gal::Vector2(0, 1.f / _height);
+
+		galPipeline.setRenderTarget(0, _blurTarget[1].get());
+		galPipeline.updateTargets();
+
+		_blur->material()->program()->set(_blurParameters.theSource, _blurTarget[0].get());
+		_blur->material()->program()->set(_blurParameters.texelSize, horizontal);
+		_blur->render(context);
+
+		galPipeline.setRenderTarget(0, _blurTarget[0].get());
+		galPipeline.updateTargets();
+
+		_blur->material()->program()->set(_blurParameters.theSource, _blurTarget[1].get());
+		_blur->material()->program()->set(_blurParameters.texelSize, vertical);
+		_blur->render(context);
+	}
+
+	void Renderer::post(gigl::Context const &context)
+	{
+		_post->material()->program()->set(_postParameters.colorTarget, _colorTarget.get());
+		_post->material()->program()->set(_postParameters. glowTarget, _glowTarget. get());
+		_post->render(context);
 	}
 
 	void Renderer::resize()

@@ -14,8 +14,9 @@ OutputPixel main(InputPixel input)
 	float delta = length(input.vertex - curvePosition.xyz);
 	float     u = clamp(delta / input.parameters.w, 0, 1);
 
-	output.color = float4(input.color.rgb, (1 - fog) * (1 - u * u));
-	output.glow = float4(0, 0, 0, 0);
+	float alpha = (1 - fog) * (1 - u * u);
+	output.color = float4(0, 0, 1, alpha);
+	output.glow = float4(0, 0, 0.1, alpha);
 
 	return output;
 }
