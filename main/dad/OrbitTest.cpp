@@ -2,6 +2,7 @@
 #include "UserInput.h"
 #include "Utility.h"
 #include <lucid/orbit/Ephemeris.h>
+#include <lucid/orbit/StarCatalog.h>
 #include <lucid/orbit/Constants.h>
 #include <lucid/orbit/Utility.h>
 #include <lucid/gal/System.h>

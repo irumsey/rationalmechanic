@@ -7,7 +7,6 @@
 #include <lucid/gal/Types.h>
 #include <lucid/gigl/Batched.h>
 #include <lucid/orbit/Algorithm.h>
-#include <lucid/orbit/StarCatalog.h>
 
 namespace lucid {
 namespace gal {

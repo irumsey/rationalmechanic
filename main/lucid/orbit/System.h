@@ -1,10 +1,9 @@
 #pragma once
 
 #include <unordered_map>
+#include <lucid/core/Noncopyable.h>
 #include <lucid/core/Types.h>
 #include <lucid/core/Error.h>
-#include <lucid/orbit/Types.h>
-#include <lucid/core/Noncopyable.h>
 #include <lucid/orbit/Types.h>
 #include <lucid/orbit/Constants.h>
 #include <lucid/orbit/Simulator.h>
