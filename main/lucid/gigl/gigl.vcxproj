@@ -23,8 +23,10 @@
     <ClInclude Include="Camera2D.h" />
     <ClInclude Include="Context.h" />
     <ClInclude Include="Geometry.h" />
+    <ClInclude Include="Image.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Model.h" />
     <ClInclude Include="Primitive.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Resources.h" />
@@ -35,8 +37,10 @@
     <ClCompile Include="Camera2D.cpp" />
     <ClCompile Include="Context.cpp" />
     <ClCompile Include="Geometry.cpp" />
+    <ClCompile Include="Image.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Model.cpp" />
     <ClCompile Include="Primitive.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Resources.cpp" />

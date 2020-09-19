@@ -1,6 +1,5 @@
 #include "DetailLevels.h"
-#include <lucid/gigl/Mesh.h>
-#include <lucid/gigl/Resources.h>
+#include <lucid/gigl/Model.h>
 #include <lucid/core/Reader.h>
 #include <lucid/core/Error.h>
 
@@ -53,9 +52,7 @@ namespace orbit {
 			Level &level = levels[i];
 			reader.read(level.range, 2 * sizeof(float32_t));
 
-			std::string path;
-			reader.read(path);
-			level.mesh = gigl::Resources::get<gigl::Mesh>(path);
+			level.model.reset(new gigl::Model(reader));
 
 			reader.read(&level.color, sizeof(gal::Color));
 			reader.read(level.scale);

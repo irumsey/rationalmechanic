@@ -98,8 +98,6 @@ namespace orbit {
 		size_t _starCount = 0;
 		std::unique_ptr<gal::VertexBuffer> _starInstances;
 		std::unique_ptr<gigl::Mesh> _starMesh;
-
-		std::shared_ptr<gigl::Mesh> _orbitMask;
 		std::shared_ptr<gigl::Mesh> _orbitMesh;
 
 		gigl::Batched _batched;

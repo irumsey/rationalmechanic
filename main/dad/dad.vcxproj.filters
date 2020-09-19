@@ -77,6 +77,12 @@
     <FxCompile Include="..\..\_bin\main\dad\content\copy.pixel.hlsl">
       <Filter>content</Filter>
     </FxCompile>
+    <FxCompile Include="..\..\_bin\main\dad\content\atmosphere.vertex.hlsl">
+      <Filter>content</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\dad\content\atmosphere.pixel.hlsl">
+      <Filter>content</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\_bin\main\dad\content\orbit.header.hlsl">
@@ -95,6 +101,9 @@
       <Filter>content</Filter>
     </None>
     <None Include="..\..\_bin\main\dad\content\screen.header.hlsl">
+      <Filter>content</Filter>
+    </None>
+    <None Include="..\..\_bin\main\dad\content\atmosphere.header.hlsl">
       <Filter>content</Filter>
     </None>
   </ItemGroup>

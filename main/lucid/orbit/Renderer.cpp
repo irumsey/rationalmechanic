@@ -4,6 +4,7 @@
 #include "Frame.h"
 #include "Utility.h"
 #include "Constants.h"
+#include <lucid/gigl/Model.h>
 #include <lucid/gigl/Mesh.h>
 #include <lucid/gigl/Context.h>
 #include <lucid/gigl/Resources.h>
@@ -143,12 +144,11 @@ namespace orbit {
 		sphere.rotation = gal::Quaternion(0, 0, 0, 1);
 		sphere.color = detailLevel.color;
 		sphere.parameters = detailLevel.parameters;
-		_batched.addInstance(detailLevel.mesh, sphere);
-		_batched.addInstance(_orbitMask, sphere);
+		detailLevel.model->addInstances(_batched, sphere);
 
 		MeshInstance orbit;
 		orbit.position = centerPosition;
-		orbit.scale = 0.4f;
+		orbit.scale = 0.3f;
 		orbit.rotation = math::slerp(_interpolant, rotation[0], rotation[1]);
 		orbit.color = gal::Color(0, 0, 1, 1);
 		orbit.parameters = gal::Vector4(hu, e, -3.1415926f, 3.1415926f);
@@ -190,13 +190,12 @@ namespace orbit {
 
 		/// test {
 		///	need a data driven method for registering these (just read the ephemeris stupid)
-		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>( "content/disk.mesh"), BATCH_MAXIMUM);
-		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>(  "content/sun.mesh"), BATCH_MAXIMUM);
-		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>("content/earth.mesh"), BATCH_MAXIMUM);
+		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>(      "content/disk.mesh"), BATCH_MAXIMUM);
+		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>(       "content/sun.mesh"), BATCH_MAXIMUM);
+		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>(     "content/earth.mesh"), BATCH_MAXIMUM);
+		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>("content/atmosphere.mesh"), BATCH_MAXIMUM);
+		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>("content/hemisphere.mesh"), BATCH_MAXIMUM);
 		/// } test
-
-		_orbitMask = gigl::Resources::get<gigl::Mesh>("content/hemisphere.mesh");
-		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(_orbitMask, BATCH_MAXIMUM);
 
 		_orbitMesh = gigl::Resources::get<gigl::Mesh>("content/orbit.mesh");
 		_batched.createBatch<MeshInstance, Back2Front<MeshInstance> >(_orbitMesh, BATCH_MAXIMUM);
@@ -224,7 +223,6 @@ namespace orbit {
 		_starInstances.reset();
 		_starMesh.reset();
 
-		_orbitMask.reset();
 		_orbitMesh.reset();
 
 		_batched.shutdown();
@@ -283,6 +281,11 @@ namespace orbit {
 	bool Renderer::cull(Frame *frame)
 	{
 		LUCID_PROFILE_SCOPE("Renderer::cull(Frame)");
+
+		/// test {
+		if ("Moon" == frame->name)
+			return true;
+		/// } test
 
 #if false
 		///	TBD: more sophistication

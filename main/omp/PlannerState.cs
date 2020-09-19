@@ -95,7 +95,7 @@ namespace omp
 
                 planner.camera = new lucid.Camera2D();
                 planner.camera.InitPerspective(0.25f * 3.1415926f, planner.aspectRatio, 1, 1000);
-                planner.camera.Look(new lucid.Vector3(30, 30, 5), new lucid.Vector3(0, 0, 0), new lucid.Vector3(0, 0, 1));
+                planner.camera.Look(new lucid.Vector3(20, 20, 15), new lucid.Vector3(0, 0, 0), new lucid.Vector3(0, 0, 1));
 
                 planner.setMainMenuDefaults();
                 planner.changeState(Editing.Instance);
@@ -160,8 +160,8 @@ namespace omp
                     planner.orbitalMechainics.Attach(planner.orbitalMechainics.RootFrame(), planner.cameraFrame);
                 }
 
-                planner.cameraFrame.RelativePosition = new lucid.Vector3(10, 10, 3);
-                planner.cameraFrame.RelativePosition = new lucid.Vector3(10, 10, 3);
+                planner.cameraFrame.RelativePosition = new lucid.Vector3(10, 10, 2);
+                planner.cameraFrame.RelativePosition = new lucid.Vector3(10, 10, 2);
             }
 
             public override void updateSimulation(Planner planner)

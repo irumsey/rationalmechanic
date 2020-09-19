@@ -11,6 +11,8 @@
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="Batched.h" />
+    <ClInclude Include="Model.h" />
+    <ClInclude Include="Image.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Primitive.cpp" />
@@ -22,5 +24,7 @@
     <ClCompile Include="Camera2D.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Batched.cpp" />
+    <ClCompile Include="Model.cpp" />
+    <ClCompile Include="Image.cpp" />
   </ItemGroup>
 </Project>

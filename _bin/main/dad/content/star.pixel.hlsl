@@ -11,7 +11,9 @@ OutputPixel main(InputPixel input)
 
 	float  alpha = shapeTexture.Sample(theSampler, input.texcoord).r;
 	float4 color = spectralTexture.Sample(theSampler, float2(input.specoord, 0.5));
-	output.color = float4(color.rgb, alpha);
+
+	output.color = float4(color.rgb, alpha * alpha);
+	output.glow = float4(color.rgb, alpha);
 
 	return output;
 }

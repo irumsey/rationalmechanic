@@ -172,7 +172,8 @@ namespace gigl {
 	template<typename I, typename Pred> inline void Batched::createBatch(std::shared_ptr<Mesh> mesh, size_t maximum)
 	{
 		Key key = Key(mesh, TypeID::value<I>());
-		LUCID_VALIDATE(_batches.end() == _batches.find(key), "duplicate mesh/instance pair specified in batched renderer");
+		if (_batches.end() != _batches.find(key))
+			return;
 
 		_order.push_back(key);
 		_batches.insert(std::make_pair(key, new Batch<I,Pred>(maximum)));

@@ -1,5 +1,5 @@
 {
-	"topology" : "TOPOLOGY_TRIANGLE_STRIP",
+	"topology" : "TOPOLOGY_TRIANGLE_LIST",
 
 	"format" :
 	{
@@ -211,7 +211,6 @@
 		"format" : "FORMAT_UINT16",
 			"data" :
     [
-        0, 0, 1,
         0, 1, 2,
         0, 2, 3,
         0, 3, 4,

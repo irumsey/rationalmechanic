@@ -17,7 +17,7 @@ OutputPixel main(InputPixel input)
 
 	glow.rgb = (1 - shade) * glow.rgb;
 
-	output.color = float4(shade * diffuse.rgb, 1);
+	output.color = float4(shade * diffuse.rgb, diffuse.a);
 	output. glow = float4(glow.rgb, 1);
 
 	return output;

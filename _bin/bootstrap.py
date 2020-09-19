@@ -645,7 +645,12 @@ onOrbitalElement = [
 
 def bootLOD(dst, LOD):
 	bootVector2(dst, LOD['range'])
-	bootString(dst, LOD['mesh'])
+
+	model = LOD['model']
+	bootUnsigned(dst, len(model))
+	for mesh in model:
+		bootString(dst, mesh)
+			
 	bootColor(dst, LOD['color'])
 	bootFloat(dst, LOD['scale'])
 	bootVector4(dst, LOD['parameters'])

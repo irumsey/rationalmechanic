@@ -65,14 +65,14 @@
           [
 		        {
 			        "range"      : [ 0.0, 300.0 ],
-			        "mesh"       : "content/sun.mesh",
+			        "model"      : [ "content/sun.mesh", "content/hemisphere.mesh" ],
               "color"      : [ 1, 1, 1, 1],
 			        "scale"      : 10.0,
 			        "parameters" : [ 0, 0, 0, 0 ]
 		        },
 		        {
 			        "range"      : [ 250.0, 500.0 ],
-			        "mesh"       : "content/disk.mesh",
+			        "model"      : [ "content/disk.mesh", "content/hemisphere.mesh" ],
               "color"      : [ 1, 1, 0, 1],
 			        "scale"      : 10.0,
 			        "parameters" : [ 0, 0, 0, 0 ]
@@ -108,7 +108,7 @@
           [
 		        {
 			        "range"      : [ 0.0, 300.0 ],
-			        "mesh"       : "content/disk.mesh",
+			        "model"      : [ "content/disk.mesh", "content/hemisphere.mesh" ],
               "color"      : [ 0.7, 0.7, 0.7, 0],
 			        "scale"      : 750,
 			        "parameters" : [ 0, 0, 0, 0 ]
@@ -143,8 +143,15 @@
           "LODs" :
           [
 		        {
-			        "range"      : [ 0.0, 300.0 ],
-			        "mesh"       : "content/disk.mesh",
+			        "range"      : [ 0.0, 20.0 ],
+			        "model"      : [ "content/disk.mesh", "content/atmosphere.mesh", "content/hemisphere.mesh" ],
+              "color"      : [ 0.9, 0.7, 0.7, 0],
+			        "scale"      : 750,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        },
+		        {
+			        "range"      : [ 18.0, 300.0 ],
+			        "model"      : [ "content/disk.mesh", "content/hemisphere.mesh" ],
               "color"      : [ 0.9, 0.7, 0.7, 0],
 			        "scale"      : 750,
 			        "parameters" : [ 0, 0, 0, 0 ]
@@ -180,14 +187,14 @@
           [
 		        {
 			        "range"      : [ 0.0, 20.0 ],
-			        "mesh"       : "content/earth.mesh",
+			        "model"      : [ "content/earth.mesh", "content/atmosphere.mesh", "content/hemisphere.mesh" ],
               "color"      : [ 1, 1, 1, 0],
 			        "scale"      : 750,
 			        "parameters" : [ 0, 0, 0, 0 ]
 		        },
 		        {
 			        "range"      : [ 18.0, 300.0 ],
-			        "mesh"       : "content/disk.mesh",
+			        "model"      : [ "content/disk.mesh", "content/hemisphere.mesh" ],
               "color"      : [ 0.2, 0.2, 1, 0],
 			        "scale"      : 750,
 			        "parameters" : [ 0, 0, 0, 0 ]
@@ -224,7 +231,7 @@
           [
 		        {
 			        "range"      : [ 0.0, 50.0 ],
-			        "mesh"       : "content/disk.mesh",
+			        "model"      : [ "content/disk.mesh", "content/hemisphere.mesh" ],
               "color"      : [ 0.7, 0.7, 0.7, 0],
 			        "scale"      : 750,
 			        "parameters" : [ 0, 0, 0, 0 ]
@@ -259,8 +266,15 @@
           "LODs" :
           [
 		        {
-			        "range"      : [ 0.0, 300.0 ],
-			        "mesh"       : "content/disk.mesh",
+			        "range"      : [ 0.0, 20.0 ],
+			        "model"      : [ "content/disk.mesh", "content/atmosphere.mesh", "content/hemisphere.mesh" ],
+              "color"      : [ 1.0, 0.3, 0.3, 0],
+			        "scale"      : 750,
+			        "parameters" : [ 0, 0, 0, 0 ]
+		        },
+		        {
+			        "range"      : [ 18.0, 300.0 ],
+			        "model"      : [ "content/disk.mesh", "content/hemisphere.mesh" ],
               "color"      : [ 1.0, 0.3, 0.3, 0],
 			        "scale"      : 750,
 			        "parameters" : [ 0, 0, 0, 0 ]
@@ -296,7 +310,7 @@
           [
 		        {
 			        "range"      : [ 0.0, 500.0 ],
-			        "mesh"       : "content/disk.mesh",
+			        "model"      : [ "content/disk.mesh", "content/hemisphere.mesh" ],
               "color"      : [ 1.0, 0.7, 0.7, 0],
 			        "scale"      : 750,
 			        "parameters" : [ 0, 0, 0, 0 ]
@@ -332,7 +346,7 @@
           [
 		        {
 			        "range"      : [ 0.0, 500.0 ],
-			        "mesh"       : "content/disk.mesh",
+			        "model"      : [ "content/disk.mesh", "content/hemisphere.mesh" ],
               "color"      : [ 0.7, 0.7, 0.7, 0],
 			        "scale"      : 750,
 			        "parameters" : [ 0, 0, 0, 0 ]
@@ -367,7 +381,7 @@
           [
 		        {
 			        "range"      : [ 0.0, 500.0 ],
-			        "mesh"       : "content/disk.mesh",
+			        "model"      : [ "content/disk.mesh", "content/hemisphere.mesh" ],
               "color"      : [ 0.7, 0.7, 1.0, 0],
 			        "scale"      : 750,
 			        "parameters" : [ 0, 0, 0, 0 ]
@@ -403,7 +417,7 @@
           [
 		        {
 			        "range"      : [ 0.0, 500.0 ],
-			        "mesh"       : "content/disk.mesh",
+			        "model"      : [ "content/disk.mesh", "content/hemisphere.mesh" ],
               "color"      : [ 0.7, 0.7, 1.0, 0],
 			        "scale"      : 750,
 			        "parameters" : [ 0, 0, 0, 0 ]
@@ -437,7 +451,7 @@
           [
 		        {
 			        "range"      : [ 0.0, 300.0 ],
-			        "mesh"       : "content/disk.mesh",
+			        "model"      : [ "content/disk.mesh", "content/hemisphere.mesh" ],
               "color"      : [ 0.7, 0.7, 1.0, 0],
 			        "scale"      : 750,
 			        "parameters" : [ 0, 0, 0, 0 ]

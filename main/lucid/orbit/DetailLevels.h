@@ -24,7 +24,7 @@ namespace core {
 namespace lucid {
 namespace gigl {
 
-	class Mesh;
+	class Model;
 
 }	///	orbit
 }	///	lucid
@@ -48,7 +48,7 @@ namespace orbit {
 		///
 		struct Level
 		{
-			std::shared_ptr<::lucid::gigl::Mesh> mesh;
+			std::shared_ptr<::lucid::gigl::Model> model;
 
 			float32_t range[2] = { 0.f, 0.f, };
 
