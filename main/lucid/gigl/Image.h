@@ -13,6 +13,9 @@ namespace gigl {
 	class Image
 	{
 	public:
+
+#pragma pack(push)
+#pragma pack(1)
 		///	Pixel
 		///
 		///
@@ -21,15 +24,15 @@ namespace gigl {
 			uint8_t b = 0;
 			uint8_t g = 0;
 			uint8_t r = 0;
-			uint8_t a = 0;
 
 			Pixel() = default;
 
-			Pixel(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255)
-				: r(r), g(g), b(b), a(a)
+			Pixel(uint8_t r, uint8_t g, uint8_t b)
+				: r(r), g(g), b(b)
 			{
 			}
 		};
+#pragma pack(pop)
 
 		Image();
 
@@ -56,8 +59,8 @@ namespace gigl {
 		void write(std::string const &path) const;
 
 	private:
-		size_t const PIXEL_DEPTH = 32;
-		size_t const  PIXEL_SIZE = 4;
+		size_t const  PIXEL_SIZE = sizeof(Pixel);
+		size_t const PIXEL_DEPTH = 8 * PIXEL_SIZE;
 
 		size_t _width = 0;
 		size_t _height = 0;

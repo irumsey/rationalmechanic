@@ -18,7 +18,9 @@ OutputVertex main(InputVertex input)
 	output.   ppsPosition = mul(viewProjMatrix, float4(position, 1));
 	output.lightDirection = mul(R, normalize(lightPosition - position));
 	output.       diffuse = input.color;
-	output.      texcoord = 0.5 * input.vertex + 0.5;
+	output.      texcoord = 0.5 * (float2(1, 1) + float2(input.vertex.x, -input.vertex.y));
 
 	return output; 
 }
+
+

@@ -10,6 +10,8 @@
 #include <lucid/core/Profiler.h>
 #include <lucid/core/String.h>
 
+#include <lucid/gigl/Mesh.h>
+
 ///
 ///
 ///
@@ -55,6 +57,17 @@ void OrbitTest::begin(float64_t t)
 	///	initial view positon/direction
 	_viewPosition = gal::Vector3(75, 75, 20);
 	_viewDirection = math::normalize(gal::Vector3( 0,  0,  0) - _viewPosition);
+
+	/// test {
+	_instances.reset(gal::VertexBuffer::create(gal::VertexBuffer::USAGE_STATIC, 10, sizeof(Instance)));
+	_icosphere.reset(gigl::Mesh::create("content/icosphere.mesh"));
+
+	Instance *instances = (Instance*)_instances->lock();
+	instances[0].position = gal::Vector3(0, 0, 0);
+	instances[0].scale = 50;
+	instances[0].rotation = gal::Quaternion();
+	_instances->unlock();
+	/// } test
 
 	LUCID_PROFILE_END();
 }
@@ -114,7 +127,7 @@ bool OrbitTest::update(float64_t t, float64_t dt)
 
 void OrbitTest::render(float32_t time, float32_t interpolant)
 {
-	gal::Pipeline &pipeline = lucid::gal::Pipeline::instance();
+	gal::Pipeline &pipeline = gal::Pipeline::instance();
 
 	LUCID_PROFILE_BEGIN("orbit rendering");
 
@@ -122,6 +135,9 @@ void OrbitTest::render(float32_t time, float32_t interpolant)
 	_context["interpolant"] = interpolant;
 
 	_orbitalSystem.render(_context, time, interpolant);
+
+	pipeline.setVertexStream(1, _instances.get());
+	_icosphere->renderInstanced(_context, 1);
 
 	LUCID_PROFILE_END();
 }

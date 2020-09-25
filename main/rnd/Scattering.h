@@ -33,13 +33,10 @@ struct ray_t
 struct RaySphereIntersection
 {
 	bool intersects = false;
-	float32_t t[2];
+	float32_t t[2] = { 0, 0, };
 	vector3_t point[2];
 
-	RaySphereIntersection()
-	{
-		t[0] = t[1] = 0.f;
-	}
+	RaySphereIntersection() = default;
 
 	operator bool () const
 	{
@@ -59,17 +56,16 @@ struct RaySphereIntersection
 		float32_t dd = b * b - 4.f * a * c;
 		if (dd < 0.f)
 			return intersects;
+		intersects = true;
 
 		float32_t d = lucid::math::sqrt(dd);
-		a = 2.f * a;
 
-		t[0] = (-b - d) / a;
-		t[1] = (-b + d) / a;
+		t[0] = 0.5f * (-b - d) / a;
+		t[1] = 0.5f * (-b + d) / a;
 
 		point[0] = t[0] * ray.direction + ray.origin;
 		point[1] = t[1] * ray.direction + ray.origin;
 
-		intersects = true;
 		return intersects;
 	}
 };
@@ -85,7 +81,7 @@ public:
 	virtual ~Scattering() = default;
 
 	virtual void execute();
-
+	 
 private:
 	vector3_t _lightDirection;
 	vector3_t _viewPosition;
@@ -155,21 +151,20 @@ inline vector3_t Scattering::trace(ray_t const &ray)
 
 inline vector3_t Scattering::sample(ray_t const &ray, vector3_t const &p0)
 {
-	float32_t cos_theta = lucid::math::dot(_lightDirection, ray.direction);
+	float32_t altitude = (lucid::math::len(p0) - _planet.radius) / (_atmosphere.radius - _planet.radius);
 
 	RaySphereIntersection intersectsAtmosphere;
 	RaySphereIntersection intersectsPlanet;
 
-	LUCID_VALIDATE(intersectsAtmosphere(ray_t(p0, _lightDirection), _atmosphere), "");
-	LUCID_VALIDATE(intersectsAtmosphere.t[0] < 0.f, "");
-
+	intersectsAtmosphere(ray_t(p0, _lightDirection), _atmosphere);
 	vector3_t p1 = intersectsPlanet(ray_t(p0, _lightDirection), _planet) ? intersectsPlanet.point[0] : intersectsAtmosphere.point[1];
 	float32_t D = lucid::math::len(p1 - p0);
 
 	if (D < 0.001f)
 		return vector3_t(0, 0, 0);
 
+	float32_t cos_theta = lucid::math::dot(ray.direction, _lightDirection);
 	float32_t i = lucid::math::pow(2.78f, -30.f / D) * (phase(cos_theta) + phase(cos_theta, 0.7f));
 
-	return vector3_t(0.142f * i, 0.18f * i, 0.25f * i);
+	return 0.3f * (1.f - altitude) * (D / _atmosphere.radius) * vector3_t(0.142f * i, 0.18f * i, 0.25f * i);
 }

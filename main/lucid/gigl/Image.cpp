@@ -29,7 +29,7 @@ namespace gigl {
 		_width = width;
 		_height = height;
 
-		_data = new Pixel [ dataSize() ];
+		_data = new Pixel [ _width * _height ];
 	}
 
 	void Image::shutdown()
@@ -59,6 +59,8 @@ namespace gigl {
 
 		stream.write((char const *)(header), 18);
 		stream.write((char const *)(_data), dataSize());
+
+		stream.close();
 	}
 
 }	///	gigl

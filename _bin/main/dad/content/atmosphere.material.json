@@ -47,12 +47,13 @@
 
 	"attributes":
 	[
-		{ "name":  "lightPosition",     "query":               "lightPosition" },
-		{ "name":   "viewPosition",     "query":                "viewPosition" },
-		{ "name":         "viewUp",     "query":                      "viewUp" },
-		{ "name": "viewProjMatrix",     "query":              "viewProjMatrix" },
-		{ "name": "scatterTexture", "texture2d":  "content/scattering.texture.dds" },
-		{ "name": "normalsTexture", "texture2d": "content/diskNormals.texture" }
+		{ "name":     "lightPosition",     "query":                   "lightPosition" },
+		{ "name":      "viewPosition",     "query":                    "viewPosition" },
+		{ "name":            "viewUp",     "query":                          "viewUp" },
+		{ "name":    "viewProjMatrix",     "query":                  "viewProjMatrix" },
+		{ "name": "invViewProjMatrix",     "query":               "invViewProjMatrix" },
+		{ "name":    "scatterTexture", "texture2d":  "content/scattering.texture.dds" },
+		{ "name":    "normalsTexture", "texture2d":     "content/diskNormals.texture" }
 	]
 
 }

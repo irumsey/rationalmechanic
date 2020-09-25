@@ -9,6 +9,19 @@
 
 struct MouseEvent;
 
+namespace lucid {
+namespace gal {
+
+	class VertexBuffer;
+
+}	///	gal
+namespace gigl {
+
+	class Mesh;
+
+}	///	gigl
+}	///	lucid
+
 ///
 ///
 ///
@@ -38,6 +51,17 @@ private:
 	::lucid::gal::Vector3 _viewDirection;
 
 	lucid::orbit::System _orbitalSystem;
+
+	/// test {
+	struct Instance
+	{
+		lucid::gal::Vector3 position;
+		float32_t scale;
+		lucid::gal::Quaternion rotation;
+	};
+	std::unique_ptr<lucid::gal::VertexBuffer> _instances;
+	std::unique_ptr<lucid::gigl::Mesh> _icosphere;
+	/// } test
 
 	LUCID_PREVENT_COPY(OrbitTest);
 	LUCID_PREVENT_ASSIGNMENT(OrbitTest);
