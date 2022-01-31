@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <vector>
 #include <lucid/core/Noncopyable.h>
 #include <lucid/core/Types.h>

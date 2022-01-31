@@ -89,7 +89,10 @@
     <FxCompile Include="..\..\_bin\main\dad\content\icosphere.pixel.hlsl">
       <Filter>content</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\_bin\main\dad\content\icosphere.header.hlsl">
+    <FxCompile Include="..\..\_bin\main\dad\content\sprite.pixel.hlsl">
+      <Filter>content</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\dad\content\sprite.vertex.hlsl">
       <Filter>content</Filter>
     </FxCompile>
   </ItemGroup>
@@ -113,6 +116,10 @@
       <Filter>content</Filter>
     </None>
     <None Include="..\..\_bin\main\dad\content\atmosphere.header.hlsl">
+      <Filter>content</Filter>
+    </None>
+    <None Include="..\..\_bin\main\dad\content\icosphere.header.hlsl" />
+    <None Include="..\..\_bin\main\dad\content\sprite.header.hlsl">
       <Filter>content</Filter>
     </None>
   </ItemGroup>

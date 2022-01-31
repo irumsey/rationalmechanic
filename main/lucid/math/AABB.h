@@ -1,6 +1,7 @@
 #pragma once
 
 #include <lucid/math/Vector.h>
+#include <lucid/math/Sphere.h>
 #include <lucid/math/Constants.h>
 
 #ifdef min
@@ -161,6 +162,23 @@ namespace math {
 	///
 	///
 	///
+	template<typename T, int DIM> inline bool contains(AABB<T, DIM> const &box, Sphere<T, DIM> const &sphere)
+	{
+		for (size_t i = 0; i < DIM; ++i)
+		{
+			if ((sphere.center[i] - sphere.radius) < box.min[i])
+				return false;
+
+			if ((sphere.center[i] + sphere.radius) > box.max[i])
+				return false;
+		}
+
+		return true;
+	}
+
+	///
+	///
+	///
 	template<typename T, int DIM> inline bool looselyContains(AABB<T, DIM> const &box, Vector<T, DIM> const &v_i, Vector<T, DIM> const &v_j, Vector<T, DIM> const &v_k)
 	{
 		AABB<T, DIM> faceBox = fit(v_i, v_j, v_k);
@@ -182,6 +200,7 @@ namespace math {
 
 		return true;
 	}
+
 
 }	///	math
 }	///	lucid

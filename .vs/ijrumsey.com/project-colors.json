@@ -1,0 +1,66 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "2d2b70a1-a57d-4440-84c8-48d699ac2344": {
+      "ProjectGuid": "2d2b70a1-a57d-4440-84c8-48d699ac2344",
+      "DisplayName": "gal",
+      "ColorIndex": 0
+    },
+    "f0690d80-0059-4802-bb32-a7b5d9f9464b": {
+      "ProjectGuid": "f0690d80-0059-4802-bb32-a7b5d9f9464b",
+      "DisplayName": "lucid",
+      "ColorIndex": 1
+    },
+    "1d890cc8-e541-4435-b6eb-95ca5b48f03f": {
+      "ProjectGuid": "1d890cc8-e541-4435-b6eb-95ca5b48f03f",
+      "DisplayName": "main",
+      "ColorIndex": 2
+    },
+    "0474b74a-7b93-42a6-be88-a5db079453ab": {
+      "ProjectGuid": "0474b74a-7b93-42a6-be88-a5db079453ab",
+      "DisplayName": "omp",
+      "ColorIndex": 3
+    },
+    "d7a8fe6a-0744-4d2c-adf6-90ce54ee907f": {
+      "ProjectGuid": "d7a8fe6a-0744-4d2c-adf6-90ce54ee907f",
+      "DisplayName": "dad",
+      "ColorIndex": 4
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "Miscellaneous Files",
+      "ColorIndex": -1
+    },
+    "c0c10617-0a81-433b-bfa2-5177697d135b": {
+      "ProjectGuid": "c0c10617-0a81-433b-bfa2-5177697d135b",
+      "DisplayName": "xpr",
+      "ColorIndex": 5
+    },
+    "a0c6d287-9f0a-44c5-9b0e-69ad0625c453": {
+      "ProjectGuid": "a0c6d287-9f0a-44c5-9b0e-69ad0625c453",
+      "DisplayName": "math",
+      "ColorIndex": 6
+    },
+    "70f54ded-6034-471b-a9fa-ebdc3cd6c6db": {
+      "ProjectGuid": "70f54ded-6034-471b-a9fa-ebdc3cd6c6db",
+      "DisplayName": "orbit",
+      "ColorIndex": 7
+    },
+    "1af1697a-8b41-49eb-afbb-95b194fd2e3c": {
+      "ProjectGuid": "1af1697a-8b41-49eb-afbb-95b194fd2e3c",
+      "DisplayName": "rnd",
+      "ColorIndex": 8
+    },
+    "be23650d-5f0b-436d-a840-3023be99c483": {
+      "ProjectGuid": "be23650d-5f0b-436d-a840-3023be99c483",
+      "DisplayName": "gigl",
+      "ColorIndex": 9
+    },
+    "cb260ec3-4274-49b8-aaa9-8999354808df": {
+      "ProjectGuid": "cb260ec3-4274-49b8-aaa9-8999354808df",
+      "DisplayName": "gal.d3d11",
+      "ColorIndex": 10
+    }
+  },
+  "NextColorIndex": 11
+}

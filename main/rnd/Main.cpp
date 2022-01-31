@@ -3,13 +3,13 @@
 ///
 #include <windows.h>
 
-#include "Scattering.h"
 #include <lucid/gal/Pipeline.h>
 #include <lucid/gal/System.h>
 #include <lucid/core/Profiler.h>
 #include <lucid/core/Logger.h>
 #include <lucid/core/Clock.h>
 #include <lucid/core/Error.h>
+#include <lucid/core/Types.h>
 #include <sstream>
 
 namespace core = ::lucid::core;
@@ -39,7 +39,7 @@ void onUpdate()
 {
 	LUCID_PROFILE_BEGIN("Update");
 
-	///	TBD: simulation stuff...
+	// TBD: simulate stuff...
 
 	LUCID_PROFILE_END();
 }
@@ -54,8 +54,10 @@ void onRender()
 	lucid::gal::Pipeline &pipeline = lucid::gal::Pipeline::instance();
 
 	pipeline.beginScene();
-	pipeline.clear(true, true, true, gal::Color(0, 0, 1, 1), 1.f);
-	///	TBD: render stuff...
+	pipeline.clear(true, true, true, gal::Color(0, 0, 0, 1), 1.f);
+
+	// TBD: render stuff...
+
 	pipeline.endScene();
 
 	LUCID_PROFILE_END();
@@ -115,12 +117,6 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR cmdln, INT)
 	coreLogger.addListener(&coreFileLog);
 
 	INT exitCode = 0;
-
-	///	test {
-	///	on time ....
-	Scattering scattering;
-	scattering.execute();
-	/// } test 
 
 	try
 	{
