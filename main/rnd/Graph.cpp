@@ -3,8 +3,6 @@
 namespace /* anonymous */
 {
 
-	typedef std::unordered_map<size_t, std::unordered_map<size_t, float32_t> > mapping_t;
-
 	struct Propagate
 	{
 		std::vector<Node> &nodes;
@@ -14,7 +12,7 @@ namespace /* anonymous */
 		{
 		}
 
-		inline void operator()(mapping_t::value_type const &src) const
+		inline void operator()(Graph::mapping_t::value_type const &src) const
 		{
 			auto accumulate = [this, src](auto const &dst) { nodes[dst.first].accum += dst.second * nodes[src.first].output; };
 			std::for_each(src.second.begin(), src.second.end(), accumulate);
@@ -26,6 +24,7 @@ namespace /* anonymous */
 //
 //
 //
+
 Input::Input(size_t i, float32_t value)
 	: i(i)
 	, value(value)
@@ -35,7 +34,8 @@ Input::Input(size_t i, float32_t value)
 //
 //
 //
-Node::Node(float32_t bias, float32_t threshold, function_t transfer)
+
+Node::Node(float32_t bias, float32_t threshold, transfer_t transfer)
 	: bias(bias), threshold(threshold)
 	, transfer(transfer)
 	, accum(bias)
@@ -45,6 +45,7 @@ Node::Node(float32_t bias, float32_t threshold, function_t transfer)
 //
 //
 //
+
 void Graph::update(size_t count)
 {
 	auto feed = [this](Input const &input) { nodes[input.i].accum += input.value;  };

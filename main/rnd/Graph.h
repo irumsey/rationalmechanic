@@ -21,12 +21,12 @@ struct Input
 
 struct Node
 {
-	typedef float32_t(*function_t)(float32_t x);
+	typedef float32_t(*transfer_t)(float32_t x);
 
 	static float32_t    step(float32_t x) { return ((x < 0.f) ? 0.f : 1.f); }
 	static float32_t sigmoid(float32_t x) { float32_t y = std::powf(::lucid::math::constants::e<float32_t>(), x);  return y / (y + 1.f); }
 
-	function_t transfer = sigmoid;
+	transfer_t transfer = sigmoid;
 
 	float32_t bias = 0.f;
 	float32_t threshold = 0.f;
@@ -36,13 +36,15 @@ struct Node
 
 	Node() = default;
 
-	Node(float32_t bias, float32_t threshold, function_t transfer = sigmoid);
+	Node(float32_t bias, float32_t threshold, transfer_t transfer = sigmoid);
 
 };
 
 class Graph
 {
 public:
+	typedef std::unordered_map<size_t, std::unordered_map<size_t, float32_t> > mapping_t;
+
 	Graph() = default;
 
 	virtual ~Graph() = default;
@@ -65,8 +67,14 @@ public:
 
 	void adjustEdge(size_t i, size_t j, float32_t weight);
 
+	float32_t edgeWeight(size_t i, size_t j);
+
+	size_t countDownstream(size_t i) const;
+
 	void pushDownstream(std::list<size_t> &stack, size_t i);
-	 
+	
+	size_t countUpstream(size_t i) const;
+
 	void pushUpstream(std::list<size_t> &stack, size_t i);
 
 	void update(size_t count);
@@ -74,8 +82,6 @@ public:
 	void reset();
 
 private:
-	typedef std::unordered_map<size_t, std::unordered_map<size_t, float32_t> > mapping_t;
-
 	std::vector<Input> inputs;
 	std::vector< Node>  nodes;
 
@@ -138,6 +144,29 @@ inline void Graph::adjustEdge(size_t i, size_t j, float32_t weight)
 	upstream[j][i] = weight;
 }
 
+inline float32_t Graph::edgeWeight(size_t i, size_t j)
+{
+	return downstream[i][j];
+}
+
+inline size_t Graph::countDownstream(size_t i) const
+{
+	auto iter = downstream.find(i);
+	if (iter == downstream.end())
+		return 0;
+
+	return iter->second.size();
+}
+
+inline size_t Graph::countUpstream(size_t i) const
+{
+	auto iter = upstream.find(i);
+	if (iter == upstream.end())
+		return 0;
+
+	return iter->second.size();
+}
+
 inline void Graph::pushDownstream(std::list<size_t> &stack, size_t i)
 {
 	auto push = [&stack](auto const &mapped) { stack.push_front(mapped.first); };
@@ -149,3 +178,4 @@ inline void Graph::pushUpstream(std::list<size_t> &stack, size_t i)
 	auto push = [&stack](auto const &mapped) { stack.push_front(mapped.first); };
 	std::for_each(upstream[i].begin(), upstream[i].end(), push);
 }
+

@@ -43,14 +43,18 @@ public:
 		CGI  = 0x17,	// create graph input
 		CAGN = 0x18,	// create/adjust graph node
 		CAGE = 0x19,	// create/adjust graph edge
-		MHL  = 0x1a,	// move head left
-		MHR  = 0x1b,	// move head right
+		MHD  = 0x1a,	// move head
+		
+		RDGN = 0x1b,	// read graph node data
+		RDGE = 0x1c,	// read graph edge data
 
-		PUSH = 0x1c,	// push head position
-		POP  = 0x1d,	// pop head position
-		PSHD = 0x1e,	// push downstream nodes
-		PSHU = 0x1f,	// push upstream nodes
+		PUSH = 0x1d,	// push head/upstream/downstream
+		POP  = 0x1e,	// pop head position
+
+		NOP  = 0x1f,	// nop
 	};
+
+	enum { OPCODE_COUNT = 0x20 };
 
 	typedef uint32_t Instruction;
 	typedef std::vector<Instruction> Program;
@@ -59,12 +63,13 @@ public:
 
 	virtual ~Machine();
 
+	Graph const &theGraph() const;
+
 	void execute(Program const &program, size_t limit = -1);
 
 	void reset();
 
 private:
-	enum {    OPCODE_COUNT = 0x20 };
 	enum {  REGISTER_COUNT = 256 };
 	enum {     MEMORY_SIZE = 0x00010000};
 
@@ -132,17 +137,20 @@ private:
 
 	void _cage(Instruction ins);
 
-	void _mhl(Instruction ins);
+	void _mhd(Instruction ins);
 
-	void _mhr(Instruction ins);
+	void _rdgn(Instruction ins);
+
+	void _rdge(Instruction ins);
 
 	void _push(Instruction ins);
 
 	void _pop(Instruction ins);
 
-	void _pshd(Instruction ins);
-
-	void _pshu(Instruction ins);
-
+	void _nop(Instruction ins);
 };
 
+inline Graph const &Machine::theGraph() const
+{
+	return graph;
+}

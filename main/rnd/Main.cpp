@@ -99,11 +99,10 @@ LRESULT WINAPI onMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	return ::DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
-
 ///	WinMain
 ///
 ///
-INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR cmdln, INT)
+INT WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR cmdln, _In_ INT)
 {
 	LUCID_PROFILER_INITIALIZE();
 
@@ -211,7 +210,7 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR cmdln, INT)
 			}
 		}
 	}
-	catch (core::Error const &error)
+	catch (core::Error const &)
 	{
 		exitCode = 1;
 	}

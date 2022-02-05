@@ -58,6 +58,10 @@ void Machine::execute(Program const &program, size_t limit)
 
 void Machine::reset()
 {
+	graph.reset();
+
+	stack.clear();
+
 	::memset(registers, 0, REGISTER_COUNT * sizeof(uint16_t));
 	::memset(memory, 0, MEMORY_SIZE * sizeof(uint16_t));
 
@@ -199,19 +203,33 @@ void Machine::_cage(Instruction ins)
 	graph.adjustEdge(head[0], head[1], _FP0);
 }
 
-void Machine::_mhl(Instruction ins)
+void Machine::_mhd(Instruction ins)
 {
-	_HEAD = (_HEAD == _FIRST) ? _LAST : --_HEAD;
+	if (_FLAG0)
+		_HEAD = (_HEAD == _FIRST) ? _LAST : --_HEAD;
+	else
+		_HEAD = (_HEAD == _LAST) ? _FIRST : ++_HEAD;
 }
 
-void Machine::_mhr(Instruction ins)
+void Machine::_rdgn(Instruction ins)
 {
-	_HEAD = (_HEAD == _LAST) ? _FIRST : ++_HEAD;
+	Node const &node = graph.getNode(_HEAD);
+
+	_FP0 = node.bias;
+	_FP1 = node.threshold;
+	_FP2 = node.output;
+}
+
+void Machine::_rdge(Instruction ins)
+{
+	_FP0 = graph.edgeWeight(head[0], head[1]);
 }
 
 void Machine::_push(Instruction ins)
 {
-	stack.push_front(_HEAD);
+	if (_FLAG0) stack.push_front(_HEAD);
+	if (_FLAG1) graph.pushUpstream(stack, _HEAD);
+	if (_FLAG2) graph.pushDownstream(stack, _HEAD);
 }
 
 void Machine::_pop(Instruction ins)
@@ -223,14 +241,9 @@ void Machine::_pop(Instruction ins)
 	stack.pop_front();
 }
 
-void Machine::_pshd(Instruction ins)
+void Machine::_nop(Instruction ins)
 {
-	graph.pushDownstream(stack, _HEAD);
-}
-
-void Machine::_pshu(Instruction ins)
-{
-	graph.pushUpstream(stack, _HEAD);
+	// no operation
 }
 
 Machine::operation_t const Machine::operations[OPCODE_COUNT] =
@@ -261,10 +274,10 @@ Machine::operation_t const Machine::operations[OPCODE_COUNT] =
 	&_cgi,	
 	&_cagn,	
 	&_cage,	
-	&_mhl,	
-	&_mhr,	
+	&_mhd,	
+	&_rdgn,
+	&_rdge,
 	&_push,	
-	&_pop,	
-	&_pshd,	
-	&_pshu,	
+	&_pop,
+	&_nop,
 };

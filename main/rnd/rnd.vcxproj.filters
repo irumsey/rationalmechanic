@@ -5,9 +5,13 @@
     <ClCompile Include="Link.cpp" />
     <ClCompile Include="Machine.cpp" />
     <ClCompile Include="Graph.cpp" />
+    <ClCompile Include="Evolver.cpp" />
+    <ClCompile Include="Random.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graph.h" />
     <ClInclude Include="Machine.h" />
+    <ClInclude Include="Evolver.h" />
+    <ClInclude Include="Random.h" />
   </ItemGroup>
 </Project>
