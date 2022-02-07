@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Machine.cpp" />
+    <ClCompile Include="Graph.cpp" />
+    <ClCompile Include="Mind.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Machine.h" />
+    <ClInclude Include="Graph.h" />
+    <ClInclude Include="Mind.h" />
+    <ClInclude Include="GA.h" />
+  </ItemGroup>
+</Project>

@@ -23,6 +23,8 @@
     <ClInclude Include="Noncreatable.h" />
     <ClInclude Include="String.h" />
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="Bits.h" />
+    <ClInclude Include="Random.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Error.cpp" />
@@ -30,5 +32,7 @@
     <ClCompile Include="FileReader.cpp" />
     <ClCompile Include="FileWriter.cpp" />
     <ClCompile Include="Profiler.cpp" />
+    <ClCompile Include="Bits.cpp" />
+    <ClCompile Include="Random.cpp" />
   </ItemGroup>
 </Project>

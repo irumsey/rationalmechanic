@@ -60,7 +60,12 @@
       "ProjectGuid": "cb260ec3-4274-49b8-aaa9-8999354808df",
       "DisplayName": "gal.d3d11",
       "ColorIndex": 10
+    },
+    "36a0b0ce-4581-4060-b972-357ffd75c148": {
+      "ProjectGuid": "36a0b0ce-4581-4060-b972-357ffd75c148",
+      "DisplayName": "core",
+      "ColorIndex": 11
     }
   },
-  "NextColorIndex": 11
+  "NextColorIndex": 12
 }

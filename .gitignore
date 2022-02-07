@@ -260,3 +260,7 @@ ModelManifest.xml
 /_bin/main/omp/lucid.32d.dll
 /_bin/main/dad/dad.32d.exe
 /.vs/ijrumsey.com/v17
+/_lib/rm.64d.lib
+/_lib/rm.64d.idb
+/_lib/rm.32d.lib
+/_lib/rm.32d.idb

@@ -99,12 +99,19 @@ LRESULT WINAPI onMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	return ::DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
+#include <lucid/rm/Mind.h>
+using Mind = ::lucid::rm::Mind;
+
 ///	WinMain
 ///
 ///
 INT WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR cmdln, _In_ INT)
 {
 	LUCID_PROFILER_INITIALIZE();
+
+	Mind mind(200, 1000);
+	for (size_t i = 0; i < 1000; ++i)
+		mind.update(10000);
 
 	///
 	///

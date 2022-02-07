@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Array.h" />
+    <ClInclude Include="Bits.h" />
     <ClInclude Include="Cache.h" />
     <ClInclude Include="Clock.h" />
     <ClInclude Include="Constants.h" />
@@ -36,6 +37,7 @@
     <ClInclude Include="Noncreatable.h" />
     <ClInclude Include="Profiler.h" />
     <ClInclude Include="Queue.h" />
+    <ClInclude Include="Random.h" />
     <ClInclude Include="Reader.h" />
     <ClInclude Include="Stack.h" />
     <ClInclude Include="String.h" />
@@ -43,11 +45,13 @@
     <ClInclude Include="Writer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Bits.cpp" />
     <ClCompile Include="Error.cpp" />
     <ClCompile Include="FileReader.cpp" />
     <ClCompile Include="FileWriter.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="Profiler.cpp" />
+    <ClCompile Include="Random.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{36A0B0CE-4581-4060-B972-357FFD75C148}</ProjectGuid>
