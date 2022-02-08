@@ -5,6 +5,8 @@
 #include <lucid/core/Noncopyable.h>
 #include <lucid/core/Types.h>
 #include <lucid/core/Error.h>
+#include <lucid/core/Random.h>
+#include <lucid/core/Profiler.h>
 #include <lucid/rm/GA.h>
 #include <lucid/rm/Machine.h>
 
@@ -29,14 +31,16 @@ namespace rm {
 
 	private:
 		typedef std::pair<float32_t, float32_t> measure_t;
+		typedef uint32_t gene_t;
 		typedef Machine::Program chromosome_t;
-		typedef Genome<uint32_t, measure_t, Machine::Program> genome_t;
+		typedef Genome<gene_t, measure_t, chromosome_t> genome_t;
 		typedef std::vector<genome_t> population_t;
 
 		size_t _chromosomeLength = 0;
 		size_t _genomeCount = 0;
 
 		population_t _population[2];	// previous/next generation
+		float32_t _fittest = 0.f;		// TBD: test variable, remove it
 
 		Machine _machine;
 
@@ -46,15 +50,17 @@ namespace rm {
 
 		void initialize(population_t &population) const;
 
-		float32_t evaluate(population_t &population, size_t throttle);
+		void evaluate(population_t &population, size_t throttle);
 
-		void generate(population_t &next, population_t const &prev, float32_t fitsum) const;
+		void propagate(population_t &next, population_t const &prev) const;
 
 		float32_t measure(chromosome_t const &chromosome, size_t throttle);
 
-		size_t select(population_t const &population, float32_t position) const;
+		size_t select(population_t const &population) const;
 
 		void mutate(chromosome_t &chromosome, float32_t rate) const;
+
+		void advance();
 
 		LUCID_PREVENT_COPY(Mind);
 		LUCID_PREVENT_ASSIGNMENT(Mind);
@@ -81,9 +87,13 @@ namespace rm {
 		std::for_each(population.begin(), population.end(), [this](auto &genome) { initialize(genome); });
 	}
 
-	inline size_t Mind::select(population_t const &population, float32_t position) const
+	inline size_t Mind::select(population_t const &population) const
 	{
 		LUCID_VALIDATE(_genomeCount == population.size(), "population size mismatch");
+
+		LUCID_PROFILE_SCOPE("rm::Mind::select");
+
+		float32_t position = ::lucid::core::random::real();
 
 		size_t upper = _genomeCount;
 		size_t lower = 0;
@@ -104,6 +114,12 @@ namespace rm {
 
 		// shut the compiler up (can never get here)
 		return -1;
+	}
+
+	inline void Mind::advance()
+	{
+		LUCID_PROFILE_SCOPE("rm::Mind::advance");
+		_population[0].swap(_population[1]);
 	}
 
 }	// rm

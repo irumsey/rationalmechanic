@@ -11,6 +11,7 @@
 #include <lucid/core/Error.h>
 #include <lucid/core/Types.h>
 #include <sstream>
+#include "Utility.h"
 
 namespace core = ::lucid::core;
 namespace  gal = ::lucid:: gal;
@@ -109,9 +110,7 @@ INT WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR cmdln, _In_ IN
 {
 	LUCID_PROFILER_INITIALIZE();
 
-	Mind mind(200, 1000);
-	for (size_t i = 0; i < 1000; ++i)
-		mind.update(10000);
+	Mind mind(200, 2000);
 
 	///
 	///
@@ -207,6 +206,7 @@ INT WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR cmdln, _In_ IN
 				{
 					simTime += TIME_STEP;
 					::onUpdate();
+					mind.update(10000);
 					wallTimeAccum -= TIME_STEP;
 				}
 				frameInterpolant = (float32_t)(wallTimeAccum / TIME_STEP);
@@ -216,6 +216,8 @@ INT WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR cmdln, _In_ IN
 				LUCID_PROFILE_END();
 			}
 		}
+
+		::dumpProfileData("profile.log");
 	}
 	catch (core::Error const &)
 	{

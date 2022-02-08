@@ -33,7 +33,7 @@ namespace core {
 			return setcnt<uint16_t>(0x0000ffff & rhs) + setcnt<uint16_t>((0xffff0000 & rhs) >> 16);
 		}
 
-		template<typename T> static size_t dist(T lhs, T rhs)
+		template<typename T> static size_t hamming_distance(T lhs, T rhs)
 		{
 			return setcnt<T>(lhs ^ rhs);
 		}
