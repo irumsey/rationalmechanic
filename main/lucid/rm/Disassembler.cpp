@@ -1,4 +1,5 @@
 #include "Disassembler.h"
+#include <iomanip>
 #include <string>
 
 #define  _OPCODE ((0x0000001f & ins) >> 0)
@@ -7,27 +8,85 @@
 #define   _FLAG0 ((0x01 & _FLAGS) != 0)
 #define   _FLAG1 ((0x02 & _FLAGS) != 0)
 #define   _FLAG2 ((0x04 & _FLAGS) != 0)
-#define      _R0 ((0x0000ff00 & ins) >>  8)
-#define      _R1 ((0x00ff0000 & ins) >> 16)
-#define      _R2 ((0xff000000 & ins) >> 24)
+
+#define      _R0 Register(ins, _FLAG0, 0x0000ff00,  8)
+#define      _R1 Register(ins, _FLAG1, 0x00ff0000, 16)
+#define      _R2 Register(ins, _FLAG2, 0xff000000, 24)
+
+#define     _IMM Immediate(ins) 
 
 namespace /* anonymous */ {
-
-	std::string const flags[8] = {
-		"\t000",
-		"\t001",
-		"\t010",
-		"\t011",
-		"\t100",
-		"\t101",
-		"\t110",
-		"\t111",
-	};
 
 }
 
 namespace lucid {
 namespace rm {
+
+	//
+	//
+	//
+
+	class Register
+	{
+	public:
+		Register(Disassembler::Instruction ins, bool indirect, uint32_t mask, size_t shift)
+			: index((mask & ins) >> shift)
+			, indirect(indirect)
+		{
+
+		}
+
+		std::ostream &repr(std::ostream &stream) const
+		{
+			if (indirect)
+				stream << "[r" << std::setw(3) << std::setfill('0') << index << "]";
+			else
+				stream << "  r" << std::setw(3) << std::setfill('0') << index;
+			return stream;
+		}
+
+	private:
+		size_t index = 0;
+		bool indirect = false;
+
+	};
+
+	inline std::ostream &operator<<(std::ostream &stream, Register const &reg)
+	{
+		return reg.repr(stream);
+	}
+
+	//
+	//
+	//
+
+	class Immediate
+	{
+	public:
+		Immediate(Disassembler::Instruction ins)
+			: value((0xffff0000 &ins) >> 16)
+		{
+		}
+
+		std::ostream &repr(std::ostream &stream) const
+		{
+			stream << "0x" << std::setw(4) << std::setfill('0') << value;
+			return stream;
+		}
+
+	private:
+		uint16_t value = 0;
+
+	};
+
+	inline std::ostream &operator<<(std::ostream &stream, Immediate const &imm)
+	{
+		return imm.repr(stream);
+	}
+
+	//
+	//
+	//
 
 	std::ostream &Disassembler::disassemble(std::ostream &stream, Program const &program)
 	{
@@ -37,6 +96,58 @@ namespace rm {
 			(this->*operations[_OPCODE])(stream, ins);
 			stream << std::endl;
 		}
+
+		return stream;
+	}
+
+	std::ostream &Disassembler::_nullary(std::ostream &stream, Instruction ins)
+	{
+		stream << repr[_OPCODE];
+		return stream;
+	}
+
+	std::ostream &Disassembler::_unary(std::ostream &stream, Instruction ins)
+	{
+		stream << repr[_OPCODE] << "\t" << _R0;
+		return stream;
+	}
+
+	std::ostream &Disassembler::_binary(std::ostream &stream, Instruction ins)
+	{
+		stream << repr[_OPCODE] << "\t" << _R0 << ", " << _R1;
+		return stream;
+	}
+
+	std::ostream &Disassembler::_ternary(std::ostream &stream, Instruction ins)
+	{
+		stream << repr[_OPCODE] << "\t" << _R0 << ", " << _R1 << ", " << _R2;
+		return stream;
+	}
+
+	std::ostream &Disassembler::_mov(std::ostream &stream, Instruction ins)
+	{
+		if (_FLAG2)
+			stream << repr[_OPCODE] << "\t" << _R0 << ", " << _IMM;
+		else
+			stream << repr[_OPCODE] << "\t" << _R0 << ", " << _R1;
+		return stream;
+	}
+
+	std::ostream &Disassembler::_bra(std::ostream &stream, Instruction ins)
+	{
+		stream << repr[_OPCODE] << "\t" << _IMM;
+		return stream;
+	}
+
+	std::ostream &Disassembler::_brx(std::ostream &stream, Instruction ins)
+	{
+		stream << repr[_OPCODE] << "\t" << _R0 << ", " << _IMM;
+		return stream;
+	}
+
+	std::ostream &Disassembler::_bsx(std::ostream &stream, Instruction ins)
+	{
+		stream << repr[_OPCODE] << "\t" << _IMM;
 		return stream;
 	}
 
@@ -55,8 +166,8 @@ namespace rm {
 		"LSL ",
 		"LSR ",
 		"BRA ",
-		"BEQ ",
-		"BNE ",
+		"BZ  ",
+		"BNZ ",
 		"BSE ",
 		"BSNE",
 		"MOV ",
@@ -76,232 +187,40 @@ namespace rm {
 		"NOP ",
 	};
 
-	std::ostream &Disassembler::_neg(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << flags[_FLAGS] << "\t" << _R0;
-		return stream;
-	}
-
-	std::ostream &Disassembler::_add(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << flags[_FLAGS] << "\t" << _R0 << ", " << _R1 << ", " << _R2;
-		return stream;
-	}
-
-	std::ostream &Disassembler::_sub(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << flags[_FLAGS] << "\t" << _R0 << ", " << _R1 << ", " << _R2;
-		return stream;
-	}
-
-	std::ostream &Disassembler::_mul(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << flags[_FLAGS] << "\t" << _R0 << ", " << _R1 << ", " << _R2;
-		return stream;
-	}
-
-	std::ostream &Disassembler::_inc(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << flags[_FLAGS] << "\t" << _R0;
-		return stream;
-	}
-
-	std::ostream &Disassembler::_dec(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << flags[_FLAGS] << "\t" << _R0;
-		return stream;
-	}
-
-	std::ostream &Disassembler::_not(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << flags[_FLAGS] << "\t" << _R0;
-		return stream;
-	}
-
-	std::ostream &Disassembler::_and(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << flags[_FLAGS] << "\t" << _R0 << ", " << _R1 << ", " << _R2;
-		return stream;
-	}
-
-	std::ostream &Disassembler::_or(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << flags[_FLAGS] << "\t" << _R0 << ", " << _R1 << ", " << _R2;
-		return stream;
-	}
-
-	std::ostream &Disassembler::_xor(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << flags[_FLAGS] << "\t" << _R0 << ", " << _R1 << ", " << _R2;
-		return stream;
-	}
-
-	std::ostream &Disassembler::_lsl(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << flags[_FLAGS] << "\t" << _R0 << ", " << _R1;
-		return stream;
-	}
-
-	std::ostream &Disassembler::_lsr(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << flags[_FLAGS] << "\t" << _R0 << ", " << _R1;
-		return stream;
-	}
-
-	std::ostream &Disassembler::_bra(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << flags[_FLAGS] << "\t" << _R0;
-		return stream;
-	}
-
-	std::ostream &Disassembler::_beq(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << flags[_FLAGS] << "\t" << _R0 << ", " << _R1 << ", " << _R2;
-		return stream;
-	}
-
-	std::ostream &Disassembler::_bne(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << flags[_FLAGS] << "\t" << _R0 << ", " << _R1 << ", " << _R2;
-		return stream;
-	}
-
-	std::ostream &Disassembler::_bse(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << flags[_FLAGS] << "\t" << _R0 << ", " << _R1;
-		return stream;
-	}
-
-	std::ostream &Disassembler::_bsne(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << flags[_FLAGS] << "\t" << _R0 << ", " << _R1;
-		return stream;
-	}
-
-	std::ostream &Disassembler::_mov(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << flags[_FLAGS] << "\t" << _R0 << ", " << _R1;
-		return stream;
-	}
-
-	std::ostream &Disassembler::_negf(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << flags[_FLAGS] << "\t" << _R0 << ", " << _R1;
-		return stream;
-	}
-
-	std::ostream &Disassembler::_addf(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << flags[_FLAGS] << "\t" << _R0 << ", " << _R1 << ", " << _R2;
-		return stream;
-	}
-
-	std::ostream &Disassembler::_subf(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << flags[_FLAGS] << "\t" << _R0 << ", " << _R1 << ", " << _R2;
-		return stream;
-	}
-
-	std::ostream &Disassembler::_mulf(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << flags[_FLAGS] << "\t" << _R0 << ", " << _R1 << ", " << _R2;
-		return stream;
-	}
-
-	std::ostream &Disassembler::_divf(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << flags[_FLAGS] << "\t" << _R0 << ", " << _R1 << ", " << _R2;
-		return stream;
-	}
-
-	std::ostream &Disassembler::_cgi(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << flags[_FLAGS] << "\t" << _R0 << ", " << _R1;
-		return stream;
-	}
-
-	std::ostream &Disassembler::_cagn(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << flags[_FLAGS] << "\t" << _R0 << ", " << _R1 << ", " << _R2;
-		return stream;
-	}
-
-	std::ostream &Disassembler::_cage(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << flags[_FLAGS] << "\t" << _R0 << ", " << _R1 << ", " << _R2;
-		return stream;
-	}
-
-	std::ostream &Disassembler::_mhd(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << flags[_FLAGS] << "\t" << _R0;
-		return stream;
-	}
-
-	std::ostream &Disassembler::_rdgn(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << flags[_FLAGS] << "\t" << _R0 << ", " << _R1 << ", " << _R2;
-		return stream;
-	}
-
-	std::ostream &Disassembler::_rdge(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << flags[_FLAGS] << "\t" << _R0 << ", " << _R1 << ", " << _R2;
-		return stream;
-	}
-
-	std::ostream &Disassembler::_push(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << flags[_FLAGS];
-		return stream;
-	}
-
-	std::ostream &Disassembler::_pop(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << flags[_FLAGS];
-		return stream;
-	}
-
-	std::ostream &Disassembler::_nop(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE];
-		return stream;
-	}
-
 	Disassembler::operation_t const Disassembler::operations[OPCODE_COUNT] =
 	{
-		&_neg,
-		&_add,
-		&_sub,
-		&_mul,
-		&_inc,
-		&_dec,
-		&_not,
-		&_and,
-		&_or,
-		&_xor,
-		&_lsl,
-		&_lsr,
+		&_binary,
+		&_ternary,
+		&_ternary,
+		&_ternary,
+		&_unary,
+		&_unary,
+		&_binary,
+		&_ternary,
+		&_ternary,
+		&_ternary,
+		&_ternary,
+		&_ternary,
 		&_bra,
-		&_beq,
-		&_bne,
-		&_bse,
-		&_bsne,
+		&_brx,
+		&_brx,
+		&_bsx,
+		&_bsx,
 		&_mov,
-		&_negf,
-		&_addf,
-		&_subf,
-		&_mulf,
-		&_divf,
-		&_cgi,
-		&_cagn,
-		&_cage,
-		&_mhd,
-		&_rdgn,
-		&_rdge,
-		&_push,
-		&_pop,
-		&_nop,
+		&_binary,
+		&_ternary,
+		&_ternary,
+		&_ternary,
+		&_ternary,
+		&_unary,
+		&_binary,
+		&_unary,
+		&_nullary,
+		&_ternary,
+		&_unary,
+		&_nullary,
+		&_nullary,
+		&_nullary,
 	};
 
 }	// rm

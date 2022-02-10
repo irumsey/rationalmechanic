@@ -27,7 +27,11 @@ namespace rm {
 
 		Graph const &graph() const;
 
+		Machine::Program const &chromosome() const;
+
 		void update(size_t throttle);
+
+		void execute(Machine::Program const &program, size_t throttle);
 
 	private:
 		typedef std::pair<float32_t, float32_t> measure_t;
@@ -39,8 +43,8 @@ namespace rm {
 		size_t _chromosomeLength = 0;
 		size_t _genomeCount = 0;
 
-		population_t _population[2];	// previous/next generation
-		float32_t _fittest = 0.f;		// TBD: test variable, remove it
+		population_t _population[2];
+		std::pair<size_t, float32_t> _fittest;
 
 		Machine _machine;
 
@@ -74,6 +78,11 @@ namespace rm {
 	inline Graph const &Mind::graph() const
 	{
 		return _machine.graph();
+	}
+
+	inline Machine::Program const &Mind::chromosome() const
+	{
+		return _population[0][_fittest.first].chromosome;
 	}
 
 	inline void Mind::initialize(genome_t &genome) const

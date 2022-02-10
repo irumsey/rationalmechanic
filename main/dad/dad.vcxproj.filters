@@ -118,8 +118,10 @@
     <None Include="..\..\_bin\main\dad\content\atmosphere.header.hlsl">
       <Filter>content</Filter>
     </None>
-    <None Include="..\..\_bin\main\dad\content\icosphere.header.hlsl" />
     <None Include="..\..\_bin\main\dad\content\sprite.header.hlsl">
+      <Filter>content</Filter>
+    </None>
+    <None Include="..\..\_bin\main\dad\content\icosphere.header.hlsl">
       <Filter>content</Filter>
     </None>
   </ItemGroup>

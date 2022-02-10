@@ -12,6 +12,7 @@
 #include <lucid/core/Types.h>
 #include <sstream>
 #include "Utility.h"
+#include "Session.h"
 
 namespace core = ::lucid::core;
 namespace  gal = ::lucid:: gal;
@@ -33,6 +34,8 @@ float64_t simTime = 0;
 float64_t wallTime = 0;
 float32_t frameInterpolant = 0;
 
+Session session;
+
 ///	onUpdate
 ///
 ///
@@ -40,7 +43,7 @@ void onUpdate()
 {
 	LUCID_PROFILE_BEGIN("Update");
 
-	// TBD: simulate stuff...
+	session.update(TIME_STEP, simTime);
 
 	LUCID_PROFILE_END();
 }
@@ -57,7 +60,7 @@ void onRender()
 	pipeline.beginScene();
 	pipeline.clear(true, true, true, gal::Color(0, 0, 0, 1), 1.f);
 
-	// TBD: render stuff...
+	session.render(wallTime, frameInterpolant);
 
 	pipeline.endScene();
 
@@ -100,18 +103,12 @@ LRESULT WINAPI onMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	return ::DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
-#include <lucid/rm/Mind.h>
-
-using Mind = ::lucid::rm::Mind;
-
 ///	WinMain
 ///
 ///
 INT WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR cmdln, _In_ INT)
 {
 	LUCID_PROFILER_INITIALIZE();
-
-	Mind mind(200, 2000);
 
 	///
 	///
@@ -181,6 +178,8 @@ INT WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR cmdln, _In_ IN
 		float64_t wallTimeLast = wallTime;
 		float64_t wallTimeAccum = 0.f;
 
+		session.initialize();
+
 		///
 		///	Message pump
 		///
@@ -207,7 +206,6 @@ INT WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR cmdln, _In_ IN
 				{
 					simTime += TIME_STEP;
 					::onUpdate();
-					mind.update(10000);
 					wallTimeAccum -= TIME_STEP;
 				}
 				frameInterpolant = (float32_t)(wallTimeAccum / TIME_STEP);
@@ -218,10 +216,13 @@ INT WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR cmdln, _In_ IN
 			}
 		}
 
+		session.shutdown();
+
 		::dumpProfileData("profile.log");
 	}
-	catch (core::Error const &)
+	catch (core::Error const &error)
 	{
+		log("ERR", error.what());
 		exitCode = 1;
 	}
 	catch (...)

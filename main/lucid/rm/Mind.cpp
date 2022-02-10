@@ -25,11 +25,16 @@ namespace rm {
 	{
 		LUCID_PROFILE_SCOPE("rm::Mind::update");
 
-		_fittest = 0;
+		_fittest = std::make_pair(0, 0.f);
 
 		evaluate(_population[0], throttle);
 		propagate(_population[1], _population[0]);
 		advance();
+	}
+
+	void Mind::execute(Machine::Program const &program, size_t throttle)
+	{
+		_machine.execute(program, throttle);
 	}
 
 	void Mind::initialize(chromosome_t &chromosome) const
@@ -55,8 +60,9 @@ namespace rm {
 			genome_t &genome = population[i];
 
 			float32_t fitness = measure(genome.chromosome, throttle);
+			_fittest = (fitness > _fittest.second) ? std::make_pair(i, fitness) : _fittest;
+
 			genome.fitness = std::make_pair(accum, accum + fitness);
-			
 			accum = genome.fitness.second;
 		}
 
@@ -75,7 +81,8 @@ namespace rm {
 
 		LUCID_PROFILE_SCOPE("rm::Mind::propagate");
 
-		for (size_t i = 0; i < (_genomeCount - 1); i += 2)
+		next[0] = prev[_fittest.first];
+		for (size_t i = 1; i < (_genomeCount - 2); i += 2)
 		{
 			size_t count = 0;
 			size_t pos = random::integer<size_t>(0, _chromosomeLength);
@@ -87,8 +94,8 @@ namespace rm {
 				[pos, &count](auto /* ignored */, auto /* ignored */) { return ((count++) >= pos); }
 			);
 
-			mutate(next[i + 0].chromosome, 0.01f);
-			mutate(next[i + 1].chromosome, 0.01f);
+			mutate(next[i + 0].chromosome, 0.03f);
+			mutate(next[i + 1].chromosome, 0.03f);
 		}
 	}
 
@@ -96,7 +103,7 @@ namespace rm {
 	{
 		LUCID_PROFILE_SCOPE("rm::Mind::measure");
 
-		_machine.execute(chromosome, throttle);
+		execute(chromosome, throttle);
 
 		Graph const &graph = _machine.graph();
 		size_t count = graph.nodeCount();
@@ -104,20 +111,6 @@ namespace rm {
 		float32_t fitness = 0.f;
 		for (size_t i = 0; i < count; ++i)
 			fitness = ((0 != graph.countUpstream(i)) && (0 != graph.countDownstream(i))) ? fitness + 1 : fitness;
-
-		_fittest = std::max(_fittest, fitness);
-
-		// test {
-		if (fitness > 10.f)
-		{
-			std::ofstream output("disassembly.txt");
-
-			Disassembler disassembler;
-			disassembler.disassemble(output, chromosome);
-
-			output.close();
-		}
-		// } test
 
 		return fitness;
 	}
@@ -130,7 +123,7 @@ namespace rm {
 			return;
 
 		uint8_t *opaque = (uint8_t *)(&chromosome[0]);
-		size_t mutationCount = random::integer<size_t>(0, 10);
+		size_t mutationCount = random::integer<size_t>(5, 20);
 		for (size_t i = 0; i < mutationCount; ++i)
 		{
 			size_t index = random::integer<size_t>(0, sizeof(gene_t) * _chromosomeLength);

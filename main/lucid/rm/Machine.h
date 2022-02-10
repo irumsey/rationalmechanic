@@ -33,8 +33,8 @@ namespace rm {
 			LSR  = 0x0b,	// logical shift right
 
 			BRA  = 0x0c,	// branch always
-			BEQ  = 0x0d,	// branch if equal
-			BNE  = 0x0e,	// branch if not equal
+			BZ   = 0x0d,	// branch if zero
+			BNZ  = 0x0e,	// branch if not zero
 			BSE  = 0x0f,	// branch if stack is empty
 			BSNE = 0x10,	// branch if stack is not empty
 
@@ -120,9 +120,9 @@ namespace rm {
 
 		void _bra(Instruction ins);
 
-		void _beq(Instruction ins);
+		void _bz(Instruction ins);
 
-		void _bne(Instruction ins);
+		void _bnz(Instruction ins);
 
 		void _bse(Instruction ins);
 

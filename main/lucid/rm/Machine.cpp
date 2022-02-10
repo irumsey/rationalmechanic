@@ -105,7 +105,7 @@ namespace rm {
 
 	void Machine::_not(Instruction ins)
 	{
-		_0 = ~_0;
+		_0 = ~_1;
 	}
 
 	void Machine::_and(Instruction ins)
@@ -135,27 +135,27 @@ namespace rm {
 
 	void Machine::_bra(Instruction ins)
 	{
-		pc = pc + _0;
+		pc = pc + _IMM;
 	}
 
-	void Machine::_beq(Instruction ins)
+	void Machine::_bz(Instruction ins)
 	{
-		pc = (_0 == _1) ? pc + _2 : pc;
+		pc = (0 == _0) ? pc + _IMM : pc;
 	}
 
-	void Machine::_bne(Instruction ins)
+	void Machine::_bnz(Instruction ins)
 	{
-		pc = (_0 != _1) ? pc + _2 : pc;
+		pc = (0 != _0) ? pc + _IMM : pc;
 	}
 
 	void Machine::_bse(Instruction ins)
 	{
-		pc = (stack.empty()) ? pc + _0 : pc;
+		pc = stack.empty() ? pc + _IMM : pc;
 	}
 
 	void Machine::_bsne(Instruction ins)
 	{
-		pc = (!stack.empty()) ? pc + _0 : pc;
+		pc = (!stack.empty()) ? pc + _IMM : pc;
 	}
 
 	void Machine::_mov(Instruction ins)
@@ -264,8 +264,8 @@ namespace rm {
 		&_lsl,	
 		&_lsr,	
 		&_bra,	
-		&_beq,	
-		&_bne,
+		&_bz,	
+		&_bnz,
 		&_bse,
 		&_bsne,
 		&_mov,	
