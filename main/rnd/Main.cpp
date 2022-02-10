@@ -101,6 +101,7 @@ LRESULT WINAPI onMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 }
 
 #include <lucid/rm/Mind.h>
+
 using Mind = ::lucid::rm::Mind;
 
 ///	WinMain

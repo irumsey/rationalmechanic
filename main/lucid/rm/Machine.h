@@ -157,6 +157,7 @@ namespace rm {
 		void _pop(Instruction ins);
 
 		void _nop(Instruction ins);
+
 	};
 
 	inline Graph &Machine::graph()

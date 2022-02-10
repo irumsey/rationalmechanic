@@ -4,11 +4,13 @@
     <ClCompile Include="Machine.cpp" />
     <ClCompile Include="Graph.cpp" />
     <ClCompile Include="Mind.cpp" />
+    <ClCompile Include="Disassembler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Machine.h" />
     <ClInclude Include="Graph.h" />
     <ClInclude Include="Mind.h" />
     <ClInclude Include="GA.h" />
+    <ClInclude Include="Disassembler.h" />
   </ItemGroup>
 </Project>

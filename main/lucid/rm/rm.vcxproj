@@ -19,11 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Disassembler.cpp" />
     <ClCompile Include="Graph.cpp" />
     <ClCompile Include="Machine.cpp" />
     <ClCompile Include="Mind.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Disassembler.h" />
     <ClInclude Include="GA.h" />
     <ClInclude Include="Graph.h" />
     <ClInclude Include="Machine.h" />

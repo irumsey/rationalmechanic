@@ -265,3 +265,4 @@ ModelManifest.xml
 /_lib/rm.32d.lib
 /_lib/rm.32d.idb
 *.lib
+/_bin/main/dad/disassembly.txt

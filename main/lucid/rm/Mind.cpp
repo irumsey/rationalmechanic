@@ -1,5 +1,8 @@
 #include "Mind.h"
+#include "Disassembler.h"
 #include <lucid/core/Bits.h>
+#include <sstream>
+#include <fstream>
 
 using random = ::lucid::core::random;
 
@@ -103,6 +106,18 @@ namespace rm {
 			fitness = ((0 != graph.countUpstream(i)) && (0 != graph.countDownstream(i))) ? fitness + 1 : fitness;
 
 		_fittest = std::max(_fittest, fitness);
+
+		// test {
+		if (fitness > 10.f)
+		{
+			std::ofstream output("disassembly.txt");
+
+			Disassembler disassembler;
+			disassembler.disassemble(output, chromosome);
+
+			output.close();
+		}
+		// } test
 
 		return fitness;
 	}
