@@ -87,15 +87,21 @@ namespace rm {
 			size_t count = 0;
 			size_t pos = random::integer<size_t>(0, _chromosomeLength);
 
+			genome_t const &parent0 = prev[select(prev)];
+			genome_t const &parent1 = prev[select(prev)];
+
 			crossover(
-				prev[select(prev)], prev[select(prev)],
+				parent0, parent1,
 				next[i + 0],
 				next[i + 1],
 				[pos, &count](auto /* ignored */, auto /* ignored */) { return ((count++) >= pos); }
 			);
 
-			mutate(next[i + 0].chromosome, 0.03f);
-			mutate(next[i + 1].chromosome, 0.03f);
+			float32_t dFitness = (parent1.fitness.second - parent1.fitness.first) - (parent0.fitness.second - parent0.fitness.first);
+			float32_t rate = (dFitness < 0.001f) ? 0.2f : 0.03f;
+
+			mutate(next[i + 0].chromosome, rate);
+			mutate(next[i + 1].chromosome, rate);
 		}
 	}
 
@@ -123,7 +129,7 @@ namespace rm {
 			return;
 
 		uint8_t *opaque = (uint8_t *)(&chromosome[0]);
-		size_t mutationCount = random::integer<size_t>(5, 20);
+		size_t mutationCount = random::integer<size_t>(1, 20);
 		for (size_t i = 0; i < mutationCount; ++i)
 		{
 			size_t index = random::integer<size_t>(0, sizeof(gene_t) * _chromosomeLength);

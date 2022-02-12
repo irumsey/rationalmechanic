@@ -10,4 +10,31 @@
     <ClInclude Include="Utility.h" />
     <ClInclude Include="Session.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Filter Include="content">
+      <UniqueIdentifier>{241aab36-9259-40fc-a692-376024619163}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\..\_bin\main\rnd\content\sprite.vertex.hlsl">
+      <Filter>content</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\rnd\content\beam.pixel.hlsl">
+      <Filter>content</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\rnd\content\beam.vertex.hlsl">
+      <Filter>content</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\rnd\content\sprite.pixel.hlsl">
+      <Filter>content</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\_bin\main\rnd\content\beam.header.hlsl">
+      <Filter>content</Filter>
+    </None>
+    <None Include="..\..\_bin\main\rnd\content\sprite.header.hlsl">
+      <Filter>content</Filter>
+    </None>
+  </ItemGroup>
 </Project>

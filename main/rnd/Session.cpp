@@ -64,9 +64,13 @@ void Session::initialize()
 {
 	shutdown();
 
-	_context = gigl::Context("content/test.context");
-	_mesh = gigl::Mesh::create("content/sprite.mesh");
-	_instances = gal::VertexBuffer::create(gal::VertexBuffer::USAGE_DYNAMIC, INSTANCE_MAXIMUM, sizeof(Instance));
+	_context = gigl::Context("content/render.context");
+	
+	_beam = gigl::Mesh::create("content/beam.mesh");
+	_edgeInstances = gal::VertexBuffer::create(gal::VertexBuffer::USAGE_DYNAMIC, INSTANCE_MAXIMUM, sizeof(EdgeInstance));
+
+	_sprite = gigl::Mesh::create("content/sprite.mesh");
+	_nodeInstances = gal::VertexBuffer::create(gal::VertexBuffer::USAGE_DYNAMIC, INSTANCE_MAXIMUM, sizeof(NodeInstance));
 
 	_mind = new rm::Mind(200, 1000);
 
@@ -77,8 +81,11 @@ void Session::shutdown()
 {
 	safe_delete(_mind);
 
-	safe_delete(_instances);
-	safe_delete(_mesh);
+	safe_delete(_nodeInstances);
+	safe_delete(_sprite);
+
+	safe_delete(_edgeInstances);
+	safe_delete(_beam);
 
 	_initialized = false;
 }
@@ -114,19 +121,36 @@ void Session::update(float64_t t, float64_t dt)
 	_mind->update(1000);
 	_mind->execute(_mind->chromosome(), 1000);
 
-	rm::Graph const &graph = _mind->graph();
-	_instanceCount = std::min(graph.nodeCount(), size_t(INSTANCE_MAXIMUM));
+	rm::Graph &graph = _mind->graph();
+	
+	_nodeCount = std::min(graph.nodeCount(), size_t(INSTANCE_MAXIMUM));
+	_edgeCount = 0;
 
-	Instance *instances = (Instance *)(_instances->lock());
-	for (size_t i = 0; i < _instanceCount; ++i)
+	std::list<size_t> stack;
+
+	EdgeInstance *edgeInstances = (EdgeInstance *)(_edgeInstances->lock());
+	NodeInstance *nodeInstances = (NodeInstance *)(_nodeInstances->lock());
+	for (size_t i = 0; i < _nodeCount; ++i)
 	{
 		rm::Node const &node = graph.getNode(i);
-		Instance &instance = instances[i];
+		NodeInstance &nodeInstance = nodeInstances[i];
 
-		instance.position[0] = instance.position[1] = hashPosition(Box(gal::Vector3(-5, -5, -5), gal::Vector3(5, 5, 5)), i);
-		instance.scale[0] = instance.scale[1] = 0.2f;
+		gal::Vector3 position = hashPosition(Box(gal::Vector3(-5, -5, -5), gal::Vector3(5, 5, 5)), i);
+
+		nodeInstance.position[0] = nodeInstance.position[1] = position;
+		nodeInstance.scale[0] = nodeInstance.scale[1] = 0.5f;
+
+		stack.clear();
+		graph.pushDownstream(stack, i);
+		for (auto iter = stack.begin(); (iter != stack.end()) && (_edgeCount < INSTANCE_MAXIMUM); ++iter, ++_edgeCount)
+		{
+			EdgeInstance &edgeInstance = edgeInstances[_edgeCount];
+			edgeInstance.position[0] = position;
+			edgeInstance.position[1] = hashPosition(Box(gal::Vector3(-5, -5, -5), gal::Vector3(5, 5, 5)), *iter);
+		}
 	}
-	_instances->unlock();
+	_nodeInstances->unlock();
+	_edgeInstances->unlock();
 }
 
 void Session::render(float64_t t, float32_t interpolant)
@@ -134,14 +158,20 @@ void Session::render(float64_t t, float32_t interpolant)
 	if (!_initialized)
 		return;
 
-	if (0 == _instanceCount)
-		return;
-
 	gal::Pipeline &pipeline = gal::Pipeline::instance();
 
-	_context[       "time"] = float32_t(t);
+	_context["time"] = float32_t(t);
 	_context["interpolant"] = float32_t(interpolant);
 
-	pipeline.setVertexStream(1, _instances);
-	_mesh->renderInstanced(_context, _instanceCount);
+	if (0 != _edgeCount)
+	{
+		pipeline.setVertexStream(1, _edgeInstances);
+		_beam->renderInstanced(_context, _edgeCount);
+	}
+
+	if (0 != _nodeCount)
+	{
+		pipeline.setVertexStream(1, _nodeInstances);
+		_sprite->renderInstanced(_context, _nodeCount);
+	}
 }

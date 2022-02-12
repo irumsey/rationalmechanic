@@ -1,0 +1,93 @@
+{
+	"material" :
+	{
+		"program":
+		{
+			"Samplers" :
+			[
+			],
+
+			"RenderStates" :
+			{
+				"RasterMode" :
+				{
+					"Fill" : "FILL_SOLID",
+					"Cull" : "CULL_NONE",
+					"Multisample": false
+				},
+
+				"BlendMode" :
+				{
+					"ColorWriteMask" : 15,
+					"Enabled" : true,
+					"SrcBlend" : "BLEND_SRC_ALPHA",
+					"SrcBlendAlpha" : "BLEND_SRC_ALPHA",
+					"DstBlend" : "BLEND_INV_SRC_ALPHA",
+					"DstBlendAlpha" : "BLEND_INV_SRC_ALPHA"
+				},
+
+				"DepthStencilMode" :
+				{
+					"DepthEnabled" : true,
+					"DepthWrite" : "DEPTH_WRITE_ENABLED",
+					"DepthFunction" : "COMPARISON_LESS",
+					"StencilEnabled" : false,
+					"StencilFunction" : "COMPARISON_LESS",
+					"StencilPass" : "STENCIL_KEEP",
+					"StencilFail" : "STENCIL_KEEP",
+					"StencilDepthFail" : "STENCIL_KEEP",
+					"StencilReadMask" : 15,
+					"StencilWriteMask" : 0,
+					"StencilRef" : 0
+				}
+
+			},
+
+			"VertexShader" : { "Path" : "content/beam.vertex.cso" },
+			"PixelShader" : { "Path" : "content/beam.pixel.cso" }
+		},
+
+		"attributes":
+		[											     
+			{ "name":   "viewPosition", "query":       "viewPosition" },
+			{ "name": "viewProjMatrix", "query":     "viewProjMatrix" },
+
+			{ "name": "diffuseTexture", "texture2d": "content/beamDiffuse.texture" }
+		]
+	},
+
+	"geometry" :
+	{
+		"topology": "TOPOLOGY_TRIANGLE_STRIP",
+
+		"format": {
+			"elements": [
+				{ "format": "FORMAT_FLOAT3", "type":   "TYPE_VERTEX", "location": 0, "stream": 0, "offset": 0 },
+				{ "format": "FORMAT_FLOAT3", "type":   "TYPE_VERTEX", "location": 1, "stream": 0, "offset": 3 },
+				{ "format": "FORMAT_FLOAT2", "type":   "TYPE_VERTEX", "location": 2, "stream": 0, "offset": 6 },
+
+				{ "format": "FORMAT_FLOAT3", "type": "TYPE_INSTANCE", "location": 3, "stream": 1, "offset": 0 },
+				{ "format": "FORMAT_FLOAT3", "type": "TYPE_INSTANCE", "location": 4, "stream": 1, "offset": 3 }
+			]
+		},
+
+		"vertices": {
+			"usage": "USAGE_STATIC",
+			"stride": 8,
+			"data": [ 
+				1,  0, 1, 0,  0, 0,  0.00,  0.50,
+				1, -1, 0, 0,  0, 0,  0.25,  0.00,
+				1,  1, 0, 0,  0, 0,  0.25,  1.00,
+				0,  0, 0, 1, -1, 0,  0.75,  0.00,
+				0,  0, 0, 1,  1, 0,  0.75,  1.00,
+				0,  0, 0, 1,  0, 1,  1.00,  0.50
+			]
+		},
+
+		"indices": {
+			"usage": "USAGE_STATIC",
+			"format": "FORMAT_UINT16",
+			"data": [ 0, 1, 2, 3, 4, 5 ]
+		}
+	}
+}

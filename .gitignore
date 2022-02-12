@@ -266,3 +266,10 @@ ModelManifest.xml
 /_lib/rm.32d.idb
 *.lib
 /_bin/main/dad/disassembly.txt
+/_bin/main/rnd/content/sprite.vertex.cso
+/_bin/main/rnd/content/sprite.pixel.cso
+/_bin/main/rnd/content/sprite.mesh
+/_bin/main/rnd/content/render.context
+/_bin/main/rnd/content/beam.vertex.cso
+/_bin/main/rnd/content/beam.pixel.cso
+/_bin/main/rnd/content/beam.mesh

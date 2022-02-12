@@ -43,7 +43,12 @@ public:
 private:
 	enum { INSTANCE_MAXIMUM = 2048 };
 
-	struct Instance
+	struct EdgeInstance
+	{
+		::lucid::gal::Vector3 position[2];
+	};
+
+	struct NodeInstance
 	{
 		::lucid::gal::Vector3 position[2];
 		float32_t scale[2];
@@ -55,8 +60,13 @@ private:
 
 	::lucid::gigl::Context _context;
 
-	::lucid::gigl::Mesh *_mesh = nullptr;
-	::lucid::gal::VertexBuffer *_instances = nullptr;
+	::lucid::gigl::Mesh *_beam = nullptr;
+	::lucid::gal::VertexBuffer *_edgeInstances = nullptr;
 
-	size_t _instanceCount = 0;
+	::lucid::gigl::Mesh *_sprite = nullptr;
+	::lucid::gal::VertexBuffer *_nodeInstances = nullptr;
+
+	size_t _edgeCount = 0;
+	size_t _nodeCount = 0;
 };
+
