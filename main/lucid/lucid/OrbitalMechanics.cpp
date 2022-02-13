@@ -122,13 +122,20 @@ namespace lucid {
 	{
 		Shutdown();
 
-		theStarCatalog().initialize(MI::marshal_as<std::string>(catalog));
-		theEphemeris().initialize(MI::marshal_as<std::string>(ephemeris));
+		try
+		{
+			theStarCatalog().initialize(MI::marshal_as<std::string>(catalog));
+			theEphemeris().initialize(MI::marshal_as<std::string>(ephemeris));
 
-		_clock = core::Clock::create();
+			_clock = core::Clock::create();
 
-		_orbitalSystem = new orbit::System();
-		_orbitalSystem->initialize(dayNumber);
+			_orbitalSystem = new orbit::System();
+			_orbitalSystem->initialize(dayNumber);
+		}
+		catch (core::Error const &error)
+		{
+			int32_t nop = 0;
+		}
 
 		_wallTime = 0;
 		_wallTimeLast = 0;

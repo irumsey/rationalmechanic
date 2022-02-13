@@ -273,3 +273,4 @@ ModelManifest.xml
 /_bin/main/rnd/content/beam.vertex.cso
 /_bin/main/rnd/content/beam.pixel.cso
 /_bin/main/rnd/content/beam.mesh
+*.exe

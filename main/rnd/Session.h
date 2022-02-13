@@ -46,12 +46,14 @@ private:
 	struct EdgeInstance
 	{
 		::lucid::gal::Vector3 position[2];
+		::lucid::gal::Color diffuse;
 	};
 
 	struct NodeInstance
 	{
 		::lucid::gal::Vector3 position[2];
 		float32_t scale[2];
+		::lucid::gal::Color diffuse;
 	};
 
 	bool _initialized = false; // no state classes (yet)

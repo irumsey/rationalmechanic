@@ -1,0 +1,4 @@
+{
+	"material" : "content/atmosphere.material",
+	"geometry" : "content/disk.geometry"
+}

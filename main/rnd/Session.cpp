@@ -139,6 +139,7 @@ void Session::update(float64_t t, float64_t dt)
 
 		nodeInstance.position[0] = nodeInstance.position[1] = position;
 		nodeInstance.scale[0] = nodeInstance.scale[1] = 0.5f;
+		nodeInstance.diffuse = gal::Color(0, 0, 1, 1);
 
 		stack.clear();
 		graph.pushDownstream(stack, i);
@@ -147,6 +148,7 @@ void Session::update(float64_t t, float64_t dt)
 			EdgeInstance &edgeInstance = edgeInstances[_edgeCount];
 			edgeInstance.position[0] = position;
 			edgeInstance.position[1] = hashPosition(Box(gal::Vector3(-5, -5, -5), gal::Vector3(5, 5, 5)), *iter);
+			edgeInstance.diffuse = gal::Color(0, 0, 1, 1);
 		}
 	}
 	_nodeInstances->unlock();

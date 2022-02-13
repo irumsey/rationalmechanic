@@ -10,7 +10,8 @@ struct InputVertex
 	float2     vertex : LOCATION0;
 	float3  position0 : LOCATION1;
 	float3  position1 : LOCATION2;
-	float       scale : LOCATION3;
+	float2      scale : LOCATION3;
+	float4    diffuse : LOCATION4;
 };
 
 struct OutputVertex

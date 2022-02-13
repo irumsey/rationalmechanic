@@ -22,7 +22,7 @@ OutputVertex main(InputVertex input)
 		(input.select0.y + input.select1.y) * u;
 
 	output.ppsPosition = mul(viewProjMatrix, float4(position, 1));
-	output.diffuse = float4(1, 1, 1, 1);
+	output.diffuse = input.diffuse;
 	output.texcoord = input.texcoord;
 
 	return output;

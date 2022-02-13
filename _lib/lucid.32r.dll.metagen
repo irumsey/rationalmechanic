@@ -1,0 +1,820 @@
+ImageRuntimeVersion: v4.0.30319
+Assembly lucid.32r, Version=1.0.*, Culture=Invariant Language (Invariant Country): 
+	hash=SHA1, flags=PublicKey
+Assembly mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Class lucid.Vector2: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(lucid.math.Vector<float\,2>*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(Single, Single): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Properties:
+    lucid.math.Vector<float\,2>* ref 'get ' IsImplicitlyDereferenced : 
+    lucid.math.Vector<float\,2>* ptr 'get ' : 
+    Single y   'get set' : 
+    Single x   'get set' : 
+  Methods:
+    op_Subtraction(Vector2, Vector2): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_UnaryNegation(Vector2): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Addition(Vector2, Vector2): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Multiply(Vector2, Single): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Multiply(Single, Vector2): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Division(Vector2, Single): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_x(): PrivateScope, Public, HideBySig, SpecialName
+    set_x(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_y(): PrivateScope, Public, HideBySig, SpecialName
+    set_y(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_ptr(): PrivateScope, Public, HideBySig, SpecialName
+    get_ref(): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class lucid.Vector3: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(lucid.math.Vector<float\,3>*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(Single, Single, Single): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Properties:
+    lucid.math.Vector<float\,3>* ref 'get ' IsImplicitlyDereferenced : 
+    lucid.math.Vector<float\,3>* ptr 'get ' : 
+    Single z   'get set' : 
+    Single y   'get set' : 
+    Single x   'get set' : 
+  Methods:
+    op_Subtraction(Vector3, Vector3): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_UnaryNegation(Vector3): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Addition(Vector3, Vector3): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Multiply(Vector3, Single): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Multiply(Single, Vector3): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Division(Vector3, Single): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_x(): PrivateScope, Public, HideBySig, SpecialName
+    set_x(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_y(): PrivateScope, Public, HideBySig, SpecialName
+    set_y(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_z(): PrivateScope, Public, HideBySig, SpecialName
+    set_z(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_ptr(): PrivateScope, Public, HideBySig, SpecialName
+    get_ref(): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class lucid.Vector4: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(lucid.math.Vector<float\,4>*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(Single, Single, Single, Single): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Properties:
+    lucid.math.Vector<float\,4>* ref 'get ' IsImplicitlyDereferenced : 
+    lucid.math.Vector<float\,4>* ptr 'get ' : 
+    Single w   'get set' : 
+    Single z   'get set' : 
+    Single y   'get set' : 
+    Single x   'get set' : 
+  Methods:
+    op_Subtraction(Vector4, Vector4): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_UnaryNegation(Vector4): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Addition(Vector4, Vector4): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Multiply(Vector4, Single): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Multiply(Single, Vector4): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Division(Vector4, Single): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_x(): PrivateScope, Public, HideBySig, SpecialName
+    set_x(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_y(): PrivateScope, Public, HideBySig, SpecialName
+    set_y(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_z(): PrivateScope, Public, HideBySig, SpecialName
+    set_z(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_w(): PrivateScope, Public, HideBySig, SpecialName
+    set_w(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_ptr(): PrivateScope, Public, HideBySig, SpecialName
+    get_ref(): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class lucid.Quaternion: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(lucid.math.Quaternion<float>*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(Single, Single, Single, Single): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Properties:
+    lucid.math.Quaternion<float>* ref 'get ' IsImplicitlyDereferenced : 
+    lucid.math.Quaternion<float>* ptr 'get ' : 
+    Single w   'get set' : 
+    Single z   'get set' : 
+    Single y   'get set' : 
+    Single x   'get set' : 
+  Methods:
+    op_Subtraction(Quaternion, Quaternion): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_UnaryNegation(Quaternion): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Addition(Quaternion, Quaternion): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Multiply(Quaternion, Quaternion): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Multiply(Quaternion, Single): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Multiply(Single, Quaternion): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Division(Quaternion, Single): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_x(): PrivateScope, Public, HideBySig, SpecialName
+    set_x(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_y(): PrivateScope, Public, HideBySig, SpecialName
+    set_y(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_z(): PrivateScope, Public, HideBySig, SpecialName
+    set_z(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_w(): PrivateScope, Public, HideBySig, SpecialName
+    set_w(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_ptr(): PrivateScope, Public, HideBySig, SpecialName
+    get_ref(): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class lucid.Matrix2x2: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(lucid.math.Matrix<float\,2\,2>*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(Single, Single, Single, Single): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Properties:
+    lucid.math.Matrix<float\,2\,2>* ref 'get ' IsImplicitlyDereferenced : 
+    lucid.math.Matrix<float\,2\,2>* ptr 'get ' : 
+    Single yy  'get set' : 
+    Single yx  'get set' : 
+    Single xy  'get set' : 
+    Single xx  'get set' : 
+  Methods:
+    op_Subtraction(Matrix2x2, Matrix2x2): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_UnaryNegation(Matrix2x2): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Addition(Matrix2x2, Matrix2x2): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Multiply(Matrix2x2, Matrix2x2): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Multiply(Matrix2x2, Vector2): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Multiply(Vector2, Matrix2x2): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Multiply(Matrix2x2, Single): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Multiply(Single, Matrix2x2): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Division(Matrix2x2, Single): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_xx(): PrivateScope, Public, HideBySig, SpecialName
+    set_xx(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_xy(): PrivateScope, Public, HideBySig, SpecialName
+    set_xy(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_yx(): PrivateScope, Public, HideBySig, SpecialName
+    set_yx(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_yy(): PrivateScope, Public, HideBySig, SpecialName
+    set_yy(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_ptr(): PrivateScope, Public, HideBySig, SpecialName
+    get_ref(): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class lucid.Matrix3x3: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(lucid.math.Matrix<float\,3\,3>*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(Single, Single, Single, Single, Single, Single, Single, Single, Single): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Properties:
+    lucid.math.Matrix<float\,3\,3>* ref 'get ' IsImplicitlyDereferenced : 
+    lucid.math.Matrix<float\,3\,3>* ptr 'get ' : 
+    Single zz  'get set' : 
+    Single zy  'get set' : 
+    Single zx  'get set' : 
+    Single yz  'get set' : 
+    Single yy  'get set' : 
+    Single yx  'get set' : 
+    Single xz  'get set' : 
+    Single xy  'get set' : 
+    Single xx  'get set' : 
+  Methods:
+    op_Subtraction(Matrix3x3, Matrix3x3): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_UnaryNegation(Matrix3x3): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Addition(Matrix3x3, Matrix3x3): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Multiply(Matrix3x3, Matrix3x3): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Multiply(Matrix3x3, Vector3): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Multiply(Vector3, Matrix3x3): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Multiply(Matrix3x3, Single): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Multiply(Single, Matrix3x3): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Division(Matrix3x3, Single): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_xx(): PrivateScope, Public, HideBySig, SpecialName
+    set_xx(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_xy(): PrivateScope, Public, HideBySig, SpecialName
+    set_xy(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_xz(): PrivateScope, Public, HideBySig, SpecialName
+    set_xz(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_yx(): PrivateScope, Public, HideBySig, SpecialName
+    set_yx(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_yy(): PrivateScope, Public, HideBySig, SpecialName
+    set_yy(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_yz(): PrivateScope, Public, HideBySig, SpecialName
+    set_yz(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_zx(): PrivateScope, Public, HideBySig, SpecialName
+    set_zx(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_zy(): PrivateScope, Public, HideBySig, SpecialName
+    set_zy(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_zz(): PrivateScope, Public, HideBySig, SpecialName
+    set_zz(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_ptr(): PrivateScope, Public, HideBySig, SpecialName
+    get_ref(): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class lucid.Matrix4x4: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(lucid.math.Matrix<float\,4\,4>*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(Single, Single, Single, Single, Single, Single, Single, Single, Single, Single, Single, Single, Single, Single, Single, Single): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Properties:
+    lucid.math.Matrix<float\,4\,4>* ref 'get ' IsImplicitlyDereferenced : 
+    lucid.math.Matrix<float\,4\,4>* ptr 'get ' : 
+    Single ww  'get set' : 
+    Single wz  'get set' : 
+    Single wy  'get set' : 
+    Single wx  'get set' : 
+    Single zw  'get set' : 
+    Single zz  'get set' : 
+    Single zy  'get set' : 
+    Single zx  'get set' : 
+    Single yw  'get set' : 
+    Single yz  'get set' : 
+    Single yy  'get set' : 
+    Single yx  'get set' : 
+    Single xw  'get set' : 
+    Single xz  'get set' : 
+    Single xy  'get set' : 
+    Single xx  'get set' : 
+  Methods:
+    op_Subtraction(Matrix4x4, Matrix4x4): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_UnaryNegation(Matrix4x4): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Addition(Matrix4x4, Matrix4x4): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Multiply(Matrix4x4, Matrix4x4): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Multiply(Matrix4x4, Vector4): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Multiply(Vector4, Matrix4x4): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Multiply(Matrix4x4, Single): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Multiply(Single, Matrix4x4): PrivateScope, Public, Static, HideBySig, SpecialName
+    op_Division(Matrix4x4, Single): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_xx(): PrivateScope, Public, HideBySig, SpecialName
+    set_xx(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_xy(): PrivateScope, Public, HideBySig, SpecialName
+    set_xy(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_xz(): PrivateScope, Public, HideBySig, SpecialName
+    set_xz(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_xw(): PrivateScope, Public, HideBySig, SpecialName
+    set_xw(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_yx(): PrivateScope, Public, HideBySig, SpecialName
+    set_yx(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_yy(): PrivateScope, Public, HideBySig, SpecialName
+    set_yy(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_yz(): PrivateScope, Public, HideBySig, SpecialName
+    set_yz(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_yw(): PrivateScope, Public, HideBySig, SpecialName
+    set_yw(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_zx(): PrivateScope, Public, HideBySig, SpecialName
+    set_zx(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_zy(): PrivateScope, Public, HideBySig, SpecialName
+    set_zy(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_zz(): PrivateScope, Public, HideBySig, SpecialName
+    set_zz(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_zw(): PrivateScope, Public, HideBySig, SpecialName
+    set_zw(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_wx(): PrivateScope, Public, HideBySig, SpecialName
+    set_wx(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_wy(): PrivateScope, Public, HideBySig, SpecialName
+    set_wy(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_wz(): PrivateScope, Public, HideBySig, SpecialName
+    set_wz(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_ww(): PrivateScope, Public, HideBySig, SpecialName
+    set_ww(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_ptr(): PrivateScope, Public, HideBySig, SpecialName
+    get_ref(): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class lucid.Color: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(Single, Single, Single, Single): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Properties:
+    lucid.gal.Color* ref 'get ' IsImplicitlyDereferenced : 
+    lucid.gal.Color* ptr 'get ' : 
+    Single a   'get set' : 
+    Single b   'get set' : 
+    Single g   'get set' : 
+    Single r   'get set' : 
+  Methods:
+    get_r(): PrivateScope, Public, HideBySig, SpecialName
+    set_r(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_g(): PrivateScope, Public, HideBySig, SpecialName
+    set_g(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_b(): PrivateScope, Public, HideBySig, SpecialName
+    set_b(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_a(): PrivateScope, Public, HideBySig, SpecialName
+    set_a(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_ptr(): PrivateScope, Public, HideBySig, SpecialName
+    get_ref(): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class lucid.Viewport: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(Int32, Int32, Int32, Int32, Single, Single): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(lucid.gal.Viewport*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Properties:
+    lucid.gal.Viewport* ref 'get ' IsImplicitlyDereferenced : 
+    lucid.gal.Viewport* ptr 'get ' : 
+    Single zfar 'get set' : 
+    Single znear 'get set' : 
+    Int32 height 'get set' : 
+    Int32 width 'get set' : 
+    Int32 y    'get set' : 
+    Int32 x    'get set' : 
+  Methods:
+    get_x(): PrivateScope, Public, HideBySig, SpecialName
+    set_x(Int32): PrivateScope, Public, HideBySig, SpecialName
+    get_y(): PrivateScope, Public, HideBySig, SpecialName
+    set_y(Int32): PrivateScope, Public, HideBySig, SpecialName
+    get_width(): PrivateScope, Public, HideBySig, SpecialName
+    set_width(Int32): PrivateScope, Public, HideBySig, SpecialName
+    get_height(): PrivateScope, Public, HideBySig, SpecialName
+    set_height(Int32): PrivateScope, Public, HideBySig, SpecialName
+    get_znear(): PrivateScope, Public, HideBySig, SpecialName
+    set_znear(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_zfar(): PrivateScope, Public, HideBySig, SpecialName
+    set_zfar(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_ptr(): PrivateScope, Public, HideBySig, SpecialName
+    get_ref(): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class lucid.Sphere: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(lucid.Vector3, Single): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Properties:
+    lucid.math.Sphere<float\,3>* ref 'get ' IsImplicitlyDereferenced : 
+    lucid.math.Sphere<float\,3>* ptr 'get ' : 
+    Single radius 'get set' : 
+    lucid.Vector3 name 'get set' : 
+  Methods:
+    get_name(): PrivateScope, Public, HideBySig, SpecialName
+    set_name(Vector3): PrivateScope, Public, HideBySig, SpecialName
+    get_radius(): PrivateScope, Public, HideBySig, SpecialName
+    set_radius(Single): PrivateScope, Public, HideBySig, SpecialName
+    get_ptr(): PrivateScope, Public, HideBySig, SpecialName
+    get_ref(): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class lucid.AABB: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(lucid.math.AABB<float\,3>*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(lucid.Vector3, lucid.Vector3): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Properties:
+    lucid.math.AABB<float\,3>* ref 'get ' IsImplicitlyDereferenced : 
+    lucid.math.AABB<float\,3>* ptr 'get ' : 
+    lucid.Vector3 max 'get set' : 
+    lucid.Vector3 min 'get set' : 
+  Methods:
+    get_min(): PrivateScope, Public, HideBySig, SpecialName
+    set_min(Vector3): PrivateScope, Public, HideBySig, SpecialName
+    get_max(): PrivateScope, Public, HideBySig, SpecialName
+    set_max(Vector3): PrivateScope, Public, HideBySig, SpecialName
+    get_ptr(): PrivateScope, Public, HideBySig, SpecialName
+    get_ref(): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class lucid.Frustum: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(lucid.Matrix4x4): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Properties:
+    lucid.math.Frustum<float>* ref 'get ' IsImplicitlyDereferenced : 
+    lucid.math.Frustum<float>* ptr 'get ' : 
+  Methods:
+    get_ptr(): PrivateScope, Public, HideBySig, SpecialName
+    get_ref(): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class lucid.Camera2D: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Properties:
+    lucid.Matrix4x4 invViewProjMatrix 'get ' : 
+    lucid.Matrix4x4 viewProjMatrix 'get ' : 
+    lucid.Matrix4x4 projMatrix 'get ' : 
+    lucid.Matrix4x4 viewMatrix 'get ' : 
+    lucid.Vector3 up 'get ' : 
+    lucid.Vector3 forward 'get ' : 
+    lucid.Vector3 right 'get ' : 
+    lucid.Vector3 position 'get ' : 
+  Methods:
+    InitPerspective(Single, Single, Single, Single): PrivateScope, Public, HideBySig
+    InitOrthographic(Single, Single, Single, Single): PrivateScope, Public, HideBySig
+    Look(Vector3, Vector3, Vector3): PrivateScope, Public, HideBySig
+    get_position(): PrivateScope, Public, HideBySig, SpecialName
+    get_right(): PrivateScope, Public, HideBySig, SpecialName
+    get_forward(): PrivateScope, Public, HideBySig, SpecialName
+    get_up(): PrivateScope, Public, HideBySig, SpecialName
+    get_viewMatrix(): PrivateScope, Public, HideBySig, SpecialName
+    get_projMatrix(): PrivateScope, Public, HideBySig, SpecialName
+    get_viewProjMatrix(): PrivateScope, Public, HideBySig, SpecialName
+    get_invViewProjMatrix(): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class lucid.Clock: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Properties:
+    Double time 'get ' : 
+  Methods:
+    get_time(): PrivateScope, Public, HideBySig, SpecialName
+    reset(): PrivateScope, Public, HideBySig
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class lucid.Context: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Properties:
+    lucid.gigl.Context* ptr 'get ' : 
+    lucid.gigl.Context* ref 'get ' IsImplicitlyDereferenced : 
+  Methods:
+    Add(String, RenderTarget2D): PrivateScope, Public, HideBySig
+    Set(Camera2D): PrivateScope, Public, HideBySig
+    Set(String, String): PrivateScope, Public, HideBySig
+    Set(String, RenderTarget2D): PrivateScope, Public, HideBySig
+    Set(String, Color): PrivateScope, Public, HideBySig
+    Set(String, Matrix4x4): PrivateScope, Public, HideBySig
+    Set(String, Quaternion): PrivateScope, Public, HideBySig
+    Set(String, Vector4): PrivateScope, Public, HideBySig
+    Set(String, Vector3): PrivateScope, Public, HideBySig
+    Set(String, Vector2): PrivateScope, Public, HideBySig
+    Set(String, Single): PrivateScope, Public, HideBySig
+    get_ref(): PrivateScope, Public, HideBySig, SpecialName
+    get_ptr(): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class lucid.RenderTarget2D: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(lucid.RenderTargetFormat, Int32, Int32): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Properties:
+    lucid.gal.RenderTarget2D* ptr 'get ' : 
+    lucid.gal.RenderTarget2D* ref 'get ' IsImplicitlyDereferenced : 
+    std.shared_ptr<lucid::gal::RenderTarget2D> shared 'get ' : 
+    Int32 height 'get ' : 
+    Int32 width 'get ' : 
+  Methods:
+    get_width(): PrivateScope, Public, HideBySig, SpecialName
+    get_height(): PrivateScope, Public, HideBySig, SpecialName
+    get_shared(shared_ptr<lucid::gal::RenderTarget2D>*): PrivateScope, Public, HideBySig, SpecialName
+    get_ref(): PrivateScope, Public, HideBySig, SpecialName
+    get_ptr(): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Struct lucid.RenderTargetFormat: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Enum
+  Fields:
+    Int32 value__ : Public, SpecialName, RTSpecialName
+    lucid.RenderTargetFormat UNDEFINED = -1 : Public, Static, Literal, HasDefault
+    lucid.RenderTargetFormat UINT_R8G8B8A8 = 0 : Public, Static, Literal, HasDefault
+    lucid.RenderTargetFormat UINT_R16G16 = 1 : Public, Static, Literal, HasDefault
+    lucid.RenderTargetFormat UINT_R10G10B10A2 = 2 : Public, Static, Literal, HasDefault
+    lucid.RenderTargetFormat FLOAT_R16G16 = 3 : Public, Static, Literal, HasDefault
+    lucid.RenderTargetFormat FLOAT_R32 = 4 : Public, Static, Literal, HasDefault
+    lucid.RenderTargetFormat FLOAT_R32G32 = 5 : Public, Static, Literal, HasDefault
+    lucid.RenderTargetFormat UINT_R32 = 6 : Public, Static, Literal, HasDefault
+Class lucid.DepthTarget2D: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(lucid.DepthTargetFormat, Int32, Int32): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Properties:
+    lucid.gal.DepthTarget2D* ptr 'get ' : 
+    lucid.gal.DepthTarget2D* ref 'get ' IsImplicitlyDereferenced : 
+  Methods:
+    get_ref(): PrivateScope, Public, HideBySig, SpecialName
+    get_ptr(): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Struct lucid.DepthTargetFormat: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Enum
+  Fields:
+    Int32 value__ : Public, SpecialName, RTSpecialName
+    lucid.DepthTargetFormat UNDEFINED = -1 : Public, Static, Literal, HasDefault
+    lucid.DepthTargetFormat UINT_D16 = 0 : Public, Static, Literal, HasDefault
+    lucid.DepthTargetFormat UINT_D24S8 = 1 : Public, Static, Literal, HasDefault
+    lucid.DepthTargetFormat FLOAT_D32 = 2 : Public, Static, Literal, HasDefault
+Class lucid.Geometry: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Properties:
+    lucid.gigl.Geometry* ptr 'get ' : 
+    lucid.gigl.Geometry* ref 'get ' IsImplicitlyDereferenced : 
+  Methods:
+    draw(): PrivateScope, Public, HideBySig
+    drawInstanced(Int32): PrivateScope, Public, HideBySig
+    get_ref(): PrivateScope, Public, HideBySig, SpecialName
+    get_ptr(): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class lucid.IndexBuffer: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(lucid.IndexUsage, lucid.IndexFormat, Int32): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Properties:
+    lucid.gal.IndexBuffer* ptr 'get ' : 
+    lucid.gal.IndexBuffer* ref 'get ' IsImplicitlyDereferenced : 
+  Methods:
+    usage(): PrivateScope, Public, HideBySig
+    format(): PrivateScope, Public, HideBySig
+    count(): PrivateScope, Public, HideBySig
+    lock(): PrivateScope, Public, HideBySig
+    unlock(): PrivateScope, Public, HideBySig
+    get_ref(): PrivateScope, Public, HideBySig, SpecialName
+    get_ptr(): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Struct lucid.IndexUsage: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Enum
+  Fields:
+    Int32 value__ : Public, SpecialName, RTSpecialName
+    lucid.IndexUsage UNDEFINED = -1 : Public, Static, Literal, HasDefault
+    lucid.IndexUsage STATIC = 0 : Public, Static, Literal, HasDefault
+    lucid.IndexUsage DYNAMIC = 1 : Public, Static, Literal, HasDefault
+Struct lucid.IndexFormat: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Enum
+  Fields:
+    Int32 value__ : Public, SpecialName, RTSpecialName
+    lucid.IndexFormat UNDEFINED = -1 : Public, Static, Literal, HasDefault
+    lucid.IndexFormat UINT16 = 0 : Public, Static, Literal, HasDefault
+    lucid.IndexFormat UINT32 = 1 : Public, Static, Literal, HasDefault
+Class lucid.Logger: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+  Methods:
+    Log(String, String): PrivateScope, Public, Static, HideBySig
+Class lucid.Logger+Listener: AutoLayout, AnsiClass, Class, NestedPublic, Abstract, BeforeFieldInit
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Methods:
+    Start(): PrivateScope, Public, HideBySig
+    Stop(): PrivateScope, Public, HideBySig
+    OnMessage(String, String): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    onMessageDelegate(basic_string<char\,std::char_traits<char>\,std::allocator<char> >* IsImplicitlyDereferenced, basic_string<char\,std::char_traits<char>\,std::allocator<char> >* IsImplicitlyDereferenced): PrivateScope, Public, HideBySig
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class lucid.Logger+Listener+delegate_type: AutoLayout, AnsiClass, Class, NestedPublic, Sealed, BeforeFieldInit
+  :System.MulticastDelegate
+    Void .ctor(System.Object, IntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(basic_string<char\,std::char_traits<char>\,std::allocator<char> >* IsImplicitlyDereferenced, basic_string<char\,std::char_traits<char>\,std::allocator<char> >* IsImplicitlyDereferenced): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    BeginInvoke(basic_string<char\,std::char_traits<char>\,std::allocator<char> >* IsImplicitlyDereferenced, basic_string<char\,std::char_traits<char>\,std::allocator<char> >* IsImplicitlyDereferenced, AsyncCallback, Object): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    EndInvoke(IAsyncResult): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+Class lucid.Material: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Properties:
+    lucid.gigl.Material* ptr 'get ' : 
+    lucid.gigl.Material* ref 'get ' IsImplicitlyDereferenced : 
+    lucid.Program program 'get ' : 
+  Methods:
+    begin(Context): PrivateScope, Public, HideBySig
+    end(): PrivateScope, Public, HideBySig
+    get_program(): PrivateScope, Public, HideBySig, SpecialName
+    get_ref(): PrivateScope, Public, HideBySig, SpecialName
+    get_ptr(): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class lucid.Program: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(std.shared_ptr<lucid::gal::Program>*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Properties:
+    lucid.gal.Program* ptr 'get ' : 
+    lucid.gal.Program* ref 'get ' IsImplicitlyDereferenced : 
+  Methods:
+    lookup(String): PrivateScope, Public, HideBySig
+    set(Parameter, RenderTarget2D): PrivateScope, Public, HideBySig
+    set(Parameter, Texture2D): PrivateScope, Public, HideBySig
+    set(Parameter, Unordered2D): PrivateScope, Public, HideBySig
+    set(Parameter, Color): PrivateScope, Public, HideBySig
+    set(Parameter, Matrix4x4): PrivateScope, Public, HideBySig
+    set(Parameter, Matrix3x3): PrivateScope, Public, HideBySig
+    set(Parameter, Matrix2x2): PrivateScope, Public, HideBySig
+    set(Parameter, Quaternion): PrivateScope, Public, HideBySig
+    set(Parameter, Vector4): PrivateScope, Public, HideBySig
+    set(Parameter, Vector3): PrivateScope, Public, HideBySig
+    set(Parameter, Vector2): PrivateScope, Public, HideBySig
+    set(Parameter, Single): PrivateScope, Public, HideBySig
+    get_ref(): PrivateScope, Public, HideBySig, SpecialName
+    get_ptr(): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class lucid.Math: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+  Interfaces:
+    System.IDisposable
+  Methods:
+    dot(Quaternion, Quaternion): PrivateScope, Public, Static, HideBySig
+    dot(Vector4, Vector4): PrivateScope, Public, Static, HideBySig
+    dot(Vector3, Vector3): PrivateScope, Public, Static, HideBySig
+    dot(Vector2, Vector2): PrivateScope, Public, Static, HideBySig
+    lsq(Quaternion): PrivateScope, Public, Static, HideBySig
+    lsq(Vector4): PrivateScope, Public, Static, HideBySig
+    lsq(Vector3): PrivateScope, Public, Static, HideBySig
+    lsq(Vector2): PrivateScope, Public, Static, HideBySig
+    len(Quaternion): PrivateScope, Public, Static, HideBySig
+    len(Vector4): PrivateScope, Public, Static, HideBySig
+    len(Vector3): PrivateScope, Public, Static, HideBySig
+    len(Vector2): PrivateScope, Public, Static, HideBySig
+    normalize(Quaternion): PrivateScope, Public, Static, HideBySig
+    normalize(Vector4): PrivateScope, Public, Static, HideBySig
+    normalize(Vector3): PrivateScope, Public, Static, HideBySig
+    normalize(Vector2): PrivateScope, Public, Static, HideBySig
+    cross(Vector3, Vector3): PrivateScope, Public, Static, HideBySig
+    conjugate(Quaternion): PrivateScope, Public, Static, HideBySig
+    transformDirection(Quaternion, Vector3): PrivateScope, Public, Static, HideBySig
+    trace(Matrix4x4): PrivateScope, Public, Static, HideBySig
+    trace(Matrix3x3): PrivateScope, Public, Static, HideBySig
+    trace(Matrix2x2): PrivateScope, Public, Static, HideBySig
+    transpose(Matrix4x4): PrivateScope, Public, Static, HideBySig
+    transpose(Matrix3x3): PrivateScope, Public, Static, HideBySig
+    transpose(Matrix2x2): PrivateScope, Public, Static, HideBySig
+    determinate(Matrix4x4): PrivateScope, Public, Static, HideBySig
+    determinate(Matrix3x3): PrivateScope, Public, Static, HideBySig
+    determinate(Matrix2x2): PrivateScope, Public, Static, HideBySig
+    inverse(Matrix4x4): PrivateScope, Public, Static, HideBySig
+    inverse(Matrix3x3): PrivateScope, Public, Static, HideBySig
+    inverse(Matrix2x2): PrivateScope, Public, Static, HideBySig
+    rotateAboutX(Single): PrivateScope, Public, Static, HideBySig
+    rotateAboutY(Single): PrivateScope, Public, Static, HideBySig
+    rotateAboutZ(Single): PrivateScope, Public, Static, HideBySig
+    orthographic(Single, Single, Single, Single): PrivateScope, Public, Static, HideBySig
+    perspective(Single, Single, Single, Single): PrivateScope, Public, Static, HideBySig
+    look(Vector3, Vector3, Vector3): PrivateScope, Public, Static, HideBySig
+    areaProjected(Matrix4x4, Single, AABB): PrivateScope, Public, Static, HideBySig
+    intersects(Frustum, AABB): PrivateScope, Public, Static, HideBySig
+    intersects(Sphere, AABB): PrivateScope, Public, Static, HideBySig
+    contains(Frustum, AABB): PrivateScope, Public, Static, HideBySig
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class lucid.Mesh: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Properties:
+    lucid.gigl.Mesh* ptr 'get ' : 
+    lucid.gigl.Mesh* ref 'get ' IsImplicitlyDereferenced : 
+  Methods:
+    render(Context): PrivateScope, Public, HideBySig
+    get_ref(): PrivateScope, Public, HideBySig, SpecialName
+    get_ptr(): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class lucid.OrbitalFrame: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(lucid.orbit.Frame*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Properties:
+    lucid.orbit.Frame* ptr 'get ' : 
+    lucid.orbit.Frame* ref 'get ' IsImplicitlyDereferenced : 
+    lucid.Vector3 AbsolutePosition 'get ' : 
+    lucid.Vector3 RelativePosition 'get set' : 
+    System.String Description 'get ' : 
+    System.String Name 'get ' : 
+    UInt32 ID  'get ' : 
+    lucid.OrbitalFrame NextSibling 'get ' : 
+    lucid.OrbitalFrame FirstChild 'get ' : 
+    lucid.OrbitalFrame CenterFrame 'get ' : 
+  Methods:
+    get_CenterFrame(): PrivateScope, Public, HideBySig, SpecialName
+    get_FirstChild(): PrivateScope, Public, HideBySig, SpecialName
+    get_NextSibling(): PrivateScope, Public, HideBySig, SpecialName
+    get_ID(): PrivateScope, Public, HideBySig, SpecialName
+    get_Name(): PrivateScope, Public, HideBySig, SpecialName
+    get_Description(): PrivateScope, Public, HideBySig, SpecialName
+    get_RelativePosition(): PrivateScope, Public, HideBySig, SpecialName
+    set_RelativePosition(Vector3): PrivateScope, Public, HideBySig, SpecialName
+    get_AbsolutePosition(): PrivateScope, Public, HideBySig, SpecialName
+    get_ref(): PrivateScope, Public, HideBySig, SpecialName
+    get_ptr(): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class lucid.OrbitalMechanics: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(System.String, System.String, Double): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Methods:
+    Initialize(String, String, Double): PrivateScope, Public, HideBySig
+    Shutdown(): PrivateScope, Public, HideBySig
+    CreateFrame(UInt32, String, String): PrivateScope, Public, HideBySig
+    Attach(OrbitalFrame, OrbitalFrame): PrivateScope, Public, HideBySig
+    Detach(OrbitalFrame): PrivateScope, Public, HideBySig
+    RootFrame(): PrivateScope, Public, HideBySig
+    Frame(UInt32): PrivateScope, Public, HideBySig
+    Update(): PrivateScope, Public, HideBySig
+    Render(Context): PrivateScope, Public, HideBySig
+    InterpolatePosition(OrbitalFrame): PrivateScope, Public, HideBySig
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class lucid.Parameter: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(lucid.gal.Parameter*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Properties:
+    lucid.gal.Parameter* ptr 'get ' : 
+    lucid.gal.Parameter* ref 'get ' IsImplicitlyDereferenced : 
+    System.String name 'get ' : 
+  Methods:
+    get_name(): PrivateScope, Public, HideBySig, SpecialName
+    get_ref(): PrivateScope, Public, HideBySig, SpecialName
+    get_ptr(): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class lucid.Pipeline: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+  Interfaces:
+    System.IDisposable
+  Methods:
+    initialize(Int32, Int32, Int32, Void*): PrivateScope, Public, Static, HideBySig
+    shutdown(): PrivateScope, Public, Static, HideBySig
+    resize(Int32, Int32): PrivateScope, Public, Static, HideBySig
+    beginScene(): PrivateScope, Public, Static, HideBySig
+    endScene(): PrivateScope, Public, Static, HideBySig
+    setRenderTarget(Int32, RenderTarget2D): PrivateScope, Public, Static, HideBySig
+    setUnorderedTarget(Unordered2D): PrivateScope, Public, Static, HideBySig
+    setDepthTarget(DepthTarget2D): PrivateScope, Public, Static, HideBySig
+    restoreBackbuffer(Boolean(HasFieldMarshal), Boolean(HasFieldMarshal), Boolean(HasFieldMarshal)): PrivateScope, Public, Static, HideBySig
+    getViewport(): PrivateScope, Public, Static, HideBySig
+    setViewport(Viewport): PrivateScope, Public, Static, HideBySig
+    clear(Single): PrivateScope, Public, Static, HideBySig
+    clear(Color): PrivateScope, Public, Static, HideBySig
+    clear(Color, Single): PrivateScope, Public, Static, HideBySig
+    beginProgram(Program): PrivateScope, Public, Static, HideBySig
+    endProgram(Program): PrivateScope, Public, Static, HideBySig
+    beginGeometry(VertexFormat): PrivateScope, Public, Static, HideBySig
+    endGeometry(VertexFormat): PrivateScope, Public, Static, HideBySig
+    setVertexStream(Int32, VertexBuffer): PrivateScope, Public, Static, HideBySig
+    setIndexStream(IndexBuffer): PrivateScope, Public, Static, HideBySig
+    draw(Topology, Int32, Int32): PrivateScope, Public, Static, HideBySig
+    drawInstanced(Topology, Int32, Int32, Int32): PrivateScope, Public, Static, HideBySig
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class lucid.VertexBuffer: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(lucid.VertexUsage, Int32, Int32): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Properties:
+    lucid.gal.VertexBuffer* ptr 'get ' : 
+    lucid.gal.VertexBuffer* ref 'get ' IsImplicitlyDereferenced : 
+  Methods:
+    usage(): PrivateScope, Public, HideBySig
+    count(): PrivateScope, Public, HideBySig
+    stride(): PrivateScope, Public, HideBySig
+    lock(): PrivateScope, Public, HideBySig
+    unlock(): PrivateScope, Public, HideBySig
+    get_ref(): PrivateScope, Public, HideBySig, SpecialName
+    get_ptr(): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class lucid.VertexFormat: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Properties:
+    lucid.gal.VertexFormat* ptr 'get ' : 
+    lucid.gal.VertexFormat* ref 'get ' IsImplicitlyDereferenced : 
+  Methods:
+    get_ref(): PrivateScope, Public, HideBySig, SpecialName
+    get_ptr(): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class lucid.Unordered2D: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(Int32, Int32): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Properties:
+    lucid.gal.Unordered2D* ptr 'get ' : 
+    lucid.gal.Unordered2D* ref 'get ' IsImplicitlyDereferenced : 
+  Methods:
+    get_ref(): PrivateScope, Public, HideBySig, SpecialName
+    get_ptr(): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Struct lucid.Topology: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Enum
+  Fields:
+    Int32 value__ : Public, SpecialName, RTSpecialName
+    lucid.Topology POINT_LIST = 0 : Public, Static, Literal, HasDefault
+    lucid.Topology LINE_LIST = 1 : Public, Static, Literal, HasDefault
+    lucid.Topology LINE_STRIP = 2 : Public, Static, Literal, HasDefault
+    lucid.Topology TRIANGLE_LIST = 3 : Public, Static, Literal, HasDefault
+    lucid.Topology TRIANGLE_STRIP = 4 : Public, Static, Literal, HasDefault
+    lucid.Topology TRIANGLE_ADJACENCY = 5 : Public, Static, Literal, HasDefault
+Struct lucid.VertexUsage: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Enum
+  Fields:
+    Int32 value__ : Public, SpecialName, RTSpecialName
+    lucid.VertexUsage UNDEFINED = -1 : Public, Static, Literal, HasDefault
+    lucid.VertexUsage STATIC = 0 : Public, Static, Literal, HasDefault
+    lucid.VertexUsage DYNAMIC = 1 : Public, Static, Literal, HasDefault
+Class lucid.Profiler: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Methods:
+    dump(String): PrivateScope, Public, HideBySig
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class lucid.Texture2D: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Properties:
+    lucid.gal.Texture2D* ptr 'get ' : 
+    lucid.gal.Texture2D* ref 'get ' IsImplicitlyDereferenced : 
+  Methods:
+    get_ref(): PrivateScope, Public, HideBySig, SpecialName
+    get_ptr(): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class lucid.TargetReader2D: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(lucid.RenderTarget2D): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Properties:
+    lucid.gal.TargetReader2D* ptr 'get ' : 
+    lucid.gal.TargetReader2D* ref 'get ' IsImplicitlyDereferenced : 
+  Methods:
+    sample(Int32, Int32): PrivateScope, Public, HideBySig
+    get_ref(): PrivateScope, Public, HideBySig, SpecialName
+    get_ptr(): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig

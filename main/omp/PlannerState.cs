@@ -85,7 +85,7 @@ namespace omp
                 testPopulateListview(planner, planner.orbitalMechainics.RootFrame());
                 // } test
 
-                planner.renderContext = new lucid.Context("content/test.context");
+                planner.renderContext = new lucid.Context("content/render.context");
 
                 planner.cameraFrame = planner.orbitalMechainics.CreateFrame(1, "camera", "dynamic frame for camera");
                 planner.orbitalMechainics.Attach(planner.orbitalMechainics.RootFrame(), planner.cameraFrame);

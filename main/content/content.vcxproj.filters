@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="omp">
+      <UniqueIdentifier>{34f5e129-c1f4-421b-8d56-868eac668eb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rnd">
+      <UniqueIdentifier>{8c4711bd-ee11-4bd1-ad08-7d327a6dd0cc}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\..\_bin\main\omp\content\atmosphere.pixel.hlsl">
+      <Filter>omp</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\omp\content\atmosphere.vertex.hlsl">
+      <Filter>omp</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\omp\content\blur.pixel.hlsl">
+      <Filter>omp</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\omp\content\clear.pixel.hlsl">
+      <Filter>omp</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\omp\content\copy.pixel.hlsl">
+      <Filter>omp</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\omp\content\disk.pixel.hlsl">
+      <Filter>omp</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\omp\content\disk.vertex.hlsl">
+      <Filter>omp</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\omp\content\hemisphere.pixel.hlsl">
+      <Filter>omp</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\omp\content\hemisphere.vertex.hlsl">
+      <Filter>omp</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\omp\content\orbit.pixel.hlsl">
+      <Filter>omp</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\omp\content\orbit.vertex.hlsl">
+      <Filter>omp</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\omp\content\post.pixel.hlsl">
+      <Filter>omp</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\omp\content\screen.vertex.hlsl">
+      <Filter>omp</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\omp\content\star.pixel.hlsl">
+      <Filter>omp</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\omp\content\star.vertex.hlsl">
+      <Filter>omp</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\rnd\content\sprite.pixel.hlsl">
+      <Filter>rnd</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\rnd\content\sprite.vertex.hlsl">
+      <Filter>rnd</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\rnd\content\beam.pixel.hlsl">
+      <Filter>rnd</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\rnd\content\beam.vertex.hlsl">
+      <Filter>rnd</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\_bin\main\rnd\content\beam.header.hlsl">
+      <Filter>rnd</Filter>
+    </None>
+    <None Include="..\..\_bin\main\rnd\content\sprite.header.hlsl">
+      <Filter>rnd</Filter>
+    </None>
+    <None Include="..\..\_bin\main\omp\content\atmosphere.header.hlsl">
+      <Filter>omp</Filter>
+    </None>
+    <None Include="..\..\_bin\main\omp\content\disk.header.hlsl">
+      <Filter>omp</Filter>
+    </None>
+    <None Include="..\..\_bin\main\omp\content\hemisphere.header.hlsl">
+      <Filter>omp</Filter>
+    </None>
+    <None Include="..\..\_bin\main\omp\content\screen.header.hlsl">
+      <Filter>omp</Filter>
+    </None>
+    <None Include="..\..\_bin\main\omp\content\star.header.hlsl">
+      <Filter>omp</Filter>
+    </None>
+    <None Include="..\..\_bin\main\omp\content\utility.header.hlsl">
+      <Filter>omp</Filter>
+    </None>
+    <None Include="..\..\_bin\main\omp\content\orbit.header.hlsl">
+      <Filter>omp</Filter>
+    </None>
+  </ItemGroup>
+</Project>

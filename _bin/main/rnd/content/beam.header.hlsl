@@ -8,6 +8,7 @@ struct InputVertex
 	float2   texcoord : LOCATION2;
 	float3  position0 : LOCATION3;
 	float3  position1 : LOCATION4;
+	float4    diffuse : LOCATION5;
 };
 
 struct OutputVertex
