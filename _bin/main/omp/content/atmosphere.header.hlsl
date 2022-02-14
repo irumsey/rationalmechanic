@@ -18,9 +18,8 @@ struct OutputVertex
 {
 	float4     ppsPosition : SV_POSITION;		///	in pixel shader this results in screen space (requiriing screen dimensions)
 	float4       clipSpace :   POSITION0;		///	making a copy of what is written into ppsPosition (will remain -1, 1)
-	float3  lightDirection :   POSITION1;		///	in world space
-	float3          center :   POSITION4;		///	center of planet and atmosphere in world space
- 	float3           radii :   POSITION5;		///	x,y are the radii of planet and atmosphere respectively. z is maximum distance a ray can travel through atmos
+	float3          center :   POSITION1;		///	center of planet and atmosphere in world space
+ 	float3           radii :   POSITION2;		///	x,y are the radii of planet and atmosphere respectively. z is maximum distance a ray can travel through atmos
 	float2        texcoord :   TEXCOORD0;
 };
 

@@ -70,7 +70,12 @@
       "ProjectGuid": "4983a7bf-567f-497a-a343-6d716b0e2d0f",
       "DisplayName": "rm",
       "ColorIndex": 12
+    },
+    "5181acc8-4f8b-4f48-87cf-09be3ed8c510": {
+      "ProjectGuid": "5181acc8-4f8b-4f48-87cf-09be3ed8c510",
+      "DisplayName": "content",
+      "ColorIndex": 13
     }
   },
-  "NextColorIndex": 13
+  "NextColorIndex": 14
 }
