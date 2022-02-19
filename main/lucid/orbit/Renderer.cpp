@@ -138,13 +138,13 @@ namespace orbit {
 
 		DetailLevels::Level const &detailLevel = detailLevels[detailIndex];
 
-		MeshInstance sphere;
-		sphere.position = math::lerp(_interpolant, position[0], position[1]);
-		sphere.scale = detailLevel.scale * scale(physicalProperties.radius);
-		sphere.rotation = gal::Quaternion(0, 0, 0, 1);
-		sphere.color = detailLevel.color;
-		sphere.parameters = detailLevel.parameters;
-		detailLevel.model->addInstances(_batched, sphere);
+		MeshInstance instance;
+		instance.position = math::lerp(_interpolant, position[0], position[1]);
+		instance.scale = detailLevel.scale * scale(physicalProperties.radius);
+		instance.rotation = gal::Quaternion(0, 0, 0, 1);
+		instance.color = detailLevel.color;
+		instance.parameters = detailLevel.parameters;
+		detailLevel.model->addInstances(_batched, instance);
 
 		MeshInstance orbit;
 		orbit.position = centerPosition;
@@ -154,7 +154,7 @@ namespace orbit {
 		orbit.parameters = gal::Vector4(hu, e, -3.1415926f, 3.1415926f);
 		_batched.addInstance(_orbitMesh, orbit);
 	}
-
+	  
 	void Renderer::evaluate(DynamicBody *body)
 	{
 		LUCID_PROFILE_SCOPE("Renderer::evaluate(DynamicBody)");

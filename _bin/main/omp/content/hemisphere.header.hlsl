@@ -1,3 +1,4 @@
+float3    lightPosition;
 float3     viewPosition;
 float3           viewUp;
 float4x4 viewProjMatrix;
@@ -16,7 +17,9 @@ struct InputVertex
 struct OutputVertex
 {
 	float4     ppsPosition : SV_POSITION;
+	float3  lightDirection : POSITION0;
 	float4         diffuse : COLOR0;
+	float2        texcoord : TEXCOORD0;
 };
 
 typedef OutputVertex InputPixel;

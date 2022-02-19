@@ -274,3 +274,7 @@ ModelManifest.xml
 /_bin/main/rnd/content/beam.pixel.cso
 /_bin/main/rnd/content/beam.mesh
 *.exe
+/_bin/main/omp/content/atmosphere.vertex.cso
+/_bin/main/omp/content/atmosphere.pixel.cso
+/_bin/main/omp/content/atmosphere.material
+/_bin/main/omp/content/earth.material

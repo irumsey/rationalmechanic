@@ -4,8 +4,8 @@ OutputVertex main(InputVertex input)
 {
 	OutputVertex output = (OutputVertex)0;
 
-	float3 position = input.position.xyz;
-	float3   vertex = 1.05 * input.scale.xxx * input.vertex;
+	float3 position = input.position;
+	float3   vertex = input.scale.xxx * input.vertex;
 
 	float3 e1 = normalize(viewPosition - position);
 	float3 e0 = normalize(cross(e1, viewUp));
@@ -13,8 +13,12 @@ OutputVertex main(InputVertex input)
 
 	position = position + e0 * vertex.xxx + e2 * vertex.yyy + e1 * vertex.zzz;
 
-	output.ppsPosition = mul(viewProjMatrix, float4(position, 1));
-	output.    diffuse = input.color;
+	float3x3 R = float3x3(e0, e2, e1);
 
-	return output; 
+	output.ppsPosition = mul(viewProjMatrix, float4(position, 1));
+	output.lightDirection = mul(R, normalize(lightPosition - position));
+	output.diffuse = input.color;
+	output.texcoord = 0.5 * (float2(1, 1) + float2(input.vertex.x, -input.vertex.y));
+
+	return output;
 }

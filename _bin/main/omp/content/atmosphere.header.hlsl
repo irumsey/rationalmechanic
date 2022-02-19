@@ -6,21 +6,24 @@ float4x4 invViewProjMatrix;
 
 struct InputVertex
 {
-	float2     vertex : LOCATION0;
-	float3   position : LOCATION1;
-	float       scale : LOCATION2;
-	float4   rotation : LOCATION3;
-	float4      color : LOCATION4;
-	float4 parameters : LOCATION5;
+	float3     vertex : LOCATION0;
+	float2   texcoord : LOCATION1;
+	float3   position : LOCATION2;
+	float       scale : LOCATION3;
+	float4   rotation : LOCATION4;
+	float4      color : LOCATION5;
+	float4 parameters : LOCATION6;
 };
 
 struct OutputVertex
 {
-	float4     ppsPosition : SV_POSITION;		///	in pixel shader this results in screen space (requiriing screen dimensions)
-	float4       clipSpace :   POSITION0;		///	making a copy of what is written into ppsPosition (will remain -1, 1)
-	float3          center :   POSITION1;		///	center of planet and atmosphere in world space
- 	float3           radii :   POSITION2;		///	x,y are the radii of planet and atmosphere respectively. z is maximum distance a ray can travel through atmos
-	float2        texcoord :   TEXCOORD0;
+	float4     ppsPosition : SV_POSITION;
+	float4       clipSpace : POSITION0;
+	float2           radii : POSITION1;
+	float3          center : POSITION2;
+	float3  lightDirection : POSITION3;
+	float4         diffuse : COLOR0;
+	float2        texcoord : TEXCOORD0;
 };
 
 typedef OutputVertex InputPixel;
