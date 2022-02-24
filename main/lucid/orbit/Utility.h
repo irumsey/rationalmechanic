@@ -40,33 +40,45 @@ namespace orbit {
 		return cast(rhs * constants::meters_per_RU<float32_t>());
 	}
 
-	inline ::lucid::gal::Vector3 cast(vector3_t const &rhs)
+	inline gal::Vector3 cast(vector3_t const &rhs)
 	{
-		return ::lucid::gal::Vector3(cast(rhs.x), cast(rhs.y), cast(rhs.z));
+		return gal::Vector3(cast(rhs.x), cast(rhs.y), cast(rhs.z));
 	}
 
-	inline vector3_t cast(::lucid::gal::Vector3 const &rhs)
+	inline vector3_t cast(gal::Vector3 const &rhs)
 	{
 		return vector3_t(cast(rhs.x), cast(rhs.y), cast(rhs.z));
 	}
 
-	inline ::lucid::gal::Vector3 scale(vector3_t const &rhs)
+	inline gal::Vector3 scale(vector3_t const &rhs)
 	{
 		return cast(rhs * constants::RUs_per_meter<scalar_t>());
 	}
 
-	inline vector3_t inv_scale(::lucid::gal::Vector3 const &rhs)
+	inline vector3_t inv_scale(gal::Vector3 const &rhs)
 	{
 		return cast(rhs * constants::meters_per_RU<float32_t>());
 	}
 
-	inline ::lucid::gal::Matrix3x3 cast(matrix3x3_t const &rhs)
+	inline gal::Matrix3x3 cast(matrix3x3_t const &rhs)
 	{
 		return gal::Matrix3x3(
 			cast(rhs.xx), cast(rhs.xy), cast(rhs.xz),
 			cast(rhs.yx), cast(rhs.yy), cast(rhs.yz),
 			cast(rhs.zx), cast(rhs.zy), cast(rhs.zz)
 		);
+	}
+
+	///
+	/// 
+	/// 
+	inline gal::Vector2 computeConicPoint(float32_t hu, float32_t e, float32_t theta)
+	{
+		float32_t c = math::cos(theta);
+		float32_t s = math::sin(theta);
+		float32_t r = hu / (1.f + e * c);
+
+		return r * gal::Vector2(c, s);
 	}
 
 	///
@@ -82,8 +94,8 @@ namespace orbit {
 	///
 	inline void kinematicsFromElements(vector3_t &position, vector3_t &velocity, PhysicalProperties const &centerProperties, Elements const &targetElements, scalar_t jdn)
 	{
-		scalar_t const twopi = lucid::math::constants::two_pi<scalar_t>();
-		scalar_t const tolsq = lucid::math::constants::tol_tol<scalar_t>();
+		scalar_t const twopi = math::constants::two_pi<scalar_t>();
+		scalar_t const tolsq = math::constants::tol_tol<scalar_t>();
 		scalar_t const    dt = constants::seconds_per_day<scalar_t>() * (jdn - targetElements.JDN);
 		scalar_t const    GM = centerProperties.GM;
 		scalar_t const     e = targetElements.EC;

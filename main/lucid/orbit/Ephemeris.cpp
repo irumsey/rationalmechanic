@@ -40,21 +40,20 @@ namespace orbit {
 	{
 		shutdown();
 
-		core::FileReader reader(path);
+		core::Reader &reader = core::FileReader(path);
 
-		size_t frameCount = 0;
-		reader.read(frameCount);
-		for (size_t frameIndex = 0; frameIndex < frameCount; ++frameIndex)
+		int32_t frameCount = reader.read<int32_t>();
+		for (int32_t frameIndex = 0; frameIndex < frameCount; ++frameIndex)
 		{
 			Entry target;
 
 			reader.read(&target.type, sizeof(Entry::TYPE));
-			reader.read(target.id);
-			reader.read(target.name);
-			reader.read(target.description);
 			
-			std::string centerName;
-			reader.read(centerName);
+			target.id = reader.read<int32_t>();
+			target.name = reader.read<std::string>();
+			target.description = reader.read<std::string>();
+			
+			std::string centerName = reader.read<std::string>();
 
 			Entry center;
 			lookup(center, centerName);
@@ -71,11 +70,10 @@ namespace orbit {
 				_physicalProperties.insert(std::make_pair(target.id, PhysicalProperties(reader)));
 				_renderProperties.insert(std::make_pair(target.id, RenderProperties(reader)));
 
-				size_t elementsCount = 0;
-				reader.read(elementsCount);
+				int32_t elementsCount = reader.read<int32_t>();
 
 				elements_vec_t pluralElements(elementsCount);
-				for (size_t i = 0; i < elementsCount; ++i)
+				for (int32_t i = 0; i < elementsCount; ++i)
 					reader.read(&pluralElements[i], sizeof(Elements));
 				_elements.insert(std::make_pair(target.id, pluralElements));
 			}

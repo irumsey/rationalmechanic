@@ -38,9 +38,9 @@ namespace orbit {
 
 		void read(::lucid::core::Reader &reader)
 		{
-			reader.read(    GM);
-			reader.read(  mass);
-			reader.read(radius);
+			GM     = reader.read<scalar_t>();
+			mass   = reader.read<scalar_t>();
+			radius = reader.read<scalar_t>();
 		}
 
 	};

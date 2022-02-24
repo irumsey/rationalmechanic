@@ -175,7 +175,7 @@ namespace omp
                 lucid.Vector3 position = planner.orbitalMechainics.InterpolatePosition(planner.cameraFrame);
                 lucid.Vector3    focus = (null != planner.trackedFrame)
                     ? planner.orbitalMechainics.InterpolatePosition(planner.trackedFrame)
-                    : new lucid.Vector3(0, 0, 0);
+                    : position + new lucid.Vector3(10, 10, 10);
                 planner.camera.Look(position, focus, new lucid.Vector3(0, 0, 1));
                 planner.renderContext.Set(planner.camera);
                 /// } test

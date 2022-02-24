@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <lucid/core/Types.h>
 #include <lucid/core/Noncopyable.h>
 
 namespace lucid {
@@ -20,9 +21,9 @@ namespace orbit {
 		{
 			size_t xno = 0;
 			std::string type;
-			double right_ascension = 0.0;
-			double declination = 0.0;
-			float magnitude = 0.f;
+			float64_t right_ascension = 0.0;
+			float64_t declination = 0.0;
+			float32_t magnitude = 0.f;
 		};
 		typedef std::vector<Entry> ordinal_vec_t;
 		typedef ordinal_vec_t::const_iterator Iterator;

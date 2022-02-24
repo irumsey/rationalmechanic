@@ -1,7 +1,7 @@
 #pragma once
 
 #include <lucid/core/Types.h>
-#include <lucid/lucid/Types.h>
+#include <lucid/facade/Types.h>
 
 namespace lucid {
 namespace gigl {

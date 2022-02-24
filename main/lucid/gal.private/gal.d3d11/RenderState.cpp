@@ -139,9 +139,8 @@ namespace d3d11 {
 
 	BlendState::BlendState(::lucid::core::Reader &reader)
 	{
-		reader.read(colorWriteMask);
-
-		reader.read(enable);
+		colorWriteMask = reader.read<uint8_t>();
+		enable = reader.read<bool>();
 
 		srcBlend = readEnum(reader, d3dBlend);
 		srcBlendAlpha = readEnum(reader, d3dBlend);

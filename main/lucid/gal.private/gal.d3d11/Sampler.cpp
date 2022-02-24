@@ -98,15 +98,15 @@ namespace d3d11 {
 		addrv = readEnum(reader, d3dAddress);
 		addrw = readEnum(reader, d3dAddress);
 
-		reader.read(lodMipBias);
-		reader.read(maxAnisotropy);
+		lodMipBias = reader.read<float>();
+		maxAnisotropy = reader.read<uint32_t>();
 
 		compare = readEnum(reader, d3dCompare);
 
 		reader.read(&borderColor, sizeof(::lucid::gal::Color));
 
-		reader.read(lodMin);
-		reader.read(lodMax);
+		lodMin = reader.read<float>();
+		lodMax = reader.read<float>();
 
 		///
 		///	create the resource...

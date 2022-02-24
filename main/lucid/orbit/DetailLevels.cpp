@@ -41,9 +41,7 @@ namespace orbit {
 
 	void DetailLevels::read(core::Reader &reader)
 	{
-		size_t count = 0;
-		reader.read(count);
-
+		size_t count = reader.read<int32_t>();
 		LUCID_VALIDATE(0 < count, "must define at least one detail level");
 
 		levels.resize(count);

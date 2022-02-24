@@ -146,13 +146,7 @@ namespace orbit {
 		instance.parameters = detailLevel.parameters;
 		detailLevel.model->addInstances(_batched, instance);
 
-		MeshInstance orbit;
-		orbit.position = centerPosition;
-		orbit.scale = 0.3f;
-		orbit.rotation = math::slerp(_interpolant, rotation[0], rotation[1]);
-		orbit.color = gal::Color(0, 0, 1, 1);
-		orbit.parameters = gal::Vector4(hu, e, -3.1415926f, 3.1415926f);
-		_batched.addInstance(_orbitMesh, orbit);
+		///	TBD: add orbit...
 	}
 	  
 	void Renderer::evaluate(DynamicBody *body)
@@ -171,7 +165,7 @@ namespace orbit {
 
 		_starCount = theStarCatalog().count();
 		_starMesh.reset(gigl::Mesh::create("content/star.mesh"));
-		_starInstances.reset(gal::VertexBuffer::create(gal::VertexBuffer::USAGE_STATIC, _starCount, sizeof(gal::Vector4)));
+		_starInstances.reset(gal::VertexBuffer::create(gal::VertexBuffer::USAGE_STATIC, int32_t(_starCount), sizeof(gal::Vector4)));
 
 		gal::Vector4 *starInstances = (gal::Vector4 *)(_starInstances->lock());
 		for (size_t i = 0; i < _starCount; ++i)
@@ -189,16 +183,14 @@ namespace orbit {
 		_batched.initialize();
 
 		/// test {
-		///	need a data driven method for registering these (just read the ephemeris stupid)
+		///	need a data driven method for registering these... 
+		/// ...just read the ephemeris stupid!!!
 		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>(      "content/disk.mesh"), BATCH_MAXIMUM);
 		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>(       "content/sun.mesh"), BATCH_MAXIMUM);
 		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>(     "content/earth.mesh"), BATCH_MAXIMUM);
 		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>("content/atmosphere.mesh"), BATCH_MAXIMUM);
 		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>("content/hemisphere.mesh"), BATCH_MAXIMUM);
 		/// } test
-
-		_orbitMesh = gigl::Resources::get<gigl::Mesh>("content/orbit.mesh");
-		_batched.createBatch<MeshInstance, Back2Front<MeshInstance> >(_orbitMesh, BATCH_MAXIMUM);
 
 		_colorTarget.reset(gal::RenderTarget2D::create(gal::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, _width, _height));
 		_glowTarget.reset(gal::RenderTarget2D::create(gal::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, _width, _height));
@@ -222,8 +214,6 @@ namespace orbit {
 		_starCount = 0;
 		_starInstances.reset();
 		_starMesh.reset();
-
-		_orbitMesh.reset();
 
 		_batched.shutdown();
 
@@ -331,7 +321,7 @@ namespace orbit {
 		_clear->render(context);
 
 		galPipeline.setVertexStream(1, _starInstances.get());
-		_starMesh->renderInstanced(context, _starCount);
+		_starMesh->renderInstanced(context, int32_t(_starCount));
 
 		_batched.render(context);
 		

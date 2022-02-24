@@ -70,8 +70,8 @@ namespace d3d11 {
 	RenderTarget2D::RenderTarget2D(::lucid::core::Reader &reader)
 	{
 		reader.read(&_format, sizeof(FORMAT));
-		reader.read(_width);
-		reader.read(_height);
+		_width = reader.read<int32_t>();
+		_height = reader.read<int32_t>();
 
 		try
 		{

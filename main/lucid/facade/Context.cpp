@@ -5,7 +5,6 @@
 #include <lucid/gigl/Context.h>
 #include <lucid/core/Logger.h>
 #include <lucid/core/FileReader.h>
-#include <lucid/core/Reader.h>
 #include <lucid/core/Error.h>
 #include <msclr/marshal_cppstd.h>
 

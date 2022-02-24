@@ -86,8 +86,8 @@ namespace orbit {
 			::lucid::gal::Vector4    parameters;
 		};
 
-		size_t _width = 0;
-		size_t _height = 0;
+		int32_t _width = 0;
+		int32_t _height = 0;
 
 		float32_t _time = 0.f;
 		float32_t _interpolant = 0.f;
@@ -98,7 +98,6 @@ namespace orbit {
 		size_t _starCount = 0;
 		std::unique_ptr<gal::VertexBuffer> _starInstances;
 		std::unique_ptr<gigl::Mesh> _starMesh;
-		std::shared_ptr<gigl::Mesh> _orbitMesh;
 
 		gigl::Batched _batched;
 

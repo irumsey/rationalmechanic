@@ -1,6 +1,6 @@
 #pragma once
 
-#include <lucid/lucid/Types.h>
+#include <lucid/facade/Types.h>
 
 namespace lucid {
 

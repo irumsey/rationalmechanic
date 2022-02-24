@@ -1,6 +1,7 @@
 #include "Model.h"
 #include "Resources.h"
 #include <lucid/core/FileReader.h>
+#include <lucid/core/Reader.h>
 
 namespace lucid {
 namespace gigl {
@@ -19,14 +20,12 @@ namespace gigl {
 	{
 		shutdown();
 
-		size_t count = 0;
-		reader.read(count);
-
+		int32_t count = reader.read<int32_t>();
 		_meshes.resize(count);
-		for (size_t i = 0; i < count; ++i)
+
+		for (int32_t i = 0; i < count; ++i)
 		{
-			std::string path;
-			reader.read(path);
+			std::string path = reader.read<std::string>();
 
 			_meshes[i] = Resources::get<Mesh>(path);
 		}

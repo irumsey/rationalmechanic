@@ -124,7 +124,7 @@ namespace gigl {
 			Batch(size_t maximum)
 				: maximum(maximum)
 			{
-				batch.reset(gal::VertexBuffer::create(gal::VertexBuffer::USAGE_DYNAMIC, maximum, sizeof(I)));
+				batch.reset(gal::VertexBuffer::create(gal::VertexBuffer::USAGE_DYNAMIC, int32_t(maximum), sizeof(I)));
 			}
 
 			virtual ~Batch() = default;
@@ -160,7 +160,7 @@ namespace gigl {
 					batch->unlock();
 
 					pipeline.setVertexStream(1, batch.get());
-					mesh->drawInstanced(count);
+					mesh->drawInstanced(int32_t(count));
 
 					index += count;
 				}
