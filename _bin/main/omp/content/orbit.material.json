@@ -27,7 +27,7 @@
 			"DepthStencilMode" :
 			{
 				"DepthEnabled" : true,
-				"DepthWrite" : "DEPTH_WRITE_DISABLED",
+				"DepthWrite" : "DEPTH_WRITE_ENABLED",
 				"DepthFunction" : "COMPARISON_LESS",
 				"StencilEnabled" : false,
 				"StencilFunction" : "COMPARISON_LESS",
@@ -47,7 +47,11 @@
 
 	"attributes":
 	[
-    { "name" :   "viewPosition", "query" :   "viewPosition" },
-		{ "name" : "viewProjMatrix", "query" : "viewProjMatrix" }	
+    { "name" :         "viewUp",     "query" :              "viewUp" },
+    { "name" :   "viewPosition",     "query" :        "viewPosition" },
+		{ "name" : "viewProjMatrix",     "query" :      "viewProjMatrix" },
+		{ "name" :       "segCoeff",     "float" :                 0.001 },
+		{ "name" :   "fadeDistance",   "vector2" :           [ 75, 250 ] },
+		{ "name" :    "orbitLookup", "texture2d" : "content/orbitLookup.texture" }
   ]
 }

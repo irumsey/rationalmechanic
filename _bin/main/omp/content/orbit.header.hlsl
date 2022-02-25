@@ -1,5 +1,8 @@
+float3 viewUp;
 float3 viewPosition;
 float4x4 viewProjMatrix;
+float1 segCoeff;
+float2 fadeDistance;
 
 struct InputVertex
 {
@@ -13,12 +16,10 @@ struct InputVertex
 
 struct OutputVertex
 {
-	float4  parameters :   POSITION0;
-	float3    position :   POSITION1;
-	float4    rotation :   POSITION2;
-	float3      vertex :   POSITION3;
-	float4       color :      COLOR0;
 	float4 ppsPosition : SV_POSITION;
+	float     distance :   TEXCOORD0;
+	float        width :   TEXCOORD1;
+	float4       color :      COLOR0;
 };
 
 typedef OutputVertex InputPixel;
