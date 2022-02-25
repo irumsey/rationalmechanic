@@ -80,7 +80,12 @@
       "ProjectGuid": "740a0fa1-b5f7-488a-8bfb-8af5fb4ed0ce",
       "DisplayName": "facade",
       "ColorIndex": 14
+    },
+    "615b47a4-4ea1-4e5c-af60-820cd473d542": {
+      "ProjectGuid": "615b47a4-4ea1-4e5c-af60-820cd473d542",
+      "DisplayName": "facade",
+      "ColorIndex": 15
     }
   },
-  "NextColorIndex": 15
+  "NextColorIndex": 0
 }

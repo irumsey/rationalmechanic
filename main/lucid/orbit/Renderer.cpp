@@ -138,15 +138,21 @@ namespace orbit {
 
 		DetailLevels::Level const &detailLevel = detailLevels[detailIndex];
 
-		MeshInstance instance;
-		instance.position = math::lerp(_interpolant, position[0], position[1]);
-		instance.scale = detailLevel.scale * scale(physicalProperties.radius);
-		instance.rotation = gal::Quaternion(0, 0, 0, 1);
-		instance.color = detailLevel.color;
-		instance.parameters = detailLevel.parameters;
-		detailLevel.model->addInstances(_batched, instance);
+		MeshInstance bodyInstance;
+		bodyInstance.position = math::lerp(_interpolant, position[0], position[1]);
+		bodyInstance.scale = detailLevel.scale * scale(physicalProperties.radius);
+		bodyInstance.rotation = gal::Quaternion(0, 0, 0, 1);
+		bodyInstance.color = detailLevel.color;
+		bodyInstance.parameters = detailLevel.parameters;
+		_batched.addInstance(detailLevel.model, bodyInstance);
 
-		///	TBD: add orbit...
+		MeshInstance orbitInstance;
+		orbitInstance.position = centerPosition;
+		orbitInstance.scale = 0.005f;
+		orbitInstance.rotation = math::slerp(_interpolant, rotation[0], rotation[1]);
+		orbitInstance.color = gal::Color(0, 0, 1, 1);
+		orbitInstance.parameters = gal::Vector4(hu, e, 0.f, math::constants::two_pi<float32_t>());
+		_batched.addInstance(_orbitMesh, orbitInstance);
 	}
 	  
 	void Renderer::evaluate(DynamicBody *body)
@@ -191,6 +197,9 @@ namespace orbit {
 		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>("content/atmosphere.mesh"), BATCH_MAXIMUM);
 		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>("content/hemisphere.mesh"), BATCH_MAXIMUM);
 		/// } test
+
+		_orbitMesh = gigl::Resources::get<gigl::Mesh>("content/orbit.mesh");
+		_batched.createBatch<MeshInstance, Back2Front<MeshInstance> >(_orbitMesh, BATCH_MAXIMUM);
 
 		_colorTarget.reset(gal::RenderTarget2D::create(gal::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, _width, _height));
 		_glowTarget.reset(gal::RenderTarget2D::create(gal::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, _width, _height));

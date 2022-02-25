@@ -9,6 +9,7 @@
 #include <lucid/gigl/Context.h>
 #include <lucid/gigl/Material.h>
 #include <lucid/gigl/Mesh.h>
+#include <lucid/gigl/Model.h>
 
 namespace lucid {
 namespace gigl {
@@ -28,6 +29,10 @@ namespace gigl {
 		void initialize();
 
 		void shutdown();
+
+		template<typename I, typename Pred> void createBatch(std::shared_ptr<Model> model, size_t maximum);
+
+		template<typename I> void addInstance(std::shared_ptr<Model> model, I const &instance);
 
 		template<typename I, typename Pred> void createBatch(std::shared_ptr<Mesh> mesh, size_t maximum);
 
@@ -168,6 +173,24 @@ namespace gigl {
 			}
 		};
 	};
+
+	template<typename I, typename Pred> inline void Batched::createBatch(std::shared_ptr<Model> model, size_t maximum)
+	{
+		Model::mesh_vec_t const &meshes = model->_meshes;
+		for (size_t i = 0; i < meshes.size(); ++i)
+		{
+			createBatch(meshes[i], maximum);
+		}
+	}
+
+	template<typename I> inline void Batched::addInstance(std::shared_ptr<Model> model, I const &instance)
+	{
+		Model::mesh_vec_t const &meshes = model->_meshes;
+		for (size_t i = 0; i < meshes.size(); ++i)
+		{
+			addInstance(meshes[i], instance);
+		}
+	}
 
 	template<typename I, typename Pred> inline void Batched::createBatch(std::shared_ptr<Mesh> mesh, size_t maximum)
 	{

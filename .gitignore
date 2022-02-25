@@ -299,3 +299,8 @@ ModelManifest.xml
 /_lib/facade.32d.dll
 /_lib/core.win.64d.idb
 /_lib/core.64d.idb
+/_bin/main/omp/content/orbit.mesh
+/_bin/main/omp/content/orbit.geometry
+/_bin/main/omp/facade.64r.dll
+/_lib/facade.64r.dll.metagen
+/_lib/facade.64r.dll

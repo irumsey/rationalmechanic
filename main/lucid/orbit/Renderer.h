@@ -99,6 +99,8 @@ namespace orbit {
 		std::unique_ptr<gal::VertexBuffer> _starInstances;
 		std::unique_ptr<gigl::Mesh> _starMesh;
 
+		std::shared_ptr<gigl::Mesh> _orbitMesh;
+
 		gigl::Batched _batched;
 
 		std::unique_ptr<gal::RenderTarget2D> _colorTarget;
