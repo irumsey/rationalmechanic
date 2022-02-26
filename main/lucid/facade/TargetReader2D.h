@@ -21,7 +21,7 @@ namespace lucid {
 
 		!TargetReader2D();
 
-		unsigned int sample(int x, int y);
+		unsigned int read(int x, int y);
 
 		property ::lucid::gal::TargetReader2D &ref { ::lucid::gal::TargetReader2D &get() { return *ptr; } }
 

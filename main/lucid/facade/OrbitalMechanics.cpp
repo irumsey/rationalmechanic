@@ -201,6 +201,11 @@ namespace lucid {
 		_orbitalSystem->render(context->ref, float32_t(_wallTime), _frameInterpolant);
 	}
 
+	uint32_t OrbitalMechanics::Hit(int x, int y)
+	{
+		return _orbitalSystem->hit(x, y);
+	}
+
 	OrbitalFrame ^OrbitalMechanics::RootFrame()
 	{
 		return gcnew OrbitalFrame(_orbitalSystem->root());

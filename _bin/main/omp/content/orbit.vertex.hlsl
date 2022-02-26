@@ -26,6 +26,7 @@ OutputVertex main(InputVertex input)
 
 	output.ppsPosition = mul(viewProjMatrix, float4(curvePosition0.xyz + width * e2, 1));
 	output.   distance = viewDistance;
+	output.         id = input.id;
 	output.      width = 0.5 * (width / input.scale) + 0.5;
 	output.      color = input.color;
 

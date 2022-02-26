@@ -17,8 +17,9 @@ OutputVertex main(InputVertex input)
 	float3x3 R = float3x3(e0, e2, e1);
 
 	output.ppsPosition = mul(viewProjMatrix, float4(position, 1));
-	output.normal = normal;
 	output.lightDirection = mul(R, normalize(lightPosition - position));
+	output.id = input.id;
+	output.normal = normal;
 	output.diffuse = input.color;
 
 	return output;

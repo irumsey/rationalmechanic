@@ -19,8 +19,9 @@ struct SinglePixel
 	float4 color : SV_TARGET0;
 };
 
-struct DoublePixel
+struct TriplePixel
 {
-	float4 color : SV_TARGET0;
-	float4  glow : SV_TARGET1;
+	float4  color : SV_TARGET0;
+	float4   glow : SV_TARGET1;
+	uint1      id : SV_TARGET2;	//	the select target's format is UINT_R32
 };

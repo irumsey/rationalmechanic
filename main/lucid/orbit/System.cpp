@@ -164,5 +164,19 @@ namespace /* anonymous */ {
 		_renderer.render(_root, context, time, interpolant);
 	}
 
+	uint32_t System::hit(int32_t x, int32_t y) const
+	{
+		LUCID_VALIDATE(nullptr != _root, "attempt to use uninitialized system");
+
+		uint32_t id = _renderer.hit(x, y);
+		if (0 == id)
+			return 0;
+
+		// test {
+		// return a "hit object" which contains the information about what was hit
+		return id;
+		// } test
+	}
+
 }	///	orbit
 }	///	lucid

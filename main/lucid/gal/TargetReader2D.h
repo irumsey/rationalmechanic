@@ -30,7 +30,7 @@ namespace gal {
 
 		virtual int32_t height() const = 0;
 
-		virtual uint8_t const *sample(int32_t x, int32_t y, int32_t width, int32_t height) const = 0;
+		virtual uint8_t const *read() const = 0;
 
 		static TargetReader2D *create(RenderTarget2D const *target, int32_t width, int32_t height);
 

@@ -75,19 +75,20 @@ namespace d3d11 {
 		shutdown();
 	}
 
-	uint8_t const *TargetReader2D::sample(int32_t x, int32_t y, int32_t width, int32_t height) const
+	uint8_t const *TargetReader2D::read() const
 	{
-		x = math::clamp(x, 0,  _srcWidth - 1);
-		y = math::clamp(y, 0, _srcHeight - 1);
-
-		D3D11_BOX box = { UINT(x), UINT(y), 0, UINT(x + width), UINT(y + height), 1, };
+		D3D11_BOX box = { 0, 0, 0, UINT(_srcWidth), UINT(_srcHeight), 1, };
 		d3d11ConcreteContext->CopySubresourceRegion(_stagingTexture, 0, 0, 0, 0, _srcTexture, 0, &box);
 
 		D3D11_MAPPED_SUBRESOURCE mapped = {};
 		HRESULT hResult = d3d11ConcreteContext->Map(_stagingTexture, 0, D3D11_MAP_READ, 0, &mapped);
 		GAL_VALIDATE_HRESULT(hResult, "unable to map staging resource");
 
-		::memcpy(_data, mapped.pData, TEXEL_SIZE * _width * _height);
+		size_t const dstRowPitch = TEXEL_SIZE * _srcWidth;
+		size_t const srcRowPitch = mapped.RowPitch;
+
+		for (size_t row = 0; row < _srcHeight; ++row)
+			::memcpy(_data + row * dstRowPitch, (uint8_t const *)(mapped.pData) + row * srcRowPitch, dstRowPitch);
 
 		d3d11ConcreteContext->Unmap(_stagingTexture, 0);
 

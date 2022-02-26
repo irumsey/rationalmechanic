@@ -51,6 +51,8 @@
             this.orbitFrameListName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.orbitalFrameListDescription = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.orbitalFrameListImages = new System.Windows.Forms.ImageList(this.components);
+            this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.mainStatusStrip.SuspendLayout();
             this.mainMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mainSplitter)).BeginInit();
             this.mainSplitter.Panel2.SuspendLayout();
@@ -60,10 +62,12 @@
             // mainStatusStrip
             // 
             this.mainStatusStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.mainStatusStrip.Location = new System.Drawing.Point(0, 516);
+            this.mainStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.statusLabel});
+            this.mainStatusStrip.Location = new System.Drawing.Point(0, 512);
             this.mainStatusStrip.Name = "mainStatusStrip";
             this.mainStatusStrip.Padding = new System.Windows.Forms.Padding(1, 0, 19, 0);
-            this.mainStatusStrip.Size = new System.Drawing.Size(1239, 22);
+            this.mainStatusStrip.Size = new System.Drawing.Size(1239, 26);
             this.mainStatusStrip.TabIndex = 0;
             this.mainStatusStrip.Text = "Status";
             // 
@@ -76,7 +80,7 @@
             this.mainMenuView});
             this.mainMenu.Location = new System.Drawing.Point(0, 0);
             this.mainMenu.Name = "mainMenu";
-            this.mainMenu.Size = new System.Drawing.Size(1239, 30);
+            this.mainMenu.Size = new System.Drawing.Size(1239, 28);
             this.mainMenu.TabIndex = 1;
             this.mainMenu.Text = "menuStrip1";
             // 
@@ -91,7 +95,7 @@
             this.toolStripSeparator2,
             this.mainMenuFileExit});
             this.mainMenuFile.Name = "mainMenuFile";
-            this.mainMenuFile.Size = new System.Drawing.Size(46, 26);
+            this.mainMenuFile.Size = new System.Drawing.Size(46, 24);
             this.mainMenuFile.Text = "File";
             // 
             // mainMenuFileNewMission
@@ -142,7 +146,7 @@
             // mainMenuEdit
             // 
             this.mainMenuEdit.Name = "mainMenuEdit";
-            this.mainMenuEdit.Size = new System.Drawing.Size(49, 26);
+            this.mainMenuEdit.Size = new System.Drawing.Size(49, 24);
             this.mainMenuEdit.Text = "Edit";
             // 
             // mainMenuView
@@ -151,7 +155,7 @@
             this.toolStripSeparator3,
             this.mainMenuViewSettings});
             this.mainMenuView.Name = "mainMenuView";
-            this.mainMenuView.Size = new System.Drawing.Size(55, 26);
+            this.mainMenuView.Size = new System.Drawing.Size(55, 24);
             this.mainMenuView.Text = "View";
             // 
             // toolStripSeparator3
@@ -170,19 +174,21 @@
             // 
             this.mainSplitter.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mainSplitter.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
-            this.mainSplitter.Location = new System.Drawing.Point(0, 30);
-            this.mainSplitter.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.mainSplitter.Location = new System.Drawing.Point(0, 28);
+            this.mainSplitter.Margin = new System.Windows.Forms.Padding(4);
             this.mainSplitter.Name = "mainSplitter";
             // 
             // mainSplitter.Panel1
             // 
+            this.mainSplitter.Panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.onPaint);
+            this.mainSplitter.Panel1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.onMouseMove);
             this.mainSplitter.Panel1.Resize += new System.EventHandler(this.onMainViewResize);
             // 
             // mainSplitter.Panel2
             // 
             this.mainSplitter.Panel2.Controls.Add(this.orbitalFrameList);
-            this.mainSplitter.Size = new System.Drawing.Size(1239, 486);
-            this.mainSplitter.SplitterDistance = 938;
+            this.mainSplitter.Size = new System.Drawing.Size(1239, 484);
+            this.mainSplitter.SplitterDistance = 937;
             this.mainSplitter.SplitterWidth = 5;
             this.mainSplitter.TabIndex = 2;
             // 
@@ -198,10 +204,10 @@
             this.orbitalFrameList.FullRowSelect = true;
             this.orbitalFrameList.HideSelection = false;
             this.orbitalFrameList.Location = new System.Drawing.Point(0, 0);
-            this.orbitalFrameList.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.orbitalFrameList.Margin = new System.Windows.Forms.Padding(4);
             this.orbitalFrameList.MultiSelect = false;
             this.orbitalFrameList.Name = "orbitalFrameList";
-            this.orbitalFrameList.Size = new System.Drawing.Size(296, 486);
+            this.orbitalFrameList.Size = new System.Drawing.Size(297, 484);
             this.orbitalFrameList.StateImageList = this.orbitalFrameListImages;
             this.orbitalFrameList.TabIndex = 0;
             this.orbitalFrameList.UseCompatibleStateImageBehavior = false;
@@ -236,6 +242,12 @@
             this.orbitalFrameListImages.Images.SetKeyName(0, "notLinked.png");
             this.orbitalFrameListImages.Images.SetKeyName(1, "linked.png");
             // 
+            // statusLabel
+            // 
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(47, 20);
+            this.statusLabel.Text = "status";
+            // 
             // Planner
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -245,12 +257,14 @@
             this.Controls.Add(this.mainStatusStrip);
             this.Controls.Add(this.mainMenu);
             this.MainMenuStrip = this.mainMenu;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Planner";
             this.Text = "OMP (Orbital Mission Planner)";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.onFormClosing);
             this.Load += new System.EventHandler(this.onFormLoad);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.onPaint);
+            this.mainStatusStrip.ResumeLayout(false);
+            this.mainStatusStrip.PerformLayout();
             this.mainMenu.ResumeLayout(false);
             this.mainMenu.PerformLayout();
             this.mainSplitter.Panel2.ResumeLayout(false);
@@ -284,6 +298,7 @@
         private System.Windows.Forms.ColumnHeader orbitFrameListName;
         private System.Windows.Forms.ColumnHeader orbitalFrameListDescription;
         private System.Windows.Forms.ImageList orbitalFrameListImages;
+        private System.Windows.Forms.ToolStripStatusLabel statusLabel;
     }
 }
 

@@ -60,6 +60,8 @@ namespace orbit {
 
 		void render(::lucid::gigl::Context const &context, float32_t time, float32_t interpolant);
 
+		uint32_t hit(int32_t x, int32_t y) const;
+
 	private:
 		typedef std::unordered_map<size_t, Frame *> frame_map_t;
 

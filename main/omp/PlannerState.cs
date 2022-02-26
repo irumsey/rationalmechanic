@@ -26,6 +26,8 @@ namespace omp
 
             public virtual void onPaint(Planner planner) { }
 
+            public virtual void onMouseMove(Planner planner, Point point) { }
+
             public virtual void onTrackFrame(Planner planner, ListViewItem item) { }
 
             public virtual void updateSimulation(Planner planner) { }
@@ -127,6 +129,14 @@ namespace omp
             public override void onPaint(Planner planner)
             {
                 planner.renderMainView();
+            }
+
+            public override void onMouseMove(Planner planner, Point point)
+            {
+                uint   code = planner.orbitalMechainics.Hit(point.X, point.Y);
+                uint prefix = ((0xf0000000 & code) >> 28);
+                uint     id = (0x0fffffff & code);
+                planner.statusLabel.Text = point.ToString() + " " + id.ToString();
             }
 
             public override void onTrackFrame(Planner planner, ListViewItem item)

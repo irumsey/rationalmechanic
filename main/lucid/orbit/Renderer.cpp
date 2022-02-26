@@ -8,6 +8,7 @@
 #include <lucid/gigl/Mesh.h>
 #include <lucid/gigl/Context.h>
 #include <lucid/gigl/Resources.h>
+#include <lucid/gal/TargetReader2D.h>
 #include <lucid/gal/RenderTarget2D.h>
 #include <lucid/gal/VertexBuffer.h>
 #include <lucid/gal/Program.h>
@@ -116,8 +117,8 @@ namespace orbit {
 		RenderProperties &renderProperties = body->renderProperties;
 		Elements const *elements = body->elements;
 
-		float32_t  a = math::lerp(_interpolant, scale(elements[0]. A), scale(elements[1]. A));
-		float32_t  e = math::lerp(_interpolant, cast (elements[0].EC), cast (elements[1].EC));
+		float32_t  a = math::lerp(_interpolant, scale(elements[0].A), scale(elements[1].A));
+		float32_t  e = math::lerp(_interpolant, cast(elements[0].EC), cast(elements[1].EC));
 		float32_t hu = a * (1.f - e * e);
 
 		gal::Quaternion rotation[2] = {
@@ -139,6 +140,7 @@ namespace orbit {
 		DetailLevels::Level const &detailLevel = detailLevels[detailIndex];
 
 		MeshInstance bodyInstance;
+		bodyInstance.id = (SELECT_FRAME << SELECT_SHIFT) | uint32_t(SELECT_MASK & body->id);
 		bodyInstance.position = math::lerp(_interpolant, position[0], position[1]);
 		bodyInstance.scale = detailLevel.scale * scale(physicalProperties.radius);
 		bodyInstance.rotation = gal::Quaternion(0, 0, 0, 1);
@@ -147,6 +149,7 @@ namespace orbit {
 		_batched.addInstance(detailLevel.model, bodyInstance);
 
 		MeshInstance orbitInstance;
+		orbitInstance.id = (SELECT_ORBIT << SELECT_SHIFT) | uint32_t(SELECT_MASK & body->id);
 		orbitInstance.position = centerPosition;
 		orbitInstance.scale = 0.25f;
 		orbitInstance.rotation = math::slerp(_interpolant, rotation[0], rotation[1]);
@@ -171,18 +174,20 @@ namespace orbit {
 
 		_starCount = theStarCatalog().count();
 		_starMesh.reset(gigl::Mesh::create("content/star.mesh"));
-		_starInstances.reset(gal::VertexBuffer::create(gal::VertexBuffer::USAGE_STATIC, int32_t(_starCount), sizeof(gal::Vector4)));
+		_starInstances.reset(gal::VertexBuffer::create(gal::VertexBuffer::USAGE_STATIC, int32_t(_starCount), sizeof(StarInstance)));
 
-		gal::Vector4 *starInstances = (gal::Vector4 *)(_starInstances->lock());
+		StarInstance *starInstances = (StarInstance *)(_starInstances->lock());
 		for (size_t i = 0; i < _starCount; ++i)
 		{
 			StarCatalog::Entry const &entry = theStarCatalog()[i];
-			gal::Vector4 &instance = starInstances[i];
+			StarInstance &instance = starInstances[i];
 
-			instance.x = 0.3f;
-			instance.y = orbit::cast(entry.right_ascension);
-			instance.z = orbit::cast(entry.declination);
-			instance.w = entry.magnitude;
+			instance.id = uint32_t((SELECT_STAR << SELECT_SHIFT) | i);
+
+			instance.parameters.x = 0.3f;
+			instance.parameters.y = orbit::cast(entry.right_ascension);
+			instance.parameters.z = orbit::cast(entry.declination);
+			instance.parameters.w = entry.magnitude;
 		}
 		_starInstances->unlock();
 
@@ -198,6 +203,9 @@ namespace orbit {
 
 		_orbitMesh = gigl::Resources::get<gigl::Mesh>("content/orbit.mesh");
 		_batched.createBatch<MeshInstance, Back2Front<MeshInstance> >(_orbitMesh, BATCH_MAXIMUM);
+
+		_selectTarget.reset(gal::RenderTarget2D::create(gal::RenderTarget2D::FORMAT_UINT_R32, _width, _height));
+		_selectReader.reset(gal::TargetReader2D::create(_selectTarget.get(), _width, _height));
 
 		_colorTarget.reset(gal::RenderTarget2D::create(gal::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, _width, _height));
 		_glowTarget.reset(gal::RenderTarget2D::create(gal::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, _width, _height));
@@ -223,6 +231,9 @@ namespace orbit {
 		_starMesh.reset();
 
 		_batched.shutdown();
+
+		_selectReader.reset();
+		_selectTarget.reset();
 
 		_colorTarget.reset();
 		_glowTarget.reset();
@@ -259,6 +270,15 @@ namespace orbit {
 		galPipeline.updateTargets();
 
 		post(context);
+	}
+
+	uint32_t Renderer::hit(int32_t x, int32_t y) const
+	{
+		x = math::clamp(x, 0,  _width - 1);
+		y = math::clamp(y, 0, _height - 1);
+
+		uint32_t const *select = (uint32_t const *)(_selectReader->read());
+		return select[y * _width + x];
 	}
 
 	void Renderer::batch(Frame *frame)
@@ -321,8 +341,10 @@ namespace orbit {
 	{
 		gal::Pipeline &galPipeline = gal::Pipeline::instance();
 
-		galPipeline.setRenderTarget(0, _colorTarget.get());
-		galPipeline.setRenderTarget(1, _glowTarget. get());
+		galPipeline.setRenderTarget(0, _colorTarget. get());
+		galPipeline.setRenderTarget(1, _glowTarget.  get());
+		galPipeline.setRenderTarget(2, _selectTarget.get());
+
 		galPipeline.updateTargets();
 
 		_clear->render(context);
@@ -340,7 +362,9 @@ namespace orbit {
 	{
 		gal::Pipeline &galPipeline = gal::Pipeline::instance();
 
-		galPipeline.setRenderTarget(0, dst);
+		galPipeline.setRenderTarget(0,     dst);
+		galPipeline.setRenderTarget(1, nullptr);
+		galPipeline.setRenderTarget(2, nullptr);
 		galPipeline.updateTargets();
 		
 		_copy->material()->program()->set(_copyParameters.theSource, src);
@@ -385,11 +409,14 @@ namespace orbit {
 		_width = galSystem.width();
 		_height = galSystem.height();
 
+		_selectTarget.reset(gal::RenderTarget2D::create(gal::RenderTarget2D::FORMAT_UINT_R32, _width, _height));
+		_selectReader.reset(gal::TargetReader2D::create(_selectTarget.get(), _width, _height));
+
 		_colorTarget.reset(gal::RenderTarget2D::create(gal::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, _width, _height));
 		_glowTarget.reset(gal::RenderTarget2D::create(gal::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, _width, _height));
 		_blurTarget[0].reset(gal::RenderTarget2D::create(gal::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, _width, _height));
 		_blurTarget[1].reset(gal::RenderTarget2D::create(gal::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, _width, _height));
 	}
 
-}	///	orbit
+}	///	orbit 
 }	///	lucid

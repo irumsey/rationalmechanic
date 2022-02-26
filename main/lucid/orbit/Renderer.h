@@ -14,6 +14,7 @@ namespace gal {
 	class Parameter;
 	class VertexBuffer;
 	class RenderTarget2D;
+	class TargetReader2D;
 
 }	///	gal
 }	///	lucid
@@ -41,6 +42,15 @@ namespace orbit {
 	class Renderer : public Algorithm
 	{
 	public:
+		enum SELECT
+		{
+			SELECT_STAR  = 0x01,
+			SELECT_FRAME = 0x02,
+			SELECT_ORBIT = 0x04,
+			SELECT_OTHER = 0x08,
+		};
+		enum { SELECT_SHIFT = 28 };
+		enum { SELECT_MASK  = 0x0fffffff};
 		Renderer();
 
 		virtual ~Renderer();
@@ -56,6 +66,8 @@ namespace orbit {
 		void shutdown();
 
 		void render(Frame *root, gigl::Context const &context, float32_t time, float32_t interpolant);
+
+		uint32_t hit(int32_t x, int32_t y) const;
 
 	private:
 		enum { BATCH_MAXIMUM = 250 };
@@ -77,8 +89,15 @@ namespace orbit {
 			gal::Parameter const *glowTarget = nullptr;
 		};
 
+		struct StarInstance
+		{
+			uint32_t id;
+			gal::Vector4 parameters;
+		};
+
 		struct MeshInstance
 		{
+			uint32_t                         id;
 			::lucid::gal::Vector3      position;
 			float32_t                     scale;
 			::lucid::gal::Quaternion   rotation;
@@ -106,6 +125,9 @@ namespace orbit {
 		std::unique_ptr<gal::RenderTarget2D> _colorTarget;
 		std::unique_ptr<gal::RenderTarget2D> _glowTarget;
 		std::unique_ptr<gal::RenderTarget2D> _blurTarget[2];
+
+		std::unique_ptr<gal::RenderTarget2D> _selectTarget;
+		std::unique_ptr<gal::TargetReader2D> _selectReader;
 
 		std::unique_ptr<gigl::Mesh> _clear;
 		

@@ -103,6 +103,11 @@ namespace omp
             state.onPaint(this);
         }
 
+        private void onMouseMove(object sender, MouseEventArgs e)
+        {
+            state.onMouseMove(this, e.Location);
+        }
+
         private void onMainViewResize(object sender, EventArgs e)
         {
             state.onMainViewResize(this);

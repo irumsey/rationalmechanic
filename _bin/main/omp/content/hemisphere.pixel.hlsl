@@ -9,6 +9,7 @@ OutputPixel main(InputPixel input)
 
 	output.color = float4((unshaded - shaded) * input.diffuse.a + shaded, 1);
 	output. glow = float4(0, 0, 0, 1);
+	output.   id = input.id;
 
 	return output;
 }

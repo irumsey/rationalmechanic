@@ -31,7 +31,7 @@ namespace d3d11 {
 
 		virtual int32_t height() const override;
 
-		virtual uint8_t const *sample(int32_t x, int32_t y, int32_t width, int32_t height) const override;
+		virtual uint8_t const *read() const override;
 
 	private:
 		///	TBD: this is just for formats of 32 bits per texel.

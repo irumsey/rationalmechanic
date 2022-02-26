@@ -25,10 +25,10 @@ namespace lucid {
 		delete _internal;
 	}
 
-	unsigned int TargetReader2D::sample(int x, int y)
+	unsigned int TargetReader2D::read(int x, int y)
 	{
-		unsigned int const *value = (unsigned int const *)(_internal->sample(x, y, 1, 1));
-		return *value;
+		unsigned int const *value = (unsigned int const *)(_internal->read());
+		return value[y * _internal->width() + x];
 	}
 
 }	///  lucid

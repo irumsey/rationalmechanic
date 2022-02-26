@@ -99,6 +99,8 @@ namespace lucid {
 
 		void Render(Context ^context);
 
+		uint32_t Hit(int x, int y);
+
 		Vector3 ^InterpolatePosition(OrbitalFrame ^frame);
 
 	private:

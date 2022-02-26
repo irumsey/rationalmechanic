@@ -152,16 +152,22 @@ namespace d3d11 {
 		::memset(&descBlend, 0, sizeof(descBlend));
 
 		descBlend.AlphaToCoverageEnable = false;
-		descBlend.IndependentBlendEnable = false;
+		descBlend.IndependentBlendEnable = true;
 
-		descBlend.RenderTarget[0].RenderTargetWriteMask = colorWriteMask;
-		descBlend.RenderTarget[0].BlendEnable = enable;
-		descBlend.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-		descBlend.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-		descBlend.RenderTarget[0].SrcBlend = srcBlend;
-		descBlend.RenderTarget[0].SrcBlendAlpha = srcBlendAlpha;
-		descBlend.RenderTarget[0].DestBlend = dstBlend;
-		descBlend.RenderTarget[0].DestBlendAlpha = dstBlendAlpha;
+		// TBD: data drive blending for all render target channels
+		// for now, just allow targets 0 and 1 to alpha blend
+		for (size_t i = 0; i < 8; ++i)
+		{
+			descBlend.RenderTarget[i].RenderTargetWriteMask = (i < 2) ? colorWriteMask : 0x0f;
+			descBlend.RenderTarget[i].BlendEnable = (i < 2) ? enable : false;
+
+			descBlend.RenderTarget[i].BlendOp = D3D11_BLEND_OP_ADD;
+			descBlend.RenderTarget[i].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+			descBlend.RenderTarget[i].SrcBlend = srcBlend;
+			descBlend.RenderTarget[i].SrcBlendAlpha = srcBlendAlpha;
+			descBlend.RenderTarget[i].DestBlend = dstBlend;
+			descBlend.RenderTarget[i].DestBlendAlpha = dstBlendAlpha;
+		}
 
 		HRESULT hResult = d3d11ConcreteDevice->CreateBlendState(&descBlend, &d3dState);
 		GAL_VALIDATE_HRESULT(hResult, "unable to create blend state");

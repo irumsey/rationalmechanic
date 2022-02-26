@@ -14,6 +14,7 @@ OutputPixel main(InputPixel input)
 
 	output.color = fade * float4(input.color.rgb, alpha) + (1 - fade) * float4(input.color.rgb, 0);
 	output.glow = float4(0, 0, 0, alpha);
+	output.id = input.id;
 
 	return output; 
 }
