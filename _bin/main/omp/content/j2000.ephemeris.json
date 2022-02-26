@@ -65,8 +65,8 @@
           [
 		        {
 			        "range"      : [ 0.0, 300.0 ],
-			        "model"      : [ "content/sun.mesh" ],
-              "color"      : [ 1, 1, 1, 1],
+			        "model"      : [ "content/hemisphere.mesh" ],
+              "color"      : [ 1, 1, 0, 1],
 			        "scale"      : 10.0,
 			        "parameters" : [ 0, 0, 0, 0 ]
 		        },
@@ -187,8 +187,8 @@
           [
 		        {
 			        "range"      : [ 0.0, 20.0 ],
-			        "model"      : [ "content/earth.mesh", "content/atmosphere.mesh" ],
-              "color"      : [ 1, 1, 1, 0],
+			        "model"      : [ "content/hemisphere.mesh" ],
+              "color"      : [ 0.2, 0.2, 1, 0],
 			        "scale"      : 750,
 			        "parameters" : [ 0, 0, 0, 0 ]
 		        },

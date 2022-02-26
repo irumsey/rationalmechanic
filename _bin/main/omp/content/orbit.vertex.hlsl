@@ -18,13 +18,13 @@ OutputVertex main(InputVertex input)
 	float3 tangent = normalize(curvePosition1.xyz - curvePosition0.xyz);
 
 	float3 viewDirection = viewPosition - curvePosition0.xyz;
-	float  viewDistance = length(viewDirection);
+	float   viewDistance = length(viewDirection);
 
-	float3 up = normalize(cross(viewDirection / viewDistance, tangent));
+	float3 e2 = normalize(cross(viewDirection / viewDistance, tangent));
 
 	float width = input.scale * dot(input.vertex.yzw, float3(0, 1, -1));
 
-	output.ppsPosition = mul(viewProjMatrix, float4(curvePosition0.xyz + width * up, 1));
+	output.ppsPosition = mul(viewProjMatrix, float4(curvePosition0.xyz + width * e2, 1));
 	output.   distance = viewDistance;
 	output.      width = 0.5 * (width / input.scale) + 0.5;
 	output.      color = input.color;

@@ -192,8 +192,6 @@ namespace orbit {
 		///	need a data driven method for registering these... 
 		/// ...just read the ephemeris stupid!!!
 		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>(      "content/disk.mesh"), BATCH_MAXIMUM);
-		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>(       "content/sun.mesh"), BATCH_MAXIMUM);
-		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>(     "content/earth.mesh"), BATCH_MAXIMUM);
 		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>("content/atmosphere.mesh"), BATCH_MAXIMUM);
 		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>("content/hemisphere.mesh"), BATCH_MAXIMUM);
 		/// } test
