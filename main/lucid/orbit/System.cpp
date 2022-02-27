@@ -2,6 +2,7 @@
 #include "Ephemeris.h"
 #include "StarCatalog.h"
 #include "Frame.h"
+#include <sstream>
 
 namespace gigl = ::lucid::gigl;
 
@@ -164,18 +165,49 @@ namespace /* anonymous */ {
 		_renderer.render(_root, context, time, interpolant);
 	}
 
-	uint32_t System::hit(int32_t x, int32_t y) const
+	Selection System::hit(int32_t x, int32_t y) const
 	{
 		LUCID_VALIDATE(nullptr != _root, "attempt to use uninitialized system");
 
-		uint32_t id = _renderer.hit(x, y);
-		if (0 == id)
-			return 0;
+		Selection selection;
+		uint32_t code = _renderer.hit(x, y);
+		if (0 == code)
+			return selection;
+
+		selection.type = (Selection::TYPE)((0xf0000000 & code) >> Renderer::SELECT_SHIFT);
+		selection.  id = (Renderer::SELECT_MASK & code);
 
 		// test {
-		// return a "hit object" which contains the information about what was hit
-		return id;
+		std::stringstream ss;
+		if (Selection::TYPE_STAR == selection.type)
+		{
+			StarCatalog const &catalog = StarCatalog::instance();
+			StarCatalog::Entry const &entry = catalog[selection.id];
+
+			ss << "Star (xno): " << entry.xno << " type: " << entry.type << " mag: " << entry.magnitude;
+			selection.description = ss.str();
+		}
+		if (Selection::TYPE_FRAME == selection.type)
+		{
+			Ephemeris const &ephemeris = Ephemeris::instance();
+			Ephemeris::Entry entry;
+			ephemeris.lookup(entry, selection.id);
+			
+			ss << Ephemeris::Entry::type_name[entry.type] << ": " << entry.name;
+			selection.description = ss.str();
+		}
+		if (Selection::TYPE_ORBIT == selection.type)
+		{
+			Ephemeris const &ephemeris = Ephemeris::instance();
+			Ephemeris::Entry entry;
+			ephemeris.lookup(entry, selection.id);
+
+			ss << "Orbit: " << entry.name;
+			selection.description = ss.str();
+		}
 		// } test
+
+		return selection;
 	}
 
 }	///	orbit

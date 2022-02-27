@@ -52,12 +52,15 @@ namespace orbit {
 				TYPE_ORBITAL_BODY  = 2,
 				TYPE_DYNAMIC_BODY  = 3,
 			};
+			enum { TYPE_COUNT = 4 };
 
 			TYPE  type = TYPE_UNDEFINED;
 			size_t  id = 0;
 			size_t cid = 0;
 			std::string name;
 			std::string description;
+
+			static char const *type_name[TYPE_COUNT];
 		};
 
 		virtual ~Ephemeris();
@@ -71,7 +74,9 @@ namespace orbit {
 		Iterator end() const;
 
 		bool lookup(Entry &entry, std::string const &target) const;
-			 			 
+	
+		bool lookup(Entry &entry, size_t target) const;
+
 		bool lookup(PhysicalProperties &properties, std::string const &target) const;
 			 
 		bool lookup(PhysicalProperties &properties, size_t target) const;
@@ -92,16 +97,23 @@ namespace orbit {
 	private:
 		typedef std::vector<Elements> elements_vec_t;
 
-		typedef std::unordered_map<std::string, Entry> entry_map_t;
+		typedef std::unordered_map<std::string, size_t> id_map_t;
+
+		typedef std::unordered_map<size_t, Entry> entry_map_t;
 		typedef std::unordered_map<size_t, PhysicalProperties> physical_properties_map_t;
 		typedef std::unordered_map<size_t, RenderProperties> render_properties_map_t;
 		typedef std::unordered_map<size_t, elements_vec_t> elements_map_t;
 
 		ordinal_vec_t _order;
-		entry_map_t _entries;
+
+		id_map_t _ids;
+
+		entry_map_t _entries;	
 		physical_properties_map_t _physicalProperties;
 		render_properties_map_t _renderProperties;
 		elements_map_t _elements;
+
+		size_t lookup(std::string const &target) const;
 
 		LUCID_PREVENT_COPY(Ephemeris);
 		LUCID_PREVENT_ASSIGNMENT(Ephemeris);
@@ -119,7 +131,16 @@ namespace orbit {
 
 	inline bool Ephemeris::lookup(Entry &entry, std::string const &target) const
 	{
-		auto iter = _entries.find(target);
+		size_t id = lookup(target);
+		if (-1 == id)
+			return false;
+
+		return lookup(entry, id);
+	}
+
+	inline bool Ephemeris::lookup(Entry &entry, size_t id) const
+	{
+		auto iter = _entries.find(id);
 		if (iter == _entries.end())
 			return false;
 
@@ -130,35 +151,38 @@ namespace orbit {
 
 	inline bool Ephemeris::lookup(PhysicalProperties &properties, std::string const &target) const
 	{
-		auto iter = _entries.find(target);
-		if (iter == _entries.end())
+		size_t id = lookup(target);
+		if (-1 == id)
 			return false;
 
-		Entry const &entry = iter->second;
-
-		return lookup(properties, entry.id);
+		return lookup(properties, id);
 	}
 
 	inline bool Ephemeris::lookup(RenderProperties &properties, std::string const &target) const
 	{
-		auto iter = _entries.find(target);
-		if (iter == _entries.end())
+		size_t id = lookup(target);
+		if (-1 == id)
 			return false;
 
-		Entry const &entry = iter->second;
-
-		return lookup(properties, entry.id);
+		return lookup(properties, id);
 	}
 
 	inline bool Ephemeris::lookup(Elements &elements, std::string const &target, scalar_t jdn) const
 	{
-		auto iter = _entries.find(target);
-		if (iter == _entries.end())
+		size_t id = lookup(target);
+		if (-1 == id)
 			return false;
 
-		Entry const &entry = iter->second;
+		return lookup(elements, id, jdn);
+	}
 
-		return lookup(elements, entry.id, jdn);
+	inline size_t Ephemeris::lookup(std::string const &target) const
+	{
+		auto iter = _ids.find(target);
+		if (iter == _ids.end())
+			return -1;
+
+		return iter->second;
 	}
 
 }	///	orbit

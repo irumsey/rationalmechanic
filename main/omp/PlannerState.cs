@@ -133,10 +133,8 @@ namespace omp
 
             public override void onMouseMove(Planner planner, Point point)
             {
-                uint   code = planner.orbitalMechainics.Hit(point.X, point.Y);
-                uint prefix = ((0xf0000000 & code) >> 28);
-                uint     id = (0x0fffffff & code);
-                planner.statusLabel.Text = point.ToString() + " " + id.ToString();
+                lucid.OrbitalSelection selection = planner.orbitalMechainics.Hit(point.X, point.Y);
+                planner.statusLabel.Text = selection.Description;
             }
 
             public override void onTrackFrame(Planner planner, ListViewItem item)

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <unordered_map>
 #include <lucid/core/Noncopyable.h>
 #include <lucid/core/Types.h>
@@ -32,6 +33,25 @@ namespace orbit {
 
 	///
 	///
+	/// 
+	struct Selection
+	{
+		enum TYPE
+		{
+			TYPE_NONE  = 0,
+			TYPE_STAR  = Renderer::SELECT_STAR,
+			TYPE_FRAME = Renderer::SELECT_FRAME,
+			TYPE_ORBIT = Renderer::SELECT_ORBIT,
+			TYPE_OTHER = Renderer::SELECT_OTHER,
+		};
+		 
+		TYPE type = TYPE_NONE;
+		uint32_t id = 0;
+		std::string description = "none";
+	};
+
+	///
+	///
 	///
 	class System
 	{
@@ -60,7 +80,7 @@ namespace orbit {
 
 		void render(::lucid::gigl::Context const &context, float32_t time, float32_t interpolant);
 
-		uint32_t hit(int32_t x, int32_t y) const;
+		Selection hit(int32_t x, int32_t y) const;
 
 	private:
 		typedef std::unordered_map<size_t, Frame *> frame_map_t;

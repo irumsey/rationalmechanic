@@ -25,6 +25,7 @@ namespace orbit {
 			float64_t declination = 0.0;
 			float32_t magnitude = 0.f;
 		};
+
 		typedef std::vector<Entry> ordinal_vec_t;
 		typedef ordinal_vec_t::const_iterator Iterator;
 

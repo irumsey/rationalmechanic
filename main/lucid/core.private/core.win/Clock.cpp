@@ -11,7 +11,7 @@ namespace core {
 
 	Clock *Clock::create()
 	{
-		return new ::lucid::core::win::Clock();
+		return new win::Clock();
 	}
 
 }	/// core

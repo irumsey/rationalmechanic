@@ -27,6 +27,21 @@ namespace { /// anonymous
 namespace lucid {
 namespace orbit {
 
+	//
+	//
+	//
+
+	char const *Ephemeris::Entry::type_name[TYPE_COUNT] = {
+		"Undefined",
+		"Dynamic Point",
+		"Orbital Body",
+		"Dynamic Body",
+	};
+
+	//
+	//
+	//
+
 	Ephemeris::Ephemeris()
 	{
 	}
@@ -61,7 +76,9 @@ namespace orbit {
 			target.cid = center.id;
 
 			_order.push_back(target.name);
-			_entries.insert(std::make_pair(target.name, target));
+
+			_ids.insert(std::make_pair(target.name, target.id));
+			_entries.insert(std::make_pair(target.id, target));
 
 			///	TBD: break this, and the other types, out into their own functions...
 			///	for now, orbital body is the only type with extra information

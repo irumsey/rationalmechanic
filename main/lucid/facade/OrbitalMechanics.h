@@ -19,8 +19,9 @@ namespace  core {
 namespace lucid {
 namespace orbit {
 
-	class Frame;
-	class System;
+	struct Selection;
+	class      Frame;
+	class     System;
 
 }	///	orbit
 }	///	lucid
@@ -30,13 +31,38 @@ namespace lucid {
 	ref class Vector3;
 	ref class Context;
 
+	///
+	///
+	/// 
+	public ref class OrbitalSelection
+	{
+	public:
+		OrbitalSelection(orbit::Selection *selection);
+
+		~OrbitalSelection();
+
+		!OrbitalSelection();
+
+		property unsigned int ID { unsigned int get(); }
+
+		property System::String ^Description { System::String ^get();  }
+
+		property orbit::Selection &ref { orbit::Selection &get() { return *_internal; } }
+
+		property orbit::Selection *ptr { orbit::Selection *get() { return _internal; } }
+
+	private:
+		orbit::Selection *_internal = nullptr;
+
+	};
+
 	///	OrbitalFrame
 	///
 	///	Managed wrapper for an orbital frame
 	public ref class OrbitalFrame
 	{
 	public:
-		OrbitalFrame(::lucid::orbit::Frame *frame);
+		OrbitalFrame(orbit::Frame *frame);
 
 		~OrbitalFrame();
 
@@ -58,12 +84,12 @@ namespace lucid {
 
 		property Vector3 ^AbsolutePosition { Vector3 ^get(); }
 
-		property ::lucid::orbit::Frame &ref { ::lucid::orbit::Frame &get() { return *_internal; } }
+		property orbit::Frame &ref { orbit::Frame &get() { return *_internal; } }
 
-		property ::lucid::orbit::Frame *ptr { ::lucid::orbit::Frame *get() { return  _internal; } }
+		property orbit::Frame *ptr { orbit::Frame *get() { return  _internal; } }
 
 	private:
-		::lucid::orbit::Frame *_internal = nullptr;
+		orbit::Frame *_internal = nullptr;
 
 	};
 
@@ -73,7 +99,7 @@ namespace lucid {
 	public ref class OrbitalMechanics
 	{
 	public:
-		typedef ::lucid::orbit::scalar_t scalar_t;
+		typedef orbit::scalar_t scalar_t;
 
 		OrbitalMechanics(System::String ^catalog, System::String ^ephemeris, scalar_t dayNumber);
 
@@ -99,7 +125,7 @@ namespace lucid {
 
 		void Render(Context ^context);
 
-		uint32_t Hit(int x, int y);
+		OrbitalSelection ^Hit(int x, int y);
 
 		Vector3 ^InterpolatePosition(OrbitalFrame ^frame);
 
@@ -113,8 +139,8 @@ namespace lucid {
 		scalar_t           _simTime = 0;
 		float32_t _frameInterpolant = 0;
 
-		::lucid:: core::Clock               *_clock = nullptr;
-		::lucid::orbit::System      *_orbitalSystem = nullptr;
+		core::Clock               *_clock = nullptr;
+		orbit::System     *_orbitalSystem = nullptr;
 
 	};
 

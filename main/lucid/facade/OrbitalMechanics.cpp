@@ -32,9 +32,38 @@ namespace lucid {
 
 	///
 	///
+	/// 
+	
+	OrbitalSelection::OrbitalSelection(orbit::Selection *selection)
+		: _internal(selection)
+	{
+	}
+
+	OrbitalSelection::~OrbitalSelection()
+	{
+		this->!OrbitalSelection();
+	}
+
+	OrbitalSelection::!OrbitalSelection()
+	{
+		delete _internal;
+	}
+
+	unsigned int OrbitalSelection::ID::get()
+	{
+		return _internal->id;
+	}
+
+	System::String ^OrbitalSelection::Description::get()
+	{
+		return MI::marshal_as<System::String ^>(_internal->description);
+	}
+
+	///
+	///
 	///
 
-	OrbitalFrame::OrbitalFrame(::lucid::orbit::Frame *frame)
+	OrbitalFrame::OrbitalFrame(orbit::Frame *frame)
 		: _internal(frame)
 	{
 		LUCID_VALIDATE(nullptr != _internal, "internal consistency error");
@@ -201,9 +230,9 @@ namespace lucid {
 		_orbitalSystem->render(context->ref, float32_t(_wallTime), _frameInterpolant);
 	}
 
-	uint32_t OrbitalMechanics::Hit(int x, int y)
+	OrbitalSelection ^OrbitalMechanics::Hit(int x, int y)
 	{
-		return _orbitalSystem->hit(x, y);
+		return gcnew OrbitalSelection(new orbit::Selection(_orbitalSystem->hit(x, y)));
 	}
 
 	OrbitalFrame ^OrbitalMechanics::RootFrame()

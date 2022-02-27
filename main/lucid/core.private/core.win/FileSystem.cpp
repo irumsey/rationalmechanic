@@ -12,7 +12,7 @@ namespace core {
 
 	FileSystem &FileSystem::instance()
 	{
-		return ::lucid::core::win::FileSystem::instance();
+		return win::FileSystem::instance();
 	}
 
 }	///	core
