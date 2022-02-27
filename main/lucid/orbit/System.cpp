@@ -175,7 +175,7 @@ namespace /* anonymous */ {
 			return selection;
 
 		selection.type = (Selection::TYPE)((0xf0000000 & code) >> Renderer::SELECT_SHIFT);
-		selection.  id = (Renderer::SELECT_MASK & code);
+		selection.id = (Renderer::SELECT_MASK & code);
 
 		// test {
 		std::stringstream ss;

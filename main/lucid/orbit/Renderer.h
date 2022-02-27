@@ -42,15 +42,20 @@ namespace orbit {
 	class Renderer : public Algorithm
 	{
 	public:
+		///	SELECT
+		/// 
+		///	Codes used to render into the render target.
+		/// Used for "pixel perfect" selection.
 		enum SELECT
 		{
 			SELECT_STAR  = 0x01,
 			SELECT_FRAME = 0x02,
-			SELECT_ORBIT = 0x04,
-			SELECT_OTHER = 0x08,
+			SELECT_ORBIT = 0x03,
+			SELECT_OTHER = 0x0f,
 		};
 		enum { SELECT_SHIFT = 28 };
 		enum { SELECT_MASK  = 0x0fffffff};
+
 		Renderer();
 
 		virtual ~Renderer();

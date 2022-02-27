@@ -7,6 +7,7 @@
 #include <lucid/core/Error.h>
 #include <lucid/orbit/Types.h>
 #include <lucid/orbit/Constants.h>
+#include <lucid/orbit/Selection.h>
 #include <lucid/orbit/Simulator.h>
 #include <lucid/orbit/Renderer.h>
 
@@ -30,25 +31,6 @@ namespace lucid {
 namespace orbit {
 
 	class Frame;
-
-	///
-	///
-	/// 
-	struct Selection
-	{
-		enum TYPE
-		{
-			TYPE_NONE  = 0,
-			TYPE_STAR  = Renderer::SELECT_STAR,
-			TYPE_FRAME = Renderer::SELECT_FRAME,
-			TYPE_ORBIT = Renderer::SELECT_ORBIT,
-			TYPE_OTHER = Renderer::SELECT_OTHER,
-		};
-		 
-		TYPE type = TYPE_NONE;
-		uint32_t id = 0;
-		std::string description = "none";
-	};
 
 	///
 	///
