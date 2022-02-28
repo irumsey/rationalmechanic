@@ -27,6 +27,7 @@ namespace orbit {
 
 		TYPE type = TYPE_NONE;
 		uint32_t id = 0;
+		std::string name = "none";
 		std::string description = "no selection";
 	};
 

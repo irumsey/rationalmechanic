@@ -184,7 +184,9 @@ namespace /* anonymous */ {
 			StarCatalog const &catalog = StarCatalog::instance();
 			StarCatalog::Entry const &entry = catalog[selection.id];
 
-			ss << "Star (xno): " << entry.xno << " type: " << entry.type << " mag: " << entry.magnitude;
+			ss << "BSC5: " << entry.xno << " type: " << entry.type << " mag: " << entry.magnitude;
+
+			selection.name = "Star";
 			selection.description = ss.str();
 		}
 		if (Selection::TYPE_FRAME == selection.type)
@@ -194,6 +196,8 @@ namespace /* anonymous */ {
 			ephemeris.lookup(entry, selection.id);
 			
 			ss << Ephemeris::Entry::type_name[entry.type] << ": " << entry.name;
+
+			selection.name = entry.name;
 			selection.description = ss.str();
 		}
 		if (Selection::TYPE_ORBIT == selection.type)
@@ -202,7 +206,9 @@ namespace /* anonymous */ {
 			Ephemeris::Entry entry;
 			ephemeris.lookup(entry, selection.id);
 
-			ss << "Orbit: " << entry.name;
+			ss << entry.name << "'s orbit";
+
+			selection.name = entry.name;
 			selection.description = ss.str();
 		}
 		// } test

@@ -117,9 +117,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\lucid\facade\facade.vcxproj">
-      <Project>{615b47a4-4ea1-4e5c-af60-820cd473d542}</Project>
-      <Name>facade</Name>
+    <ProjectReference Include="..\lucid\managed\managed.vcxproj">
+      <Project>{6e26bd67-6085-4afc-b978-d5e9e0b1d193}</Project>
+      <Name>managed</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

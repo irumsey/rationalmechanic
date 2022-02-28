@@ -1,0 +1,179 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Assembly">
+      <UniqueIdentifier>{ace516af-8bba-4ae6-90c6-f15b1d5f71c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{47afa07c-353b-4010-b0ba-54e142556b07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math">
+      <UniqueIdentifier>{57c0681b-850d-4355-baba-a513b145c6c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GAL">
+      <UniqueIdentifier>{641ded74-e9a3-4e67-be58-ee8b52876fed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GIGL">
+      <UniqueIdentifier>{b7322c3e-496f-41d8-90e2-027dccb69ee9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Orbit">
+      <UniqueIdentifier>{f9d1ba22-8714-4295-acda-c7320218db4b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Resource.h">
+      <Filter>Assembly</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Clock.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Logger.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Profiler.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="GAL\VertexBuffer.h">
+      <Filter>GAL</Filter>
+    </ClInclude>
+    <ClInclude Include="GAL\VertexFormat.h">
+      <Filter>GAL</Filter>
+    </ClInclude>
+    <ClInclude Include="GAL\DepthTarget2D.h">
+      <Filter>GAL</Filter>
+    </ClInclude>
+    <ClInclude Include="GAL\IndexBuffer.h">
+      <Filter>GAL</Filter>
+    </ClInclude>
+    <ClInclude Include="GAL\Pipeline.h">
+      <Filter>GAL</Filter>
+    </ClInclude>
+    <ClInclude Include="GAL\Program.h">
+      <Filter>GAL</Filter>
+    </ClInclude>
+    <ClInclude Include="GAL\RenderTarget2D.h">
+      <Filter>GAL</Filter>
+    </ClInclude>
+    <ClInclude Include="GAL\TargetReader2D.h">
+      <Filter>GAL</Filter>
+    </ClInclude>
+    <ClInclude Include="GAL\Texture2D.h">
+      <Filter>GAL</Filter>
+    </ClInclude>
+    <ClInclude Include="GAL\Unordered2D.h">
+      <Filter>GAL</Filter>
+    </ClInclude>
+    <ClInclude Include="GIGL\Camera2D.h">
+      <Filter>GIGL</Filter>
+    </ClInclude>
+    <ClInclude Include="GIGL\Context.h">
+      <Filter>GIGL</Filter>
+    </ClInclude>
+    <ClInclude Include="GIGL\Geometry.h">
+      <Filter>GIGL</Filter>
+    </ClInclude>
+    <ClInclude Include="GIGL\Material.h">
+      <Filter>GIGL</Filter>
+    </ClInclude>
+    <ClInclude Include="GIGL\Mesh.h">
+      <Filter>GIGL</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Math.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Orbit\OrbitalMechanics.h">
+      <Filter>Orbit</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Types.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="GAL\Types.h">
+      <Filter>GAL</Filter>
+    </ClInclude>
+    <ClInclude Include="GAL\Parameter.h">
+      <Filter>GAL</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AssemblyInfo.cpp">
+      <Filter>Assembly</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Clock.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Logger.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Profiler.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="GAL\VertexBuffer.cpp">
+      <Filter>GAL</Filter>
+    </ClCompile>
+    <ClCompile Include="GAL\VertexFormat.cpp">
+      <Filter>GAL</Filter>
+    </ClCompile>
+    <ClCompile Include="GAL\DepthTarget2D.cpp">
+      <Filter>GAL</Filter>
+    </ClCompile>
+    <ClCompile Include="GAL\IndexBuffer.cpp">
+      <Filter>GAL</Filter>
+    </ClCompile>
+    <ClCompile Include="GAL\Pipeline.cpp">
+      <Filter>GAL</Filter>
+    </ClCompile>
+    <ClCompile Include="GAL\Program.cpp">
+      <Filter>GAL</Filter>
+    </ClCompile>
+    <ClCompile Include="GAL\RenderTarget2D.cpp">
+      <Filter>GAL</Filter>
+    </ClCompile>
+    <ClCompile Include="GAL\TargetReader2D.cpp">
+      <Filter>GAL</Filter>
+    </ClCompile>
+    <ClCompile Include="GAL\Texture2D.cpp">
+      <Filter>GAL</Filter>
+    </ClCompile>
+    <ClCompile Include="GAL\Unordered2D.cpp">
+      <Filter>GAL</Filter>
+    </ClCompile>
+    <ClCompile Include="GIGL\Camera2D.cpp">
+      <Filter>GIGL</Filter>
+    </ClCompile>
+    <ClCompile Include="GIGL\Context.cpp">
+      <Filter>GIGL</Filter>
+    </ClCompile>
+    <ClCompile Include="GIGL\Geometry.cpp">
+      <Filter>GIGL</Filter>
+    </ClCompile>
+    <ClCompile Include="GIGL\Material.cpp">
+      <Filter>GIGL</Filter>
+    </ClCompile>
+    <ClCompile Include="GIGL\Mesh.cpp">
+      <Filter>GIGL</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Math.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Orbit\OrbitalMechanics.cpp">
+      <Filter>Orbit</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Types.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="GAL\Parameter.cpp">
+      <Filter>GAL</Filter>
+    </ClCompile>
+    <ClCompile Include="Link.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="app.ico">
+      <Filter>Assembly</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="app.rc">
+      <Filter>Assembly</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

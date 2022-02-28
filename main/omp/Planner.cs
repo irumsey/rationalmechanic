@@ -17,15 +17,15 @@ namespace omp
     {
         private State state = Stopped.Instance;
 
-        private lucid.OrbitalMechanics orbitalMechainics = null;
+        private Lucid.Orbit.OrbitalMechanics orbitalMechainics = null;
 
         private float aspectRatio = 1.0f;
-        private lucid.Context renderContext = null;
+        private Lucid.GIGL.Context renderContext = null;
 
-        private lucid.Camera2D camera = null;
-        private lucid.OrbitalFrame cameraFrame = null;
+        private Lucid.GIGL.Camera2D camera = null;
+        private Lucid.Orbit.OrbitalFrame cameraFrame = null;
 
-        private lucid.OrbitalFrame trackedFrame = null;
+        private Lucid.Orbit.OrbitalFrame trackedFrame = null;
         private ListViewItem trackedFrameItem = null;
 
         public Planner()
@@ -106,6 +106,11 @@ namespace omp
         private void onMouseMove(object sender, MouseEventArgs e)
         {
             state.onMouseMove(this, e.Location);
+        }
+
+        private void onMouseClick(object sender, MouseEventArgs e)
+        {
+            state.onMouseClick(this, e.Location);
         }
 
         private void onMainViewResize(object sender, EventArgs e)

@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Planner));
             this.mainStatusStrip = new System.Windows.Forms.StatusStrip();
+            this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.mainMenu = new System.Windows.Forms.MenuStrip();
             this.mainMenuFile = new System.Windows.Forms.ToolStripMenuItem();
             this.mainMenuFileNewMission = new System.Windows.Forms.ToolStripMenuItem();
@@ -51,7 +52,6 @@
             this.orbitFrameListName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.orbitalFrameListDescription = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.orbitalFrameListImages = new System.Windows.Forms.ImageList(this.components);
-            this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.mainStatusStrip.SuspendLayout();
             this.mainMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mainSplitter)).BeginInit();
@@ -70,6 +70,12 @@
             this.mainStatusStrip.Size = new System.Drawing.Size(1239, 26);
             this.mainStatusStrip.TabIndex = 0;
             this.mainStatusStrip.Text = "Status";
+            // 
+            // statusLabel
+            // 
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(47, 20);
+            this.statusLabel.Text = "status";
             // 
             // mainMenu
             // 
@@ -181,6 +187,7 @@
             // mainSplitter.Panel1
             // 
             this.mainSplitter.Panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.onPaint);
+            this.mainSplitter.Panel1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.onMouseClick);
             this.mainSplitter.Panel1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.onMouseMove);
             this.mainSplitter.Panel1.Resize += new System.EventHandler(this.onMainViewResize);
             // 
@@ -188,7 +195,7 @@
             // 
             this.mainSplitter.Panel2.Controls.Add(this.orbitalFrameList);
             this.mainSplitter.Size = new System.Drawing.Size(1239, 484);
-            this.mainSplitter.SplitterDistance = 937;
+            this.mainSplitter.SplitterDistance = 936;
             this.mainSplitter.SplitterWidth = 5;
             this.mainSplitter.TabIndex = 2;
             // 
@@ -207,7 +214,7 @@
             this.orbitalFrameList.Margin = new System.Windows.Forms.Padding(4);
             this.orbitalFrameList.MultiSelect = false;
             this.orbitalFrameList.Name = "orbitalFrameList";
-            this.orbitalFrameList.Size = new System.Drawing.Size(297, 484);
+            this.orbitalFrameList.Size = new System.Drawing.Size(298, 484);
             this.orbitalFrameList.StateImageList = this.orbitalFrameListImages;
             this.orbitalFrameList.TabIndex = 0;
             this.orbitalFrameList.UseCompatibleStateImageBehavior = false;
@@ -241,12 +248,6 @@
             this.orbitalFrameListImages.TransparentColor = System.Drawing.Color.Transparent;
             this.orbitalFrameListImages.Images.SetKeyName(0, "notLinked.png");
             this.orbitalFrameListImages.Images.SetKeyName(1, "linked.png");
-            // 
-            // statusLabel
-            // 
-            this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(47, 20);
-            this.statusLabel.Text = "status";
             // 
             // Planner
             // 

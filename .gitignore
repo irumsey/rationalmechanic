@@ -323,3 +323,6 @@ ModelManifest.xml
 /_bin/main/omp/content/copy.pixel.cso
 /_bin/main/omp/content/clear.pixel.cso
 /_bin/main/omp/content/blur.pixel.cso
+/_bin/main/omp/Lucid.64d.dll
+/_lib/Lucid.64d.dll
+/_lib/Lucid.64d.dll.metagen

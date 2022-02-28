@@ -17,7 +17,7 @@ namespace omp
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            lucid.Profiler profiler = new lucid.Profiler();
+            Lucid.Core.Profiler profiler = new Lucid.Core.Profiler();
 
             Planner planner = new Planner();
             planner.Show();
