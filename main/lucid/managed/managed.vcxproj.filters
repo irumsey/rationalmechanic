@@ -81,9 +81,6 @@
     <ClInclude Include="Math\Math.h">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="Orbit\OrbitalMechanics.h">
-      <Filter>Orbit</Filter>
-    </ClInclude>
     <ClInclude Include="Math\Types.h">
       <Filter>Math</Filter>
     </ClInclude>
@@ -92,6 +89,27 @@
     </ClInclude>
     <ClInclude Include="GAL\Parameter.h">
       <Filter>GAL</Filter>
+    </ClInclude>
+    <ClInclude Include="Orbit\Elements.h">
+      <Filter>Orbit</Filter>
+    </ClInclude>
+    <ClInclude Include="Orbit\Properties.h">
+      <Filter>Orbit</Filter>
+    </ClInclude>
+    <ClInclude Include="Orbit\Selection.h">
+      <Filter>Orbit</Filter>
+    </ClInclude>
+    <ClInclude Include="Orbit\Ephemeris.h">
+      <Filter>Orbit</Filter>
+    </ClInclude>
+    <ClInclude Include="Orbit\StarCatalog.h">
+      <Filter>Orbit</Filter>
+    </ClInclude>
+    <ClInclude Include="Orbit\Frame.h">
+      <Filter>Orbit</Filter>
+    </ClInclude>
+    <ClInclude Include="Orbit\Mechanics.h">
+      <Filter>Orbit</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -155,9 +173,6 @@
     <ClCompile Include="Math\Math.cpp">
       <Filter>Math</Filter>
     </ClCompile>
-    <ClCompile Include="Orbit\OrbitalMechanics.cpp">
-      <Filter>Orbit</Filter>
-    </ClCompile>
     <ClCompile Include="Math\Types.cpp">
       <Filter>Math</Filter>
     </ClCompile>
@@ -165,6 +180,27 @@
       <Filter>GAL</Filter>
     </ClCompile>
     <ClCompile Include="Link.cpp" />
+    <ClCompile Include="Orbit\Elements.cpp">
+      <Filter>Orbit</Filter>
+    </ClCompile>
+    <ClCompile Include="Orbit\Properties.cpp">
+      <Filter>Orbit</Filter>
+    </ClCompile>
+    <ClCompile Include="Orbit\Selection.cpp">
+      <Filter>Orbit</Filter>
+    </ClCompile>
+    <ClCompile Include="Orbit\Ephemeris.cpp">
+      <Filter>Orbit</Filter>
+    </ClCompile>
+    <ClCompile Include="Orbit\StarCatalog.cpp">
+      <Filter>Orbit</Filter>
+    </ClCompile>
+    <ClCompile Include="Orbit\Frame.cpp">
+      <Filter>Orbit</Filter>
+    </ClCompile>
+    <ClCompile Include="Orbit\Mechanics.cpp">
+      <Filter>Orbit</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="app.ico">

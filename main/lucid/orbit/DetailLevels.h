@@ -48,13 +48,13 @@ namespace orbit {
 		///
 		struct Level
 		{
-			std::shared_ptr<::lucid::gigl::Model> model;
+			std::shared_ptr<gigl::Model> model;
 
 			float32_t range[2] = { 0.f, 0.f, };
 
-			::lucid::gal::Color color;
+			gal::Color color;
 			float32_t scale = 1.f;
-			::lucid::gal::Vector4 parameters;
+			gal::Vector4 parameters;
 		};
 
 		std::vector<Level> levels;
@@ -74,7 +74,7 @@ namespace orbit {
 
 		size_t level(float32_t distance);
 
-		void read(::lucid::core::Reader &reader);
+		void read(core::Reader &reader);
 	};
 
 }	///	orbit

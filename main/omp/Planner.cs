@@ -17,15 +17,15 @@ namespace omp
     {
         private State state = Stopped.Instance;
 
-        private Lucid.Orbit.OrbitalMechanics orbitalMechainics = null;
+        private Lucid.Orbit.Mechanics orbitalMechainics = null;
 
         private float aspectRatio = 1.0f;
         private Lucid.GIGL.Context renderContext = null;
 
         private Lucid.GIGL.Camera2D camera = null;
-        private Lucid.Orbit.OrbitalFrame cameraFrame = null;
+        private Lucid.Orbit.Frame cameraFrame = null;
 
-        private Lucid.Orbit.OrbitalFrame trackedFrame = null;
+        private Lucid.Orbit.Frame trackedFrame = null;
         private ListViewItem trackedFrameItem = null;
 
         public Planner()
@@ -89,6 +89,8 @@ namespace omp
             Properties.Settings.Default.SplitterDistance = mainSplitter.SplitterDistance;
 
             Properties.Settings.Default.Save();
+
+            changeState(Stopping.Instance);
         }
 
         private void changeState(State next)
@@ -137,6 +139,7 @@ namespace omp
         private void onFileExit(object sender, EventArgs e)
         {
             changeState(Stopping.Instance);
+            Application.Exit();
         }
 
         private void onViewSettings(object sender, EventArgs e)

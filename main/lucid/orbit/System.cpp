@@ -56,8 +56,9 @@ namespace /* anonymous */ {
 	///
 	///
 
-	System::System()
+	System::System(scalar_t dayNumber)
 	{
+		initialize(dayNumber);
 	}
 
 	System::~System()
@@ -92,7 +93,12 @@ namespace /* anonymous */ {
 			parent->addChild(frame);
 		}
 
+		///
+		///	frame 0 is the root frame
+		///
+
 		_root = _frames[0];
+		_root->centerFrame = _root;
 
 		///
 		///	bootstrap simulation
@@ -110,42 +116,34 @@ namespace /* anonymous */ {
 		_renderer.shutdown();
 		_simulator.shutdown();
 
-		for each (auto iter in _frames)
-			delete iter.second;
-		_frames.clear();
-
+		delete _root;
 		_root = nullptr;
-	}
 
-	Frame *System::create(size_t type, std::string const &name, std::string const &description)
-	{
-		///	TBD: find better way (jpl horizons -> local file -> ephemeris -> frame type, plus c++ -> c#)
-		LUCID_VALIDATE((0 < type) && (type < 4), "frame type id out of range");
-
-		Frame *frame = createFrame[type](genFrameID(), name, description);
-		LUCID_VALIDATE(_frames.end() == _frames.find(frame->id), "internal error: new frame id clashes with an existing");
-
-		_frames.insert(std::make_pair(frame->id, frame));
-	
-		return frame;
+		_frames.clear();
 	}
 
 	void System::attach(Frame *center, Frame *frame)
 	{
-		LUCID_VALIDATE(_frames.end() != _frames.find(center->id), "attempt to attach to center not managed by system");
-		LUCID_VALIDATE(_frames.end() != _frames.find(frame ->id), "attempt to attach frame not managed by system");
+		LUCID_VALIDATE(nullptr == frame->centerFrame, "attempt to attach a non-detached frame");
+		LUCID_VALIDATE(_frames.end() != _frames.find(center->id), "attempt to attach to a center not managed by system");
+		LUCID_VALIDATE(_frames.end() == _frames.find(frame->id), "attempt to attach a frame already managed by system");
 
+		_frames.insert(std::make_pair(frame->id, frame));
 		center->addChild(frame);	
 	}
 
 	void System::detach(Frame *frame)
 	{
-		LUCID_VALIDATE(_frames.end() != _frames.find(frame->id), "attempt to detach frame not managed by system");
-
 		Frame *center = frame->centerFrame;
-		LUCID_VALIDATE(nullptr != center, "attempt to detach root frame");
+		auto iter = _frames.find(frame->id);
+
+		LUCID_VALIDATE(nullptr != center, "attempt to detach an already detached frame");
+		LUCID_VALIDATE(frame != center, "attempt to detach a root frame");
+		LUCID_VALIDATE(_root != frame, "attempt to detach the root frame");
+		LUCID_VALIDATE(iter != _frames.end(), "attempt to detach a frame not managed by system");
 
 		center->removeChild(frame);
+		_frames.erase(iter);
 	}
 
 	void System::update(scalar_t delta)

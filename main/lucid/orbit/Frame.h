@@ -19,8 +19,19 @@ namespace orbit {
 	///	Frame
 	///
 	///	A frame of reference.
-	///	Note: the "cascade delete behaviour" has been removed.  orbit::System, or other creator, now
-	///	takes complete ownership of its frames and must delete them.
+	/// 
+	///	Note: cascading delete is used.  a frame will delete its children causing those
+	/// children to delete their children, etc.
+	/// 
+	/// Note: concerning ownership rules.
+	///		1)	if the parent, centerFrame, is null then the frame is detached from
+	///			a hierarchy and ownership passes to whatever "detached" the frame.
+	///		2)	if the parent is not-null and is equal to itself, it is a root
+	///			frame and the owner is the one which made it a root frame.
+	///		3)	if the parent is not-null and not equal to itself, it is a child frame
+	///			and the owner is its parent. 
+	///		4)	a parent frame always owns its children and will delete them when
+	///			it is deleted.
 	class Frame
 	{
 	public:
@@ -38,7 +49,7 @@ namespace orbit {
 
 		vector3_t absolutePosition[2];
 
-		virtual ~Frame() = default;
+		virtual ~Frame();
 
 		void addChild(Frame *child);
 

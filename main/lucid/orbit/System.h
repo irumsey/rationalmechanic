@@ -32,13 +32,13 @@ namespace orbit {
 
 	class Frame;
 
+	///	System
 	///
-	///
-	///
+	///	TBD: the whole frame creation system is not good. fix it.
 	class System
 	{
 	public:
-		System();
+		System(scalar_t dayNumber);
 
 		virtual ~System();
 
@@ -47,8 +47,6 @@ namespace orbit {
 		void shutdown();
 
 		scalar_t currentDayNumber() const;
-
-		Frame *create(size_t type, std::string const &name, std::string const &description);
 
 		Frame *root() const;
 
@@ -74,9 +72,6 @@ namespace orbit {
 		
 		Frame *_root = nullptr;
 		frame_map_t _frames;
-
-		size_t _idNext = 1000;	///	TBD: need better id generation method
-		size_t genFrameID() { return ++_idNext; }
 
 		LUCID_PREVENT_COPY(System);
 		LUCID_PREVENT_ASSIGNMENT(System);

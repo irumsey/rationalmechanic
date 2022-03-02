@@ -8,14 +8,6 @@
 #include <lucid/orbit/DetailLevels.h>
 
 namespace lucid {
-namespace gigl {
-
-	class Mesh;
-
-}	///	gigl
-}	///	lucid
-
-namespace lucid {
 namespace orbit {
 
 	///	PhysicalProperties
@@ -29,14 +21,14 @@ namespace orbit {
 
 		PhysicalProperties() = default;
 
-		PhysicalProperties(::lucid::core::Reader &reader)
+		PhysicalProperties(core::Reader &reader)
 		{
 			read(reader);
 		}
 
 		~PhysicalProperties() = default;
 
-		void read(::lucid::core::Reader &reader)
+		void read(core::Reader &reader)
 		{
 			GM     = reader.read<scalar_t>();
 			mass   = reader.read<scalar_t>();
@@ -55,14 +47,14 @@ namespace orbit {
 
 		RenderProperties() = default;
 
-		RenderProperties(::lucid::core::Reader &reader)
+		RenderProperties(core::Reader &reader)
 		{
 			read(reader);
 		}
 
 		~RenderProperties() = default;
 
-		void read(::lucid::core::Reader &reader)
+		void read(core::Reader &reader)
 		{
 			detailLevels.read(reader);
 			///	TBD: and others...

@@ -85,7 +85,17 @@
       "ProjectGuid": "615b47a4-4ea1-4e5c-af60-820cd473d542",
       "DisplayName": "facade",
       "ColorIndex": 15
+    },
+    "0f9e01bb-96cd-4b2a-a08b-5cf8cc2ee983": {
+      "ProjectGuid": "0f9e01bb-96cd-4b2a-a08b-5cf8cc2ee983",
+      "DisplayName": "core.win",
+      "ColorIndex": 0
+    },
+    "6e26bd67-6085-4afc-b978-d5e9e0b1d193": {
+      "ProjectGuid": "6e26bd67-6085-4afc-b978-d5e9e0b1d193",
+      "DisplayName": "managed",
+      "ColorIndex": 1
     }
   },
-  "NextColorIndex": 0
+  "NextColorIndex": 2
 }

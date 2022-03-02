@@ -59,7 +59,7 @@ namespace omp
             private Starting() { }
 
             // test {
-            private void testPopulateListview(Planner planner, Lucid.Orbit.OrbitalFrame frame)
+            private void testPopulateListview(Planner planner, Lucid.Orbit.Frame frame)
             {
                 ListViewItem item = new ListViewItem();
                 item.Tag = frame.ID;
@@ -69,9 +69,9 @@ namespace omp
                 item.StateImageIndex = 0;
                 planner.orbitalFrameList.Items.Add(item);
 
-                for (Lucid.Orbit.OrbitalFrame childFrame = frame.FirstChild; childFrame != null; childFrame = childFrame.NextSibling)
+                for (Lucid.Orbit.Frame child = frame.FirstChild; child != null; child = child.NextSibling)
                 {
-                    testPopulateListview(planner, childFrame);
+                    testPopulateListview(planner, child);
                 }
             }
             // } test
@@ -86,14 +86,17 @@ namespace omp
                 // test {
                 // initial user action should be to specify an ephemeris
                 // or to have a default that is user specified.
-                planner.orbitalMechainics = new Lucid.Orbit.OrbitalMechanics("content/bsc5.starcatalog", "content/j2000.ephemeris", 2451544.0);
-                testPopulateListview(planner, planner.orbitalMechainics.RootFrame());
+                Lucid.Orbit.Ephemeris.Initialize("content/j2000.ephemeris");
+                Lucid.Orbit.StarCatalog.Initialize("content/bsc5.starcatalog");
+
+                planner.orbitalMechainics = new Lucid.Orbit.Mechanics(2451544.0);
+                testPopulateListview(planner, planner.orbitalMechainics.Root);
                 // } test
 
                 planner.renderContext = new Lucid.GIGL.Context("content/render.context");
 
-                planner.cameraFrame = planner.orbitalMechainics.CreateFrame(1, "camera", "dynamic frame for camera");
-                planner.orbitalMechainics.Attach(planner.orbitalMechainics.RootFrame(), planner.cameraFrame);
+                planner.cameraFrame = new Lucid.Orbit.DynamicPoint(1001, "camera", "dynamic frame for camera");
+                planner.orbitalMechainics.Attach(planner.orbitalMechainics.Root, planner.cameraFrame);
                 planner.cameraFrame.RelativePosition = new Lucid.Math.Vector3(10, 10, 3);
 
                 planner.aspectRatio = (float)clientSize.Width / (float)clientSize.Height;
@@ -136,13 +139,13 @@ namespace omp
 
             public override void onMouseMove(Planner planner, Point point)
             {
-                Lucid.Orbit.OrbitalSelection selection = planner.orbitalMechainics.Hit(point.X, point.Y);
-                planner.statusLabel.Text = selection.Description;
+                Lucid.Orbit.Selection selection = planner.orbitalMechainics.Hit(point.X, point.Y);
+                planner.statusLabel.Text = "TBD: fix this"; // selection.Description;
             }
 
             public override void onMouseClick(Planner planner, Point point)
             {
-                Lucid.Orbit.OrbitalSelection selection = planner.orbitalMechainics.Hit(point.X, point.Y);
+                Lucid.Orbit.Selection selection = planner.orbitalMechainics.Hit(point.X, point.Y);
                 if (0 == selection.ID)
                     return;
 
@@ -175,16 +178,15 @@ namespace omp
                 if (null != planner.trackedFrameItem)
                 {
                     uint id = uint.Parse(planner.trackedFrameItem.SubItems[1].Text);
-                    planner.trackedFrame = planner.orbitalMechainics.Frame(id);
+                    planner.trackedFrame = planner.orbitalMechainics[id];
                     planner.orbitalMechainics.Attach(planner.trackedFrame, planner.cameraFrame);
                 }
                 else
                 {
                     planner.trackedFrame = null;
-                    planner.orbitalMechainics.Attach(planner.orbitalMechainics.RootFrame(), planner.cameraFrame);
+                    planner.orbitalMechainics.Attach(planner.orbitalMechainics.Root, planner.cameraFrame);
                 }
 
-                planner.cameraFrame.RelativePosition = new Lucid.Math.Vector3(0.5f, 0.5f, 0.1f);
                 planner.cameraFrame.RelativePosition = new Lucid.Math.Vector3(0.5f, 0.5f, 0.1f);
             }
 
@@ -222,10 +224,11 @@ namespace omp
 
             public override void onEnter(Planner planner)
             {
-                // TBD: clean up work here...
                 planner.orbitalMechainics.Shutdown();
+                
+                Lucid.Orbit.Ephemeris.Shutdown();
+                Lucid.Orbit.StarCatalog.Shutdown();
 
-                Application.Exit();
                 planner.changeState(Stopped.Instance);
             }
         }

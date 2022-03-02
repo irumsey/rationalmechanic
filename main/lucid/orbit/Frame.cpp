@@ -31,6 +31,12 @@ namespace orbit {
 		::memset(absolutePosition, 0, 2 * sizeof(vector3_t));
 	}
 
+	Frame::~Frame()
+	{
+		delete firstChild;
+		delete nextSibling;
+	}
+
 	///
 	///
 	///

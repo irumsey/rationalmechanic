@@ -176,7 +176,13 @@
     <ClInclude Include="GIGL\Mesh.h" />
     <ClInclude Include="Math\Math.h" />
     <ClInclude Include="Math\Types.h" />
-    <ClInclude Include="Orbit\OrbitalMechanics.h" />
+    <ClInclude Include="Orbit\Elements.h" />
+    <ClInclude Include="Orbit\Ephemeris.h" />
+    <ClInclude Include="Orbit\Frame.h" />
+    <ClInclude Include="Orbit\Mechanics.h" />
+    <ClInclude Include="Orbit\Properties.h" />
+    <ClInclude Include="Orbit\Selection.h" />
+    <ClInclude Include="Orbit\StarCatalog.h" />
     <ClInclude Include="Resource.h" />
   </ItemGroup>
   <ItemGroup>
@@ -203,7 +209,13 @@
     <ClCompile Include="Link.cpp" />
     <ClCompile Include="Math\Math.cpp" />
     <ClCompile Include="Math\Types.cpp" />
-    <ClCompile Include="Orbit\OrbitalMechanics.cpp" />
+    <ClCompile Include="Orbit\Elements.cpp" />
+    <ClCompile Include="Orbit\Ephemeris.cpp" />
+    <ClCompile Include="Orbit\Frame.cpp" />
+    <ClCompile Include="Orbit\Mechanics.cpp" />
+    <ClCompile Include="Orbit\Properties.cpp" />
+    <ClCompile Include="Orbit\Selection.cpp" />
+    <ClCompile Include="Orbit\StarCatalog.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="app.rc" />
