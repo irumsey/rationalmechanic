@@ -33,6 +33,11 @@ namespace Orbit {
 		delete _internal;
 	}
 
+	System::String ^StarCatalogEntry::Type::get()
+	{
+		return MI::marshal_as<System::String ^>(_internal->type);
+	}
+
 	/// 
 	/// 
 	/// 

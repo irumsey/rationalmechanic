@@ -116,8 +116,8 @@ namespace orbit {
 		float32_t _time = 0.f;
 		float32_t _interpolant = 0.f;
 
-		gal::Vector3 _viewPosition;
-		gal::Matrix4x4 _viewProjMatrix;
+		gal::Vector3 _viewPosition = gal::Vector3();
+		gal::Matrix4x4 _viewProjMatrix = gal::Matrix4x4();
 
 		size_t _starCount = 0;
 		std::unique_ptr<gal::VertexBuffer> _starInstances;

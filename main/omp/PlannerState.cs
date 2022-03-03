@@ -30,7 +30,7 @@ namespace omp
 
             public virtual void onMouseClick(Planner planner, Point point) { }
 
-            public virtual void onTrackFrame(Planner planner, ListViewItem item) { }
+            public virtual void onFrameListClicked(Planner planner, MouseEventArgs e) { }
 
             public virtual void updateSimulation(Planner planner) { }
 
@@ -140,54 +140,81 @@ namespace omp
             public override void onMouseMove(Planner planner, Point point)
             {
                 Lucid.Orbit.Selection selection = planner.orbitalMechainics.Hit(point.X, point.Y);
-                planner.statusLabel.Text = "TBD: fix this"; // selection.Description;
+
+                if (Lucid.Orbit.SelectionType.TYPE_NONE == selection.Type)
+                {
+                    planner.statusLabel.Text = "no selection";
+                    return;
+                }
+
+                if (Lucid.Orbit.SelectionType.TYPE_STAR == selection.Type)
+                {
+                    Lucid.Orbit.StarCatalogEntry entry = Lucid.Orbit.StarCatalog.At(selection.Tag);
+                    planner.statusLabel.Text = "BSC5: " + entry.XNO.ToString() + " Type: " + entry.Type + " Mag: " + entry.Mag.ToString();
+                    return;
+                }
+
+                if (Lucid.Orbit.SelectionType.TYPE_FRAME == selection.Type)
+                {
+                    Lucid.Orbit.EphemerisEntry entry = Lucid.Orbit.Ephemeris.LookupEntry(selection.Tag);
+                    if (null == entry)
+                        return;
+                    planner.statusLabel.Text = "Frame: " + entry.Name;
+                    return;
+                }
+
+                if (Lucid.Orbit.SelectionType.TYPE_ORBIT == selection.Type)
+                {
+                    Lucid.Orbit.EphemerisEntry entry = Lucid.Orbit.Ephemeris.LookupEntry(selection.Tag);
+                    if (null == entry)
+                        return;
+                    planner.statusLabel.Text = "Orbit: " + entry.Name;
+                    return;
+                }
             }
 
             public override void onMouseClick(Planner planner, Point point)
             {
                 Lucid.Orbit.Selection selection = planner.orbitalMechainics.Hit(point.X, point.Y);
-                if (0 == selection.ID)
+                if (0 == selection.Tag)
                     return;
 
                 foreach(ListViewItem item in planner.orbitalFrameList.Items)
                 {
-                    if ((ulong)(item.Tag) == selection.ID)
+                    if ((ulong)(item.Tag) == selection.Tag)
                         item.Selected = true;
                 }
             }
 
-            public override void onTrackFrame(Planner planner, ListViewItem item)
+            public override void onFrameListClicked(Planner planner, MouseEventArgs e)
             {
-                if (planner.trackedFrameItem == item)
-                {
-                    int stateIndex = (item.StateImageIndex + 1) % 2;
-                    item.StateImageIndex = stateIndex;
+                ListViewHitTestInfo hitTest = planner.orbitalFrameList.HitTest(e.Location);
+                if (null == hitTest)
+                    return;
 
-                    if (0 == stateIndex)
-                        planner.trackedFrameItem = null;
-                }
-                else
+                ListViewItem item = hitTest.Item;
+                ListViewItem.ListViewSubItem subItem = hitTest.SubItem;
+                if ((null == item) || (null == subItem))
+                    return;
+
+                int column = item.SubItems.IndexOf(subItem);
+                if (-1 == column)
+                    return;
+
+                if ((0 == column) && (item != planner.trackedFrameItem))
                 {
-                    if (null != planner.trackedFrameItem)
+                    if (planner.trackedFrameItem != null)
                         planner.trackedFrameItem.StateImageIndex = 0;
+
                     planner.trackedFrameItem = item;
                     planner.trackedFrameItem.StateImageIndex = 1;
+
+                    trackFrame(planner, planner.orbitalMechainics[(ulong)(planner.trackedFrameItem.Tag)]);
                 }
 
-                planner.orbitalMechainics.Detach(planner.cameraFrame);
-                if (null != planner.trackedFrameItem)
+                if (0 != column)
                 {
-                    uint id = uint.Parse(planner.trackedFrameItem.SubItems[1].Text);
-                    planner.trackedFrame = planner.orbitalMechainics[id];
-                    planner.orbitalMechainics.Attach(planner.trackedFrame, planner.cameraFrame);
                 }
-                else
-                {
-                    planner.trackedFrame = null;
-                    planner.orbitalMechainics.Attach(planner.orbitalMechainics.Root, planner.cameraFrame);
-                }
-
-                planner.cameraFrame.RelativePosition = new Lucid.Math.Vector3(0.5f, 0.5f, 0.1f);
             }
 
             public override void updateSimulation(Planner planner)
@@ -209,6 +236,19 @@ namespace omp
                 Lucid.GAL.Pipeline.beginScene();
                     planner.orbitalMechainics.Render(planner.renderContext);
                 Lucid.GAL.Pipeline.endScene();
+            }
+
+            private void trackFrame(Planner planner, Lucid.Orbit.Frame frame)
+            {
+                if (planner.trackedFrame == frame)
+                    return;
+
+                planner.trackedFrame = frame;
+
+                planner.orbitalMechainics.Detach(planner.cameraFrame);
+                planner.orbitalMechainics.Attach(planner.trackedFrame, planner.cameraFrame);
+
+                planner.cameraFrame.RelativePosition = new Lucid.Math.Vector3(10, 10, 3);
             }
         }
 

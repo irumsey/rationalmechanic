@@ -196,7 +196,7 @@
 			        "range"      : [ 0.0, 20.0 ],
 			        "model"      : [ "content/hemisphere.mesh" ],
               "color"      : [ 0.2, 0.2, 1, 0],
-			        "scale"      : 10,
+			        "scale"      : 750,
 			        "parameters" : [ 0, 0, 0, 0 ]
 		        },
 		        {

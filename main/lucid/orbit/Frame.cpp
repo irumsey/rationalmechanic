@@ -21,6 +21,8 @@ namespace orbit {
 	///
 	///
 
+	size_t Frame::_instances = 0;
+
 	Frame::Frame(size_t id, std::string const &name, std::string const &description)
 		: id(id)
 		, name(name)
@@ -29,12 +31,16 @@ namespace orbit {
 		::memset(relativePosition, 0, 2 * sizeof(vector3_t));
 		::memset(relativeVelocity, 0, 2 * sizeof(vector3_t));
 		::memset(absolutePosition, 0, 2 * sizeof(vector3_t));
+
+		++_instances;
 	}
 
 	Frame::~Frame()
 	{
 		delete firstChild;
 		delete nextSibling;
+
+		--_instances;
 	}
 
 	///

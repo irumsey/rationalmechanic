@@ -32,8 +32,12 @@ namespace Orbit{
 
 		!Selection();
 
-		PROPERTY( Type, type, ::lucid::orbit::Selection::TYPE)
-		PROPERTY(   ID,   id,                        uint32_t)
+		property SelectionType Type {
+			SelectionType get();
+			void set(SelectionType value);
+		}
+
+		PROPERTY(   Tag,   tag,      uint32_t)
 
 		property ::lucid::orbit::Selection const &ref { ::lucid::orbit::Selection const &get() { return *ptr; } }
 

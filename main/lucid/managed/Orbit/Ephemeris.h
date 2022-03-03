@@ -34,11 +34,23 @@ namespace Orbit {
 
 		!EphemerisEntry();
 
-		PROPERTY(       Type,        type, ::lucid::orbit::Ephemeris::Entry::TYPE)
 		PROPERTY(         ID,          id,                                 size_t)
 		PROPERTY(        CID,         cid,                                 size_t)
-		PROPERTY(       Name,        name,                            std::string)
-		PROPERTY(Description, description,                            std::string)
+
+		property EphemerisEntryType Type {
+			EphemerisEntryType get();
+			void set(EphemerisEntryType value);
+		}
+
+		property System::String ^Name {
+			System::String ^get();
+			void set(System::String ^value);
+		}
+
+		property System::String ^Description {
+			System::String ^get();
+			void set(System::String ^value);
+		}
 
 		property ::lucid::orbit::Ephemeris::Entry const &ref { ::lucid::orbit::Ephemeris::Entry const &get() { return *ptr; } }
 

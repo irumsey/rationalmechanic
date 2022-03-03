@@ -24,6 +24,8 @@ namespace Math {
 namespace Lucid {
 namespace Orbit {
 
+	ref class PhysicalProperties;
+
 	///	Frame
 	///
 	///
@@ -100,6 +102,8 @@ namespace Orbit {
 		~OrbitalBody();
 
 		!OrbitalBody();
+
+		property PhysicalProperties ^Properties { PhysicalProperties ^get(); }
 
 		property ::lucid::orbit::OrbitalBody &ref { ::lucid::orbit::OrbitalBody &get() { return *_internal; } }
 

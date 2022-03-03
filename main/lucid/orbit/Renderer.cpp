@@ -148,16 +148,10 @@ namespace orbit {
 		bodyInstance.parameters = detailLevel.parameters;
 		_batched.addInstance(detailLevel.model, bodyInstance);
 
-		// test {
-		float32_t orbitScale = 0.25f;
-		if ((body->id == 301) || (body->id == 399))
-			orbitScale = 0.0025f;
-		// } test
-
 		MeshInstance orbitInstance;
 		orbitInstance.id = (SELECT_ORBIT << SELECT_SHIFT) | uint32_t(SELECT_MASK & body->id);
 		orbitInstance.position = centerPosition;
-		orbitInstance.scale = orbitScale;
+		orbitInstance.scale = 0.2f;
 		orbitInstance.rotation = math::slerp(_interpolant, rotation[0], rotation[1]);
 		orbitInstance.color = gal::Color(0, 0, 1, 1);
 		orbitInstance.parameters = gal::Vector4(hu, e, 0.f, math::constants::two_pi<float32_t>());

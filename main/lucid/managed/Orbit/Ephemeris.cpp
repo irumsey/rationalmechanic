@@ -36,6 +36,36 @@ namespace Orbit {
 		delete _internal;
 	}
 
+	EphemerisEntryType EphemerisEntry::Type::get()
+	{
+			return EphemerisEntryType(_internal->type);
+	}
+
+	void EphemerisEntry::Type::set(EphemerisEntryType value)
+	{
+		_internal->type = ::lucid::orbit::Ephemeris::Entry::TYPE(value);
+	}
+
+	System::String ^EphemerisEntry::Name::get()
+	{
+		return MI::marshal_as<System::String ^>(_internal->name);
+	}
+
+	void EphemerisEntry::Name::set(System::String ^value)
+	{
+		_internal->name = MI::marshal_as<std::string>(value);
+	}
+
+	System::String ^EphemerisEntry::Description::get()
+	{
+		return MI::marshal_as<System::String ^>(_internal->description);
+	}
+
+	void EphemerisEntry::Description::set(System::String ^value)
+	{
+		_internal->description = MI::marshal_as<std::string>(value);
+	}
+
 	/// 
 	/// 
 	/// 

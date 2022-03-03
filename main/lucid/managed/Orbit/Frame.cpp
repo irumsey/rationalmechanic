@@ -1,4 +1,5 @@
 #include "Frame.h"
+#include "Properties.h"
 #include <lucid/managed/Math/Types.h>
 #include <lucid/orbit/Ephemeris.h>
 #include <lucid/orbit/Algorithm.h>
@@ -124,8 +125,9 @@ namespace Orbit {
 	{
 		LUCID_VALIDATE(_internal != _internal->centerFrame, "attempt to move root frame");
 
-		_internal->relativePosition[1] = orbit::inv_scale(value->ref);
-		_internal->absolutePosition[1] = _internal->relativePosition[1] + _internal->centerFrame->absolutePosition[1];
+		/// this is a "warp"
+		_internal->relativePosition[0] = orbit::inv_scale(value->ref);
+		_internal->relativePosition[1] = _internal->relativePosition[0];
 	}
 
 	Math::Vector3 ^Frame::AbsolutePosition::get()
@@ -175,6 +177,11 @@ namespace Orbit {
 
 	OrbitalBody::!OrbitalBody()
 	{
+	}
+
+	PhysicalProperties ^OrbitalBody::Properties::get()
+	{
+		return gcnew PhysicalProperties(_internal->physicalProperties);
 	}
 
 	///

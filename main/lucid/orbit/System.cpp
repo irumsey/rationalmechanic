@@ -2,14 +2,15 @@
 #include "Ephemeris.h"
 #include "StarCatalog.h"
 #include "Frame.h"
-#include <sstream>
 
 namespace gigl = ::lucid::gigl;
 
 namespace lucid {
 namespace orbit {
 
-namespace /* anonymous */ {
+	///
+	///
+	///
 
 	inline Ephemeris &theEphemeris()
 	{
@@ -48,9 +49,6 @@ namespace /* anonymous */ {
 		createOrbitalBody,		///	TYPE_ORBITAL_BODY
 		createDynamicBody,		///	TYPE_DYNAMIC_BODY
 	};
-
-}	///	anonymous
-
 
 	///
 	///
@@ -124,12 +122,16 @@ namespace /* anonymous */ {
 
 	void System::attach(Frame *center, Frame *frame)
 	{
+		LUCID_VALIDATE(nullptr != center, "attempt to attach to non-existent frame");
 		LUCID_VALIDATE(nullptr == frame->centerFrame, "attempt to attach a non-detached frame");
 		LUCID_VALIDATE(_frames.end() != _frames.find(center->id), "attempt to attach to a center not managed by system");
 		LUCID_VALIDATE(_frames.end() == _frames.find(frame->id), "attempt to attach a frame already managed by system");
 
 		_frames.insert(std::make_pair(frame->id, frame));
-		center->addChild(frame);	
+		center->addChild(frame);
+
+		frame->absolutePosition[0] = center->absolutePosition[0] + frame->relativePosition[0];
+		frame->absolutePosition[1] = center->absolutePosition[1] + frame->relativePosition[1];
 	}
 
 	void System::detach(Frame *frame)
@@ -138,8 +140,8 @@ namespace /* anonymous */ {
 		auto iter = _frames.find(frame->id);
 
 		LUCID_VALIDATE(nullptr != center, "attempt to detach an already detached frame");
-		LUCID_VALIDATE(frame != center, "attempt to detach a root frame");
 		LUCID_VALIDATE(_root != frame, "attempt to detach the root frame");
+		LUCID_VALIDATE(frame != center, "attempt to detach a root frame");
 		LUCID_VALIDATE(iter != _frames.end(), "attempt to detach a frame not managed by system");
 
 		center->removeChild(frame);
@@ -173,43 +175,7 @@ namespace /* anonymous */ {
 			return selection;
 
 		selection.type = (Selection::TYPE)((0xf0000000 & code) >> Renderer::SELECT_SHIFT);
-		selection.id = (Renderer::SELECT_MASK & code);
-
-		// test {
-		std::stringstream ss;
-		if (Selection::TYPE_STAR == selection.type)
-		{
-			StarCatalog const &catalog = StarCatalog::instance();
-			StarCatalog::Entry const &entry = catalog[selection.id];
-
-			ss << "BSC5: " << entry.xno << " type: " << entry.type << " mag: " << entry.magnitude;
-
-			selection.name = "Star";
-			selection.description = ss.str();
-		}
-		if (Selection::TYPE_FRAME == selection.type)
-		{
-			Ephemeris const &ephemeris = Ephemeris::instance();
-			Ephemeris::Entry entry;
-			ephemeris.lookup(entry, selection.id);
-			
-			ss << Ephemeris::Entry::type_name[entry.type] << ": " << entry.name;
-
-			selection.name = entry.name;
-			selection.description = ss.str();
-		}
-		if (Selection::TYPE_ORBIT == selection.type)
-		{
-			Ephemeris const &ephemeris = Ephemeris::instance();
-			Ephemeris::Entry entry;
-			ephemeris.lookup(entry, selection.id);
-
-			ss << entry.name << "'s orbit";
-
-			selection.name = entry.name;
-			selection.description = ss.str();
-		}
-		// } test
+		selection.tag = (Renderer::SELECT_MASK & code);
 
 		return selection;
 	}

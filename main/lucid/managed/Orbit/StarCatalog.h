@@ -21,10 +21,11 @@ namespace Orbit {
 		!StarCatalogEntry();
 
 		PROPERTY( XNO,             xno,      size_t)
-		PROPERTY(Type,            type, std::string)
 		PROPERTY(  RA, right_ascension,      double)
 		PROPERTY( DEC,     declination,      double)
 		PROPERTY( Mag,       magnitude,       float)
+
+		property System::String ^Type { System::String ^get(); }
 
 		property ::lucid::orbit::StarCatalog::Entry const &ref { ::lucid::orbit::StarCatalog::Entry const &get() { return *ptr; } }
 

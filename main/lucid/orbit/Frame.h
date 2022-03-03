@@ -23,15 +23,17 @@ namespace orbit {
 	///	Note: cascading delete is used.  a frame will delete its children causing those
 	/// children to delete their children, etc.
 	/// 
-	/// Note: concerning ownership rules.
+	/// Note: ownership rules
+	///
+	///		0)	a parent frame always owns its children and will delete them when
+	///			it is deleted.
 	///		1)	if the parent, centerFrame, is null then the frame is detached from
 	///			a hierarchy and ownership passes to whatever "detached" the frame.
 	///		2)	if the parent is not-null and is equal to itself, it is a root
 	///			frame and the owner is the one which made it a root frame.
 	///		3)	if the parent is not-null and not equal to itself, it is a child frame
-	///			and the owner is its parent. 
-	///		4)	a parent frame always owns its children and will delete them when
-	///			it is deleted.
+	///			and the owner is its parent.
+	///  
 	class Frame
 	{
 	public:
@@ -59,6 +61,10 @@ namespace orbit {
 
 	protected:
 		Frame(size_t id, std::string const &name, std::string const &description);
+
+	private:
+		/// TBD: remove this eventually.  right now, just paranoid about the new ownership rules.
+		static size_t _instances;
 
 		LUCID_PREVENT_COPY(Frame);
 		LUCID_PREVENT_ASSIGNMENT(Frame);

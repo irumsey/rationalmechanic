@@ -25,8 +25,8 @@ namespace omp
         private Lucid.GIGL.Camera2D camera = null;
         private Lucid.Orbit.Frame cameraFrame = null;
 
-        private Lucid.Orbit.Frame trackedFrame = null;
         private ListViewItem trackedFrameItem = null;
+        private Lucid.Orbit.Frame trackedFrame = null;
 
         public Planner()
         {
@@ -148,15 +148,7 @@ namespace omp
 
         private void onFrameListClicked(object sender, MouseEventArgs e)
         {
-            ListViewHitTestInfo hitTest = orbitalFrameList.HitTest(e.Location);
-            if (null == hitTest)
-                return;
-
-            int columnIndex = hitTest.Item.SubItems.IndexOf(hitTest.SubItem);
-            if ((null == hitTest.Item) || (0 != columnIndex))
-                return;
-
-            state.onTrackFrame(this, hitTest.Item);
+            state.onFrameListClicked(this, e);
         }
 
         public void updateSimulation()

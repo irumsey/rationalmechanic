@@ -1,6 +1,5 @@
 #pragma once
 
-#include <string>
 #include <lucid/core/Types.h>
 #include <lucid/orbit/Renderer.h>
 
@@ -26,9 +25,7 @@ namespace orbit {
 		};
 
 		TYPE type = TYPE_NONE;
-		uint32_t id = 0;
-		std::string name = "none";
-		std::string description = "no selection";
+		uint32_t tag = 0;		// selection specific: id, index, etc
 	};
 
 }	/// orbit
