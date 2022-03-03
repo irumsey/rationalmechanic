@@ -28,6 +28,8 @@ namespace math {
 		{
 		}
 
+		~AABB() = default;
+
 		Vector<T, DIM> center() const
 		{
 			return constants::half<T>() * (max + min);

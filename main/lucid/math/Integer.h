@@ -28,7 +28,7 @@ namespace math {
 		enum { SHIFT = 16 };
 
 		typedef typename Integer<N> self_t;
-		typedef typename ::lucid::core::Array<COUNT, uint16_t> data_t;
+		typedef typename core::Array<COUNT, uint16_t> data_t;
 
 		data_t data;
 

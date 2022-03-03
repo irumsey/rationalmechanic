@@ -20,6 +20,9 @@ namespace math {
 			, radius(radius)
 		{
 		}
+
+		~Sphere() = default;
+
 	};
 
 }	///	math

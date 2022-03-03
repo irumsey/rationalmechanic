@@ -21,6 +21,8 @@ namespace math {
 		{
 		}
 
+		~Plane() = default;
+
 	};
 
 }	///	math

@@ -32,7 +32,7 @@ namespace core {
 
 		bool is_eof() const;
 
-		virtual void read(void *data, int size) override;
+		virtual void read(void *data, size_t size) override;
 
 		virtual void read(bool &data) override;
 

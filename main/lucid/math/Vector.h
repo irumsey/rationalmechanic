@@ -48,12 +48,12 @@ namespace math {
 
 		Vector() = default;
 
-		~Vector() = default;
-
 		Vector(T const &x, T const &y)
 			: x(x), y(y)
 		{
 		}
+
+		~Vector() = default;
 
 		T &operator[](int32_t i)
 		{
@@ -82,12 +82,12 @@ namespace math {
 
 		Vector() = default;
 
-		~Vector() = default;
-
 		Vector(T const &x, T const &y, T const &z)
 			: x(x), y(y), z(z)
 		{
 		}
+
+		~Vector() = default;
 
 		T &operator[](int32_t i)
 		{
@@ -116,8 +116,6 @@ namespace math {
 
 		Vector() = default;
 
-		~Vector() = default;
-
 		Vector(T const &x, T const &y, T const &z, T const &w)
 			: x(x), y(y), z(z), w(w)
 		{
@@ -128,6 +126,8 @@ namespace math {
 			, w(w)
 		{
 		}
+
+		~Vector() = default;
 
 		T &operator[](int32_t i)
 		{

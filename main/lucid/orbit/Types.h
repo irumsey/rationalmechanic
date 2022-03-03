@@ -10,7 +10,7 @@ namespace lucid {
 namespace orbit {
 
 	// typedef float32_t scalar_t;
-	typedef float64_t scalar_t;
+	   typedef float64_t scalar_t;
 	// typedef float128_t scalar_t;
 	// typedef math::Fixed<256, 32> scalar_t;
 

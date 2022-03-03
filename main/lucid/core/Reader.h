@@ -23,7 +23,7 @@ namespace core {
 	public:
 		virtual ~Reader() = default;
 
-		virtual void read(void *data, int32_t size) = 0;
+		virtual void read(void *data, size_t size) = 0;
 
 		virtual void read(bool &data) = 0;
 

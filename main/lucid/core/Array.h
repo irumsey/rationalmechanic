@@ -27,7 +27,7 @@ namespace core {
 
 		Array(Array const &) = default;
 
-		virtual ~Array() = default;
+		~Array() = default;
 
 		size_t count() const
 		{

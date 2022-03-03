@@ -34,7 +34,7 @@ namespace orbit {
 
 	///	System
 	///
-	///	TBD: the whole frame creation system is not good. fix it.
+	/// 
 	class System
 	{
 	public:

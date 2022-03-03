@@ -22,6 +22,8 @@ namespace math {
 
 		Matrix() = default;
 
+		~Matrix() = default;
+
 		T *operator[](int32_t row)
 		{
 			assert(row < ROWS);
@@ -64,6 +66,8 @@ namespace math {
 			, yx(yx), yy(yy)
 		{
 		}
+
+		~Matrix() = default;
 
 		T *operator[](int32_t row)
 		{
@@ -110,6 +114,8 @@ namespace math {
 			, zx(zx), zy(zy), zz(zz)
 		{
 		}
+
+		~Matrix() = default;
 
 		T *operator[](int32_t row)
 		{
@@ -159,6 +165,8 @@ namespace math {
 			, wx(wx), wy(wy), wz(wz), ww(ww)
 		{
 		}
+
+		~Matrix() = default;
 
 		T *operator[](int32_t row)
 		{

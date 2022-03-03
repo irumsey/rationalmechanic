@@ -25,6 +25,9 @@ namespace math {
 			, w(w)
 		{
 		}
+
+		~Quaternion() = default;
+
 	};
 
 }	///	math
