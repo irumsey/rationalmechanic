@@ -108,6 +108,8 @@ namespace orbit {
 	class DynamicPoint : public Frame
 	{
 	public:
+		/// TBD: data...
+
 		DynamicPoint(size_t id, std::string const &name, std::string const &description);
 
 		virtual ~DynamicPoint() = default;
@@ -125,9 +127,10 @@ namespace orbit {
 	class OrbitalBody : public Frame
 	{
 	public:
+		Elements elements[2];	/// used during simulation (changes over time)
+
 		PhysicalProperties physicalProperties;
 		RenderProperties renderProperties;
-		Elements elements[2];
 
 		OrbitalBody(size_t id, std::string const &name, std::string const &description);
 
@@ -146,6 +149,8 @@ namespace orbit {
 	class DynamicBody : public Frame
 	{
 	public:
+		/// TBD: data...
+
 		DynamicBody(size_t id, std::string const &name, std::string const &description);
 
 		virtual ~DynamicBody() = default;

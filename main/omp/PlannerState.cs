@@ -225,9 +225,9 @@ namespace omp
             public override void renderMainView(Planner planner)
             {
                 /// test {
-                Lucid.Math.Vector3 position = planner.orbitalMechainics.InterpolatePosition(planner.cameraFrame);
+                Lucid.Math.Vector3 position = planner.orbitalMechainics.InterpolatedPosition(planner.cameraFrame);
                 Lucid.Math.Vector3    focus = (null != planner.trackedFrame)
-                    ? planner.orbitalMechainics.InterpolatePosition(planner.trackedFrame)
+                    ? planner.orbitalMechainics.InterpolatedPosition(planner.trackedFrame)
                     : position + new Lucid.Math.Vector3(10, 10, 10);
                 planner.camera.Look(position, focus, new Lucid.Math.Vector3(0, 0, 1));
                 planner.renderContext.Set(planner.camera);

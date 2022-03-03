@@ -1,7 +1,10 @@
-#include "System.h"
+#include "Mechanics.h"
 #include "Ephemeris.h"
 #include "StarCatalog.h"
 #include "Frame.h"
+#include "Utility.h"
+#include <lucid/core/Clock.h>
+#include <lucid/core/Error.h>
 
 namespace gigl = ::lucid::gigl;
 
@@ -32,7 +35,12 @@ namespace orbit {
 
 	Frame *createOrbitalBody(size_t id, std::string const &name, std::string const &description)
 	{
-		return new OrbitalBody(id, name, description);
+		OrbitalBody *body = new OrbitalBody(id, name, description);
+
+		LUCID_VALIDATE(theEphemeris().lookup(body->physicalProperties, id), "consistency error: properties not found for frame");
+		LUCID_VALIDATE(theEphemeris().lookup(body->  renderProperties, id), "consistency error: properties not found for frame");
+
+		return body;
 	}
 
 	Frame *createDynamicBody(size_t id, std::string const &name, std::string const &description)
@@ -54,19 +62,27 @@ namespace orbit {
 	///
 	///
 
-	System::System(scalar_t dayNumber)
+	Mechanics::Mechanics(scalar_t dayNumber)
 	{
 		initialize(dayNumber);
 	}
 
-	System::~System()
+	Mechanics::~Mechanics()
 	{
 		shutdown();
 	}
 
-	void System::initialize(scalar_t dayNumber)
+	void Mechanics::initialize(scalar_t dayNumber)
 	{
 		shutdown();
+
+		_wallTime = 0;
+		_wallTimeLast = 0;
+		_wallTimeAccum = 0;
+		_simTime = 0;
+		_frameInterpolant = 0;
+
+		_clock = core::Clock::create();
 
 		_simulator.initialize();
 		_renderer.initialize();
@@ -109,7 +125,7 @@ namespace orbit {
 		update(0);
 	}
 
-	void System::shutdown()
+	void Mechanics::shutdown()
 	{
 		_renderer.shutdown();
 		_simulator.shutdown();
@@ -118,9 +134,12 @@ namespace orbit {
 		_root = nullptr;
 
 		_frames.clear();
+
+		delete _clock;
+		_clock = nullptr;
 	}
 
-	void System::attach(Frame *center, Frame *frame)
+	void Mechanics::attach(Frame *center, Frame *frame)
 	{
 		LUCID_VALIDATE(nullptr != center, "attempt to attach to non-existent frame");
 		LUCID_VALIDATE(nullptr == frame->centerFrame, "attempt to attach a non-detached frame");
@@ -134,7 +153,7 @@ namespace orbit {
 		frame->absolutePosition[1] = center->absolutePosition[1] + frame->relativePosition[1];
 	}
 
-	void System::detach(Frame *frame)
+	void Mechanics::detach(Frame *frame)
 	{
 		Frame *center = frame->centerFrame;
 		auto iter = _frames.find(frame->id);
@@ -148,24 +167,34 @@ namespace orbit {
 		_frames.erase(iter);
 	}
 
-	void System::update(scalar_t delta)
+	void Mechanics::update()
 	{
-		LUCID_VALIDATE(nullptr != _root, "attempt to use uninitialized system");
+		_wallTime = _clock->time();
+		scalar_t _wallTimeElapsed = _wallTime - _wallTimeLast;
+		_wallTimeLast = _wallTime;
 
-		_dayNumber[0] = _dayNumber[1];
-		_dayNumber[1] = _dayNumber[1] + delta;
+		_wallTimeElapsed = (_wallTimeElapsed > TIME_LIMIT) ? TIME_LIMIT : _wallTimeElapsed;
+		_wallTimeAccum += _wallTimeElapsed;
 
-		_simulator.simulate(_root, _dayNumber[1], delta);
+		while (_wallTimeAccum >= TIME_STEP)
+		{
+			_simTime += TIME_STEP;
+			update(TIME_STEP);
+			_wallTimeAccum -= TIME_STEP;
+		}
+
+		_frameInterpolant = (float32_t)(_wallTimeAccum / TIME_STEP);
 	}
 
-	void System::render(gigl::Context const &context, float32_t time, float32_t interpolant)
+	void Mechanics::render(gigl::Context &context)
 	{
-		LUCID_VALIDATE(nullptr != _root, "attempt to use uninitialized system");
+		context["time"] = float32_t(_wallTime);
+		context["interpolant"] = _frameInterpolant;
 
-		_renderer.render(_root, context, time, interpolant);
+		render(context, float32_t(_wallTime), _frameInterpolant);
 	}
 
-	Selection System::hit(int32_t x, int32_t y) const
+	Selection Mechanics::hit(int32_t x, int32_t y) const
 	{
 		LUCID_VALIDATE(nullptr != _root, "attempt to use uninitialized system");
 
@@ -178,6 +207,28 @@ namespace orbit {
 		selection.tag = (Renderer::SELECT_MASK & code);
 
 		return selection;
+	}
+
+	void Mechanics::update(scalar_t delta)
+	{
+		LUCID_VALIDATE(nullptr != _root, "attempt to use uninitialized system");
+
+		_dayNumber[0] = _dayNumber[1];
+		_dayNumber[1] = _dayNumber[1] + delta;
+
+		_simulator.simulate(_root, _dayNumber[1], delta);
+	}
+
+	void Mechanics::render(gigl::Context const &context, float32_t time, float32_t interpolant)
+	{
+		LUCID_VALIDATE(nullptr != _root, "attempt to use uninitialized system");
+
+		_renderer.render(_root, context, time, interpolant);
+	}
+
+	vector3_t Mechanics::interpolatedPosition(Frame const &frame) const
+	{
+		return math::lerp(cast(_frameInterpolant), frame.absolutePosition[0], frame.absolutePosition[1]);
 	}
 
 }	///	orbit

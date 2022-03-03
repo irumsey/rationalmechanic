@@ -13,7 +13,7 @@ namespace core {
 namespace lucid {
 namespace orbit {
 
-	class System;
+	class Mechanics;
 
 }	///	orbit
 }	///	lucid
@@ -73,24 +73,10 @@ namespace Orbit {
 
 		Selection ^Hit(int x, int y);
 
-		// TBD: example of what should not be here (but is since functionality was added here) {
-		Math::Vector3 ^InterpolatePosition(Frame ^frame);
-		// } TBD
+		Math::Vector3 ^InterpolatedPosition(Frame ^frame);
 
 	private:
-		typedef ::lucid::orbit::scalar_t scalar_t;
-
-		scalar_t const    TIME_STEP = 0.1;
-		scalar_t const   TIME_LIMIT = 0.3;
-
-		scalar_t          _wallTime = 0;
-		scalar_t      _wallTimeLast = 0;
-		scalar_t     _wallTimeAccum = 0;
-		scalar_t           _simTime = 0;
-		float32_t _frameInterpolant = 0;
-
-		::lucid::core::Clock *_clock = nullptr;
-		::lucid::orbit::System *_internal = nullptr;
+		::lucid::orbit::Mechanics *_internal = nullptr;
 
 	};
 

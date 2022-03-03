@@ -1,16 +1,7 @@
 #include "Frame.h"
-#include "Ephemeris.h"
 #include "Algorithm.h"
-#include <lucid/core/Error.h>
-
-namespace orbit = ::lucid::orbit;
 
 namespace /* anonymous */ {
-
-	inline orbit::Ephemeris &theEphemeris()
-	{
-		return orbit::Ephemeris::instance();
-	}
 
 }	///	anonymous
 
@@ -64,8 +55,6 @@ namespace orbit {
 	OrbitalBody::OrbitalBody(size_t id, std::string const &name, std::string const &description)
 		: Frame(id, name, description)
 	{
-		LUCID_VALIDATE(theEphemeris().lookup(physicalProperties, id), "consistency error: properties not found for frame");
-		LUCID_VALIDATE(theEphemeris().lookup(  renderProperties, id), "consistency error: properties not found for frame");
 	}
 
 	void OrbitalBody::apply(Algorithm *algorithm)

@@ -1,11 +1,10 @@
 #include "Mechanics.h"
 #include "Frame.h"
 #include "Selection.h"
-#include <lucid/orbit/System.h>
+#include <lucid/orbit/Mechanics.h>
 #include <lucid/orbit/Selection.h>
 #include <lucid/orbit/Utility.h>
 #include <lucid/math/Algorithm.h>
-#include <lucid/core/Clock.h>
 
 #include <lucid/managed/GIGL/Context.h>
 #include <lucid/managed/Math/Types.h>
@@ -40,30 +39,13 @@ namespace Orbit {
 	{
 		Shutdown();
 
-		try
-		{
-			_clock = core::Clock::create();
-			_internal = new orbit::System(dayNumber);
-		}
-		catch (core::Error const &error)
-		{
-			int nop = 0;
-		}
-
-		_wallTime = 0;
-		_wallTimeLast = 0;
-		_wallTimeAccum = 0;
-		_simTime = 0;
-		_frameInterpolant = 0;
+		_internal = new orbit::Mechanics(dayNumber);
 	}
 
 	void Mechanics::Shutdown()
 	{
 		delete _internal;
 		_internal = nullptr;
-
-		delete _clock;
-		_clock = nullptr;
 	}
 
 	Frame ^Mechanics::Root::get()
@@ -88,33 +70,12 @@ namespace Orbit {
 
 	void Mechanics::Update()
 	{
-		LUCID_PROFILE_SCOPE("Mechanics::Update()");
-
-		_wallTime = _clock->time();
-		scalar_t _wallTimeElapsed = _wallTime - _wallTimeLast;
-		_wallTimeLast = _wallTime;
-
-		_wallTimeElapsed = (_wallTimeElapsed > TIME_LIMIT) ? TIME_LIMIT : _wallTimeElapsed;
-		_wallTimeAccum += _wallTimeElapsed;
-
-		while (_wallTimeAccum >= TIME_STEP)
-		{
-			_simTime += TIME_STEP;
-			_internal->update(TIME_STEP);
-			_wallTimeAccum -= TIME_STEP;
-		}
-
-		_frameInterpolant = (float32_t)(_wallTimeAccum / TIME_STEP);
+		_internal->update();
 	}
 
 	void Mechanics::Render(GIGL::Context ^context)
 	{
-		LUCID_PROFILE_SCOPE("OrbitalMechanics::Render(...)");
-
-		context->Set("time", float32_t(_wallTime));
-		context->Set("interpolant", _frameInterpolant);
-
-		_internal->render(context->ref, float32_t(_wallTime), _frameInterpolant);
+		_internal->render(context->ref);
 	}
 
 	Selection ^Mechanics::Hit(int x, int y)
@@ -122,11 +83,10 @@ namespace Orbit {
 		return gcnew Selection(_internal->hit(x, y));
 	}
 
-	Math::Vector3 ^Mechanics::InterpolatePosition(Frame ^frame)
+	Math::Vector3 ^Mechanics::InterpolatedPosition(Frame ^frame)
 	{
-		orbit::Frame const &ref = frame->ref;
-		::lucid::orbit::vector3_t position = math::lerp(orbit::cast(_frameInterpolant), ref.absolutePosition[0], ref.absolutePosition[1]);
-		return gcnew Math::Vector3(orbit::scale(position));
+		/// TBD: scaling from meters to render units...
+		return gcnew Math::Vector3(::lucid::orbit::scale(_internal->interpolatedPosition(frame->ref)));
 	}
 
 }	///	Orbit
