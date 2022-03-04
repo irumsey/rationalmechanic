@@ -29,15 +29,7 @@ namespace orbit {
 	void Simulator::evaluate(DynamicPoint *frame)
 	{
 		LUCID_PROFILE_SCOPE("Simulator::evaluate(DynamicPoint)");
-
-		frame->relativePosition[0] = frame->relativePosition[1];
-
-		Frame const *center = frame->centerFrame;
-		if (frame == center)
-			return;
-
-		frame->absolutePosition[0] = frame->absolutePosition[1];
-		frame->absolutePosition[1] = frame->relativePosition[1] + center->absolutePosition[1];
+		basicEvaluation(frame);
 	}
 
 	void Simulator::evaluate(OrbitalBody *body)
@@ -64,8 +56,13 @@ namespace orbit {
 	void Simulator::evaluate(DynamicBody *body)
 	{
 		LUCID_PROFILE_SCOPE("Simulator::evaluate(DynamicBody)");
+		///	TBD: implement (this will be complex)
+	}
 
-		///	TBD: implement
+	void Simulator::evaluate(CameraFrame *camera)
+	{
+		LUCID_PROFILE_SCOPE("Simulator::evaluate(CameraFrame)");
+		basicEvaluation(camera);
 	}
 
 	void Simulator::initialize()
@@ -90,6 +87,19 @@ namespace orbit {
 			///	recursive example: sun <- earth <- moon <- apollo lander (arrow points to parent so, in this example, depth of 4) 
 			simulate(child);
 		}
+	}
+
+	void Simulator::basicEvaluation(Frame *frame)
+	{
+		Frame const *center = frame->centerFrame;
+		LUCID_VALIDATE(nullptr != center, "internal consistency error: detached frame in simulation");
+
+		if (frame == center)
+			return;
+
+		frame->relativePosition[0] = frame->relativePosition[1];
+		frame->absolutePosition[0] = frame->absolutePosition[1];
+		frame->absolutePosition[1] = center->absolutePosition[1] + frame->relativePosition[1];
 	}
 
 }	///	orbit

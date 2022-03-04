@@ -7,6 +7,8 @@
 #include <lucid/core/Error.h>
 #include <msclr/marshal_cppstd.h>
 
+#include <lucid/managed/GIGL/Camera2D.h>
+
 namespace /* anonymous */ {
 
 	namespace    MI = msclr::interop;
@@ -56,18 +58,17 @@ namespace Orbit {
 		{
 			Wrapper::wrapped = gcnew DynamicBody(body);
 		}
+
+		virtual void evaluate(orbit::CameraFrame *camera) override
+		{
+			Wrapper::wrapped = gcnew CameraFrame(camera);
+		}
 	};
 
 	///
 	///
 	///
 	
-	Frame ^Frame::Wrap(::lucid::orbit::Frame *frame)
-	{
-		Factory ftor;
-		return (nullptr == frame) ? nullptr : ftor(frame);
-	}
-
 	Frame::Frame(orbit::Frame *frame)
 		: _internal(frame)
 	{
@@ -133,6 +134,12 @@ namespace Orbit {
 	Math::Vector3 ^Frame::AbsolutePosition::get()
 	{
 		return gcnew Math::Vector3(orbit::scale(_internal->absolutePosition[1]));
+	}
+
+	Frame ^Frame::Wrap(::lucid::orbit::Frame *frame)
+	{
+		Factory ftor;
+		return (nullptr == frame) ? nullptr : ftor(frame);
 	}
 
 	///
@@ -207,6 +214,61 @@ namespace Orbit {
 
 	DynamicBody::!DynamicBody()
 	{
+	}
+
+	///
+	///
+	/// 
+
+	CameraFrame::CameraFrame(orbit::CameraFrame *body)
+		: Frame(body)
+		, _internal(body)
+	{
+	}
+
+	CameraFrame::CameraFrame(size_t id, System::String ^name, System::String ^description)
+		: _internal(new orbit::CameraFrame(id, MI::marshal_as<std::string>(name), MI::marshal_as<std::string>(description)))
+		, Frame(_internal)
+	{
+	}
+
+	CameraFrame::~CameraFrame()
+	{
+		this->!CameraFrame();
+	}
+
+	CameraFrame::!CameraFrame()
+	{
+	}
+
+	void CameraFrame::InitPerspective(float fov, float aspect, float znear, float zfar)
+	{
+		_internal->initPerspective(fov, aspect, znear, zfar);
+	}
+
+	void CameraFrame::InitOrthographic(float width, float height, float znear, float zfar)
+	{
+		_internal->initOrthographic(width, height, znear, zfar);
+	}
+
+	GIGL::Camera2D ^CameraFrame::Camera::get()
+	{
+		return gcnew GIGL::Camera2D(_internal->camera);
+	}
+
+	void CameraFrame::Camera::set(GIGL::Camera2D ^value)
+	{
+		_internal->camera = value->ref;
+	}
+
+	Frame ^CameraFrame::Focus::get()
+	{
+		return Wrap(_internal->focus);
+	}
+
+	void CameraFrame::Focus::set(Frame ^frame)
+	{
+		_internal->focus = frame->ptr;
 	}
 
 }	///	Orbit

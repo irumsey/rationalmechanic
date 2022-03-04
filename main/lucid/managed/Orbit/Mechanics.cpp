@@ -6,7 +6,6 @@
 #include <lucid/orbit/Utility.h>
 #include <lucid/math/Algorithm.h>
 
-#include <lucid/managed/GIGL/Context.h>
 #include <lucid/managed/Math/Types.h>
 
 namespace /* anonymous */ {
@@ -48,6 +47,11 @@ namespace Orbit {
 		_internal = nullptr;
 	}
 
+	float Mechanics::DayNumber::get()
+	{
+		return ::lucid::orbit::cast(_internal->dayNumber());
+	}
+
 	Frame ^Mechanics::Root::get()
 	{
 		return Frame::Wrap(_internal->root());
@@ -73,20 +77,14 @@ namespace Orbit {
 		_internal->update();
 	}
 
-	void Mechanics::Render(GIGL::Context ^context)
+	void Mechanics::Render(CameraFrame ^cameraFrame)
 	{
-		_internal->render(context->ref);
+		_internal->render(cameraFrame->ptr);
 	}
 
 	Selection ^Mechanics::Hit(int x, int y)
 	{
 		return gcnew Selection(_internal->hit(x, y));
-	}
-
-	Math::Vector3 ^Mechanics::InterpolatedPosition(Frame ^frame)
-	{
-		/// TBD: scaling from meters to render units...
-		return gcnew Math::Vector3(::lucid::orbit::scale(_internal->interpolatedPosition(frame->ref)));
 	}
 
 }	///	Orbit

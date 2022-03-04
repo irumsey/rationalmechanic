@@ -23,14 +23,6 @@ namespace core{
 }	/// core
 }	///	lucid
 
-namespace lucid {
-namespace gigl {
-
-	class Context;
-
-}	///	gigl
-}	/// lucid
-
 ///
 ///
 ///
@@ -39,6 +31,7 @@ namespace lucid {
 namespace orbit {
 
 	class Frame;
+	class CameraFrame;
 
 	///	Mechanics
 	///
@@ -54,7 +47,7 @@ namespace orbit {
 
 		void shutdown();
 
-		scalar_t currentDayNumber() const;
+		scalar_t dayNumber() const;
 
 		Frame *root() const;
 
@@ -66,11 +59,9 @@ namespace orbit {
 
 		void update();
 
-		void render(gigl::Context &context);
+		void render(CameraFrame *cameraFrame);
 
 		Selection hit(int32_t x, int32_t y) const;
-
-		vector3_t interpolatedPosition(Frame const &frame) const;
 
 	private:
 		typedef std::unordered_map<size_t, Frame *> frame_map_t;
@@ -96,13 +87,11 @@ namespace orbit {
 
 		void update(scalar_t delta);
 
-		void render(::lucid::gigl::Context const &context, float32_t time, float32_t interpolant);
-
 		LUCID_PREVENT_COPY(Mechanics);
 		LUCID_PREVENT_ASSIGNMENT(Mechanics);
 	};
 
-	inline scalar_t Mechanics::currentDayNumber() const
+	inline scalar_t Mechanics::dayNumber() const
 	{
 		return _dayNumber[1];
 	}

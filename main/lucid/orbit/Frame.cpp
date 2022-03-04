@@ -76,6 +76,34 @@ namespace orbit {
 		algorithm->evaluate(this);
 	}
 
+	///
+	///
+	///
+	
+	CameraFrame::CameraFrame(size_t id, std::string const &name, std::string const &description)
+		: Frame(id, name, description)
+	{
+	}
+
+	void CameraFrame::apply(Algorithm *algorithm)
+	{
+		algorithm->evaluate(this);
+	}
+
+	void CameraFrame::initPerspective(float fov, float aspect, float znear, float zfar)
+	{
+		camera.initPerspective(fov, aspect, znear, zfar);
+	}
+
+	void CameraFrame::initOrthographic(float width, float height, float znear, float zfar)
+	{
+		camera.initOrthographic(width, height, znear, zfar);
+	}
+
+	void CameraFrame::look(Frame *frame)
+	{
+		focus = frame;
+	}
 
 }	///	orbit
 }	///	lucid

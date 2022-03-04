@@ -3,6 +3,7 @@
 #include <string>
 #include <lucid/core/Noncopyable.h>
 #include <lucid/core/Error.h>
+#include <lucid/gigl/Camera2D.h>
 #include <lucid/orbit/Types.h>
 #include <lucid/orbit/Properties.h>
 #include <lucid/orbit/Elements.h>
@@ -159,6 +160,31 @@ namespace orbit {
 
 		LUCID_PREVENT_COPY(DynamicBody);
 		LUCID_PREVENT_ASSIGNMENT(DynamicBody);
+	};
+
+	///
+	///
+	///
+	class CameraFrame : public Frame
+	{
+	public:
+		Frame *focus = nullptr;
+		gigl::Camera2D camera;
+
+		CameraFrame(size_t id, std::string const &name, std::string const &description);
+
+		virtual ~CameraFrame() = default;
+
+		virtual void apply(Algorithm *algorithm) override;
+
+		void initPerspective(float fov, float aspect, float znear, float zfar);
+
+		void initOrthographic(float width, float height, float znear, float zfar);
+
+		void look(Frame *frame);
+
+		LUCID_PREVENT_COPY(CameraFrame);
+		LUCID_PREVENT_ASSIGNMENT(CameraFrame);
 	};
 
 }	///	orbit

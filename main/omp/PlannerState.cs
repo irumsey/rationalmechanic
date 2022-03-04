@@ -93,17 +93,14 @@ namespace omp
                 testPopulateListview(planner, planner.orbitalMechainics.Root);
                 // } test
 
-                planner.renderContext = new Lucid.GIGL.Context("content/render.context");
-
-                planner.cameraFrame = new Lucid.Orbit.DynamicPoint(1001, "camera", "dynamic frame for camera");
+                planner.cameraFrame = new Lucid.Orbit.CameraFrame(1001, "camera", "");
                 planner.orbitalMechainics.Attach(planner.orbitalMechainics.Root, planner.cameraFrame);
                 planner.cameraFrame.RelativePosition = new Lucid.Math.Vector3(10, 10, 3);
 
                 planner.aspectRatio = (float)clientSize.Width / (float)clientSize.Height;
 
-                planner.camera = new Lucid.GIGL.Camera2D();
-                planner.camera.InitPerspective(0.25f * 3.1415926f, planner.aspectRatio, 1, 1000);
-                planner.camera.Look(new Lucid.Math.Vector3(20, 20, 15), new Lucid.Math.Vector3(0, 0, 0), new Lucid.Math.Vector3(0, 0, 1));
+                planner.cameraFrame.InitPerspective(0.25f * 3.1415926f, planner.aspectRatio, 1, 1000);
+                planner.cameraFrame.Focus = planner.orbitalMechainics.Root;
 
                 planner.setMainMenuDefaults();
                 planner.changeState(Editing.Instance);
@@ -128,7 +125,7 @@ namespace omp
 
                 Lucid.GAL.Pipeline.resize(clientSize.Width, clientSize.Height);
 
-                planner.camera.InitPerspective(0.25f * 3.1415926f, planner.aspectRatio, 1, 1000);
+                planner.cameraFrame.InitPerspective(0.25f * 3.1415926f, planner.aspectRatio, 1, 1000);
                 planner.renderMainView();
             }
 
@@ -214,6 +211,7 @@ namespace omp
 
                 if (0 != column)
                 {
+                    planner.cameraFrame.Focus = planner.orbitalMechainics[(ulong)(item.Tag)];
                 }
             }
 
@@ -224,17 +222,8 @@ namespace omp
 
             public override void renderMainView(Planner planner)
             {
-                /// test {
-                Lucid.Math.Vector3 position = planner.orbitalMechainics.InterpolatedPosition(planner.cameraFrame);
-                Lucid.Math.Vector3    focus = (null != planner.trackedFrame)
-                    ? planner.orbitalMechainics.InterpolatedPosition(planner.trackedFrame)
-                    : position + new Lucid.Math.Vector3(10, 10, 10);
-                planner.camera.Look(position, focus, new Lucid.Math.Vector3(0, 0, 1));
-                planner.renderContext.Set(planner.camera);
-                /// } test
-
                 Lucid.GAL.Pipeline.beginScene();
-                    planner.orbitalMechainics.Render(planner.renderContext);
+                    planner.orbitalMechainics.Render(planner.cameraFrame);
                 Lucid.GAL.Pipeline.endScene();
             }
 

@@ -624,7 +624,8 @@ def bootStarCatalogFromFile(srcPath, dstPath):
 orbitalFrameType = {
 	'DYNAMIC_POINT' : 1,
 	'ORBITAL_BODY'  : 2,
-	'DYNAMIC_BODY'  : 3
+	'DYNAMIC_BODY'  : 3,
+	'CAMERA_FRAME'  : 4,
 }
 
 onOrbitalElement = [
@@ -698,10 +699,18 @@ def bootFrameDynamicBody(dst, frame):
 	bootString(dst, frame['description'])
 	bootString(dst, frame['center'])
 
+def bootFrameCamera(dst, frame):
+	bootUnsigned(dst, orbitalFrameType['CAMERA_FRAME'])
+	bootUnsigned(dst, frame['hid'])
+	bootString(dst, frame['target'])
+	bootString(dst, frame['description'])
+	bootString(dst, frame['center'])
+
 bootFrameType = {
 	'DYNAMIC_POINT' : bootFrameDynamicPoint,
 	 'ORBITAL_BODY' : bootFrameOrbitalBody,
-	 'DYNAMIC_BODY' : bootFrameDynamicBody
+	 'DYNAMIC_BODY' : bootFrameDynamicBody,
+	 'CAMERA_FRAME' : bootFrameCamera,
 }
 
 def bootEphemerisFrame(dst, frame):

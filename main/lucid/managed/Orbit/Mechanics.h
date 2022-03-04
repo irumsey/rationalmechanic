@@ -27,18 +27,11 @@ namespace Math {
 }	///	Lucid
 
 namespace Lucid {
-namespace GIGL {
-
-	ref class Context;
-
-}	///	GIGL
-}	///	Lucid
-
-namespace Lucid {
 namespace Orbit {
 
-	ref class Frame;
 	ref class Selection;
+	ref class Frame;
+	ref class CameraFrame;
 
 	///	Mechanics
 	///
@@ -59,6 +52,8 @@ namespace Orbit {
 
 		void Shutdown();
 
+		property float DayNumber { float get(); }
+
 		property Frame ^Root { Frame ^get(); };
 
 		property Frame ^default[size_t] { Frame ^get(size_t id); };
@@ -69,11 +64,9 @@ namespace Orbit {
 
 		void Update();
 
-		void Render(GIGL::Context ^context);
+		void Render(CameraFrame ^cameraFrame);
 
 		Selection ^Hit(int x, int y);
-
-		Math::Vector3 ^InterpolatedPosition(Frame ^frame);
 
 	private:
 		::lucid::orbit::Mechanics *_internal = nullptr;

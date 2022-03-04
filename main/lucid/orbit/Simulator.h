@@ -28,6 +28,8 @@ namespace orbit {
 
 		virtual void evaluate(DynamicBody *body) override;
 
+		virtual void evaluate(CameraFrame *camera) override;
+
 		void initialize();
 
 		void shutdown();
@@ -39,6 +41,8 @@ namespace orbit {
 		scalar_t _delta = 0.0;
 
 		void simulate(Frame *frame);
+
+		void basicEvaluation(Frame *frame);
 
 		LUCID_PREVENT_COPY(Simulator);
 		LUCID_PREVENT_ASSIGNMENT(Simulator);

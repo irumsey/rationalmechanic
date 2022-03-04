@@ -43,6 +43,15 @@ namespace orbit {
 		return body;
 	}
 
+	Frame *createCameraFrame(size_t id, std::string const &name, std::string const &description)
+	{
+		CameraFrame *camera = new CameraFrame(id, name, description);
+
+		///  TBD: anything else?
+
+		return camera;
+	}
+
 	Frame *createDynamicBody(size_t id, std::string const &name, std::string const &description)
 	{
 		return new DynamicBody(id, name, description);
@@ -56,6 +65,7 @@ namespace orbit {
 		createDynamicPoint,		///	TYPE_DYNAMIC_POINT
 		createOrbitalBody,		///	TYPE_ORBITAL_BODY
 		createDynamicBody,		///	TYPE_DYNAMIC_BODY
+		createCameraFrame,		/// TYPE_CAMERA_FRAME
 	};
 
 	///
@@ -85,7 +95,7 @@ namespace orbit {
 		_clock = core::Clock::create();
 
 		_simulator.initialize();
-		_renderer.initialize();
+		_renderer.initialize("content/render.context");
 
 		for (Ephemeris::Iterator iter = theEphemeris().begin(); iter != theEphemeris().end(); ++iter)
 		{
@@ -186,12 +196,12 @@ namespace orbit {
 		_frameInterpolant = (float32_t)(_wallTimeAccum / TIME_STEP);
 	}
 
-	void Mechanics::render(gigl::Context &context)
+	void Mechanics::render(CameraFrame *cameraFrame)
 	{
-		context["time"] = float32_t(_wallTime);
-		context["interpolant"] = _frameInterpolant;
+		LUCID_VALIDATE(nullptr != _root, "attempt to use uninitialized system");
+		LUCID_VALIDATE(nullptr != cameraFrame, "attempt to render using invalid camera frame");
 
-		render(context, float32_t(_wallTime), _frameInterpolant);
+		_renderer.render(_root, cameraFrame, float32_t(_wallTime), _frameInterpolant);
 	}
 
 	Selection Mechanics::hit(int32_t x, int32_t y) const
@@ -217,18 +227,6 @@ namespace orbit {
 		_dayNumber[1] = _dayNumber[1] + delta;
 
 		_simulator.simulate(_root, _dayNumber[1], delta);
-	}
-
-	void Mechanics::render(gigl::Context const &context, float32_t time, float32_t interpolant)
-	{
-		LUCID_VALIDATE(nullptr != _root, "attempt to use uninitialized system");
-
-		_renderer.render(_root, context, time, interpolant);
-	}
-
-	vector3_t Mechanics::interpolatedPosition(Frame const &frame) const
-	{
-		return math::lerp(cast(_frameInterpolant), frame.absolutePosition[0], frame.absolutePosition[1]);
 	}
 
 }	///	orbit

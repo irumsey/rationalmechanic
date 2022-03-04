@@ -1,10 +1,12 @@
 #pragma once
 
+#include <string>
 #include <memory>
 #include <vector>
 #include <lucid/core/Noncopyable.h>
 #include <lucid/core/Profiler.h>
 #include <lucid/gal/Types.h>
+#include <lucid/gigl/Context.h>
 #include <lucid/gigl/Batched.h>
 #include <lucid/orbit/Algorithm.h>
 
@@ -22,7 +24,6 @@ namespace gal {
 namespace lucid {
 namespace gigl {
 
-	class Context;
 	class Mesh;
 
 }	///	gigl
@@ -30,11 +31,6 @@ namespace gigl {
 
 namespace lucid {
 namespace orbit {
-
-	class Frame;
-	class DynamicPoint;
-	class OrbitalBody;
-	class DynamicBody;
 
 	///
 	///
@@ -48,10 +44,11 @@ namespace orbit {
 		/// Used for "pixel perfect" selection.
 		enum SELECT
 		{
-			SELECT_STAR  = 0x01,
-			SELECT_FRAME = 0x02,
-			SELECT_ORBIT = 0x03,
-			SELECT_OTHER = 0x0f,
+			SELECT_STAR		= 0x01,
+			SELECT_FRAME	= 0x02,
+			SELECT_ORBIT	= 0x03,
+			SELECT_CAMERA	= 0x04,
+			SELECT_OTHER	= 0x0f,
 		};
 		enum { SELECT_SHIFT = 28 };
 		enum { SELECT_MASK  = 0x0fffffff};
@@ -66,11 +63,13 @@ namespace orbit {
 
 		virtual void evaluate(DynamicBody *body) override;
 
-		void initialize();
+		virtual void evaluate(CameraFrame *camera) override;
+
+		void initialize(std::string const &path);
 
 		void shutdown();
 
-		void render(Frame *root, gigl::Context const &context, float32_t time, float32_t interpolant);
+		void render(Frame *rootFrame, CameraFrame *cameraFrame, float32_t time, float32_t interpolant);
 
 		uint32_t hit(int32_t x, int32_t y) const;
 
@@ -116,8 +115,7 @@ namespace orbit {
 		float32_t _time = 0.f;
 		float32_t _interpolant = 0.f;
 
-		gal::Vector3 _viewPosition = gal::Vector3();
-		gal::Matrix4x4 _viewProjMatrix = gal::Matrix4x4();
+		gigl::Context _renderContext;
 
 		size_t _starCount = 0;
 		std::unique_ptr<gal::VertexBuffer> _starInstances;
@@ -149,13 +147,13 @@ namespace orbit {
 
 		bool cull(Frame *frame);
 
-		void render(gigl::Context const &context);
+		void render();
 
-		void copy(gal::RenderTarget2D *dst, gal::RenderTarget2D *src, gigl::Context const &context);
+		void copy(gal::RenderTarget2D *dst, gal::RenderTarget2D *src);
 
-		void blur(gigl::Context const &context);
+		void blur();
 
-		void post(gigl::Context const &context);
+		void post();
 
 		void resize();
 

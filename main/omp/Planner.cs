@@ -20,10 +20,7 @@ namespace omp
         private Lucid.Orbit.Mechanics orbitalMechainics = null;
 
         private float aspectRatio = 1.0f;
-        private Lucid.GIGL.Context renderContext = null;
-
-        private Lucid.GIGL.Camera2D camera = null;
-        private Lucid.Orbit.Frame cameraFrame = null;
+        private Lucid.Orbit.CameraFrame cameraFrame = null;
 
         private ListViewItem trackedFrameItem = null;
         private Lucid.Orbit.Frame trackedFrame = null;

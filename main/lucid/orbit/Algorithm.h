@@ -7,6 +7,7 @@ namespace orbit {
 	class DynamicPoint;
 	class OrbitalBody;
 	class DynamicBody;
+	class CameraFrame;
 
 	///
 	///
@@ -21,6 +22,8 @@ namespace orbit {
 		virtual void evaluate(OrbitalBody *body) = 0;
 
 		virtual void evaluate(DynamicBody *body) = 0;
+
+		virtual void evaluate(CameraFrame *camera) = 0;
 
 	protected:
 		Algorithm() = default;

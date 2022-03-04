@@ -72,13 +72,13 @@ namespace orbit {
 	///
 	/// 
 	/// 
-	inline gal::Vector2 computeConicPoint(float32_t hu, float32_t e, float32_t theta)
+	inline vector2_t computeConicPoint(scalar_t hu, scalar_t e, scalar_t theta)
 	{
-		float32_t c = math::cos(theta);
-		float32_t s = math::sin(theta);
-		float32_t r = hu / (1.f + e * c);
+		scalar_t c = math::cos(theta);
+		scalar_t s = math::sin(theta);
+		scalar_t r = hu / (cast(1.f) + e * c);
 
-		return r * gal::Vector2(c, s);
+		return r * vector2_t(c, s);
 	}
 
 	///

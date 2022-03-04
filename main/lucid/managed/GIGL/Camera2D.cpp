@@ -1,5 +1,4 @@
 #include "Camera2D.h"
-#include <lucid/gigl/Camera2D.h>
 #include <lucid/math/Matrix.h>
 #include <lucid/core/FileReader.h>
 #include <lucid/core/Logger.h>
@@ -21,11 +20,6 @@ namespace /* anonymous */
 namespace Lucid {
 namespace GIGL {
 
-	Camera2D::Camera2D()
-	{
-		_internal = new gigl::Camera2D();
-	}
-
 	Camera2D::Camera2D(System::String ^path)
 	{
 		try
@@ -37,6 +31,16 @@ namespace GIGL {
 			core::log("ERROR", error.what());
 			throw;
 		}
+	}
+
+	Camera2D::Camera2D(gigl::Camera2D const &camera)
+	{
+		_internal = new gigl::Camera2D(camera);
+	}
+
+	Camera2D::Camera2D()
+	{
+		_internal = new gigl::Camera2D();
 	}
 
 	Camera2D::~Camera2D()

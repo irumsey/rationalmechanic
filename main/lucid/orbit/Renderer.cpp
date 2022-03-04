@@ -6,7 +6,7 @@
 #include "Constants.h"
 #include <lucid/gigl/Model.h>
 #include <lucid/gigl/Mesh.h>
-#include <lucid/gigl/Context.h>
+#include <lucid/gigl/Camera2D.h>
 #include <lucid/gigl/Resources.h>
 #include <lucid/gal/TargetReader2D.h>
 #include <lucid/gal/RenderTarget2D.h>
@@ -22,6 +22,11 @@ namespace  gigl = ::lucid:: gigl;
 namespace orbit = ::lucid::orbit;
 
 namespace { /// anonymous
+
+	inline gal::Pipeline &galPipeline()
+	{
+		return gal::Pipeline::instance();
+	}
 
 	inline orbit::StarCatalog &theStarCatalog()
 	{
@@ -132,7 +137,8 @@ namespace orbit {
 		};
 
 		DetailLevels &detailLevels = renderProperties.detailLevels;
-		size_t detailIndex = detailLevels.level(math::len(position[1] - _viewPosition));
+		// size_t detailIndex = detailLevels.level(math::len(position[1] /* - _viewPosition */));
+		size_t detailIndex = 0;
 
 		if (DetailLevels::INVALID_LEVEL == detailIndex)
 			return;
@@ -164,9 +170,17 @@ namespace orbit {
 		///	TBD: implement
 	}
 
-	void Renderer::initialize()
+	void Renderer::evaluate(CameraFrame *camera)
+	{
+		LUCID_PROFILE_SCOPE("Renderer::evaluate(CameraFrame)");
+		///	TBD: implement
+	}
+
+	void Renderer::initialize(std::string const &path)
 	{
 		shutdown();
+
+		_renderContext = gigl::Context(path);
 
 		gal::System &galSystem = gal::System::instance();
 		_width = galSystem.width();
@@ -243,33 +257,54 @@ namespace orbit {
 		_copy.reset();
 		_blur.reset();
 		_post.reset();
+
+		_renderContext = gigl::Context();
 	}
 
-	void Renderer::render(Frame *root, gigl::Context const &context, float32_t time, float32_t interpolant)
+	void Renderer::render(Frame *rootFrame, CameraFrame *cameraFrame, float32_t time, float32_t interpolant)
 	{
 		LUCID_PROFILE_SCOPE("Renderer::render(...)");
 
 		resize();
 
-		gal::Pipeline &galPipeline = gal::Pipeline::instance();
+		gigl::Camera2D &camera = cameraFrame->camera;
 
 		_time = time;
 		_interpolant = interpolant;
-		_viewPosition = context.lookup("viewPosition").as<gal::Vector3>();
-		_viewProjMatrix = context.lookup("viewProjMatrix").as<gal::Matrix4x4>();
+
+		Frame const *focusFrame = cameraFrame->focus;
+
+		camera.look(
+			scale(math::lerp(scalar_t(_interpolant), cameraFrame->absolutePosition[0], cameraFrame->absolutePosition[1])),
+			scale(math::lerp(scalar_t(_interpolant), focusFrame->absolutePosition[0], focusFrame->absolutePosition[1])),
+			gal::Vector3(0, 0, 1)
+		);
+
+		_renderContext["time"] = _time;
+		_renderContext["interpolant"] = _interpolant;
+		_renderContext["viewPosition"] = camera.getPosition();
+		_renderContext["viewForward"] = camera.getForward();
+		_renderContext["viewRight"] = camera.getRight();
+		_renderContext["viewUp"] = camera.getUp();
+		_renderContext["viewMatrix"] = camera.getViewMatrix();
+		_renderContext["invViewMatrix"] = math::inverse(camera.getViewMatrix());
+		_renderContext["projMatrix"] = camera.getProjMatrix();
+		_renderContext["invProjMatrix"] = math::inverse(camera.getProjMatrix());
+		_renderContext["viewProjMatrix"] = camera.getViewProjMatrix();
+		_renderContext["invViewProjMatrix"] = math::inverse(camera.getViewProjMatrix());
 
 		_batched.clear();
-		batch(root);
+		batch(rootFrame);
 
-		render(context);
-		copy  (_blurTarget[0].get(), _glowTarget.get(), context);
-		blur  (context);
-		copy  (_glowTarget.get(), _blurTarget[0].get(), context);
+		render();
+		copy  (_blurTarget[0].get(), _glowTarget.get());
+		blur  ();
+		copy  (_glowTarget.get(), _blurTarget[0].get());
 
-		galPipeline.restoreBackBuffer(true, false, false);
-		galPipeline.updateTargets();
+		galPipeline().restoreBackBuffer(true, false, false);
+		galPipeline().updateTargets();
 
-		post(context);
+		post();
 	}
 
 	uint32_t Renderer::hit(int32_t x, int32_t y) const
@@ -337,67 +372,61 @@ namespace orbit {
 		return false;
 	}
 
-	void Renderer::render(gigl::Context const &context)
+	void Renderer::render()
 	{
-		gal::Pipeline &galPipeline = gal::Pipeline::instance();
+		galPipeline().setRenderTarget(0, _colorTarget.get());
+		galPipeline().setRenderTarget(1, _glowTarget.get());
+		galPipeline().setRenderTarget(2, _selectTarget.get());
 
-		galPipeline.setRenderTarget(0, _colorTarget. get());
-		galPipeline.setRenderTarget(1, _glowTarget.  get());
-		galPipeline.setRenderTarget(2, _selectTarget.get());
+		galPipeline().updateTargets();
 
-		galPipeline.updateTargets();
+		_clear->render(_renderContext);
 
-		_clear->render(context);
+		galPipeline().setVertexStream(1, _starInstances.get());
+		_starMesh->renderInstanced(_renderContext, int32_t(_starCount));
 
-		galPipeline.setVertexStream(1, _starInstances.get());
-		_starMesh->renderInstanced(context, int32_t(_starCount));
-
-		_batched.render(context);
+		_batched.render(_renderContext);
 		
-		galPipeline.restoreBackBuffer(true, false, false);
-		galPipeline.updateTargets();
+		galPipeline().restoreBackBuffer(true, false, false);
+		galPipeline().updateTargets();
 	}
 
-	void Renderer::copy(gal::RenderTarget2D *dst, gal::RenderTarget2D *src, gigl::Context const &context)
+	void Renderer::copy(gal::RenderTarget2D *dst, gal::RenderTarget2D *src)
 	{
-		gal::Pipeline &galPipeline = gal::Pipeline::instance();
-
-		galPipeline.setRenderTarget(0,     dst);
-		galPipeline.setRenderTarget(1, nullptr);
-		galPipeline.setRenderTarget(2, nullptr);
-		galPipeline.updateTargets();
+		galPipeline().setRenderTarget(0, dst);
+		galPipeline().setRenderTarget(1, nullptr);
+		galPipeline().setRenderTarget(2, nullptr);
+		galPipeline().updateTargets();
 		
 		_copy->material()->program()->set(_copyParameters.theSource, src);
-		_copy->render(context);
+		_copy->render(_renderContext);
 	}
 
-	void Renderer::blur(gigl::Context const &context)
+	void Renderer::blur()
 	{
-		gal::Pipeline &galPipeline = gal::Pipeline::instance();
-
 		gal::Vector2 horizontal = gal::Vector2(1.f / _width, 0);
 		gal::Vector2 vertical = gal::Vector2(0, 1.f / _height);
 
-		galPipeline.setRenderTarget(0, _blurTarget[1].get());
-		galPipeline.updateTargets();
+		galPipeline().setRenderTarget(0, _blurTarget[1].get());
+		galPipeline().updateTargets();
 
 		_blur->material()->program()->set(_blurParameters.theSource, _blurTarget[0].get());
 		_blur->material()->program()->set(_blurParameters.texelSize, horizontal);
-		_blur->render(context);
+		_blur->render(_renderContext);
 
-		galPipeline.setRenderTarget(0, _blurTarget[0].get());
-		galPipeline.updateTargets();
+		galPipeline().setRenderTarget(0, _blurTarget[0].get());
+		galPipeline().updateTargets();
 
 		_blur->material()->program()->set(_blurParameters.theSource, _blurTarget[1].get());
 		_blur->material()->program()->set(_blurParameters.texelSize, vertical);
-		_blur->render(context);
+		_blur->render(_renderContext);
 	}
 
-	void Renderer::post(gigl::Context const &context)
+	void Renderer::post()
 	{
 		_post->material()->program()->set(_postParameters.colorTarget, _colorTarget.get());
 		_post->material()->program()->set(_postParameters. glowTarget, _glowTarget. get());
-		_post->render(context);
+		_post->render(_renderContext);
 	}
 
 	void Renderer::resize()

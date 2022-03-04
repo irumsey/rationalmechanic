@@ -36,6 +36,7 @@ namespace orbit {
 		"Dynamic Point",
 		"Orbital Body",
 		"Dynamic Body",
+		"Camera Frame",
 	};
 
 	//

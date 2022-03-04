@@ -51,8 +51,9 @@ namespace orbit {
 				TYPE_DYNAMIC_POINT = 1,
 				TYPE_ORBITAL_BODY  = 2,
 				TYPE_DYNAMIC_BODY  = 3,
+				TYPE_CAMERA_FRAME  = 4,
 			};
-			enum { TYPE_COUNT = 4 };
+			enum { TYPE_COUNT = 5 };
 
 			TYPE  type = TYPE_UNDEFINED;
 			size_t  id = 0;

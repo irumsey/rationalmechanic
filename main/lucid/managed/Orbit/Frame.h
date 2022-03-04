@@ -9,6 +9,7 @@ namespace orbit {
 	class DynamicPoint;
 	class OrbitalBody;
 	class DynamicBody;
+	class CameraFrame;
 
 }	///	orbit
 }	///	lucid
@@ -22,6 +23,14 @@ namespace Math {
 }	///	Orbit
 
 namespace Lucid {
+namespace GIGL {
+
+	ref class Camera2D;
+
+}	///	GIGL
+}	///	Lucid
+
+namespace Lucid {
 namespace Orbit {
 
 	ref class PhysicalProperties;
@@ -32,8 +41,6 @@ namespace Orbit {
 	public ref class Frame
 	{
 	public:
-		static Frame ^Wrap(::lucid::orbit::Frame *frame);
-
 		~Frame();
 
 		!Frame();
@@ -57,6 +64,8 @@ namespace Orbit {
 		property ::lucid::orbit::Frame &ref { ::lucid::orbit::Frame &get() { return *_internal; } }
 
 		property ::lucid::orbit::Frame *ptr { ::lucid::orbit::Frame *get() { return  _internal; } }
+
+		static Frame ^Wrap(::lucid::orbit::Frame *frame);
 
 	protected:
 		Frame(::lucid::orbit::Frame *frame);
@@ -134,6 +143,37 @@ namespace Orbit {
 
 	private:
 		::lucid::orbit::DynamicBody *_internal = nullptr;
+
+	};
+
+	///	CameraFrame
+	///
+	/// 
+	public ref class CameraFrame : public Frame
+	{
+	public:
+		CameraFrame(::lucid::orbit::CameraFrame *camera);
+
+		CameraFrame(size_t id, System::String ^name, System::String ^description);
+
+		~CameraFrame();
+
+		!CameraFrame();
+
+		void InitPerspective(float fov, float aspect, float znear, float zfar);
+
+		void InitOrthographic(float width, float height, float znear, float zfar);
+
+		property GIGL::Camera2D ^Camera { GIGL::Camera2D ^get(); void set(GIGL::Camera2D ^value); }
+
+		property Frame ^Focus { Frame ^get(); void set(Frame ^value); }
+
+		property ::lucid::orbit::CameraFrame &ref { ::lucid::orbit::CameraFrame &get() { return *_internal; } }
+
+		property ::lucid::orbit::CameraFrame *ptr { ::lucid::orbit::CameraFrame *get() { return  _internal; } }
+
+	private:
+		::lucid::orbit::CameraFrame *_internal = nullptr;
 
 	};
 
