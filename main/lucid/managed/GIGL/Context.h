@@ -65,8 +65,6 @@ namespace GIGL {
 
 		void Set(System::String ^name, System::String ^query);
 
-		void Set(GIGL::Camera2D ^camera);
-
 		property ::lucid::gigl::Context &ref { ::lucid::gigl::Context &get() { return *ptr; } }
 
 		property ::lucid::gigl::Context *ptr { ::lucid::gigl::Context *get() { return _internal; } }

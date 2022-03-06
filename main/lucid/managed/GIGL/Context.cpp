@@ -96,23 +96,5 @@ namespace GIGL {
 		_internal->lookup(MI::marshal_as<std::string>(name)) = MI::marshal_as<std::string>(query);
 	}
 
-	void Context::Set(GIGL::Camera2D ^camera)
-	{
-		_internal->lookup("viewPosition") = camera->position->ref;
-
-		_internal->lookup("viewForward") = camera->forward->ref;
-		_internal->lookup("viewRight") = camera->right->ref;
-		_internal->lookup("viewUp") = camera->up->ref;
-
-		_internal->lookup("viewMatrix") = camera->viewMatrix->ref;
-		_internal->lookup("invViewMatrix") = ::lucid::math::inverse(camera->viewMatrix->ref);
-
-		_internal->lookup("projMatrix") = camera->projMatrix->ref;
-		_internal->lookup("invProjMatrix") = ::lucid::math::inverse(camera->projMatrix->ref);
-
-		_internal->lookup("viewProjMatrix") = camera->viewProjMatrix->ref;
-		_internal->lookup("invViewProjMatrix") = ::lucid::math::inverse(camera->viewProjMatrix->ref);
-	}
-
 } /// GIGL
 } /// Lucid

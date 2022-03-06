@@ -148,6 +148,11 @@ namespace omp
             state.onFrameListClicked(this, e);
         }
 
+        private void onFrameListChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        {
+            state.onFrameListChanged(this, e);
+        }
+
         public void updateSimulation()
         {
             state.updateSimulation(this);

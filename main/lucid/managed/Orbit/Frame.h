@@ -148,13 +148,14 @@ namespace Orbit {
 
 	///	CameraFrame
 	///
-	/// 
+	///	Note: no exposing the underlying camera since it would imply
+	/// the ability to alter "look at" parameters.   
 	public ref class CameraFrame : public Frame
 	{
 	public:
-		CameraFrame(::lucid::orbit::CameraFrame *camera);
-
 		CameraFrame(size_t id, System::String ^name, System::String ^description);
+
+		CameraFrame(::lucid::orbit::CameraFrame *camera);
 
 		~CameraFrame();
 
@@ -163,8 +164,6 @@ namespace Orbit {
 		void InitPerspective(float fov, float aspect, float znear, float zfar);
 
 		void InitOrthographic(float width, float height, float znear, float zfar);
-
-		property GIGL::Camera2D ^Camera { GIGL::Camera2D ^get(); void set(GIGL::Camera2D ^value); }
 
 		property Frame ^Focus { Frame ^get(); void set(Frame ^value); }
 

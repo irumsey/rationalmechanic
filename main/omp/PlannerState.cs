@@ -31,7 +31,9 @@ namespace omp
             public virtual void onMouseClick(Planner planner, Point point) { }
 
             public virtual void onFrameListClicked(Planner planner, MouseEventArgs e) { }
-
+            
+            public virtual void onFrameListChanged(Planner planner, ListViewItemSelectionChangedEventArgs e) { }
+            
             public virtual void updateSimulation(Planner planner) { }
 
             public virtual void renderMainView(Planner planner) { }
@@ -195,25 +197,25 @@ namespace omp
                     return;
 
                 int column = item.SubItems.IndexOf(subItem);
-                if (-1 == column)
+                if (0 != column)
                     return;
 
-                if ((0 == column) && (item != planner.trackedFrameItem))
-                {
-                    if (planner.trackedFrameItem != null)
-                        planner.trackedFrameItem.StateImageIndex = 0;
+                if (item == planner.trackedFrameItem)
+                    return;
 
-                    planner.trackedFrameItem = item;
-                    planner.trackedFrameItem.StateImageIndex = 1;
+                if (planner.trackedFrameItem != null)
+                    planner.trackedFrameItem.StateImageIndex = 0;
 
-                    trackFrame(planner, planner.orbitalMechainics[(ulong)(planner.trackedFrameItem.Tag)]);
-                }
+                planner.trackedFrameItem = item;
+                planner.trackedFrameItem.StateImageIndex = 1;
 
-                if (0 != column)
-                {
-                    planner.cameraFrame.Focus = planner.orbitalMechainics[(ulong)(item.Tag)];
-                }
+                trackFrame(planner, planner.orbitalMechainics[(ulong)(planner.trackedFrameItem.Tag)]);
             }
+
+            public override void onFrameListChanged(Planner planner, ListViewItemSelectionChangedEventArgs e)
+            {
+                planner.cameraFrame.Focus = planner.orbitalMechainics[(ulong)(e.Item.Tag)];
+            } 
 
             public override void updateSimulation(Planner planner)
             {

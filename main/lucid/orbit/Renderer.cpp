@@ -261,7 +261,7 @@ namespace orbit {
 		_renderContext = gigl::Context();
 	}
 
-	void Renderer::render(Frame *rootFrame, CameraFrame *cameraFrame, float32_t time, float32_t interpolant)
+	void Renderer::render(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t time, scalar_t interpolant)
 	{
 		LUCID_PROFILE_SCOPE("Renderer::render(...)");
 
@@ -269,14 +269,14 @@ namespace orbit {
 
 		gigl::Camera2D &camera = cameraFrame->camera;
 
-		_time = time;
-		_interpolant = interpolant;
+		_time = cast(time);
+		_interpolant = cast(interpolant);
 
 		Frame const *focusFrame = cameraFrame->focus;
 
 		camera.look(
-			scale(math::lerp(scalar_t(_interpolant), cameraFrame->absolutePosition[0], cameraFrame->absolutePosition[1])),
-			scale(math::lerp(scalar_t(_interpolant), focusFrame->absolutePosition[0], focusFrame->absolutePosition[1])),
+			scale(math::lerp(interpolant, cameraFrame->absolutePosition[0], cameraFrame->absolutePosition[1])),
+			scale(math::lerp(interpolant, focusFrame->absolutePosition[0], focusFrame->absolutePosition[1])),
 			gal::Vector3(0, 0, 1)
 		);
 

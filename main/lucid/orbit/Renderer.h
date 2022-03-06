@@ -8,6 +8,7 @@
 #include <lucid/gal/Types.h>
 #include <lucid/gigl/Context.h>
 #include <lucid/gigl/Batched.h>
+#include <lucid/orbit/Types.h>
 #include <lucid/orbit/Algorithm.h>
 
 namespace lucid {
@@ -69,7 +70,7 @@ namespace orbit {
 
 		void shutdown();
 
-		void render(Frame *rootFrame, CameraFrame *cameraFrame, float32_t time, float32_t interpolant);
+		void render(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t time, scalar_t interpolant);
 
 		uint32_t hit(int32_t x, int32_t y) const;
 

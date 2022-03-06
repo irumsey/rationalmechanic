@@ -31,7 +31,8 @@ namespace orbit {
 
 	///	Ephemeris
 	///
-	///	
+	///	Note: while camera frame is here for completeness, the ephemeris file shouldn't
+	/// define camera frames.
 	class Ephemeris final
 	{
 	public:

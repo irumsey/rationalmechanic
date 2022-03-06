@@ -71,11 +71,11 @@ namespace orbit {
 		scalar_t const    TIME_STEP = 0.1;
 		scalar_t const   TIME_LIMIT = 0.3;
 
-		scalar_t          _wallTime = 0;
-		scalar_t      _wallTimeLast = 0;
-		scalar_t     _wallTimeAccum = 0;
-		scalar_t           _simTime = 0;
-		float32_t _frameInterpolant = 0;
+		scalar_t         _wallTime = 0;
+		scalar_t     _wallTimeLast = 0;
+		scalar_t    _wallTimeAccum = 0;
+		scalar_t          _simTime = 0;
+		scalar_t _frameInterpolant = 0;
 
 		core::Clock *_clock = nullptr;
 

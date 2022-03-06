@@ -195,7 +195,7 @@
             // 
             this.mainSplitter.Panel2.Controls.Add(this.orbitalFrameList);
             this.mainSplitter.Size = new System.Drawing.Size(1239, 484);
-            this.mainSplitter.SplitterDistance = 936;
+            this.mainSplitter.SplitterDistance = 935;
             this.mainSplitter.SplitterWidth = 5;
             this.mainSplitter.TabIndex = 2;
             // 
@@ -214,11 +214,12 @@
             this.orbitalFrameList.Margin = new System.Windows.Forms.Padding(4);
             this.orbitalFrameList.MultiSelect = false;
             this.orbitalFrameList.Name = "orbitalFrameList";
-            this.orbitalFrameList.Size = new System.Drawing.Size(298, 484);
+            this.orbitalFrameList.Size = new System.Drawing.Size(299, 484);
             this.orbitalFrameList.StateImageList = this.orbitalFrameListImages;
             this.orbitalFrameList.TabIndex = 0;
             this.orbitalFrameList.UseCompatibleStateImageBehavior = false;
             this.orbitalFrameList.View = System.Windows.Forms.View.Details;
+            this.orbitalFrameList.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.onFrameListChanged);
             this.orbitalFrameList.MouseClick += new System.Windows.Forms.MouseEventHandler(this.onFrameListClicked);
             // 
             // orbitalFrameListTrack

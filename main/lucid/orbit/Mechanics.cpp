@@ -37,8 +37,8 @@ namespace orbit {
 	{
 		OrbitalBody *body = new OrbitalBody(id, name, description);
 
-		LUCID_VALIDATE(theEphemeris().lookup(body->physicalProperties, id), "consistency error: properties not found for frame");
-		LUCID_VALIDATE(theEphemeris().lookup(body->  renderProperties, id), "consistency error: properties not found for frame");
+		LUCID_VALIDATE(theEphemeris().lookup(body->physicalProperties, id), "physical properties not found for frame: " + name);
+		LUCID_VALIDATE(theEphemeris().lookup(body->  renderProperties, id), "render properties not found for frame: " + name);
 
 		return body;
 	}
@@ -168,10 +168,12 @@ namespace orbit {
 		Frame *center = frame->centerFrame;
 		auto iter = _frames.find(frame->id);
 
+		LUCID_VALIDATE(_frames.find(center->id) != _frames.end(), "attempt to detach a frame from a parent not managed by system");
+		LUCID_VALIDATE(iter != _frames.end(), "attempt to detach a frame not managed by system");
+
 		LUCID_VALIDATE(nullptr != center, "attempt to detach an already detached frame");
 		LUCID_VALIDATE(_root != frame, "attempt to detach the root frame");
-		LUCID_VALIDATE(frame != center, "attempt to detach a root frame");
-		LUCID_VALIDATE(iter != _frames.end(), "attempt to detach a frame not managed by system");
+		LUCID_VALIDATE(frame != center, "attempt to detach a root frame");	/// some root but not one managed here
 
 		center->removeChild(frame);
 		_frames.erase(iter);
@@ -193,7 +195,7 @@ namespace orbit {
 			_wallTimeAccum -= TIME_STEP;
 		}
 
-		_frameInterpolant = (float32_t)(_wallTimeAccum / TIME_STEP);
+		_frameInterpolant = _wallTimeAccum / TIME_STEP;
 	}
 
 	void Mechanics::render(CameraFrame *cameraFrame)
@@ -201,7 +203,7 @@ namespace orbit {
 		LUCID_VALIDATE(nullptr != _root, "attempt to use uninitialized system");
 		LUCID_VALIDATE(nullptr != cameraFrame, "attempt to render using invalid camera frame");
 
-		_renderer.render(_root, cameraFrame, float32_t(_wallTime), _frameInterpolant);
+		_renderer.render(_root, cameraFrame, _wallTime, _frameInterpolant);
 	}
 
 	Selection Mechanics::hit(int32_t x, int32_t y) const

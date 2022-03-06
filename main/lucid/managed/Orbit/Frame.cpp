@@ -220,15 +220,15 @@ namespace Orbit {
 	///
 	/// 
 
-	CameraFrame::CameraFrame(orbit::CameraFrame *body)
-		: Frame(body)
-		, _internal(body)
-	{
-	}
-
 	CameraFrame::CameraFrame(size_t id, System::String ^name, System::String ^description)
 		: _internal(new orbit::CameraFrame(id, MI::marshal_as<std::string>(name), MI::marshal_as<std::string>(description)))
 		, Frame(_internal)
+	{
+	}
+
+	CameraFrame::CameraFrame(orbit::CameraFrame *body)
+		: Frame(body)
+		, _internal(body)
 	{
 	}
 
@@ -249,16 +249,6 @@ namespace Orbit {
 	void CameraFrame::InitOrthographic(float width, float height, float znear, float zfar)
 	{
 		_internal->initOrthographic(width, height, znear, zfar);
-	}
-
-	GIGL::Camera2D ^CameraFrame::Camera::get()
-	{
-		return gcnew GIGL::Camera2D(_internal->camera);
-	}
-
-	void CameraFrame::Camera::set(GIGL::Camera2D ^value)
-	{
-		_internal->camera = value->ref;
 	}
 
 	Frame ^CameraFrame::Focus::get()

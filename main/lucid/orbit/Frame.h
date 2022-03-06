@@ -29,11 +29,11 @@ namespace orbit {
 	///		0)	a parent frame always owns its children and will delete them when
 	///			it is deleted.
 	///		1)	if the parent, centerFrame, is null then the frame is detached from
-	///			a hierarchy and ownership passes to whatever "detached" the frame.
+	///			a hierarchy and ownership passes to whatever "detached" it.
 	///		2)	if the parent is not-null and is equal to itself, it is a root
 	///			frame and the owner is the one which made it a root frame.
 	///		3)	if the parent is not-null and not equal to itself, it is a child frame
-	///			and the owner is its parent.
+	///			and the owner is its parent (as per rule 0).
 	///  
 	class Frame
 	{
@@ -168,8 +168,8 @@ namespace orbit {
 	class CameraFrame : public Frame
 	{
 	public:
-		Frame *focus = nullptr;
 		gigl::Camera2D camera;
+		Frame *focus = nullptr;
 
 		CameraFrame(size_t id, std::string const &name, std::string const &description);
 
