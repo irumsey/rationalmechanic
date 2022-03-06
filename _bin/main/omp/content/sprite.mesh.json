@@ -1,0 +1,95 @@
+{
+	"material" :
+	{
+		"program":
+		{
+			"Samplers" :
+			[
+			],
+
+			"RenderStates" :
+			{
+				"RasterMode" :
+				{
+					"Fill" : "FILL_SOLID",
+					"Cull" : "CULL_NONE",
+					"Multisample": false
+				},
+
+				"BlendMode" :
+				{
+					"ColorWriteMask" : 15,
+					"Enabled" : true,
+					"SrcBlend" : "BLEND_SRC_ALPHA",
+					"SrcBlendAlpha" : "BLEND_SRC_ALPHA",
+					"DstBlend" : "BLEND_INV_SRC_ALPHA",
+					"DstBlendAlpha" : "BLEND_INV_SRC_ALPHA"
+				},
+
+				"DepthStencilMode" :
+				{
+					"DepthEnabled" : true,
+					"DepthWrite" : "DEPTH_WRITE_ENABLED",
+					"DepthFunction" : "COMPARISON_LESS",
+					"StencilEnabled" : false,
+					"StencilFunction" : "COMPARISON_LESS",
+					"StencilPass" : "STENCIL_KEEP",
+					"StencilFail" : "STENCIL_KEEP",
+					"StencilDepthFail" : "STENCIL_KEEP",
+					"StencilReadMask" : 15,
+					"StencilWriteMask" : 0,
+					"StencilRef" : 0
+				}
+
+			},
+
+			"VertexShader" : { "Path" : "content/sprite.vertex.cso" },
+			"PixelShader" : { "Path" : "content/sprite.pixel.cso" }
+		},
+
+		"attributes":
+		[
+			{ "name":  "lightPosition", "query":      "lightPosition" },
+											     
+			{ "name":   "viewPosition", "query":       "viewPosition" },
+			{ "name":         "viewUp", "query":             "viewUp" },
+			{ "name": "viewProjMatrix", "query":     "viewProjMatrix" },
+
+			{ "name": "normalsTexture", "texture2d": "content/diskNormals.texture" }
+		]
+	},
+
+	"geometry" :
+	{
+		"topology": "TOPOLOGY_TRIANGLE_STRIP",
+
+		"format": {
+			"elements": [
+				{ "format" : "FORMAT_FLOAT2", "type" :   "TYPE_VERTEX", "location" : 0, "stream" : 0, "offset" :  0 },
+				{ "format" :  "FORMAT_UINT1", "type" : "TYPE_INSTANCE", "location" : 1, "stream" : 1, "offset" :  0 }, 
+				{ "format" : "FORMAT_FLOAT3", "type" : "TYPE_INSTANCE", "location" : 2, "stream" : 1, "offset" :  1 },
+				{ "format" : "FORMAT_FLOAT1", "type" : "TYPE_INSTANCE", "location" : 3, "stream" : 1, "offset" :  4 },
+				{ "format" : "FORMAT_FLOAT4", "type" : "TYPE_INSTANCE", "location" : 4, "stream" : 1, "offset" :  5 },
+				{ "format" : "FORMAT_FLOAT4", "type" : "TYPE_INSTANCE", "location" : 5, "stream" : 1, "offset" :  9 },
+				{ "format" : "FORMAT_FLOAT4", "type" : "TYPE_INSTANCE", "location" : 6, "stream" : 1, "offset" : 13 }
+			]
+		},
+
+		"vertices": {
+			"usage": "USAGE_STATIC",
+			"stride": 2,
+			"data": [
+				-1, -1,
+				-1,  1,
+				 1, -1, 
+				 1,  1
+			]
+		},
+
+		"indices": {
+			"usage": "USAGE_STATIC",
+			"format": "FORMAT_UINT16",
+			"data": [ 0, 1, 2, 3 ]
+		}
+	}
+}

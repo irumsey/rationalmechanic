@@ -119,45 +119,54 @@ namespace orbit {
 		gal::Vector3 centerPosition = math::lerp(_interpolant, scale(center->absolutePosition[0]), scale(center->absolutePosition[1]));
 
 		PhysicalProperties const &physicalProperties = body->physicalProperties;
-		RenderProperties &renderProperties = body->renderProperties;
 		Elements const *elements = body->elements;
 
-		float32_t  a = math::lerp(_interpolant, scale(elements[0].A), scale(elements[1].A));
-		float32_t  e = math::lerp(_interpolant, cast(elements[0].EC), cast(elements[1].EC));
-		float32_t hu = a * (1.f - e * e);
-
-		gal::Quaternion rotation[2] = {
-			math::quaternionFromMatrix(cast(rotationFromElements(elements[0]))),
-			math::quaternionFromMatrix(cast(rotationFromElements(elements[1])))
-		};
-
-		gal::Vector3 position[2] = {
-			scale(body->absolutePosition[0]),
-			scale(body->absolutePosition[1]),
-		};
-
+		RenderProperties &renderProperties = body->renderProperties;
 		DetailLevels &detailLevels = renderProperties.detailLevels;
 
-		size_t detailIndex = detailLevels.level(math::len(position[1] - _cameraPosition));
+		gal::Vector3 position = math::lerp(
+			_interpolant,
+			scale(body->absolutePosition[0]),
+			scale(body->absolutePosition[1])
+		);
+
+		size_t detailIndex = detailLevels.level(math::len(position - _cameraPosition));
 		if (DetailLevels::INVALID_LEVEL == detailIndex)
 			return;
 
 		DetailLevels::Level const &detailLevel = detailLevels[detailIndex];
 
+		float32_t  a = math::lerp(_interpolant, scale(elements[0].A), scale(elements[1].A));
+		float32_t  e = math::lerp(_interpolant, cast(elements[0].EC), cast(elements[1].EC));
+		float32_t hu = a * (1.f - e * e);
+
+		gal::Quaternion rotation = math::slerp(
+			_interpolant,
+			math::quaternionFromMatrix(cast(rotationFromElements(elements[0]))),
+			math::quaternionFromMatrix(cast(rotationFromElements(elements[1])))
+		);
+
 		MeshInstance bodyInstance;
 		bodyInstance.id = (SELECT_FRAME << SELECT_SHIFT) | uint32_t(SELECT_MASK & body->id);
-		bodyInstance.position = math::lerp(_interpolant, position[0], position[1]);
+		bodyInstance.position = position;
 		bodyInstance.scale = detailLevel.scale * scale(physicalProperties.radius);
 		bodyInstance.rotation = gal::Quaternion(0, 0, 0, 1);
 		bodyInstance.color = detailLevel.color;
 		bodyInstance.parameters = detailLevel.parameters;
 		_batched.addInstance(detailLevel.model, bodyInstance);
 
+		// test {
+		// going to need a data driven method of enabling/disabling orbits
+		// don't render the sun's orbit around the SSB
+		if (10 == body->id)
+			return;
+		// } test
+
 		MeshInstance orbitInstance;
 		orbitInstance.id = (SELECT_ORBIT << SELECT_SHIFT) | uint32_t(SELECT_MASK & body->id);
 		orbitInstance.position = centerPosition;
 		orbitInstance.scale = 0.2f;
-		orbitInstance.rotation = math::slerp(_interpolant, rotation[0], rotation[1]);
+		orbitInstance.rotation = rotation;
 		orbitInstance.color = gal::Color(0, 0, 1, 1);
 		orbitInstance.parameters = gal::Vector4(hu, e, 0.f, math::constants::two_pi<float32_t>());
 		_batched.addInstance(_orbitMesh, orbitInstance);
@@ -209,6 +218,7 @@ namespace orbit {
 		/// test {
 		///	need a data driven method for registering these... 
 		/// ...just read the ephemeris stupid!!!
+		_batched.createBatch<MeshInstance, Back2Front<MeshInstance> >(gigl::Resources::get<gigl::Mesh>(    "content/sprite.mesh"), BATCH_MAXIMUM);
 		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>(      "content/disk.mesh"), BATCH_MAXIMUM);
 		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>("content/atmosphere.mesh"), BATCH_MAXIMUM);
 		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>("content/hemisphere.mesh"), BATCH_MAXIMUM);
@@ -334,36 +344,7 @@ namespace orbit {
 	{
 		LUCID_PROFILE_SCOPE("Renderer::cull(Frame)");
 
-#if false
-		///	TBD: more sophistication
-		///	for now, just based upon distance to center body
-
-		///	(32 pixels / 1024 pixels)^2
-		///	so, if the screen is 1024 pixels wide, anything less then 32ish pixels will be culled
-		float32_t const magic = math::pow(32.f / 1024.f, 2.f);
-
-		Frame *center = frame->centerFrame;
-		if (nullptr == center)
-			return true;
-
-		///	don't cull the sun
-		if (10 == frame->id)
-			return false;
-
-		///	measuring the distance from the target frame to its attracting center
-
-		gal::Vector4 ppsPosition[2] = {
-			_viewProjMatrix * gal::Vector4(scale(center->absolutePosition[1]), 1.f),
-			_viewProjMatrix * gal::Vector4(scale(frame->absolutePosition[1]), 1.f),
-		};
-
-		gal::Vector2 screenPosition[2] = {
-			gal::Vector2(ppsPosition[0].x, ppsPosition[0].y) / ppsPosition[0].w,
-			gal::Vector2(ppsPosition[1].x, ppsPosition[1].y) / ppsPosition[1].w,
-		};
-
-		return (math::lsq(screenPosition[1] - screenPosition[0]) < 0.004f); 
-#endif
+		// TBD: implement
 
 		return false;
 	}

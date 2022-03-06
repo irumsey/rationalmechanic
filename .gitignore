@@ -326,3 +326,6 @@ ModelManifest.xml
 /_bin/main/omp/Lucid.64d.dll
 /_lib/Lucid.64d.dll
 /_lib/Lucid.64d.dll.metagen
+/_bin/main/omp/content/sprite.vertex.cso
+/_bin/main/omp/content/sprite.pixel.cso
+/_bin/main/omp/content/sprite.mesh

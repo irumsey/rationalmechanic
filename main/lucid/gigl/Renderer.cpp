@@ -31,7 +31,7 @@ namespace gigl {
 
 	void Renderer::render(Context const &context) const
 	{
-		for (Stage *stage = _stage; stage; stage = stage->next())
+		for (Stage *stage = _stage; nullptr != stage; stage = stage->next())
 			stage->render(context);
 	}
 

@@ -1,4 +1,4 @@
-#include "disk.header.hlsl"
+#include "sprite.header.hlsl"
 
 Texture2D diffuseTexture;
 Texture2D    glowTexture;
