@@ -25,9 +25,11 @@ namespace orbit {
 		if ((current.range[0] <= distance) && (distance < current.range[1]))
 			return index;
 
+		size_t delta = (distance < current.range[0]) ? -1 : +1;
+
 		///	linear scan for valid level...
 		size_t count = levels.size();
-		for (index = 0; index < count; ++index)
+		for (index = index + delta; (INVALID_LEVEL != index) && (index < count); index = index + delta)
 		{
 			Level const &level = levels[index];
 			if ((level.range[0] <= distance) && (distance < level.range[1]))
