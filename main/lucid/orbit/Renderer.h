@@ -115,6 +115,7 @@ namespace orbit {
 
 		float32_t _time = 0.f;
 		float32_t _interpolant = 0.f;
+		gal::Vector3 _cameraPosition;
 
 		gigl::Context _renderContext;
 

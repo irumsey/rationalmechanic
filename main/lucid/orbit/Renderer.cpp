@@ -137,9 +137,8 @@ namespace orbit {
 		};
 
 		DetailLevels &detailLevels = renderProperties.detailLevels;
-		// size_t detailIndex = detailLevels.level(math::len(position[1] /* - _viewPosition */));
-		size_t detailIndex = 0;
 
+		size_t detailIndex = detailLevels.level(math::len(position[1] - _cameraPosition));
 		if (DetailLevels::INVALID_LEVEL == detailIndex)
 			return;
 
@@ -271,6 +270,7 @@ namespace orbit {
 
 		_time = cast(time);
 		_interpolant = cast(interpolant);
+		_cameraPosition = camera.getPosition();
 
 		Frame const *focusFrame = cameraFrame->focus;
 
@@ -334,11 +334,6 @@ namespace orbit {
 	{
 		LUCID_PROFILE_SCOPE("Renderer::cull(Frame)");
 
-		/// test {
-//		if ("Moon" == frame->name)
-//			return true;
-		/// } test
-
 #if false
 		///	TBD: more sophistication
 		///	for now, just based upon distance to center body
@@ -369,6 +364,7 @@ namespace orbit {
 
 		return (math::lsq(screenPosition[1] - screenPosition[0]) < 0.004f); 
 #endif
+
 		return false;
 	}
 
