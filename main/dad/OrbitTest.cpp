@@ -1,6 +1,7 @@
 #include "OrbitTest.h"
 #include "UserInput.h"
 #include "Utility.h"
+#include <lucid/orbit/Frame.h>
 #include <lucid/orbit/Ephemeris.h>
 #include <lucid/orbit/StarCatalog.h>
 #include <lucid/orbit/Constants.h>
@@ -25,14 +26,14 @@ namespace orbit = ::lucid::orbit;
 namespace /* anonymous */
 {
 
-	inline ::lucid::orbit::StarCatalog &theStarCatalog()
+	inline orbit::StarCatalog &theStarCatalog()
 	{
-		return ::lucid::orbit::StarCatalog::instance();
+		return orbit::StarCatalog::instance();
 	}
 
-	inline ::lucid::orbit::Ephemeris &theEphemeris()
+	inline orbit::Ephemeris &theEphemeris()
 	{
-		return ::lucid::orbit::Ephemeris::instance();
+		return orbit::Ephemeris::instance();
 	}
 
 }	///	anonymous
@@ -47,46 +48,19 @@ void OrbitTest::begin(float64_t t)
 
 	LUCID_PROFILE_BEGIN("begin orbit test");
 
-	_context = gigl::Context("content/test.context");
-
 	theStarCatalog().initialize("content/bsc5.starcatalog");
 	theEphemeris().initialize("content/j2000.ephemeris");
 
 	_orbitalSystem.initialize(orbit::constants::J2000<orbit::scalar_t>());
-
-	///	initial view positon/direction
-	_viewPosition = gal::Vector3(75, 75, 20);
-	_viewDirection = math::normalize(gal::Vector3( 0,  0,  0) - _viewPosition);
-
-	/// test {
-	_instances.reset(gal::VertexBuffer::create(gal::VertexBuffer::USAGE_STATIC, 10, sizeof(Instance)));
-	_icosphere.reset(gigl::Mesh::create("content/icosphere.mesh"));
-
-	Instance *instances = (Instance*)_instances->lock();
-	instances[0].position = gal::Vector3(0, 0, 0);
-	instances[0].scale = 50;
-	instances[0].rotation = gal::Quaternion();
-	_instances->unlock();
-	/// } test
+	_cameraFrame = new orbit::CameraFrame(1001, "camaera", "");
+	
+	_orbitalSystem.attach(_orbitalSystem.root(), _cameraFrame);
 
 	LUCID_PROFILE_END();
 }
 
 void OrbitTest::onInput(MouseEvent const &event)
 {
-	///	TBD: make better (since Dads A Diagnostic this is not a priority)
-	///	changing view direction is very clunky
-	if (event.btnDownLeft)
-	{
-		float32_t theta = 0.03f * event.x;
-		float32_t   phi = 0.03f * event.y;
-		_viewDirection = math::normalize(math::rotateAboutX(phi) * math::rotateAboutZ(theta) * _viewDirection);
-	}
-
-	if (event.btnDownRight)
-	{
-		_viewPosition = -0.3f * event.y * _viewDirection + _viewPosition;
-	}
 }
 
 bool OrbitTest::update(float64_t t, float64_t dt)
@@ -96,30 +70,10 @@ bool OrbitTest::update(float64_t t, float64_t dt)
 	float32_t const    fov = math::constants::quarter_pi<float32_t>();
 	float32_t const aspect = gal::System::instance().aspect();
 
-	gal::Vector3 e1 = _viewDirection;
-	gal::Vector3 e2 = gal::Vector3(0, 0, 1);
-	gal::Vector3 e0 = math::normalize(math::cross(_viewDirection, e2));
-	             e2 = math::normalize(math::cross(e0, e1));
+	gigl::Camera2D &camera = _cameraFrame->camera;
+	camera.initPerspective(fov, aspect, 1.f, 1000.f);
 
-	gal::Matrix4x4 viewMatrix = math::look(_viewPosition, _viewPosition + 5.f * _viewDirection, e2);
-	gal::Matrix4x4 projMatrix = math::perspective(fov, aspect, 1.f, 1000.f);
-
-	gal::Matrix4x4 invViewMatrix = math::inverse(viewMatrix);
-
-	_context[   "viewRight"] = math::normalize(e0);
-	_context[ "viewForward"] = math::normalize(e1);
-	_context[      "viewUp"] = math::normalize(e2);
-	_context["viewPosition"] = _viewPosition;
-
-	_context["viewMatrix"] = viewMatrix;
-	_context["projMatrix"] = projMatrix;
-	_context["viewProjMatrix"] = projMatrix * viewMatrix;
-
-	///	dt is in seconds.  however, orbit::System::update() takes
-	///	a time step of days.  therefore, if dt is 0.1 that translates
-	///	to 8640 seconds (where 86400s is one day).  this happens 10 times
-	///	a second, so, 1 day ticks off per second on screen.
-	_orbitalSystem.update(dt);
+	_orbitalSystem.update();
 
 	///	return true to exit testing (false to continue)
 	return false;
@@ -131,14 +85,7 @@ void OrbitTest::render(float32_t time, float32_t interpolant)
 
 	LUCID_PROFILE_BEGIN("orbit rendering");
 
-	_context["time"] = time;
-	_context["interpolant"] = interpolant;
-
-	_orbitalSystem.render(_context, time, interpolant);
-
-	pipeline.setVertexStream(1, _instances.get());
-	_icosphere->renderInstanced(_context, 1);
+	_orbitalSystem.render(_cameraFrame);
 
 	LUCID_PROFILE_END();
 }
-

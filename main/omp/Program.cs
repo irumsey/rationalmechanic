@@ -17,19 +17,32 @@ namespace omp
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+            Log theLog = new Log();
+            theLog.Start();
+
             Lucid.Core.Profiler profiler = new Lucid.Core.Profiler();
 
-            Planner planner = new Planner();
-            planner.Show();
-
-            while (!planner.IsDisposed)
+            try
             {
-                planner.updateSimulation();
-                planner.renderMainView();
-                Application.DoEvents();
-            }
+                Planner planner = new Planner();
+                planner.Show();
 
+                while (!planner.IsDisposed)
+                {
+                    planner.updateSimulation();
+                    planner.renderMainView();
+                    Application.DoEvents();
+                }
+            }
+            catch
+            {
+                /// if an exception leaks out, got to manually shutdown Lucid.Orbit singletons
+                Lucid.Orbit.Ephemeris.Shutdown();
+                Lucid.Orbit.StarCatalog.Shutdown();
+            }
+            
             profiler.dump("profile.log");
+            theLog.Stop();
         }
     }
 }

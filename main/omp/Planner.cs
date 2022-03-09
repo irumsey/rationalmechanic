@@ -31,6 +31,13 @@ namespace omp
             changeState(Starting.Instance);
         }
 
+        private void changeState(State next)
+        {
+            state.onLeave(this);
+            state = next;
+            state.onEnter(this);
+        }
+
         private void setMainMenuDefaults()
         {
             mainMenuFileNewMission.Enabled = true;
@@ -88,13 +95,6 @@ namespace omp
             Properties.Settings.Default.Save();
 
             changeState(Stopping.Instance);
-        }
-
-        private void changeState(State next)
-        {
-            state.onLeave(this);
-            state = next;
-            state.onEnter(this);
         }
 
         private void onPaint(object sender, PaintEventArgs e)

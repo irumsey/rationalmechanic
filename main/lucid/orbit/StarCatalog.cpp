@@ -1,6 +1,7 @@
 #include "StarCatalog.h"
 #include "Utility.h"
 #include <lucid/core/FileReader.h>
+#include <lucid/core/Logger.h>
 
 namespace core = ::lucid::core;
 
@@ -24,6 +25,8 @@ namespace orbit {
 			entry.    declination = reader.read<scalar_t>();
 			entry.      magnitude = reader.read<float32_t>();
 		}
+
+		core::log("INFO", "Star Catalog initialized using: " + path);
 	}
 
 	void StarCatalog::shutdown()

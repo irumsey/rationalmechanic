@@ -227,6 +227,7 @@ INT WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR cmdln, _In_ IN
 	}
 	catch (...)
 	{
+		log("ERR", "unknown error");
 		exitCode = 1;
 	}
 

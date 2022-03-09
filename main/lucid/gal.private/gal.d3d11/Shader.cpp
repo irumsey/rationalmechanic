@@ -1,6 +1,7 @@
 #include "Shader.h"
 #include "System.h"
 #include "Utility.h"
+#include <lucid/core/Logger.h>
 #include <lucid/core/Error.h>
 
 #include <fstream>
@@ -93,8 +94,9 @@ namespace d3d11 {
 				}
 			}
 		}
-		catch (...)
+		catch (core::Error const &error)
 		{
+			core::log("ERR", error.what());
 			throw;
 		}
 	}

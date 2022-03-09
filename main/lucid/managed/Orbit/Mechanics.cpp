@@ -5,6 +5,8 @@
 #include <lucid/orbit/Selection.h>
 #include <lucid/orbit/Utility.h>
 #include <lucid/math/Algorithm.h>
+#include <lucid/core/Logger.h>
+#include <lucid/core/Error.h>
 
 #include <lucid/managed/Math/Types.h>
 
@@ -21,7 +23,16 @@ namespace Orbit {
 
 	Mechanics::Mechanics(double dayNumber)
 	{
-		Initialize(dayNumber);
+		try
+		{
+			Initialize(dayNumber);
+		}
+		catch (core::Error const &error)
+		{
+			core::log("ERR", error.what());
+			Shutdown();
+			throw;
+		}
 	}
 
 	Mechanics::~Mechanics()

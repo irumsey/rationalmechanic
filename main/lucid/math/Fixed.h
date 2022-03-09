@@ -56,8 +56,8 @@ namespace math {
 		{
 			lval.raw = integer_t();
 
-			int32_t const count = rhs.size();
-			int32_t const    dp = rhs.find_first_of('.');
+			int32_t const count = int32_t(rhs.size());
+			int32_t const    dp = int32_t(rhs.find_first_of('.'));
 			int32_t const  last = count - 1;
 
 			if (0 == count)

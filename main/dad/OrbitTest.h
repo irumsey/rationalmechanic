@@ -4,7 +4,7 @@
 #include <lucid/core/Noncopyable.h>
 #include <lucid/gal/Types.h>
 #include <lucid/gigl/Context.h>
-#include <lucid/orbit/System.h>
+#include <lucid/orbit/Mechanics.h>
 #include <dad/Test.h>
 
 struct MouseEvent;
@@ -45,23 +45,8 @@ public:
 private:
 	bool _passed = true;
 
-	::lucid::gigl::Context _context;
-
-	::lucid::gal::Vector3 _viewPosition;
-	::lucid::gal::Vector3 _viewDirection;
-
-	lucid::orbit::System _orbitalSystem;
-
-	/// test {
-	struct Instance
-	{
-		lucid::gal::Vector3 position;
-		float32_t scale;
-		lucid::gal::Quaternion rotation;
-	};
-	std::unique_ptr<lucid::gal::VertexBuffer> _instances;
-	std::unique_ptr<lucid::gigl::Mesh> _icosphere;
-	/// } test
+	lucid::orbit::CameraFrame *_cameraFrame = nullptr;
+	lucid::orbit::Mechanics *_orbitalSystem = nullptr;
 
 	LUCID_PREVENT_COPY(OrbitTest);
 	LUCID_PREVENT_ASSIGNMENT(OrbitTest);

@@ -168,12 +168,12 @@ void Session::render(float64_t t, float32_t interpolant)
 	if (0 != _edgeCount)
 	{
 		pipeline.setVertexStream(1, _edgeInstances);
-		_beam->renderInstanced(_context, _edgeCount);
+		_beam->renderInstanced(_context, int32_t(_edgeCount));
 	}
 
 	if (0 != _nodeCount)
 	{
 		pipeline.setVertexStream(1, _nodeInstances);
-		_sprite->renderInstanced(_context, _nodeCount);
+		_sprite->renderInstanced(_context, int32_t(_nodeCount));
 	}
 }

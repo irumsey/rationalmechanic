@@ -60,8 +60,9 @@ namespace d3d11 {
 		{
 			initialize();
 		}
-		catch (...)
+		catch (core::Error const &error)
 		{
+			core::log("ERR", error.what());
 			shutdown();
 			throw;
 		}
@@ -77,8 +78,9 @@ namespace d3d11 {
 		{
 			initialize();
 		}
-		catch (...)
+		catch (core::Error const &error)
 		{
+			core::log("ERR", error.what());
 			shutdown();
 			throw;
 		}

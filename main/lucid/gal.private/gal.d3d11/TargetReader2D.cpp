@@ -3,6 +3,8 @@
 #include "System.h"
 #include "Utility.h"
 #include <lucid/math/Scalar.h>
+#include <lucid/core/Logger.h>
+#include <lucid/core/Error.h>
 
 namespace /* anonymous */
 {
@@ -63,8 +65,9 @@ namespace d3d11 {
 
 			_data = new uint8_t[TEXEL_SIZE * _width * _height];
 		}
-		catch (...)
+		catch (core::Error const &error)
 		{
+			core::log("ERR", error.what());
 			shutdown();
 			throw;
 		}

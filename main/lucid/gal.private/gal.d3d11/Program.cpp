@@ -10,6 +10,7 @@
 #include "System.h"
 #include <lucid/core/FileReader.h>
 #include <lucid/core/Reader.h>
+#include <lucid/core/Logger.h>
 #include <lucid/core/Error.h>
 #include <algorithm>
 
@@ -49,8 +50,9 @@ namespace d3d11 {
 		{
 			initialize(::lucid::core::FileReader(path));
 		}
-		catch (...)
+		catch (core::Error const &error)
 		{
+			core::log("ERR", error.what());
 			shutdown();
 			throw;
 		}
@@ -62,8 +64,9 @@ namespace d3d11 {
 		{
 			initialize(reader);
 		}
-		catch (...)
+		catch (core::Error const &error)
 		{
+			core::log("ERR", error.what());
 			shutdown();
 			throw;
 		}
@@ -380,8 +383,9 @@ namespace d3d11 {
 
 			finalizeSamplers();
 		}
-		catch (...)
+		catch (core::Error const &error)
 		{
+			core::log("ERR", error.what());
 			shutdown();
 			throw;
 		}

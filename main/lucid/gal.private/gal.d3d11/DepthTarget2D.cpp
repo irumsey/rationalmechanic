@@ -2,6 +2,7 @@
 #include "System.h"
 #include "Utility.h"
 #include <lucid/core/Reader.h>
+#include <lucid/core/Logger.h>
 
 ///
 ///
@@ -53,8 +54,9 @@ namespace d3d11 {
 		{
 			initialize();
 		}
-		catch (...)
+		catch (core::Error const &error)
 		{
+			core::log("ERR", error.what());
 			shutdown();
 			throw;
 		}

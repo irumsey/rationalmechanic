@@ -7,6 +7,7 @@
 #include <lucid/math/Algorithm.h>
 #include <lucid/math/Constants.h>
 #include <lucid/core/FileReader.h>
+#include <lucid/core/Logger.h>
 
 namespace  core = ::lucid:: core;
 namespace  math = ::lucid:: math;
@@ -96,6 +97,8 @@ namespace orbit {
 				_elements.insert(std::make_pair(target.id, pluralElements));
 			}
 		}
+
+		core::log("INFO", "Ephemeris initialized using: " + path);
 	}
 
 	void Ephemeris::shutdown()

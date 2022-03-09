@@ -62,8 +62,8 @@ namespace math {
 		{
 			lval.data = data_t();
 
-			int32_t const count = rhs.size();
-			int32_t const last = count - 1;
+			int32_t const count = int32_t(rhs.size());
+			int32_t const last = int32_t(count - 1);
 			if (0 == count)
 				return;
 

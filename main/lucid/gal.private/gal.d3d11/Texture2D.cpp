@@ -3,6 +3,8 @@
 #include "System.h"
 #include "Pipeline.h"
 #include "Utility.h"
+#include <lucid/core/Logger.h>
+#include <lucid/core/Error.h>
 #include <vector>
 #include <fstream>
 
@@ -38,8 +40,9 @@ namespace d3d11 {
 		{
 			initialize(path);
 		}
-		catch (...)
+		catch (core::Error const &error)
 		{
+			core::log("ERR", error.what());
 			shutdown();
 			throw;
 		}
@@ -51,8 +54,9 @@ namespace d3d11 {
 		{
 			initialize(reader.read<std::string>());
 		}
-		catch (...)
+		catch (core::Error const &error)
 		{
+			core::log("ERR", error.what());
 			shutdown();
 			throw;
 		}

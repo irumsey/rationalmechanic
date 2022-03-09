@@ -48,6 +48,7 @@ namespace omp
             static Stopped() { }
 
             private Stopped() { }
+
         }
 
         /// <summary>
@@ -80,6 +81,8 @@ namespace omp
 
             public override void onEnter(Planner planner)
             {
+                Lucid.Core.Logger.Log("INFO", "Planner.Starting.onEnter(...)");
+
                 SplitterPanel panel = planner.mainSplitter.Panel1;
                 Size clientSize = panel.ClientSize;
 
@@ -119,6 +122,11 @@ namespace omp
 
             private Editing() { }
 
+            public override void onEnter(Planner planner)
+            {
+                Lucid.Core.Logger.Log("INFO", "Planner.Editing.onEnter(...)");
+            }
+
             public override void onMainViewResize(Planner planner)
             {
                 SplitterPanel panel = planner.mainSplitter.Panel1;
@@ -128,6 +136,7 @@ namespace omp
                 Lucid.GAL.Pipeline.resize(clientSize.Width, clientSize.Height);
 
                 planner.cameraFrame.InitPerspective(0.25f * 3.1415926f, planner.aspectRatio, 1, 1000);
+
                 planner.renderMainView();
             }
 
@@ -255,6 +264,8 @@ namespace omp
 
             public override void onEnter(Planner planner)
             {
+                Lucid.Core.Logger.Log("INFO", "Planner.Stopping.onEnter(...)");
+
                 planner.orbitalMechainics.Shutdown();
                 
                 Lucid.Orbit.Ephemeris.Shutdown();

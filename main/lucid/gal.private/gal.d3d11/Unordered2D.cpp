@@ -2,6 +2,8 @@
 #include "System.h"
 #include "Pipeline.h"
 #include "Utility.h"
+#include <lucid/core/Logger.h>
+#include <lucid/core/Error.h>
 #include <vector>
 
 ///
@@ -103,8 +105,9 @@ namespace d3d11 {
 
 			_data = new uint32_t [width * height];
 		}
-		catch (...)
+		catch (core::Error const &error)
 		{
+			core::log("ERR", error.what());
 			shutdown();
 			throw;
 		}
