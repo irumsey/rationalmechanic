@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Logger = Lucid.Core.Logger;
+
 namespace omp
 {
-    internal class Log : Lucid.Core.Logger.Listener
+    internal class Log : Logger.Listener
     {
         private System.IO.FileStream file = null;
 

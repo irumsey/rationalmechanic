@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
 
+using Logger = Lucid.Core.Logger;
+
 namespace omp
 {
 
@@ -81,7 +83,7 @@ namespace omp
 
             public override void onEnter(Planner planner)
             {
-                Lucid.Core.Logger.Log("INFO", "Planner.Starting.onEnter(...)");
+                Logger.Log("INFO", "Planner.Starting.onEnter(...)");
 
                 SplitterPanel panel = planner.mainSplitter.Panel1;
                 Size clientSize = panel.ClientSize;
@@ -124,7 +126,7 @@ namespace omp
 
             public override void onEnter(Planner planner)
             {
-                Lucid.Core.Logger.Log("INFO", "Planner.Editing.onEnter(...)");
+                Logger.Log("INFO", "Planner.Editing.onEnter(...)");
             }
 
             public override void onMainViewResize(Planner planner)
@@ -187,10 +189,17 @@ namespace omp
                 if (0 == selection.Tag)
                     return;
 
-                foreach(ListViewItem item in planner.orbitalFrameList.Items)
+                Lucid.Orbit.EphemerisEntry entry = Lucid.Orbit.Ephemeris.LookupEntry(selection.Tag);
+                Logger.Log("INFO", entry.Name + " selected using main view");
+
+                // TBD: use a hash table to get the item instead of this linear search
+                foreach (ListViewItem item in planner.orbitalFrameList.Items)
                 {
                     if ((ulong)(item.Tag) == selection.Tag)
+                    {
                         item.Selected = true;
+                        break;
+                    }
                 }
             }
 
@@ -223,7 +232,11 @@ namespace omp
 
             public override void onFrameListChanged(Planner planner, ListViewItemSelectionChangedEventArgs e)
             {
+                if (!e.IsSelected)
+                    return;
+
                 planner.cameraFrame.Focus = planner.orbitalMechainics[(ulong)(e.Item.Tag)];
+                Logger.Log("INFO", "camera's focus switched to: " + planner.cameraFrame.Focus.Name);
             } 
 
             public override void updateSimulation(Planner planner)
@@ -249,6 +262,8 @@ namespace omp
                 planner.orbitalMechainics.Attach(planner.trackedFrame, planner.cameraFrame);
 
                 planner.cameraFrame.RelativePosition = new Lucid.Math.Vector3(10, 10, 3);
+
+                Logger.Log("INFO", "camera frame attached to frame: " + planner.trackedFrame.Name);
             }
         }
 
@@ -264,7 +279,7 @@ namespace omp
 
             public override void onEnter(Planner planner)
             {
-                Lucid.Core.Logger.Log("INFO", "Planner.Stopping.onEnter(...)");
+                Logger.Log("INFO", "Planner.Stopping.onEnter(...)");
 
                 planner.orbitalMechainics.Shutdown();
                 
