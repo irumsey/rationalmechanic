@@ -34,6 +34,7 @@ namespace Lucid {
 namespace Orbit {
 
 	ref class PhysicalProperties;
+	ref class RenderProperties;
 
 	///	Frame
 	///
@@ -112,7 +113,9 @@ namespace Orbit {
 
 		!OrbitalBody();
 
-		property PhysicalProperties ^Properties { PhysicalProperties ^get(); }
+		property PhysicalProperties ^PhysicalProps { PhysicalProperties ^get(); }
+
+		property RenderProperties ^RenderProps { RenderProperties ^get(); }
 
 		property ::lucid::orbit::OrbitalBody &ref { ::lucid::orbit::OrbitalBody &get() { return *_internal; } }
 

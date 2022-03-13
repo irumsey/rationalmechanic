@@ -126,9 +126,7 @@ namespace Orbit {
 	{
 		LUCID_VALIDATE(_internal != _internal->centerFrame, "attempt to move root frame");
 
-		/// this is a "warp"
-		_internal->relativePosition[0] = orbit::inv_scale(value->ref);
-		_internal->relativePosition[1] = _internal->relativePosition[0];
+		_internal->relativePosition[1] = orbit::inv_scale(value->ref);
 	}
 
 	Math::Vector3 ^Frame::AbsolutePosition::get()
@@ -186,9 +184,14 @@ namespace Orbit {
 	{
 	}
 
-	PhysicalProperties ^OrbitalBody::Properties::get()
+	PhysicalProperties ^OrbitalBody::PhysicalProps::get()
 	{
-		return gcnew PhysicalProperties(_internal->physicalProperties);
+		return gcnew PhysicalProperties(&(_internal->physicalProperties));
+	}
+
+	RenderProperties ^OrbitalBody::RenderProps::get()
+	{
+		return gcnew RenderProperties(&(_internal->renderProperties));
 	}
 
 	///

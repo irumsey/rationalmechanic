@@ -167,7 +167,7 @@ namespace orbit {
 		orbitInstance.position = centerPosition;
 		orbitInstance.scale = 0.2f;
 		orbitInstance.rotation = rotation;
-		orbitInstance.color = gal::Color(0, 0, 1, 1);
+		orbitInstance.color = renderProperties.orbitHighlight ? gal::Color(0, 1, 0, 1) : gal::Color(0, 0, 1, 1);
 		orbitInstance.parameters = gal::Vector4(hu, e, 0.f, math::constants::two_pi<float32_t>());
 		_batched.addInstance(_orbitMesh, orbitInstance);
 	}

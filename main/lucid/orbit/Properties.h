@@ -43,7 +43,9 @@ namespace orbit {
 	struct RenderProperties
 	{
 		DetailLevels detailLevels;
-		///	TBD: and others...
+
+		bool bodyHighlight = false;
+		bool orbitHighlight = false;
 
 		RenderProperties() = default;
 

@@ -178,6 +178,7 @@ namespace omp
                     Lucid.Orbit.EphemerisEntry entry = Lucid.Orbit.Ephemeris.LookupEntry(selection.Tag);
                     if (null == entry)
                         return;
+                    
                     planner.statusLabel.Text = "Orbit: " + entry.Name;
                     return;
                 }

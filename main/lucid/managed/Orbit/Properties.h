@@ -14,6 +14,8 @@ namespace Orbit{
 	public ref class PhysicalProperties
 	{
 	public:
+		PhysicalProperties(::lucid::orbit::PhysicalProperties *properties);
+
 		PhysicalProperties(::lucid::orbit::PhysicalProperties const &properties);
 
 		~PhysicalProperties();
@@ -29,7 +31,32 @@ namespace Orbit{
 		property ::lucid::orbit::PhysicalProperties const *ptr { ::lucid::orbit::PhysicalProperties const *get() { return _internal; } }
 
 	private:
+		bool _isOwner = false;
 		::lucid::orbit::PhysicalProperties *_internal = nullptr;
+
+	};
+
+	///
+	///
+	/// 
+	public ref class RenderProperties
+	{
+	public:
+		RenderProperties(::lucid::orbit::RenderProperties *properties);
+
+		~RenderProperties();
+
+		!RenderProperties();
+
+		PROPERTY(OrbitHighlight, orbitHighlight, bool)
+		PROPERTY( BodyHighlight,  bodyHighlight, bool)
+
+		property ::lucid::orbit::RenderProperties const &ref { ::lucid::orbit::RenderProperties const &get() { return *ptr; } }
+
+		property ::lucid::orbit::RenderProperties const *ptr { ::lucid::orbit::RenderProperties const *get() { return _internal; } }
+
+	private:
+		::lucid::orbit::RenderProperties *_internal = nullptr;
 
 	};
 

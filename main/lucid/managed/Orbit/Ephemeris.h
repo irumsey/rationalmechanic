@@ -34,8 +34,8 @@ namespace Orbit {
 
 		!EphemerisEntry();
 
-		PROPERTY(         ID,          id,                                 size_t)
-		PROPERTY(        CID,         cid,                                 size_t)
+		PROPERTY( ID,  id, size_t)
+		PROPERTY(CID, cid, size_t)
 
 		property EphemerisEntryType Type {
 			EphemerisEntryType get();
