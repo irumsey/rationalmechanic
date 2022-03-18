@@ -102,7 +102,7 @@ namespace omp
 
                 planner.cameraFrame = new Lucid.Orbit.CameraFrame(1001, "camera", "");
                 planner.orbitalMechainics.Attach(planner.orbitalMechainics.Root, planner.cameraFrame);
-                planner.cameraFrame.RelativePosition = new Lucid.Math.Vector3(10, 10, 3);
+                planner.cameraFrame.RelativePosition = new Lucid.Math.Vector3(10, 10, 5);
 
                 planner.aspectRatio = (float)clientSize.Width / (float)clientSize.Height;
 
@@ -262,7 +262,7 @@ namespace omp
                 planner.orbitalMechainics.Detach(planner.cameraFrame);
                 planner.orbitalMechainics.Attach(planner.trackedFrame, planner.cameraFrame);
 
-                planner.cameraFrame.RelativePosition = new Lucid.Math.Vector3(10, 10, 3);
+                planner.cameraFrame.RelativePosition = new Lucid.Math.Vector3(10, 10, 5);
 
                 Logger.Log("INFO", "camera frame attached to frame: " + planner.trackedFrame.Name);
             }

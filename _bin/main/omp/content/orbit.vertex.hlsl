@@ -20,7 +20,7 @@ OutputVertex main(InputVertex input)
 	float3 viewDirection = viewPosition - curvePosition0.xyz;
 	float   viewDistance = length(viewDirection);
 
-	float3 e2 = normalize(cross(viewDirection / viewDistance, tangent));
+	float3 e2 = cross(viewDirection / viewDistance, tangent);
 
 	float width = input.scale * dot(input.vertex.yzw, float3(0, 1, -1));
 

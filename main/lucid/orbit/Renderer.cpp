@@ -162,6 +162,9 @@ namespace orbit {
 			return;
 		// } test
 
+		if (!renderProperties.showOrbit)
+			return;
+
 		MeshInstance orbitInstance;
 		orbitInstance.id = (SELECT_ORBIT << SELECT_SHIFT) | uint32_t(SELECT_MASK & body->id);
 		orbitInstance.position = centerPosition;

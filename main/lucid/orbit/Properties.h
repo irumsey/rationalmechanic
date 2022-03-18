@@ -44,6 +44,7 @@ namespace orbit {
 	{
 		DetailLevels detailLevels;
 
+		bool showOrbit = true;
 		bool bodyHighlight = false;
 		bool orbitHighlight = false;
 

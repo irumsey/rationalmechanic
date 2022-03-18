@@ -40,8 +40,15 @@ namespace Orbit {
 	/// 
 	/// 
 	
+	RenderProperties::RenderProperties(orbit::RenderProperties const &properties)
+	{
+		_internal = new orbit::RenderProperties(properties);
+		_isOwner = true;
+	}
+
 	RenderProperties::RenderProperties(orbit::RenderProperties *properties)
 		: _internal(properties)
+		, _isOwner(false)
 	{
 	}
 
@@ -52,8 +59,10 @@ namespace Orbit {
 
 	RenderProperties::!RenderProperties()
 	{
-		/// does not own _internal
+		if (_isOwner)
+			delete _internal;
 	}
+
 
 }	///	Orbit
 }	///	Lucid

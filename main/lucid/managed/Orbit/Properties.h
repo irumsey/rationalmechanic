@@ -44,10 +44,13 @@ namespace Orbit{
 	public:
 		RenderProperties(::lucid::orbit::RenderProperties *properties);
 
+		RenderProperties(::lucid::orbit::RenderProperties const &properties);
+
 		~RenderProperties();
 
 		!RenderProperties();
 
+		PROPERTY(     ShowOrbit,      showOrbit, bool)
 		PROPERTY(OrbitHighlight, orbitHighlight, bool)
 		PROPERTY( BodyHighlight,  bodyHighlight, bool)
 
@@ -56,6 +59,7 @@ namespace Orbit{
 		property ::lucid::orbit::RenderProperties const *ptr { ::lucid::orbit::RenderProperties const *get() { return _internal; } }
 
 	private:
+		bool _isOwner = false;
 		::lucid::orbit::RenderProperties *_internal = nullptr;
 
 	};
