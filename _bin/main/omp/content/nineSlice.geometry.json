@@ -4,33 +4,34 @@
 	"format": {
 		"elements": [
 			{ "format" : "FORMAT_FLOAT4", "type" :   "TYPE_VERTEX", "location" : 0, "stream" : 0, "offset" :  0 },
+			{ "format" : "FORMAT_FLOAT2", "type" :   "TYPE_VERTEX", "location" : 1, "stream" : 0, "offset" :  4 },
 
-			{ "format" : "FORMAT_FLOAT2", "type" : "TYPE_INSTANCE", "location" : 1, "stream" : 1, "offset" :  0 },
-			{ "format" : "FORMAT_FLOAT4", "type" : "TYPE_INSTANCE", "location" : 2, "stream" : 1, "offset" :  2 },
-			{ "format" : "FORMAT_FLOAT4", "type" : "TYPE_INSTANCE", "location" : 3, "stream" : 1, "offset" :  6 }
+			{ "format" : "FORMAT_FLOAT2", "type" : "TYPE_INSTANCE", "location" : 2, "stream" : 1, "offset" :  0 },
+			{ "format" : "FORMAT_FLOAT4", "type" : "TYPE_INSTANCE", "location" : 3, "stream" : 1, "offset" :  2 },
+			{ "format" : "FORMAT_FLOAT4", "type" : "TYPE_INSTANCE", "location" : 4, "stream" : 1, "offset" :  6 }
 		]
 	},
 
 	"vertices": {
 		"usage": "USAGE_STATIC",
-		"stride": 4,
+		"stride": 6,
 		"data": [
-			-1,  0, -1,  0,
-			 0, -1, -1,  0,
-			 0,  1, -1,  0,
-			 1,  0, -1,  0,
-			-1,  0,  0, -1,
-			 0, -1,  0, -1,
-			 0,  1,  0, -1,
-			 1,  0,  0, -1,
-			-1,  0,  0,  1,
-			 0, -1,  0,  1,
-			 0,  1,  0,  1,
-			 1,  0,  0,  1,
-			-1,  0,  1,  0,
-			 0, -1,  1,  0,
-			 0,  1,  1,  0,
-			 1,  0,  1,  0
+			-1,  0, -1,  0,     0.00, 0.00,
+			 0, -1, -1,  0,			0.33, 0.00,
+			 0,  1, -1,  0,			0.66, 0.00,
+			 1,  0, -1,  0,			1.00, 0.00,
+			-1,  0,  0, -1,			0.00, 0.33,
+			 0, -1,  0, -1,			0.33, 0.33,
+			 0,  1,  0, -1,			0.66, 0.33,
+			 1,  0,  0, -1,			1.00, 0.33,
+			-1,  0,  0,  1,			0.00, 0.66,
+			 0, -1,  0,  1,			0.33, 0.66,
+			 0,  1,  0,  1,			0.66, 0.66,
+			 1,  0,  0,  1,			1.00, 0.66,
+			-1,  0,  1,  0,			0.00, 1.00,
+			 0, -1,  1,  0,			0.33, 1.00,
+			 0,  1,  1,  0,			0.66, 1.00,
+			 1,  0,  1,  0,			1.00, 1.00
 				
 		]
 	},

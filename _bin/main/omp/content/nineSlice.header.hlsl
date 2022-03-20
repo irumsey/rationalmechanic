@@ -4,9 +4,10 @@ float1 screenHeight;
 struct InputVertex
 {
 	float4    select : LOCATION0;
-	float2  position : LOCATION1;
-	float4 dimension : LOCATOIN2;
-	float4     color : LOCATION3;
+	float2  texcoord : LOCATION1;
+	float2  position : LOCATION2;
+	float4 dimension : LOCATOIN3;
+	float4     color : LOCATION4;
 };
 
 struct OutputVertex
