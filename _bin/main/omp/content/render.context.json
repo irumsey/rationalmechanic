@@ -1,6 +1,10 @@
 {
 	"primitives" :
 	[
+		{ "name" :      "screenWidth",     "float" : 0 },
+		{ "name" :     "screenHeight",     "float" : 0 },
+
+
 		{ "name" :             "time",     "float" : 0.0 },
 		{ "name" :      "interpolant",     "float" : 0.0 },
 

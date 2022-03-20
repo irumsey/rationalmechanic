@@ -254,6 +254,26 @@ namespace Orbit {
 		_internal->initOrthographic(width, height, znear, zfar);
 	}
 
+	float32_t CameraFrame::ScreenWidth::get()
+	{
+		return _internal->screenWidth;
+	}
+
+	void CameraFrame::ScreenWidth::set(float32_t value)
+	{
+		_internal->screenWidth = value;
+	}
+
+	float32_t CameraFrame::ScreenHeight::get()
+	{
+		return _internal->screenHeight;
+	}
+
+	void CameraFrame::ScreenHeight::set(float32_t value)
+	{
+		_internal->screenHeight = value;
+	}
+
 	Frame ^CameraFrame::Focus::get()
 	{
 		return Wrap(_internal->focus);

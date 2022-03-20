@@ -168,6 +168,10 @@ namespace Orbit {
 
 		void InitOrthographic(float width, float height, float znear, float zfar);
 
+		property float32_t ScreenWidth { float32_t get(); void set(float32_t value); }
+
+		property float32_t ScreenHeight { float32_t get(); void set(float32_t value); }
+
 		property Frame ^Focus { Frame ^get(); void set(Frame ^value); }
 
 		property ::lucid::orbit::CameraFrame &ref { ::lucid::orbit::CameraFrame &get() { return *_internal; } }

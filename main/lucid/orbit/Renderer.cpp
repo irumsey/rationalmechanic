@@ -156,10 +156,12 @@ namespace orbit {
 		_batched.addInstance(detailLevel.model, bodyInstance);
 
 		// test {
-		// going to need a data driven method of enabling/disabling orbits
 		// don't render the sun's orbit around the SSB
+		// going to need a data driven method of enabling/disabling orbits
 		if (10 == body->id)
+		{
 			return;
+		}
 		// } test
 
 		if (!renderProperties.showOrbit)
@@ -226,6 +228,9 @@ namespace orbit {
 		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>("content/atmosphere.mesh"), BATCH_MAXIMUM);
 		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>("content/hemisphere.mesh"), BATCH_MAXIMUM);
 		/// } test
+		 
+		_calloutMesh = gigl::Resources::get<gigl::Mesh>("content/callout.mesh");
+		_batched.createBatch<CalloutInstance, NullSort<CalloutInstance> >(_calloutMesh, BATCH_MAXIMUM);
 
 		_orbitMesh = gigl::Resources::get<gigl::Mesh>("content/orbit.mesh");
 		_batched.createBatch<MeshInstance, Back2Front<MeshInstance> >(_orbitMesh, BATCH_MAXIMUM);
@@ -293,8 +298,12 @@ namespace orbit {
 			gal::Vector3(0, 0, 1)
 		);
 
+		_renderContext["screenWidth"] = cameraFrame->screenWidth;
+		_renderContext["screenHeight"] = cameraFrame->screenHeight;
+
 		_renderContext["time"] = _time;
 		_renderContext["interpolant"] = _interpolant;
+		
 		_renderContext["viewPosition"] = camera.getPosition();
 		_renderContext["viewForward"] = camera.getForward();
 		_renderContext["viewRight"] = camera.getRight();

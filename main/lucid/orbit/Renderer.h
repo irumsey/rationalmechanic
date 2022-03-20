@@ -102,12 +102,19 @@ namespace orbit {
 
 		struct MeshInstance
 		{
-			uint32_t                         id;
-			::lucid::gal::Vector3      position;
-			float32_t                     scale;
-			::lucid::gal::Quaternion   rotation;
-			::lucid::gal::Color           color;
-			::lucid::gal::Vector4    parameters;
+			uint32_t                id;
+			gal::Vector3      position;
+			float32_t            scale;
+			gal::Quaternion   rotation;
+			gal::Color           color;
+			gal::Vector4    parameters;
+		};
+
+		struct CalloutInstance
+		{
+			gal::Vector2  position;
+			gal::Vector4 dimension;
+			gal::Color       color;
 		};
 
 		int32_t _width = 0;
@@ -124,6 +131,7 @@ namespace orbit {
 		std::unique_ptr<gigl::Mesh> _starMesh;
 
 		std::shared_ptr<gigl::Mesh> _orbitMesh;
+		std::shared_ptr<gigl::Mesh> _calloutMesh;
 
 		gigl::Batched _batched;
 

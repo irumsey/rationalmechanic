@@ -72,6 +72,12 @@
     <FxCompile Include="..\..\_bin\main\omp\content\hemisphere.vertex.hlsl">
       <Filter>omp</Filter>
     </FxCompile>
+    <FxCompile Include="..\..\_bin\main\omp\content\nineSlice.vertex.hlsl">
+      <Filter>omp</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\omp\content\nineSlice.pixel.hlsl">
+      <Filter>omp</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\_bin\main\rnd\content\beam.header.hlsl">
@@ -99,6 +105,9 @@
       <Filter>omp</Filter>
     </None>
     <None Include="..\..\_bin\main\omp\content\hemisphere.header.hlsl">
+      <Filter>omp</Filter>
+    </None>
+    <None Include="..\..\_bin\main\omp\content\nineSlice.header.hlsl">
       <Filter>omp</Filter>
     </None>
   </ItemGroup>
