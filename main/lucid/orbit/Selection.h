@@ -17,12 +17,13 @@ namespace orbit {
 		/// the renderer.
 		enum TYPE
 		{
-			TYPE_NONE	= 0,
-			TYPE_STAR	= Renderer::SELECT_STAR,
-			TYPE_FRAME	= Renderer::SELECT_FRAME,
-			TYPE_ORBIT	= Renderer::SELECT_ORBIT,
-			TYPE_CAMERA	= Renderer::SELECT_CAMERA,
-			TYPE_OTHER	= Renderer::SELECT_OTHER,
+			TYPE_NONE	 = 0,
+			TYPE_STAR	 = Renderer::SELECT_STAR,
+			TYPE_FRAME	 = Renderer::SELECT_FRAME,
+			TYPE_ORBIT	 = Renderer::SELECT_ORBIT,
+			TYPE_CAMERA	 = Renderer::SELECT_CAMERA,
+			TYPE_CALLOUT = Renderer::SELECT_CALLOUT,
+			TYPE_OTHER	 = Renderer::SELECT_OTHER,
 		};
 
 		TYPE type = TYPE_NONE;

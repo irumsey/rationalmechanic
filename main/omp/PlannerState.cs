@@ -107,9 +107,6 @@ namespace omp
                 planner.aspectRatio = (float)clientSize.Width / (float)clientSize.Height;
 
                 planner.cameraFrame.InitPerspective(0.25f * 3.1415926f, planner.aspectRatio, 1, 1000);
-                planner.cameraFrame.ScreenWidth = clientSize.Width;
-                planner.cameraFrame.ScreenHeight = clientSize.Height;
-
                 planner.cameraFrame.Focus = planner.orbitalMechainics.Root;
 
                 planner.setMainMenuDefaults();
@@ -141,8 +138,6 @@ namespace omp
                 Lucid.GAL.Pipeline.resize(clientSize.Width, clientSize.Height);
 
                 planner.cameraFrame.InitPerspective(0.25f * 3.1415926f, planner.aspectRatio, 1, 1000);
-                planner.cameraFrame.ScreenWidth = clientSize.Width;
-                planner.cameraFrame.ScreenHeight = clientSize.Height;
 
                 planner.renderMainView();
             }
@@ -185,6 +180,16 @@ namespace omp
                         return;
                     
                     planner.statusLabel.Text = "Orbit: " + entry.Name;
+                    return;
+                }
+
+                if (Lucid.Orbit.SelectionType.TYPE_CALLOUT == selection.Type)
+                {
+                    Lucid.Orbit.EphemerisEntry entry = Lucid.Orbit.Ephemeris.LookupEntry(selection.Tag);
+                    if (null == entry)
+                        return;
+
+                    planner.statusLabel.Text = "Callout: " + entry.Name;
                     return;
                 }
             }

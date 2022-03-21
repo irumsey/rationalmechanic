@@ -168,9 +168,6 @@ namespace orbit {
 	class CameraFrame : public Frame
 	{
 	public:
-		float32_t screenWidth = 0.f;
-		float32_t screenHeight = 0.f;
-
 		gigl::Camera2D camera;
 		Frame *focus = nullptr;
 

@@ -49,6 +49,7 @@ namespace orbit {
 			SELECT_FRAME	= 0x02,
 			SELECT_ORBIT	= 0x03,
 			SELECT_CAMERA	= 0x04,
+			SELECT_CALLOUT  = 0x05,
 			SELECT_OTHER	= 0x0f,
 		};
 		enum { SELECT_SHIFT = 28 };
@@ -112,6 +113,7 @@ namespace orbit {
 
 		struct CalloutInstance
 		{
+			uint32_t            id;
 			gal::Vector2  position;
 			gal::Vector4 dimension;
 			gal::Color       color;

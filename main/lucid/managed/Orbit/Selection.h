@@ -13,11 +13,13 @@ namespace Orbit{
 	///
 	public enum class SelectionType
 	{
-		TYPE_NONE  = 0,
-		TYPE_STAR  = ::lucid::orbit::Selection::TYPE_STAR,
-		TYPE_FRAME = ::lucid::orbit::Selection::TYPE_FRAME,
-		TYPE_ORBIT = ::lucid::orbit::Selection::TYPE_ORBIT,
-		TYPE_OTHER = ::lucid::orbit::Selection::TYPE_OTHER,
+		TYPE_NONE    = 0,
+		TYPE_STAR    = ::lucid::orbit::Selection::TYPE_STAR,
+		TYPE_FRAME   = ::lucid::orbit::Selection::TYPE_FRAME,
+		TYPE_ORBIT   = ::lucid::orbit::Selection::TYPE_ORBIT,
+		TYPE_CAMERA  = ::lucid::orbit::Selection::TYPE_CAMERA,
+		TYPE_CALLOUT = ::lucid::orbit::Selection::TYPE_CALLOUT,
+		TYPE_OTHER   = ::lucid::orbit::Selection::TYPE_OTHER,
 	};
 
 	///

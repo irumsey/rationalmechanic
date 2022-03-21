@@ -7,9 +7,10 @@ OutputVertex main(InputVertex input)
 
 	float2 position = input.position + float2(dot(input.select.xy, input.dimension.xy), dot(input.select.zw, input.dimension.zw));
 
-	output.ppsPosition = float4(position / screenDimensions - 1, 0, 1);
+	output.ppsPosition = float4(2 * position / screenDimensions - 1, 0, 1);
 	output.texcoord = input.texcoord;
 	output.color = input.color;
+	output.id = input.id;
 
 	return output;
 }

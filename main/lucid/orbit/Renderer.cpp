@@ -132,7 +132,29 @@ namespace orbit {
 
 		size_t detailIndex = detailLevels.level(math::len(position - _cameraPosition));
 		if (DetailLevels::INVALID_LEVEL == detailIndex)
+		{
+			// test {
+			// break out into a addCallout(...) method
+			gal::Matrix4x4 viewProjMatrix = _renderContext["viewProjMatrix"].as<gal::Matrix4x4>();
+
+			gal::Vector4 screenPosition = viewProjMatrix * gal::Vector4(position.x, position.y, position.z, 1.f);
+			screenPosition = screenPosition / screenPosition.w;
+			if (screenPosition.z < 0.f)
+				return;
+
+			screenPosition.x =  _width * (0.5f * screenPosition.x + 0.5f);
+			screenPosition.y = _height * (0.5f * screenPosition.y + 0.5f);
+
+			CalloutInstance callout;
+			callout.position = gal::Vector2(screenPosition.x, screenPosition.y);
+			callout.dimension = gal::Vector4(32, 32 - 8, 16, 16 - 8);
+			callout.color = gal::Color(0, 0.f, 1.f, 1.f);
+			callout.id = (SELECT_CALLOUT << SELECT_SHIFT) | uint32_t(SELECT_MASK & body->id);
+
+			_batched.addInstance(_calloutMesh, callout);
+			// } test
 			return;
+		}
 
 		DetailLevels::Level const &detailLevel = detailLevels[detailIndex];
 
@@ -159,9 +181,7 @@ namespace orbit {
 		// don't render the sun's orbit around the SSB
 		// going to need a data driven method of enabling/disabling orbits
 		if (10 == body->id)
-		{
 			return;
-		}
 		// } test
 
 		if (!renderProperties.showOrbit)
@@ -229,11 +249,11 @@ namespace orbit {
 		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>("content/hemisphere.mesh"), BATCH_MAXIMUM);
 		/// } test
 		 
-		_calloutMesh = gigl::Resources::get<gigl::Mesh>("content/callout.mesh");
-		_batched.createBatch<CalloutInstance, NullSort<CalloutInstance> >(_calloutMesh, BATCH_MAXIMUM);
-
 		_orbitMesh = gigl::Resources::get<gigl::Mesh>("content/orbit.mesh");
 		_batched.createBatch<MeshInstance, Back2Front<MeshInstance> >(_orbitMesh, BATCH_MAXIMUM);
+
+		_calloutMesh = gigl::Resources::get<gigl::Mesh>("content/callout.mesh");
+		_batched.createBatch<CalloutInstance, NullSort<CalloutInstance> >(_calloutMesh, BATCH_MAXIMUM);
 
 		_selectTarget.reset(gal::RenderTarget2D::create(gal::RenderTarget2D::FORMAT_UINT_R32, _width, _height));
 		_selectReader.reset(gal::TargetReader2D::create(_selectTarget.get(), _width, _height));
@@ -298,8 +318,8 @@ namespace orbit {
 			gal::Vector3(0, 0, 1)
 		);
 
-		_renderContext["screenWidth"] = cameraFrame->screenWidth;
-		_renderContext["screenHeight"] = cameraFrame->screenHeight;
+		_renderContext["screenWidth"] = float32_t(_width);
+		_renderContext["screenHeight"] = float32_t(_height);
 
 		_renderContext["time"] = _time;
 		_renderContext["interpolant"] = _interpolant;
@@ -319,6 +339,7 @@ namespace orbit {
 		batch(rootFrame);
 
 		render();
+
 		copy  (_blurTarget[0].get(), _glowTarget.get());
 		blur  ();
 		copy  (_glowTarget.get(), _blurTarget[0].get());

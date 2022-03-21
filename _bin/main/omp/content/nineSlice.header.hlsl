@@ -5,14 +5,16 @@ struct InputVertex
 {
 	float4    select : LOCATION0;
 	float2  texcoord : LOCATION1;
-	float2  position : LOCATION2;
-	float4 dimension : LOCATOIN3;
-	float4     color : LOCATION4;
+	uint1         id : LOCATION2;
+	float2  position : LOCATION3;
+	float4 dimension : LOCATOIN4;
+	float4     color : LOCATION5;
 };
 
 struct OutputVertex
 {
 	float4 ppsPosition : SV_POSITION;
+	uint1           id :   POSITION0;
 	float2    texcoord :   TEXCOORD0;
 	float4       color :   TEXCOORD1;
 };
