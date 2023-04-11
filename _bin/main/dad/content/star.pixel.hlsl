@@ -14,6 +14,7 @@ OutputPixel main(InputPixel input)
 
 	output.color = float4(color.rgb, alpha * alpha);
 	output.glow = float4(color.rgb, alpha);
+	output.select = input.id;
 
 	return output;
 }

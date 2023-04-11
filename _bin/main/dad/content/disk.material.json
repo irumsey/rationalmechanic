@@ -41,7 +41,7 @@
 
 		},
 
-		"VertexShader" : { "Path" : "content/disk.vertex.cso" },
+		"VertexShader" : { "Path" : "content/sprite.vertex.cso" },
 		"PixelShader" : { "Path" : "content/disk.pixel.cso" }
 	},
 

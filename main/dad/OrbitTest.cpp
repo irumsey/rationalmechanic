@@ -51,10 +51,12 @@ void OrbitTest::begin(float64_t t)
 	theStarCatalog().initialize("content/bsc5.starcatalog");
 	theEphemeris().initialize("content/j2000.ephemeris");
 
-	_orbitalSystem.initialize(orbit::constants::J2000<orbit::scalar_t>());
+	_orbitalMechanics = new orbit::Mechanics(orbit::constants::J2000<orbit::scalar_t>());
 	_cameraFrame = new orbit::CameraFrame(1001, "camaera", "");
-	
-	_orbitalSystem.attach(_orbitalSystem.root(), _cameraFrame);
+
+	_orbitalMechanics->attach(_orbitalMechanics->frame(399), _cameraFrame);
+	_cameraFrame->relativePosition[0] = _cameraFrame->relativePosition[1] = orbit::vector3_t(10, 10, 5);
+	_cameraFrame->look(_orbitalMechanics->frame(499));
 
 	LUCID_PROFILE_END();
 }
@@ -73,7 +75,7 @@ bool OrbitTest::update(float64_t t, float64_t dt)
 	gigl::Camera2D &camera = _cameraFrame->camera;
 	camera.initPerspective(fov, aspect, 1.f, 1000.f);
 
-	_orbitalSystem.update();
+	_orbitalMechanics->update();
 
 	///	return true to exit testing (false to continue)
 	return false;
@@ -85,7 +87,7 @@ void OrbitTest::render(float32_t time, float32_t interpolant)
 
 	LUCID_PROFILE_BEGIN("orbit rendering");
 
-	_orbitalSystem.render(_cameraFrame);
+	_orbitalMechanics->render(_cameraFrame);
 
 	LUCID_PROFILE_END();
 }

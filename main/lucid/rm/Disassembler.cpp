@@ -70,7 +70,10 @@ namespace rm {
 
 		std::ostream &repr(std::ostream &stream) const
 		{
+			stream << std::hex;
 			stream << "0x" << std::setw(4) << std::setfill('0') << value;
+			stream << std::dec;
+
 			return stream;
 		}
 

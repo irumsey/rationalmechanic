@@ -9,7 +9,7 @@ namespace gigl {
 
 	///	Image
 	///
-	///	Utility for writing a basic (unmapped) TGA file.
+	///	Utility for reading/writing a basic (unmapped) TGA file.
 	class Image
 	{
 	public:
@@ -38,6 +38,8 @@ namespace gigl {
 
 		Image(size_t width, size_t height);
 
+		Image(std::string const &path);
+
 		virtual ~Image();
 
 		void initialize(size_t width, size_t height);
@@ -56,11 +58,14 @@ namespace gigl {
 
 		Pixel &at(size_t x, size_t y);
 
+		void read(std::string const &path);
+
 		void write(std::string const &path) const;
 
 	private:
-		size_t const  PIXEL_SIZE = sizeof(Pixel);
-		size_t const PIXEL_DEPTH = 8 * PIXEL_SIZE;
+		enum { HEADER_SIZE =             18 };
+		enum {  PIXEL_SIZE =  sizeof(Pixel) };
+		enum { PIXEL_DEPTH = 8 * PIXEL_SIZE };
 
 		size_t _width = 0;
 		size_t _height = 0;

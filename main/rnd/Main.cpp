@@ -43,7 +43,7 @@ void onUpdate()
 {
 	LUCID_PROFILE_BEGIN("Update");
 
-	session.update(TIME_STEP, simTime);
+	session.update(simTime, TIME_STEP);
 
 	LUCID_PROFILE_END();
 }

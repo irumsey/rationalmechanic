@@ -12,7 +12,7 @@ namespace orbit {
 	{
 		core::Reader &reader = core::FileReader(path);
 
-		int32_t count = reader.read<int32_t>();
+		size_t count = reader.read<int32_t>();
 
 		_ordinal.resize(count);
 		for (size_t i = 0; i < count; ++i)

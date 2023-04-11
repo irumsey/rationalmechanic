@@ -46,7 +46,7 @@ private:
 	bool _passed = true;
 
 	lucid::orbit::CameraFrame *_cameraFrame = nullptr;
-	lucid::orbit::Mechanics *_orbitalSystem = nullptr;
+	lucid::orbit::Mechanics *_orbitalMechanics = nullptr;
 
 	LUCID_PREVENT_COPY(OrbitTest);
 	LUCID_PREVENT_ASSIGNMENT(OrbitTest);

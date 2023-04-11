@@ -6,6 +6,14 @@ struct InputVertex
 	float2 texcoord : LOCATION1;
 };
 
+struct NineSliceVertex
+{
+	float4    select : LOCATION0;
+	float2  position : LOCATION1;
+	float4 dimension : LOCATOIN2;
+	float4     color : LOCATION3;
+};
+
 struct OutputVertex
 {
 	float4 ppsPosition : SV_POSITION;
@@ -19,8 +27,9 @@ struct SinglePixel
 	float4 color : SV_TARGET0;
 };
 
-struct DoublePixel
+struct TriplePixel
 {
-	float4 color : SV_TARGET0;
-	float4  glow : SV_TARGET1;
+	float4  color : SV_TARGET0;
+	float4   glow : SV_TARGET1;
+	uint1      id : SV_TARGET2;	//	the select target's format is UINT_R32
 };

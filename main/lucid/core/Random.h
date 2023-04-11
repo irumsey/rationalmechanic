@@ -15,32 +15,43 @@ namespace core {
 	public:
 		static float32_t real(float32_t a, float32_t b)
 		{
-			return (b - a) * real_distribution(generator) + a;
+			return (b - a) * instance.real_distribution(instance.generator) + a;
 		}
 
 		static float32_t real()
 		{
-			return real_distribution(generator);
+			return instance.real_distribution(instance.generator);
 		}
 
 		template<typename T> static T integer(T a, T b)
 		{
-			return T((integer_distribution(generator) % (b - a)) + a);
+			return T((instance.integer_distribution(instance.generator) % (b - a)) + a);
 		}
 
 		template<typename T> static T integer()
 		{
-			return T(integer_distribution(generator));
+			return T(instance.integer_distribution(instance.generator));
 		}
 
 	private:
-		static std::mt19937 generator;
-		static std::uniform_real_distribution<float32_t> real_distribution;
-		static std::uniform_int_distribution<uint32_t> integer_distribution;
+
+		struct Instance
+		{
+			Instance()
+				: generator(device())
+			{
+			}
+
+			std::random_device device;
+			std::mt19937 generator;
+			std::uniform_real_distribution<float32_t> real_distribution;
+			std::uniform_int_distribution<uint32_t> integer_distribution;
+		};
+
+		static Instance instance;
 
 		LUCID_PREVENT_CREATION(random);
 	};
-
 
 }	// core
 }	// lucid

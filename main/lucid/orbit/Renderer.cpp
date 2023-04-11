@@ -134,7 +134,7 @@ namespace orbit {
 		if (DetailLevels::INVALID_LEVEL == detailIndex)
 		{
 			// test {
-			// break out into a addCallout(...) method
+			// break out into an  addCallout(...) method
 			gal::Matrix4x4 viewProjMatrix = _renderContext["viewProjMatrix"].as<gal::Matrix4x4>();
 
 			gal::Vector4 screenPosition = viewProjMatrix * gal::Vector4(position.x, position.y, position.z, 1.f);

@@ -1,4 +1,4 @@
-#include "disk.header.hlsl"
+#include "sprite.header.hlsl"
 
 Texture2D diffuseTexture;
 Texture2D    glowTexture;
@@ -19,6 +19,7 @@ OutputPixel main(InputPixel input)
 
 	output.color = float4(shade * diffuse.rgb, diffuse.a);
 	output. glow = float4(glow.rgb, 1);
+	output.   id = input.id;
 
 	return output;
 }

@@ -16,6 +16,7 @@
     <ClInclude Include="StarCatalog.h" />
     <ClInclude Include="Selection.h" />
     <ClInclude Include="Mechanics.h" />
+    <ClInclude Include="Callout.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Frame.cpp" />
@@ -26,5 +27,6 @@
     <ClCompile Include="DetailLevels.cpp" />
     <ClCompile Include="StarCatalog.cpp" />
     <ClCompile Include="Mechanics.cpp" />
+    <ClCompile Include="Callout.cpp" />
   </ItemGroup>
 </Project>

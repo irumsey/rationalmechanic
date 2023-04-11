@@ -46,13 +46,13 @@ namespace rm {
 			MULF = 0x15,	// floating point multiply
 			DIVF = 0x16,	// floating point divide
 
-			CGI  = 0x17,	// create _graph input
-			CAGN = 0x18,	// create/adjust _graph node
-			CAGE = 0x19,	// create/adjust _graph edge
+			CGI  = 0x17,	// create graph input
+			CAGN = 0x18,	// create/adjust graph node
+			CAGE = 0x19,	// create/adjust graph edge
 			MHD  = 0x1a,	// move head
 		
-			RDGN = 0x1b,	// read _graph node data
-			RDGE = 0x1c,	// read _graph edge data
+			RDGN = 0x1b,	// read graph node data
+			RDGE = 0x1c,	// read graph edge data
 
 			PUSH = 0x1d,	// push head/upstream/downstream
 			POP  = 0x1e,	// pop head position

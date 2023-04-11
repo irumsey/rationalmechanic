@@ -87,10 +87,10 @@ namespace d3d11 {
 		HRESULT hResult = d3d11ConcreteContext->Map(_stagingTexture, 0, D3D11_MAP_READ, 0, &mapped);
 		GAL_VALIDATE_HRESULT(hResult, "unable to map staging resource");
 
-		size_t const dstRowPitch = TEXEL_SIZE * _srcWidth;
-		size_t const srcRowPitch = mapped.RowPitch;
+		int32_t const dstRowPitch = TEXEL_SIZE * _srcWidth;
+		int32_t const srcRowPitch = mapped.RowPitch;
 
-		for (size_t row = 0; row < _srcHeight; ++row)
+		for (int32_t row = 0; row < _srcHeight; ++row)
 			::memcpy(_data + row * dstRowPitch, (uint8_t const *)(mapped.pData) + row * srcRowPitch, dstRowPitch);
 
 		d3d11ConcreteContext->Unmap(_stagingTexture, 0);

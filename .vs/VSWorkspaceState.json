@@ -1,10 +1,8 @@
 {
   "ExpandedNodes": [
     "",
-    "\\main",
-    "\\main\\dad",
-    "\\main\\omp\\Properties"
+    "\\main\\omp"
   ],
-  "SelectedNode": "\\main\\dad",
+  "SelectedNode": "\\main",
   "PreviewInSolutionExplorer": false
 }

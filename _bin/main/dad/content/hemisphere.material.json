@@ -16,7 +16,7 @@
 
 			"BlendMode" :
 			{
-				"ColorWriteMask" : 0,
+				"ColorWriteMask" : 15,
 				"Enabled" : false,
 				"SrcBlend" : "BLEND_SRC_ALPHA",
 				"SrcBlendAlpha" : "BLEND_SRC_ALPHA",

@@ -1,22 +1,20 @@
 #include "utility.header.hlsl"
 #include "orbit.header.hlsl"
 
+Texture2D orbitLookup;
+
+SamplerState theSampler;
+
 OutputPixel main(InputPixel input)
 {
 	OutputPixel output = (OutputPixel)0;
 
-	float4x4    worldMatrix = matrixFromQuaternion(input.rotation, input.position);
-	float4    curvePosition = mul(worldMatrix, float4(computeConicPoint(input.parameters.x, input.parameters.y, input.parameters.z), 0, 1));
+	float fade = clamp((fadeDistance.y - input.distance) / (fadeDistance.y - fadeDistance.x), 0, 1);
+	float alpha = orbitLookup.Sample(theSampler, float2(input.width, 0.5)).a;
 
-	///	TBD: fog begin/end (remove these magic numbers)
-	float fog = clamp((length(curvePosition.xyz - viewPosition) - 100) / (350 - 100), 0, 1);
+	output.color = fade * float4(input.color.rgb, alpha) + (1 - fade) * float4(input.color.rgb, 0);
+	output.glow = float4(0, 0, 0, alpha);
+	output.id = input.id;
 
-	float delta = length(input.vertex - curvePosition.xyz);
-	float     u = clamp(delta / input.parameters.w, 0, 1);
-
-	float alpha = (1 - fog) * (1 - u * u);
-	output.color = float4(0, 0, 1, alpha);
-	output.glow = float4(0, 0, 0.1, alpha);
-
-	return output;
+	return output; 
 }

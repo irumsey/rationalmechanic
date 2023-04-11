@@ -16,8 +16,9 @@ OutputVertex main(InputVertex input)
 	float3 position = e0 * vertex.xxx + e2 * vertex.yyy + (sphereRadius * direction + viewPosition);
 
 	output.ppsPosition = mul(viewProjMatrix, float4(position, 1));
-	output.texcoord = 0.5 * input.vertex + 0.5;
-	output.specoord = input.parameters.x;
+	output.         id = input.id;
+	output.   texcoord = 0.5 * input.vertex + 0.5;
+	output.   specoord = input.parameters.x;
 
 	return output;
 }

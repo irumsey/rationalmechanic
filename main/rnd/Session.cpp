@@ -1,9 +1,11 @@
 #include "Session.h"
+#include <lucid/rm/Disassembler.h>
 #include <lucid/gigl/Mesh.h>
 #include <lucid/gigl/Material.h>
 #include <lucid/gal/VertexBuffer.h>
 #include <lucid/math/Matrix.h>
 #include <lucid/math/AABB.h>
+#include <fstream>
 #include <algorithm>
 
 #ifdef min
@@ -72,13 +74,19 @@ void Session::initialize()
 	_sprite = gigl::Mesh::create("content/sprite.mesh");
 	_nodeInstances = gal::VertexBuffer::create(gal::VertexBuffer::USAGE_DYNAMIC, INSTANCE_MAXIMUM, sizeof(NodeInstance));
 
-	_mind = new rm::Mind(200, 1000);
+	_mind = new rm::Mind(500, 1000);
 
 	_initialized = true;
 }
 
 void Session::shutdown()
 {
+	if (0 != _mind)
+	{
+		rm::Disassembler disassembler;
+		disassembler.disassemble(std::ofstream("fittest.txt"), _mind->chromosome());
+	}
+
 	safe_delete(_mind);
 
 	safe_delete(_nodeInstances);
@@ -95,7 +103,7 @@ void Session::update(float64_t t, float64_t dt)
 	if (!_initialized)
 		return;
 
-	gal::Vector3 viewPosition = gal::Vector3(20, 15, 25);
+	gal::Vector3 viewPosition = gal::Vector3(20.f * math::sin(float32_t(t)), 20.f * math::cos(float32_t(t)), 20.f);
 
 	gal::Matrix4x4 viewMatrix = math::look(viewPosition, gal::Vector3(), gal::Vector3(0, 0, 1));
 	gal::Matrix4x4 projMatrix = math::perspective(0.78f, 1.78f, 1.f, 100.f);

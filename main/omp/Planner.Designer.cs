@@ -86,7 +86,7 @@
             this.mainMenuView});
             this.mainMenu.Location = new System.Drawing.Point(0, 0);
             this.mainMenu.Name = "mainMenu";
-            this.mainMenu.Size = new System.Drawing.Size(1239, 28);
+            this.mainMenu.Size = new System.Drawing.Size(1239, 30);
             this.mainMenu.TabIndex = 1;
             this.mainMenu.Text = "menuStrip1";
             // 
@@ -180,7 +180,7 @@
             // 
             this.mainSplitter.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mainSplitter.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
-            this.mainSplitter.Location = new System.Drawing.Point(0, 28);
+            this.mainSplitter.Location = new System.Drawing.Point(0, 30);
             this.mainSplitter.Margin = new System.Windows.Forms.Padding(4);
             this.mainSplitter.Name = "mainSplitter";
             // 
@@ -194,8 +194,8 @@
             // mainSplitter.Panel2
             // 
             this.mainSplitter.Panel2.Controls.Add(this.orbitalFrameList);
-            this.mainSplitter.Size = new System.Drawing.Size(1239, 484);
-            this.mainSplitter.SplitterDistance = 935;
+            this.mainSplitter.Size = new System.Drawing.Size(1239, 482);
+            this.mainSplitter.SplitterDistance = 934;
             this.mainSplitter.SplitterWidth = 5;
             this.mainSplitter.TabIndex = 2;
             // 
@@ -214,7 +214,7 @@
             this.orbitalFrameList.Margin = new System.Windows.Forms.Padding(4);
             this.orbitalFrameList.MultiSelect = false;
             this.orbitalFrameList.Name = "orbitalFrameList";
-            this.orbitalFrameList.Size = new System.Drawing.Size(299, 484);
+            this.orbitalFrameList.Size = new System.Drawing.Size(300, 482);
             this.orbitalFrameList.StateImageList = this.orbitalFrameListImages;
             this.orbitalFrameList.TabIndex = 0;
             this.orbitalFrameList.UseCompatibleStateImageBehavior = false;

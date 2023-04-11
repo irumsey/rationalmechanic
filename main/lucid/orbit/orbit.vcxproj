@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Algorithm.h" />
+    <ClInclude Include="Callout.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="DetailLevels.h" />
     <ClInclude Include="Elements.h" />
@@ -36,6 +37,7 @@
     <ClInclude Include="Utility.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Callout.cpp" />
     <ClCompile Include="DetailLevels.cpp" />
     <ClCompile Include="Ephemeris.cpp" />
     <ClCompile Include="Frame.cpp" />
