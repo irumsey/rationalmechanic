@@ -50,7 +50,12 @@
       "ProjectGuid": "2f418be6-361c-4186-83b7-aacec7b0038e",
       "DisplayName": "apk",
       "ColorIndex": 8
+    },
+    "36a0b0ce-4581-4060-b972-357ffd75c148": {
+      "ProjectGuid": "36a0b0ce-4581-4060-b972-357ffd75c148",
+      "DisplayName": "core",
+      "ColorIndex": 9
     }
   },
-  "NextColorIndex": 9
+  "NextColorIndex": 10
 }
