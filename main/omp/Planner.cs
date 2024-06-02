@@ -21,9 +21,7 @@ namespace omp
 
         private float aspectRatio = 1.0f;
         private Lucid.Orbit.CameraFrame cameraFrame = null;
-
-        private ListViewItem trackedFrameItem = null;
-        private Lucid.Orbit.Frame trackedFrame = null;
+        private ListViewItem cameraParentItem = null;
 
         public Planner()
         {
@@ -104,12 +102,12 @@ namespace omp
 
         private void onMouseMove(object sender, MouseEventArgs e)
         {
-            state.onMouseMove(this, e.Location);
+            state.onMainViewMouseMove(this, e.Location);
         }
 
         private void onMouseClick(object sender, MouseEventArgs e)
         {
-            state.onMouseClick(this, e.Location);
+            state.onMainViewMouseClick(this, e.Location);
         }
 
         private void onMainViewResize(object sender, EventArgs e)

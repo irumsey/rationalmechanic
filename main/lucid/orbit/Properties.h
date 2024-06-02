@@ -42,11 +42,11 @@ namespace orbit {
 	///
 	struct RenderProperties
 	{
-		DetailLevels detailLevels;
+		bool showOrbit = false;			//	the default is provided by the ephemeris
+		bool bodyHighlight = false;		//	used only at runtime to toggle highlighting
+		bool orbitHighlight = false;	//	used only at runtime to toggle highlighting 
 
-		bool showOrbit = true;
-		bool bodyHighlight = false;
-		bool orbitHighlight = false;
+		DetailLevels detailLevels;
 
 		RenderProperties() = default;
 
@@ -59,8 +59,9 @@ namespace orbit {
 
 		void read(core::Reader &reader)
 		{
+			showOrbit = reader.read<bool>();
+
 			detailLevels.read(reader);
-			///	TBD: and others...
 		}
 	};
 

@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Drawing;
 
 using Logger = Lucid.Core.Logger;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace omp
 {
@@ -28,9 +29,9 @@ namespace omp
 
             public virtual void onPaint(Planner planner) { }
 
-            public virtual void onMouseMove(Planner planner, Point point) { }
+            public virtual void onMainViewMouseMove(Planner planner, Point point) { }
 
-            public virtual void onMouseClick(Planner planner, Point point) { }
+            public virtual void onMainViewMouseClick(Planner planner, Point point) { }
 
             public virtual void onFrameListClicked(Planner planner, MouseEventArgs e) { }
             
@@ -63,11 +64,10 @@ namespace omp
 
             private Starting() { }
 
-            // test {
-            private void testPopulateListview(Planner planner, Lucid.Orbit.Frame frame)
+            private void populateListview(Planner planner, Lucid.Orbit.Frame frame)
             {
                 ListViewItem item = new ListViewItem();
-                item.Tag = frame.ID;
+                item.Tag = frame;
                 item.SubItems.Add(frame.ID.ToString());
                 item.SubItems.Add(frame.Name);
                 item.SubItems.Add(frame.Description);
@@ -76,10 +76,9 @@ namespace omp
 
                 for (Lucid.Orbit.Frame child = frame.FirstChild; child != null; child = child.NextSibling)
                 {
-                    testPopulateListview(planner, child);
+                    populateListview(planner, child);
                 }
             }
-            // } test
 
             public override void onEnter(Planner planner)
             {
@@ -92,12 +91,12 @@ namespace omp
 
                 // test {
                 // initial user action should be to specify an ephemeris
-                // or to have a default that is user specified.
+                // or to have a default that can be user specified.
                 Lucid.Orbit.Ephemeris.Initialize("content/j2000.ephemeris");
                 Lucid.Orbit.StarCatalog.Initialize("content/bsc5.starcatalog");
 
                 planner.orbitalMechainics = new Lucid.Orbit.Mechanics(2451544.0);
-                testPopulateListview(planner, planner.orbitalMechainics.Root);
+                populateListview(planner, planner.orbitalMechainics.Root);
                 // } test
 
                 planner.cameraFrame = new Lucid.Orbit.CameraFrame(1001, "camera", "");
@@ -147,7 +146,7 @@ namespace omp
                 planner.renderMainView();
             }
 
-            public override void onMouseMove(Planner planner, Point point)
+            public override void onMainViewMouseMove(Planner planner, Point point)
             {
                 Lucid.Orbit.Selection selection = planner.orbitalMechainics.Hit(point.X, point.Y);
 
@@ -159,58 +158,101 @@ namespace omp
 
                 if (Lucid.Orbit.SelectionType.TYPE_STAR == selection.Type)
                 {
-                    Lucid.Orbit.StarCatalogEntry entry = Lucid.Orbit.StarCatalog.At(selection.Tag);
+                    Lucid.Orbit.StarCatalogEntry entry = Lucid.Orbit.StarCatalog.At(selection.Token);
                     planner.statusLabel.Text = "BSC5: " + entry.XNO.ToString() + " Type: " + entry.Type + " Mag: " + entry.Mag.ToString();
-                    return;
-                }
-
-                if (Lucid.Orbit.SelectionType.TYPE_FRAME == selection.Type)
-                {
-                    Lucid.Orbit.EphemerisEntry entry = Lucid.Orbit.Ephemeris.LookupEntry(selection.Tag);
-                    if (null == entry)
-                        return;
-                    planner.statusLabel.Text = "Frame: " + entry.Name;
                     return;
                 }
 
                 if (Lucid.Orbit.SelectionType.TYPE_ORBIT == selection.Type)
                 {
-                    Lucid.Orbit.EphemerisEntry entry = Lucid.Orbit.Ephemeris.LookupEntry(selection.Tag);
-                    if (null == entry)
-                        return;
-                    
-                    planner.statusLabel.Text = "Orbit: " + entry.Name;
+                    Lucid.Orbit.Frame frame = planner.orbitalMechainics[selection.Token];
+                    planner.statusLabel.Text = "Orbit: " + frame.Name;
+                    return;
+                }
+
+                if (Lucid.Orbit.SelectionType.TYPE_FRAME == selection.Type)
+                {
+                    Lucid.Orbit.Frame frame = planner.orbitalMechainics[selection.Token];
+                    planner.statusLabel.Text = "Frame: " + frame.Name;
+                    return;
+                }
+
+                if (Lucid.Orbit.SelectionType.TYPE_CAMERA == selection.Type)
+                {
+                    planner.statusLabel.Text = "Callout";
                     return;
                 }
 
                 if (Lucid.Orbit.SelectionType.TYPE_CALLOUT == selection.Type)
                 {
-                    Lucid.Orbit.EphemerisEntry entry = Lucid.Orbit.Ephemeris.LookupEntry(selection.Tag);
-                    if (null == entry)
-                        return;
+                    planner.statusLabel.Text = "Callout";
+                    return;
+                }
 
-                    planner.statusLabel.Text = "Callout: " + entry.Name;
+                if (Lucid.Orbit.SelectionType.TYPE_OTHER == selection.Type)
+                {
+                    planner.statusLabel.Text = "Other";
                     return;
                 }
             }
 
-            public override void onMouseClick(Planner planner, Point point)
+            public override void onMainViewMouseClick(Planner planner, Point point)
             {
                 Lucid.Orbit.Selection selection = planner.orbitalMechainics.Hit(point.X, point.Y);
-                if (0 == selection.Tag)
-                    return;
 
-                Lucid.Orbit.EphemerisEntry entry = Lucid.Orbit.Ephemeris.LookupEntry(selection.Tag);
-                Logger.Log("INFO", entry.Name + " selected using main view");
-
-                // TBD: use a hash table to get the item instead of this linear search
-                foreach (ListViewItem item in planner.orbitalFrameList.Items)
+                if (Lucid.Orbit.SelectionType.TYPE_NONE == selection.Type)
                 {
-                    if ((ulong)(item.Tag) == selection.Tag)
+                    // TBD: implement
+                    return;
+                }
+
+                if (Lucid.Orbit.SelectionType.TYPE_STAR == selection.Type)
+                {
+                    // TBD: implement
+                    return;
+                }
+
+                if (Lucid.Orbit.SelectionType.TYPE_ORBIT == selection.Type)
+                {
+                    // TBD: implement
+                    return;
+                }
+
+                if (Lucid.Orbit.SelectionType.TYPE_FRAME == selection.Type)
+                {
+                    Lucid.Orbit.Frame frame = planner.orbitalMechainics[selection.Token];
+
+                    // TBD: use a better way to get the item instead of this linear search
+                    foreach (ListViewItem item in planner.orbitalFrameList.Items)
                     {
-                        item.Selected = true;
-                        break;
+                        Lucid.Orbit.Frame itemFrame = (Lucid.Orbit.Frame)(item.Tag);
+                        if (itemFrame.ID == frame.ID)
+                        {
+                            item.Selected = true;
+                            break;
+                        }
                     }
+
+                    Logger.Log("INFO", frame.Name + " selected using main view");
+                    return;
+                }
+
+                if (Lucid.Orbit.SelectionType.TYPE_CAMERA == selection.Type)
+                {
+                    // TBD: implement
+                    return;
+                }
+
+                if (Lucid.Orbit.SelectionType.TYPE_CALLOUT == selection.Type)
+                {
+                    // TBD: implement
+                    return;
+                }
+
+                if (Lucid.Orbit.SelectionType.TYPE_OTHER == selection.Type)
+                {
+                    // TBD: implement
+                    return;
                 }
             }
 
@@ -229,16 +271,23 @@ namespace omp
                 if (0 != column)
                     return;
 
-                if (item == planner.trackedFrameItem)
+                if (item == planner.cameraParentItem)
                     return;
 
-                if (planner.trackedFrameItem != null)
-                    planner.trackedFrameItem.StateImageIndex = 0;
+                if (null != planner.cameraParentItem)
+                    planner.cameraParentItem.StateImageIndex = 0;
 
-                planner.trackedFrameItem = item;
-                planner.trackedFrameItem.StateImageIndex = 1;
+                planner.cameraParentItem = item;
+                planner.cameraParentItem.StateImageIndex = 1;
 
-                trackFrame(planner, planner.orbitalMechainics[(ulong)(planner.trackedFrameItem.Tag)]);
+                Lucid.Orbit.Frame parentFrame = (Lucid.Orbit.Frame)(planner.cameraParentItem.Tag);
+
+                planner.orbitalMechainics.Detach(planner.cameraFrame);
+                planner.orbitalMechainics.Attach(parentFrame, planner.cameraFrame);
+
+                planner.cameraFrame.RelativePosition = new Lucid.Math.Vector3(10, 10, 5);
+
+                Logger.Log("INFO", "camera attached to frame: " + parentFrame.Name);
             }
 
             public override void onFrameListChanged(Planner planner, ListViewItemSelectionChangedEventArgs e)
@@ -246,8 +295,10 @@ namespace omp
                 if (!e.IsSelected)
                     return;
 
-                planner.cameraFrame.Focus = planner.orbitalMechainics[(ulong)(e.Item.Tag)];
-                Logger.Log("INFO", "camera's focus switched to: " + planner.cameraFrame.Focus.Name);
+                Lucid.Orbit.Frame frame = (Lucid.Orbit.Frame)(e.Item.Tag);
+                planner.cameraFrame.Focus = frame;
+
+                Logger.Log("INFO", "camera's focus switched to: " + frame.Name);
             } 
 
             public override void updateSimulation(Planner planner)
@@ -262,20 +313,6 @@ namespace omp
                 Lucid.GAL.Pipeline.endScene();
             }
 
-            private void trackFrame(Planner planner, Lucid.Orbit.Frame frame)
-            {
-                if (planner.trackedFrame == frame)
-                    return;
-
-                planner.trackedFrame = frame;
-
-                planner.orbitalMechainics.Detach(planner.cameraFrame);
-                planner.orbitalMechainics.Attach(planner.trackedFrame, planner.cameraFrame);
-
-                planner.cameraFrame.RelativePosition = new Lucid.Math.Vector3(10, 10, 5);
-
-                Logger.Log("INFO", "camera frame attached to frame: " + planner.trackedFrame.Name);
-            }
         }
 
         /// <summary>

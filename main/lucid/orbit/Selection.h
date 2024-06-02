@@ -27,7 +27,7 @@ namespace orbit {
 		};
 
 		TYPE type = TYPE_NONE;
-		uint32_t tag = 0;		// selection specific: id, index, etc
+		uint32_t token = 0;		// selection type specific: id, index, etc
 	};
 
 }	/// orbit

@@ -39,7 +39,7 @@ namespace Orbit{
 			void set(SelectionType value);
 		}
 
-		PROPERTY(   Tag,   tag,      uint32_t)
+		PROPERTY(   Token,   token,      uint32_t)
 
 		property ::lucid::orbit::Selection const &ref { ::lucid::orbit::Selection const &get() { return *ptr; } }
 

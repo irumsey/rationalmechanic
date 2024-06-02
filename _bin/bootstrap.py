@@ -676,6 +676,7 @@ def bootFrameOrbitalBody(dst, frame):
 	bootDouble(dst, properties['physical']['mass'])
 	bootDouble(dst, properties['physical']['radius'])
 
+	bootBoolean(dst, properties['render']['orbit'])
 	LODs = properties['render']['LODs']
 	bootUnsigned(dst, len(LODs))
 	for LOD in LODs:

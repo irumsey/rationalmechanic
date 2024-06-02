@@ -216,7 +216,7 @@ namespace orbit {
 			return selection;
 
 		selection.type = (Selection::TYPE)((0xf0000000 & code) >> Renderer::SELECT_SHIFT);
-		selection.tag = (Renderer::SELECT_MASK & code);
+		selection.token = (Renderer::SELECT_MASK & code);
 
 		return selection;
 	}

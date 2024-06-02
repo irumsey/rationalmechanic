@@ -133,26 +133,6 @@ namespace orbit {
 		size_t detailIndex = detailLevels.level(math::len(position - _cameraPosition));
 		if (DetailLevels::INVALID_LEVEL == detailIndex)
 		{
-			// test {
-			// break out into an  addCallout(...) method
-			gal::Matrix4x4 viewProjMatrix = _renderContext["viewProjMatrix"].as<gal::Matrix4x4>();
-
-			gal::Vector4 screenPosition = viewProjMatrix * gal::Vector4(position.x, position.y, position.z, 1.f);
-			screenPosition = screenPosition / screenPosition.w;
-			if (screenPosition.z < 0.f)
-				return;
-
-			screenPosition.x =  _width * (0.5f * screenPosition.x + 0.5f);
-			screenPosition.y = _height * (0.5f * screenPosition.y + 0.5f);
-
-			CalloutInstance callout;
-			callout.position = gal::Vector2(screenPosition.x, screenPosition.y);
-			callout.dimension = gal::Vector4(32, 32 - 8, 16, 16 - 8);
-			callout.color = gal::Color(0, 0.f, 1.f, 1.f);
-			callout.id = (SELECT_CALLOUT << SELECT_SHIFT) | uint32_t(SELECT_MASK & body->id);
-
-			_batched.addInstance(_calloutMesh, callout);
-			// } test
 			return;
 		}
 
@@ -177,13 +157,6 @@ namespace orbit {
 		bodyInstance.parameters = detailLevel.parameters;
 		_batched.addInstance(detailLevel.model, bodyInstance);
 
-		// test {
-		// don't render the sun's orbit around the SSB
-		// going to need a data driven method of enabling/disabling orbits
-		if (10 == body->id)
-			return;
-		// } test
-
 		if (!renderProperties.showOrbit)
 			return;
 
@@ -192,7 +165,7 @@ namespace orbit {
 		orbitInstance.position = centerPosition;
 		orbitInstance.scale = 0.2f;
 		orbitInstance.rotation = rotation;
-		orbitInstance.color = renderProperties.orbitHighlight ? gal::Color(0, 1, 0, 1) : gal::Color(0, 0, 1, 1);
+		orbitInstance.color = renderProperties.orbitHighlight ? gal::Color(1.f, 1.f, 1.f, 1.f) : gal::Color(0, 0, 1, 1);
 		orbitInstance.parameters = gal::Vector4(hu, e, 0.f, math::constants::two_pi<float32_t>());
 		_batched.addInstance(_orbitMesh, orbitInstance);
 	}

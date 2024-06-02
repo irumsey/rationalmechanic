@@ -61,6 +61,7 @@
         },
         "render" :
         {
+          "orbit" : false,
           "LODs" :
           [
 		        {
@@ -111,6 +112,7 @@
         },
         "render" :
         {
+          "orbit" : true,
           "LODs" :
           [
 		        {
@@ -154,6 +156,7 @@
         },
         "render" :
         {
+          "orbit" : true,
           "LODs" :
           [
 		        {
@@ -197,6 +200,7 @@
         },
         "render" :
         {
+          "orbit" : true,
           "LODs" :
           [
 		        {
@@ -248,6 +252,7 @@
         },
         "render" :
         {
+          "orbit" : true,
           "LODs" :
           [
 		        {
@@ -284,6 +289,7 @@
         },
         "render" :
         {
+          "orbit" : true,
           "LODs" :
           [
 		        {
@@ -327,6 +333,7 @@
         },
         "render" :
         {
+          "orbit" : true,
           "LODs" :
           [
             {
@@ -370,6 +377,7 @@
         },
         "render" :
         {
+          "orbit" : true,
           "LODs" :
           [
             {
@@ -412,6 +420,7 @@
         },
         "render" :
         {
+          "orbit" : true,
           "LODs" :
           [
             {
@@ -455,6 +464,7 @@
         },
         "render" :
         {
+          "orbit" : true,
           "LODs" :
           [
             {
@@ -496,6 +506,7 @@
         },
         "render" :
         {
+          "orbit" : true,
           "LODs" :
           [
             {
