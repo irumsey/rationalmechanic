@@ -1,12 +1,11 @@
 float3 viewUp;
 float3 viewPosition;
 float4x4 viewProjMatrix;
-float1 segCoeff;
 float2 fadeDistance;
 
 struct InputVertex
 {
-	float4     vertex : LOCATION0;
+	float3     vertex : LOCATION0;
 	uint1          id : LOCATION1;
 	float3      focus : LOCATION2;
 	float       scale : LOCATION3;
@@ -20,7 +19,6 @@ struct OutputVertex
 	float4 ppsPosition : SV_POSITION;
 	uint1           id :   POSITION0;
 	float     distance :   TEXCOORD0;
-	float        width :   TEXCOORD1;
 	float4       color :      COLOR0;
 };
 
@@ -40,4 +38,13 @@ float2 computeConicPoint(float hu, float e, float theta)
 	float r = hu / (1 + e * c);
 
 	return r * float2(c, s);
+}
+
+float3 computeConics(float hu, float e, float theta)
+{
+	float c = cos(theta);
+	float s = sin(theta);
+	float r = hu / (1 + e * c);
+
+	return float3(c, s, r);
 }
