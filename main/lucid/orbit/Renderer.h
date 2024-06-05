@@ -71,7 +71,7 @@ namespace orbit {
 
 		void shutdown();
 
-		void render(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t time, scalar_t interpolant);
+		void render(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t time, scalar_t interpolant, bool useFXAA = false);
 
 		uint32_t hit(int32_t x, int32_t y) const;
 
@@ -91,6 +91,7 @@ namespace orbit {
 
 		struct PostParameters
 		{
+			gal::Parameter const *texelSize = nullptr;
 			gal::Parameter const *colorTarget = nullptr;
 			gal::Parameter const *glowTarget = nullptr;
 		};
@@ -155,6 +156,9 @@ namespace orbit {
 		PostParameters _postParameters;
 		std::unique_ptr<gigl::Mesh> _post;
 
+		PostParameters _fxaaParameters;
+		std::unique_ptr<gigl::Mesh> _fxaa;
+
 		void batch(Frame *frame);
 
 		bool cull(Frame *frame);
@@ -166,6 +170,8 @@ namespace orbit {
 		void blur();
 
 		void post();
+
+		void fxaa();
 
 		void resize();
 

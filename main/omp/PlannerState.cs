@@ -285,7 +285,7 @@ namespace omp
                 planner.orbitalMechainics.Detach(planner.cameraFrame);
                 planner.orbitalMechainics.Attach(parentFrame, planner.cameraFrame);
 
-                planner.cameraFrame.RelativePosition = new Lucid.Math.Vector3(10, 10, 5);
+                planner.cameraFrame.RelativePosition = new Lucid.Math.Vector3(10, 10, 20);
 
                 Logger.Log("INFO", "camera attached to frame: " + parentFrame.Name);
             }
@@ -309,7 +309,7 @@ namespace omp
             public override void renderMainView(Planner planner)
             {
                 Lucid.GAL.Pipeline.beginScene();
-                    planner.orbitalMechainics.Render(planner.cameraFrame);
+                    planner.orbitalMechainics.Render(planner.cameraFrame, false);
                 Lucid.GAL.Pipeline.endScene();
             }
 

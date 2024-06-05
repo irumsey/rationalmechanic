@@ -59,7 +59,7 @@ namespace orbit {
 
 		void update();
 
-		void render(CameraFrame *cameraFrame);
+		void render(CameraFrame *cameraFrame, bool useFXAA = false);
 
 		Selection hit(int32_t x, int32_t y) const;
 

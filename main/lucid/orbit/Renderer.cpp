@@ -163,7 +163,7 @@ namespace orbit {
 		MeshInstance orbitInstance;
 		orbitInstance.id = (SELECT_ORBIT << SELECT_SHIFT) | uint32_t(SELECT_MASK & body->id);
 		orbitInstance.position = centerPosition;
-		orbitInstance.scale = 0.2f;
+		orbitInstance.scale = 0.125f;
 		orbitInstance.rotation = rotation;
 		orbitInstance.color = renderProperties.orbitHighlight ? gal::Color(1.f, 1.f, 1.f, 1.f) : gal::Color(0, 0, 1, 1);
 		orbitInstance.parameters = gal::Vector4(hu, e, 0.f, math::constants::two_pi<float32_t>());
@@ -240,12 +240,17 @@ namespace orbit {
 		_copy .reset(gigl::Mesh::create("content/copy.mesh"));
 		_blur .reset(gigl::Mesh::create("content/blur.mesh"));
 		_post .reset(gigl::Mesh::create("content/post.mesh"));
+		_fxaa .reset(gigl::Mesh::create("content/fxaa.mesh"));
 
 		_copyParameters.  theSource = _copy->material()->program()->lookup(  "theSource");
 		_blurParameters.  texelSize = _blur->material()->program()->lookup(  "texelSize");
 		_blurParameters.  theSource = _blur->material()->program()->lookup(  "theSource");
+		_postParameters.  texelSize = _post->material()->program()->lookup(  "texelSize");
 		_postParameters.colorTarget = _post->material()->program()->lookup("colorTarget");
 		_postParameters. glowTarget = _post->material()->program()->lookup( "glowTarget");
+		_fxaaParameters.  texelSize = _fxaa->material()->program()->lookup(  "texelSize");
+		_fxaaParameters.colorTarget = _fxaa->material()->program()->lookup("colorTarget");
+		_fxaaParameters. glowTarget = _fxaa->material()->program()->lookup("glowTarget");
 	}
 
 	void Renderer::shutdown()
@@ -267,11 +272,12 @@ namespace orbit {
 		_copy.reset();
 		_blur.reset();
 		_post.reset();
+		_fxaa.reset();
 
 		_renderContext = gigl::Context();
 	}
 
-	void Renderer::render(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t time, scalar_t interpolant)
+	void Renderer::render(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t time, scalar_t interpolant, bool useFXAA)
 	{
 		LUCID_PROFILE_SCOPE("Renderer::render(...)");
 
@@ -320,7 +326,10 @@ namespace orbit {
 		galPipeline().restoreBackBuffer(true, false, false);
 		galPipeline().updateTargets();
 
-		post();
+		if (useFXAA)
+			fxaa();
+		else
+			post();
 	}
 
 	uint32_t Renderer::hit(int32_t x, int32_t y) const
@@ -407,9 +416,18 @@ namespace orbit {
 
 	void Renderer::post()
 	{
+		_post->material()->program()->set(_postParameters.texelSize, gal::Vector2(1.f / _width, 1.f / _height));
 		_post->material()->program()->set(_postParameters.colorTarget, _colorTarget.get());
 		_post->material()->program()->set(_postParameters. glowTarget, _glowTarget. get());
 		_post->render(_renderContext);
+	}
+
+	void Renderer::fxaa()
+	{
+		_fxaa->material()->program()->set(_fxaaParameters.texelSize, gal::Vector2(1.f / _width, 1.f / _height));
+		_fxaa->material()->program()->set(_fxaaParameters.colorTarget, _colorTarget.get());
+		_fxaa->material()->program()->set(_fxaaParameters.glowTarget, _glowTarget.get());
+		_fxaa->render(_renderContext);
 	}
 
 	void Renderer::resize()

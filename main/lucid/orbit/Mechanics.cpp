@@ -198,12 +198,12 @@ namespace orbit {
 		_frameInterpolant = _wallTimeAccum / TIME_STEP;
 	}
 
-	void Mechanics::render(CameraFrame *cameraFrame)
+	void Mechanics::render(CameraFrame *cameraFrame, bool useFXAA)
 	{
 		LUCID_VALIDATE(nullptr != _root, "attempt to use uninitialized system");
 		LUCID_VALIDATE(nullptr != cameraFrame, "attempt to render using invalid camera frame");
 
-		_renderer.render(_root, cameraFrame, _wallTime, _frameInterpolant);
+		_renderer.render(_root, cameraFrame, _wallTime, _frameInterpolant, useFXAA);
 	}
 
 	Selection Mechanics::hit(int32_t x, int32_t y) const

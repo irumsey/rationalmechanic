@@ -1,88 +1,50 @@
 {
-	"material" :
-  {
-	  "program":
-	  {
-		  "Samplers" :
-		  [
-		  ],
+	"material": {
+		"program": {
+			"Samplers": [
+			],
 
-		  "RenderStates" :
-		  {
-			  "RasterMode" :
-			  {
-				  "Fill" : "FILL_SOLID",
-				  "Cull" : "CULL_NONE",
-				  "Multisample": false
-			  },
+			"RenderStates": {
+				"RasterMode": {
+					"Fill": "FILL_SOLID",
+					"Cull": "CULL_NONE",
+					"Multisample": false
+				},
 
-			  "BlendMode" :
-			  {
-				  "ColorWriteMask" : 15,
-				  "Enabled" : false,
-				  "SrcBlend" : "BLEND_SRC_ALPHA",
-				  "SrcBlendAlpha" : "BLEND_SRC_ALPHA",
-				  "DstBlend" : "BLEND_INV_SRC_ALPHA",
-				  "DstBlendAlpha" : "BLEND_INV_SRC_ALPHA"
-			  },
+				"BlendMode": {
+					"ColorWriteMask": 15,
+					"Enabled": false,
+					"SrcBlend": "BLEND_SRC_ALPHA",
+					"SrcBlendAlpha": "BLEND_SRC_ALPHA",
+					"DstBlend": "BLEND_INV_SRC_ALPHA",
+					"DstBlendAlpha": "BLEND_INV_SRC_ALPHA"
+				},
 
-			  "DepthStencilMode" :
-			  {
-				  "DepthEnabled" : false,
-				  "DepthWrite" : "DEPTH_WRITE_DISABLED",
-				  "DepthFunction" : "COMPARISON_LESS",
-				  "StencilEnabled" : false,
-				  "StencilFunction" : "COMPARISON_ALWAYS",
-				  "StencilPass" : "STENCIL_KEEP",
-				  "StencilFail" : "STENCIL_KEEP",
-				  "StencilDepthFail" : "STENCIL_KEEP",
-				  "StencilReadMask" : 15,
-				  "StencilWriteMask" : 0,
-				  "StencilRef" : 0
-			  }
+				"DepthStencilMode": {
+					"DepthEnabled": false,
+					"DepthWrite": "DEPTH_WRITE_DISABLED",
+					"DepthFunction": "COMPARISON_LESS",
+					"StencilEnabled": false,
+					"StencilFunction": "COMPARISON_ALWAYS",
+					"StencilPass": "STENCIL_KEEP",
+					"StencilFail": "STENCIL_KEEP",
+					"StencilDepthFail": "STENCIL_KEEP",
+					"StencilReadMask": 15,
+					"StencilWriteMask": 0,
+					"StencilRef": 0
+				}
 
-		  },
+			},
 
-		  "VertexShader" : { "Path" : "content/screen.vertex.cso" },
-		  "PixelShader" : { "Path" : "content/post.pixel.cso" }
-	  },
+			"VertexShader": { "Path": "content/screen.vertex.cso" },
+			"PixelShader": { "Path": "content/post.pixel.cso" }
+		},
 
-	  "attributes":
-	  [
-	  ]
+		"attributes": [
+		]
 
-  },
- "geometry" :
-  {
-	  "topology" : "TOPOLOGY_TRIANGLE_STRIP",
+	},
 
-	  "format" :
-	  {
-		  "elements" :
-		  [
-			  { "format" : "FORMAT_FLOAT2", "type" : "TYPE_VERTEX", "location" : 0, "stream" : 0, "offset" :  0 },
-			  { "format" : "FORMAT_FLOAT2", "type" : "TYPE_VERTEX", "location" : 1, "stream" : 0, "offset" :  2 }
-		  ]
-	  },
+	"geometry": "content/screen.geometry"
 
-	  "vertices" :
-	  {
-		  "usage" : "USAGE_STATIC",
-		  "stride" : 4,
-		  "data" :
-		  [
-        -1, -1, 0, 1,
-        -1,  1, 0, 0,
-         1, -1, 1, 1,
-         1,  1, 1, 0
-		  ]
-	  },
-	 
-	  "indices" :
-	  {
-			  "usage" :  "USAGE_STATIC",
-		  "format" : "FORMAT_UINT16",
-			  "data" : [ 0, 1, 2, 3 ]
-	  }
-  }
 }

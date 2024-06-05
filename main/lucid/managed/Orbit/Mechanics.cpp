@@ -88,9 +88,9 @@ namespace Orbit {
 		_internal->update();
 	}
 
-	void Mechanics::Render(CameraFrame ^cameraFrame)
+	void Mechanics::Render(CameraFrame ^cameraFrame, bool useFXAA)
 	{
-		_internal->render(cameraFrame->ptr);
+		_internal->render(cameraFrame->ptr, useFXAA);
 	}
 
 	Selection ^Mechanics::Hit(int x, int y)

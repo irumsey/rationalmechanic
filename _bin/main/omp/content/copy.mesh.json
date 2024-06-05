@@ -65,37 +65,7 @@
 	  ]
 
   },
- "geometry" :
-  {
-	  "topology" : "TOPOLOGY_TRIANGLE_STRIP",
 
-	  "format" :
-	  {
-		  "elements" :
-		  [
-			  { "format" : "FORMAT_FLOAT2", "type" : "TYPE_VERTEX", "location" : 0, "stream" : 0, "offset" :  0 },
-			  { "format" : "FORMAT_FLOAT2", "type" : "TYPE_VERTEX", "location" : 1, "stream" : 0, "offset" :  2 }
-		  ]
-	  },
+ "geometry" : "content/screen.geometry"
 
-	  "vertices" :
-	  {
-		  "usage" : "USAGE_STATIC",
-		  "stride" : 4,
-		  "data" :
-		  [
-        -1, -1, 0, 1,
-        -1,  1, 0, 0,
-         1, -1, 1, 1,
-         1,  1, 1, 0
-		  ]
-	  },
-	 
-	  "indices" :
-	  {
-			  "usage" :  "USAGE_STATIC",
-		  "format" : "FORMAT_UINT16",
-			  "data" : [ 0, 1, 2, 3 ]
-	  }
-  }
 }

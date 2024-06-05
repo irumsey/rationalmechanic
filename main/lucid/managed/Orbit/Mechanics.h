@@ -64,7 +64,7 @@ namespace Orbit {
 
 		void Update();
 
-		void Render(CameraFrame ^cameraFrame);
+		void Render(CameraFrame ^cameraFrame, bool useFXAA);
 
 		Selection ^Hit(int x, int y);
 

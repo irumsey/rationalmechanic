@@ -78,6 +78,9 @@
     <FxCompile Include="..\..\_bin\main\omp\content\nineSlice.pixel.hlsl">
       <Filter>omp</Filter>
     </FxCompile>
+    <FxCompile Include="..\..\_bin\main\omp\content\fxaa.pixel.hlsl">
+      <Filter>omp</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\_bin\main\rnd\content\beam.header.hlsl">
