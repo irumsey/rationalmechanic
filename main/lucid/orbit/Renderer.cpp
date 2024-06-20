@@ -160,7 +160,7 @@ namespace orbit {
 		MeshInstance orbitInstance;
 		orbitInstance.id = (SELECT_ORBIT << SELECT_SHIFT) | uint32_t(SELECT_MASK & body->id);
 		orbitInstance.position = centerPosition;
-		orbitInstance.scale = 0.125f;
+		orbitInstance.scale = 3.f;
 		orbitInstance.rotation = rotation;
 		orbitInstance.color = renderProperties.orbitHighlight ? gal::Color(1.f, 1.f, 1.f, 1.f) : gal::Color(0, 0, 1, 1);
 		orbitInstance.parameters = gal::Vector4(hu, e, 0.f, constants::two_pi<float32_t>);

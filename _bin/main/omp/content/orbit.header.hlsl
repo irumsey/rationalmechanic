@@ -1,7 +1,5 @@
-float3 viewUp;
-float3 viewPosition;
+float2 texelSize;
 float4x4 viewProjMatrix;
-float2 fadeDistance;
 
 struct InputVertex
 {
@@ -18,7 +16,6 @@ struct OutputVertex
 {
 	float4 ppsPosition : SV_POSITION;
 	uint1           id :   POSITION0;
-	float     distance :   TEXCOORD0;
 	float4       color :      COLOR0;
 };
 

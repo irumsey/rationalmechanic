@@ -136,7 +136,7 @@ namespace omp
 
                 Lucid.GAL.Pipeline.resize(clientSize.Width, clientSize.Height);
 
-                planner.cameraFrame.InitPerspective(0.25f * 3.1415926f, planner.aspectRatio, 1, 1000);
+                planner.cameraFrame.InitPerspective(0.25f * 3.1415926f, planner.aspectRatio, 5, 5000);
 
                 planner.renderMainView();
             }
