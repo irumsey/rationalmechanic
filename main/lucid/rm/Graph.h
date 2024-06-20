@@ -6,8 +6,8 @@
 #include <list>
 #include <unordered_map>
 #include <lucid/core/Types.h>
+#include <lucid/core/Numbers.h>
 #include <lucid/core/Noncopyable.h>
-#include <lucid/math/Constants.h>
 
 namespace lucid {
 namespace rm{
@@ -34,7 +34,7 @@ namespace rm{
 		typedef float32_t(*transfer_t)(float32_t x);
 
 		static float32_t    step(float32_t x) { return ((x < 0.f) ? 0.f : 1.f); }
-		static float32_t sigmoid(float32_t x) { float32_t y = std::powf(::lucid::math::constants::e<float32_t>(), x);  return y / (y + 1.f); }
+		static float32_t sigmoid(float32_t x) { float32_t y = std::powf(::lucid::core::numbers::e<float32_t>, x);  return y / (y + 1.f); }
 
 		transfer_t transfer = sigmoid;
 

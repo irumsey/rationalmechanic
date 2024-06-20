@@ -1,7 +1,8 @@
 #pragma once
 
 #include <lucid/core/Types.h>
-#include <lucid/gal/Types.h>
+#include <lucid/math/Matrix.h>
+#include <lucid/gigl/Types.h>
 
 namespace lucid {
 namespace core {
@@ -26,69 +27,69 @@ namespace gigl {
 
 		virtual ~Camera2D();
 
-		void initOrthographic(float32_t width, float32_t height, float32_t znear, float32_t zfar);
+		void initOrthographic(Scalar const &width, Scalar const &height, Scalar const &znear, Scalar const &zfar);
 
-		void initOrthographic(float32_t left, float32_t right, float32_t bottom, float32_t top, float32_t znear, float32_t zfar);
+		void initOrthographic(Scalar const &left, Scalar const &right, Scalar const &bottom, Scalar const &top, Scalar const &znear, Scalar const &zfar);
 
-		void initPerspective(float32_t fov, float32_t aspect, float32_t znear, float32_t zfar);
+		void initPerspective(Scalar const &fov, Scalar const &aspect, Scalar const &znear, Scalar const &zfar);
 
-		void initPerspective(float32_t left, float32_t right, float32_t bottom, float32_t top, float32_t znear, float32_t zfar);
+		void initPerspective(Scalar const &left, Scalar const &right, Scalar const &bottom, Scalar const &top, Scalar const &znear, Scalar const &zfar);
 
-		void look(::lucid::gal::Vector3 const &eye, ::lucid::gal::Vector3 const &target, ::lucid::gal::Vector3 const &up);
+		void look(Vector3 const &eye, Vector3 const &target, Vector3 const &up);
 
-		::lucid::gal::Vector3 getPosition() const;
+		Vector3 getPosition() const;
 
-		::lucid::gal::Vector3 getForward() const;
+		Vector3 getForward() const;
 
-		::lucid::gal::Vector3 getRight() const;
+		Vector3 getRight() const;
 
-		::lucid::gal::Vector3 getUp() const;
+		Vector3 getUp() const;
 
-		::lucid::gal::Matrix4x4 const &getViewMatrix() const;
+		Matrix4x4 const &getViewMatrix() const;
 
-		::lucid::gal::Matrix4x4 const &getProjMatrix() const;
+		Matrix4x4 const &getProjMatrix() const;
 
-		::lucid::gal::Matrix4x4 const &getViewProjMatrix() const;
+		Matrix4x4 const &getViewProjMatrix() const;
 
 	private:
-		::lucid::gal::Vector3 _position;
-		::lucid::gal::Matrix4x4 _viewMatrix;
-		::lucid::gal::Matrix4x4 _projMatrix;
-		::lucid::gal::Matrix4x4 _viewProjMatrix;
+		Vector3 _position;
+		Matrix4x4 _viewMatrix;
+		Matrix4x4 _projMatrix;
+		Matrix4x4 _viewProjMatrix;
 
 	};
 
-	inline ::lucid::gal::Vector3 Camera2D::getPosition() const
+	inline Vector3 Camera2D::getPosition() const
 	{
 		return _position;
 	}
 
-	inline ::lucid::gal::Vector3 Camera2D::getForward() const
+	inline Vector3 Camera2D::getForward() const
 	{
-		return ::lucid::gal::Vector3(-_viewMatrix.zx, -_viewMatrix.zy, -_viewMatrix.zz);
+		return ::lucid::math::extractViewForward(_viewMatrix);
 	}
 
-	inline ::lucid::gal::Vector3 Camera2D::getRight() const
+	inline Vector3 Camera2D::getRight() const
 	{
-		return ::lucid::gal::Vector3(_viewMatrix.xx, _viewMatrix.xy, _viewMatrix.xz);
+		return ::lucid::math::extractViewRight(_viewMatrix);
 	}
 
-	inline ::lucid::gal::Vector3 Camera2D::getUp() const
+	inline Vector3 Camera2D::getUp() const
 	{
-		return ::lucid::gal::Vector3(_viewMatrix.yx, _viewMatrix.yy, _viewMatrix.yz);
+		return ::lucid::math::extractViewUp(_viewMatrix);
 	}
 
-	inline ::lucid::gal::Matrix4x4 const &Camera2D::getViewMatrix() const
+	inline Matrix4x4 const &Camera2D::getViewMatrix() const
 	{
 		return _viewMatrix;
 	}
 
-	inline ::lucid::gal::Matrix4x4 const &Camera2D::getProjMatrix() const
+	inline Matrix4x4 const &Camera2D::getProjMatrix() const
 	{
 		return _projMatrix;
 	}
 
-	inline ::lucid::gal::Matrix4x4 const &Camera2D::getViewProjMatrix() const
+	inline Matrix4x4 const &Camera2D::getViewProjMatrix() const
 	{
 		return _viewProjMatrix;
 	}

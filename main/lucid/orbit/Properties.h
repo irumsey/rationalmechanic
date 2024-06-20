@@ -15,9 +15,9 @@ namespace orbit {
 	///
 	struct PhysicalProperties
 	{
-		scalar_t GM = 0.0;
-		scalar_t mass = 0.0;
-		scalar_t radius = 0.0;
+		scalar_t GM;
+		scalar_t mass;
+		scalar_t radius;
 
 		PhysicalProperties() = default;
 
@@ -30,9 +30,9 @@ namespace orbit {
 
 		void read(core::Reader &reader)
 		{
-			GM     = reader.read<scalar_t>();
-			mass   = reader.read<scalar_t>();
-			radius = reader.read<scalar_t>();
+			reader.read(    &GM, sizeof(scalar_t));
+			reader.read(  &mass, sizeof(scalar_t));
+			reader.read(&radius, sizeof(scalar_t));
 		}
 
 	};

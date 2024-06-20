@@ -1,5 +1,7 @@
 #include "screen.header.hlsl"
 
+float2 texelOffset;
+
 Texture2D theSource;
 SamplerState theSampler;
 
@@ -13,8 +15,8 @@ SinglePixel main(InputPixel input)
 	float3 pixel = weights[0] * theSource.Sample(theSampler, input.texcoord).rgb;
 	for (int i = 1; i < 5; ++i)
 	{
-		pixel += weights[i] * theSource.Sample(theSampler, input.texcoord - offsets[i] * texelSize).rgb;
-		pixel += weights[i] * theSource.Sample(theSampler, input.texcoord + offsets[i] * texelSize).rgb;
+		pixel += weights[i] * theSource.Sample(theSampler, input.texcoord - offsets[i] * texelOffset).rgb;
+		pixel += weights[i] * theSource.Sample(theSampler, input.texcoord + offsets[i] * texelOffset).rgb;
 	}
 	output.color = float4(pixel, 1);
 

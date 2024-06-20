@@ -1,6 +1,7 @@
 #pragma once
 
 #include <lucid/core/Types.h>
+#include <lucid/units/System.h>
 #include <lucid/math/Vector.h>
 #include <lucid/math/Quaternion.h>
 #include <lucid/math/Matrix.h>
@@ -15,16 +16,17 @@ namespace gal {
 	///	gal does not require generic vertcies and matrices.
 	///	these are convienience typedefs whose use is not required.
 	///
-
-	typedef ::lucid::math::Vector<float32_t,2> Vector2;
-	typedef ::lucid::math::Vector<float32_t,3> Vector3;
-	typedef ::lucid::math::Vector<float32_t,4> Vector4;
+	
+	typedef ::lucid::math::Scalar<float32_t,    ::lucid::units::none> Scalar;
+	typedef ::lucid::math::Vector<float32_t, 2, ::lucid::units::none> Vector2;
+	typedef ::lucid::math::Vector<float32_t, 3, ::lucid::units::none> Vector3;
+	typedef ::lucid::math::Vector<float32_t, 4, ::lucid::units::none> Vector4;
 
 	typedef ::lucid::math::Quaternion<float32_t> Quaternion;
 
-	typedef ::lucid::math::Matrix<float32_t,2,2> Matrix2x2;
-	typedef ::lucid::math::Matrix<float32_t,3,3> Matrix3x3;
-	typedef ::lucid::math::Matrix<float32_t,4,4> Matrix4x4;
+	typedef ::lucid::math::Matrix<float32_t, 2, 2, ::lucid::units::none> Matrix2x2;
+	typedef ::lucid::math::Matrix<float32_t, 3, 3, ::lucid::units::none> Matrix3x3;
+	typedef ::lucid::math::Matrix<float32_t, 4, 4, ::lucid::units::none> Matrix4x4;
 
 	///	Color
 	///

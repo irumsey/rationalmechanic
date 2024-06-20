@@ -172,19 +172,19 @@ namespace Math {
 			return gcnew Matrix3x3(::lucid::math::inverse(rhs->ref));
 		}
 
-		static Matrix3x3 ^rotateAboutX(float theta)
+		static Matrix3x3 ^rotateAboutX(Scalar ^theta)
 		{
-			return gcnew Matrix3x3(::lucid::math::rotateAboutX(theta));
+			return gcnew Matrix3x3(::lucid::math::rotateAboutX(theta->ref));
 		}
 
-		static Matrix3x3 ^rotateAboutY(float theta)
+		static Matrix3x3 ^rotateAboutY(Scalar ^theta)
 		{
-			return gcnew Matrix3x3(::lucid::math::rotateAboutY(theta));
+			return gcnew Matrix3x3(::lucid::math::rotateAboutY(theta->ref));
 		}
 
-		static Matrix3x3 ^rotateAboutZ(float theta)
+		static Matrix3x3 ^rotateAboutZ(Scalar ^theta)
 		{
-			return gcnew Matrix3x3(::lucid::math::rotateAboutZ(theta));
+			return gcnew Matrix3x3(::lucid::math::rotateAboutZ(theta->ref));
 		}
 
 		///
@@ -211,14 +211,14 @@ namespace Math {
 			return gcnew Matrix4x4(::lucid::math::inverse(rhs->ref));
 		}
 
-		static Matrix4x4 ^orthographic(float width, float height, float znear, float zfar)
+		static Matrix4x4 ^orthographic(Scalar ^width, Scalar ^height, Scalar ^znear, Scalar ^zfar)
 		{
-			return gcnew Matrix4x4(::lucid::math::orthographic(width, height, znear, zfar));
+			return gcnew Matrix4x4(::lucid::math::orthographic(width->ref, height->ref, znear->ref, zfar->ref));
 		}
 
-		static Matrix4x4 ^perspective(float fov, float aspect, float znear, float zfar)
+		static Matrix4x4 ^perspective(Scalar ^fov, Scalar ^aspect, Scalar ^znear, Scalar ^zfar)
 		{
-			return gcnew Matrix4x4(::lucid::math::perspective(fov, aspect, znear, zfar));
+			return gcnew Matrix4x4(::lucid::math::perspective(fov->ref, aspect->ref, znear->ref, zfar->ref));
 		}
 
 		static Matrix4x4 ^look(Vector3 ^position, Vector3 ^target, Vector3 ^up)
@@ -230,9 +230,9 @@ namespace Math {
 		///
 		///
 
-		static float ^areaProjected(Matrix4x4 ^viewProjMatrix, float znear, AABB ^aabb)
+		static Scalar ^areaProjected(Matrix4x4 ^viewProjMatrix, Scalar ^znear, AABB ^aabb)
 		{
-			return ::lucid::math::areaProjected(viewProjMatrix->ref, znear, aabb->ref);
+			return gcnew Scalar(::lucid::math::areaProjected(viewProjMatrix->ref, znear->ref, aabb->ref));
 		}
 
 		///

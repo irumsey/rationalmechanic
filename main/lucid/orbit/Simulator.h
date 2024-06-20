@@ -37,7 +37,7 @@ namespace orbit {
 		void simulate(Frame *root, scalar_t dayNumber, scalar_t delta);
 
 	private:
-		scalar_t _dayNumber = constants::J2000<scalar_t>();
+		scalar_t _dayNumber = constants::J2000<float64_t>;
 		scalar_t _delta = 0.0;
 
 		void simulate(Frame *frame);

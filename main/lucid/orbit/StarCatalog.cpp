@@ -21,8 +21,8 @@ namespace orbit {
 
 			entry.            xno = reader.read<int32_t>();
 			entry.           type = reader.read<std::string>();
-			entry.right_ascension = reader.read<scalar_t>();
-			entry.    declination = reader.read<scalar_t>();
+			entry.right_ascension = reader.read<float64_t>();
+			entry.    declination = reader.read<float64_t>();
 			entry.      magnitude = reader.read<float32_t>();
 		}
 

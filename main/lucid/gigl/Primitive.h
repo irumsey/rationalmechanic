@@ -6,6 +6,7 @@
 #include <lucid/core/Types.h>
 #include <lucid/core/Error.h>
 #include <lucid/gal/Types.h>
+#include <lucid/gigl/Types.h>
 
 ///
 ///
@@ -50,25 +51,25 @@ namespace gigl {
 		struct UNKNOWN final {};
 		struct UNDEFINED final {};
 
-		template<class T> struct Type                           { enum { VALUE =  0 }; };
-		template<>        struct Type<                 UNKNOWN> { enum { VALUE =  0 }; };
-		template<>        struct Type<               UNDEFINED> { enum { VALUE =  1 }; };
-		template<>        struct Type<                    bool> { enum { VALUE =  2 }; };
-		template<>        struct Type<                 int32_t> { enum { VALUE =  3 }; };
-		template<>        struct Type<               float32_t> { enum { VALUE =  4 }; };
-		template<>        struct Type<::lucid::gal::     Color> { enum { VALUE =  5 }; };
-		template<>        struct Type<::lucid::gal::   Vector2> { enum { VALUE =  6 }; };
-		template<>        struct Type<::lucid::gal::   Vector3> { enum { VALUE =  7 }; };
-		template<>        struct Type<::lucid::gal::   Vector4> { enum { VALUE =  8 }; };
-		template<>        struct Type<::lucid::gal::Quaternion> { enum { VALUE =  9 }; };
-		template<>        struct Type<::lucid::gal:: Matrix2x2> { enum { VALUE = 10 }; };
-		template<>        struct Type<::lucid::gal:: Matrix3x3> { enum { VALUE = 11 }; };
-		template<>        struct Type<::lucid::gal:: Matrix4x4> { enum { VALUE = 12 }; };
-		template<>        struct Type<      shared_texture2d_t> { enum { VALUE = 13 }; };
-		template<>        struct Type<       shared_target2d_t> { enum { VALUE = 14 }; };
-		template<>        struct Type<         std::    string> { enum { VALUE = 15 }; };
+		template<class T> struct Type                       { enum { VALUE =  0 }; };
+		template<>        struct Type<             UNKNOWN> { enum { VALUE =  0 }; };
+		template<>        struct Type<           UNDEFINED> { enum { VALUE =  1 }; };
+		template<>        struct Type<                bool> { enum { VALUE =  2 }; };
+		template<>        struct Type<             int32_t> { enum { VALUE =  3 }; };
+		template<>        struct Type<              Scalar> { enum { VALUE =  4 }; };
+		template<>        struct Type<               Color> { enum { VALUE =  5 }; };
+		template<>        struct Type<             Vector2> { enum { VALUE =  6 }; };
+		template<>        struct Type<             Vector3> { enum { VALUE =  7 }; };
+		template<>        struct Type<             Vector4> { enum { VALUE =  8 }; };
+		template<>        struct Type<          Quaternion> { enum { VALUE =  9 }; };
+		template<>        struct Type<           Matrix2x2> { enum { VALUE = 10 }; };
+		template<>        struct Type<           Matrix3x3> { enum { VALUE = 11 }; };
+		template<>        struct Type<           Matrix4x4> { enum { VALUE = 12 }; };
+		template<>        struct Type<  shared_texture2d_t> { enum { VALUE = 13 }; };
+		template<>        struct Type<   shared_target2d_t> { enum { VALUE = 14 }; };
+		template<>        struct Type<     std::    string> { enum { VALUE = 15 }; };
 
-		template<>        struct Type<    shared_unordered2d_t> { enum { VALUE = 16 }; };
+		template<>        struct Type<shared_unordered2d_t> { enum { VALUE = 16 }; };
 
 		enum { TYPE_COUNT = 17 };
 

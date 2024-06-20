@@ -3,7 +3,7 @@
 #include <string>
 #include <lucid/core/Noncopyable.h>
 #include <lucid/core/Error.h>
-#include <lucid/gigl/Camera2D.h>
+#include <lucid/gal/Types.h>
 #include <lucid/orbit/Types.h>
 #include <lucid/orbit/Properties.h>
 #include <lucid/orbit/Elements.h>
@@ -51,6 +51,8 @@ namespace orbit {
 		vector3_t relativeVelocity[2];
 
 		vector3_t absolutePosition[2];
+
+		aabb3_t   aabb[2];
 
 		virtual ~Frame();
 
@@ -168,7 +170,7 @@ namespace orbit {
 	class CameraFrame : public Frame
 	{
 	public:
-		gigl::Camera2D camera;
+		gal::Matrix4x4 projMatrix;
 		Frame *focus = nullptr;
 
 		CameraFrame(size_t id, std::string const &name, std::string const &description);
@@ -177,9 +179,9 @@ namespace orbit {
 
 		virtual void apply(Algorithm *algorithm) override;
 
-		void initPerspective(float fov, float aspect, float znear, float zfar);
+		void initPerspective(gal::Scalar fov, gal::Scalar aspect, gal::Scalar znear, gal::Scalar zfar);
 
-		void initOrthographic(float width, float height, float znear, float zfar);
+		void initOrthographic(gal::Scalar width, gal::Scalar height, gal::Scalar znear, gal::Scalar zfar);
 
 		void look(Frame *frame);
 

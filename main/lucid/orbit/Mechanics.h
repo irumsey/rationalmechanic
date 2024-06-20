@@ -66,16 +66,16 @@ namespace orbit {
 	private:
 		typedef std::unordered_map<size_t, Frame *> frame_map_t;
 
-		scalar_t _dayNumber[2] = { constants::J2000<scalar_t>(), constants::J2000<scalar_t>(), };
+		scalar_t _dayNumber[2] = { constants::J2000<float64_t>, constants::J2000<float64_t>, };
 
-		scalar_t const    TIME_STEP = 0.1;
-		scalar_t const   TIME_LIMIT = 0.3;
+		scalar_t const    TIME_STEP = scalar_t(0.1);
+		scalar_t const   TIME_LIMIT = scalar_t(0.3);
 
-		scalar_t         _wallTime = 0;
-		scalar_t     _wallTimeLast = 0;
-		scalar_t    _wallTimeAccum = 0;
-		scalar_t          _simTime = 0;
-		scalar_t _frameInterpolant = 0;
+		scalar_t         _wallTime;
+		scalar_t     _wallTimeLast;
+		scalar_t    _wallTimeAccum;
+		scalar_t          _simTime;
+		scalar_t _frameInterpolant;
 
 		core::Clock *_clock = nullptr;
 

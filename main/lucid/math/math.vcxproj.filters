@@ -4,7 +4,6 @@
     <ClInclude Include="Vector.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Matrix.h" />
-    <ClInclude Include="Constants.h" />
     <ClInclude Include="Algorithm.h" />
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="Plane.h" />

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <lucid/core/Types.h>
+#include <lucid/units/System.h>
 #include <lucid/math/Vector.h>
 #include <lucid/math/Quaternion.h>
 #include <lucid/math/Matrix.h>
@@ -18,19 +19,88 @@ namespace Math {
 	/// avoiding the complication of templates for this managed library
 	/// 
 
-	typedef ::lucid::math::Vector<float32_t, 2> vector2_t;
-	typedef ::lucid::math::Vector<float32_t, 3> vector3_t;
-	typedef ::lucid::math::Vector<float32_t, 4> vector4_t;
+	typedef ::lucid::math::Scalar<float32_t, ::lucid::units::none> scalar_t;
 
-	typedef ::lucid::math::Matrix<float32_t, 2, 2> matrix2x2_t;
-	typedef ::lucid::math::Matrix<float32_t, 3, 3> matrix3x3_t;
-	typedef ::lucid::math::Matrix<float32_t, 4, 4> matrix4x4_t;
+	typedef ::lucid::math::Vector<float32_t, 2, ::lucid::units::none> vector2_t;
+	typedef ::lucid::math::Vector<float32_t, 3, ::lucid::units::none> vector3_t;
+	typedef ::lucid::math::Vector<float32_t, 4, ::lucid::units::none> vector4_t;
+
+	typedef ::lucid::math::Matrix<float32_t, 2, 2, ::lucid::units::none> matrix2x2_t;
+	typedef ::lucid::math::Matrix<float32_t, 3, 3, ::lucid::units::none> matrix3x3_t;
+	typedef ::lucid::math::Matrix<float32_t, 4, 4, ::lucid::units::none> matrix4x4_t;
 
 	typedef ::lucid::math::Quaternion<float32_t> quaternion_t;
 
-	typedef ::lucid::math::AABB<float32_t, 3> aabb3_t;
-	typedef ::lucid::math::Sphere<float32_t, 3> sphere3_t;
-	typedef ::lucid::math::Frustum<float32_t> frustum_t;
+	typedef ::lucid::math::AABB<float32_t, 3, ::lucid::units::none> aabb3_t;
+	typedef ::lucid::math::Sphere<float32_t, 3, ::lucid::units::none> sphere3_t;
+	typedef ::lucid::math::Frustum<float32_t, ::lucid::units::system::none, ::lucid::units::quantity::pure> frustum_t;
+
+	///	Scalar
+	/// 
+	/// 
+	public ref class Scalar
+	{
+	public:
+		Scalar()
+		{
+			_internal = new scalar_t();
+		}
+
+		Scalar(float32_t value)
+		{
+			_internal = new scalar_t(value);
+		}
+
+		Scalar(scalar_t const &rhs)
+		{
+			_internal = new scalar_t(rhs);
+		}
+
+		~Scalar()
+		{
+			this->!Scalar();
+		}
+
+		!Scalar()
+		{
+			delete _internal;
+		}
+
+		static Scalar ^operator -(Scalar ^rhs)
+		{
+			return gcnew Scalar(-rhs->ref);
+		}
+
+		static Scalar ^operator +(Scalar ^lhs, Scalar ^rhs)
+		{
+			return gcnew Scalar(lhs->ref + rhs->ref);
+		}
+
+		static Scalar ^operator -(Scalar ^lhs, Scalar ^rhs)
+		{
+			return gcnew Scalar(lhs->ref - rhs->ref);
+		}
+
+		static Scalar ^operator *(Scalar ^lhs, Scalar ^rhs)
+		{
+			return gcnew Scalar(lhs->ref * rhs->ref);
+		}
+
+		static Scalar ^operator /(Scalar ^lhs, Scalar ^rhs)
+		{
+			return gcnew Scalar(lhs->ref / rhs->ref);
+		}
+
+		PROPERTY(value, float)
+
+		property scalar_t const *ptr { scalar_t const *get() { return _internal; } }
+
+		property scalar_t const &ref { scalar_t const &get() { return *_internal; } }
+
+	private:
+		scalar_t *_internal = nullptr;
+
+	};
 
 	///	Vector2
 	///
@@ -78,19 +148,19 @@ namespace Math {
 			return gcnew Vector2(lhs->ref - rhs->ref);
 		}
 
-		static Vector2 ^operator *(float lhs, Vector2 ^rhs)
+		static Vector2 ^operator *(Scalar ^lhs, Vector2 ^rhs)
 		{
-			return gcnew Vector2(lhs * rhs->ref);
+			return gcnew Vector2(lhs->ref * rhs->ref);
 		}
 
-		static Vector2 ^operator *(Vector2 ^lhs, float rhs)
+		static Vector2 ^operator *(Vector2 ^lhs, Scalar ^rhs)
 		{
-			return gcnew Vector2(lhs->ref * rhs);
+			return gcnew Vector2(lhs->ref * rhs->ref);
 		}
 
-		static Vector2 ^operator /(Vector2 ^lhs, float rhs)
+		static Vector2 ^operator /(Vector2 ^lhs, Scalar ^rhs)
 		{
-			return gcnew Vector2(lhs->ref / rhs);
+			return gcnew Vector2(lhs->ref / rhs->ref);
 		}
 
 		PROPERTY(x, float)
@@ -151,19 +221,19 @@ namespace Math {
 			return gcnew Vector3(lhs->ref - rhs->ref);
 		}
 
-		static Vector3 ^operator *(float lhs, Vector3 ^rhs)
+		static Vector3 ^operator *(Scalar ^lhs, Vector3 ^rhs)
 		{
-			return gcnew Vector3(lhs * rhs->ref);
+			return gcnew Vector3(lhs->ref * rhs->ref);
 		}
 
-		static Vector3 ^operator *(Vector3 ^lhs, float rhs)
+		static Vector3 ^operator *(Vector3 ^lhs, Scalar ^rhs)
 		{
-			return gcnew Vector3(lhs->ref * rhs);
+			return gcnew Vector3(lhs->ref * rhs->ref);
 		}
 
-		static Vector3 ^operator /(Vector3 ^lhs, float rhs)
+		static Vector3 ^operator /(Vector3 ^lhs, Scalar ^rhs)
 		{
-			return gcnew Vector3(lhs->ref / rhs);
+			return gcnew Vector3(lhs->ref / rhs->ref);
 		}
 
 		PROPERTY(x, float)
@@ -225,19 +295,19 @@ namespace Math {
 			return gcnew Vector4(lhs->ref - rhs->ref);
 		}
 
-		static Vector4 ^operator *(float lhs, Vector4 ^rhs)
+		static Vector4 ^operator *(Scalar ^lhs, Vector4 ^rhs)
 		{
-			return gcnew Vector4(lhs * rhs->ref);
+			return gcnew Vector4(lhs->ref * rhs->ref);
 		}
 
-		static Vector4 ^operator *(Vector4 ^lhs, float rhs)
+		static Vector4 ^operator *(Vector4 ^lhs, Scalar ^rhs)
 		{
-			return gcnew Vector4(lhs->ref * rhs);
+			return gcnew Vector4(lhs->ref * rhs->ref);
 		}
 
-		static Vector4 ^operator /(Vector4 ^lhs, float rhs)
+		static Vector4 ^operator /(Vector4 ^lhs, Scalar ^rhs)
 		{
-			return gcnew Vector4(lhs->ref / rhs);
+			return gcnew Vector4(lhs->ref / rhs->ref);
 		}
 
 		PROPERTY(x, float)
@@ -300,14 +370,14 @@ namespace Math {
 			return gcnew Quaternion(lhs->ref - rhs->ref);
 		}
 
-		static Quaternion ^operator *(float lhs, Quaternion ^rhs)
+		static Quaternion ^operator *(Scalar ^lhs, Quaternion ^rhs)
 		{
-			return gcnew Quaternion(lhs * rhs->ref);
+			return gcnew Quaternion(lhs->value * rhs->ref);
 		}
 
-		static Quaternion ^operator *(Quaternion ^lhs, float rhs)
+		static Quaternion ^operator *(Quaternion ^lhs, Scalar ^rhs)
 		{
-			return gcnew Quaternion(lhs->ref * rhs);
+			return gcnew Quaternion(lhs->ref * rhs->value);
 		}
 
 		static Quaternion ^operator *(Quaternion ^lhs, Quaternion ^rhs)
@@ -315,9 +385,9 @@ namespace Math {
 			return gcnew Quaternion(lhs->ref * rhs->ref);
 		}
 
-		static Quaternion ^operator /(Quaternion ^lhs, float rhs)
+		static Quaternion ^operator /(Quaternion ^lhs, Scalar ^rhs)
 		{
-			return gcnew Quaternion(lhs->ref / rhs);
+			return gcnew Quaternion(lhs->ref / rhs->value);
 		}
 
 		PROPERTY(x, float)
@@ -388,19 +458,19 @@ namespace Math {
 			return gcnew Matrix2x2(lhs->ref - rhs->ref);
 		}
 
-		static Matrix2x2 ^operator *(float lhs, Matrix2x2 ^rhs)
+		static Matrix2x2 ^operator *(Scalar ^lhs, Matrix2x2 ^rhs)
 		{
-			return gcnew Matrix2x2(lhs * rhs->ref);
+			return gcnew Matrix2x2(lhs->ref * rhs->ref);
 		}
 
-		static Matrix2x2 ^operator *(Matrix2x2 ^lhs, float rhs)
+		static Matrix2x2 ^operator *(Matrix2x2 ^lhs, Scalar ^rhs)
 		{
-			return gcnew Matrix2x2(lhs->ref * rhs);
+			return gcnew Matrix2x2(lhs->ref * rhs->ref);
 		}
 
-		static Matrix2x2 ^operator /(Matrix2x2 ^lhs, float rhs)
+		static Matrix2x2 ^operator /(Matrix2x2 ^lhs, Scalar ^rhs)
 		{
-			return gcnew Matrix2x2(lhs->ref / rhs);
+			return gcnew Matrix2x2(lhs->ref / rhs->ref);
 		}
 
 		static Vector2 ^operator *(Vector2 ^lhs, Matrix2x2 ^rhs)
@@ -486,19 +556,19 @@ namespace Math {
 			return gcnew Matrix3x3(lhs->ref - rhs->ref);
 		}
 
-		static Matrix3x3 ^operator *(float lhs, Matrix3x3 ^rhs)
+		static Matrix3x3 ^operator *(Scalar ^lhs, Matrix3x3 ^rhs)
 		{
-			return gcnew Matrix3x3(lhs * rhs->ref);
+			return gcnew Matrix3x3(lhs->ref * rhs->ref);
 		}
 
-		static Matrix3x3 ^operator *(Matrix3x3 ^lhs, float rhs)
+		static Matrix3x3 ^operator *(Matrix3x3 ^lhs, Scalar ^rhs)
 		{
-			return gcnew Matrix3x3(lhs->ref * rhs);
+			return gcnew Matrix3x3(lhs->ref * rhs->ref);
 		}
 
-		static Matrix3x3 ^operator /(Matrix3x3 ^lhs, float rhs)
+		static Matrix3x3 ^operator /(Matrix3x3 ^lhs, Scalar ^rhs)
 		{
-			return gcnew Matrix3x3(lhs->ref / rhs);
+			return gcnew Matrix3x3(lhs->ref / rhs->ref);
 		}
 
 		static Vector3 ^operator *(Vector3 ^lhs, Matrix3x3 ^rhs)
@@ -587,19 +657,19 @@ namespace Math {
 			return gcnew Matrix4x4(lhs->ref - rhs->ref);
 		}
 
-		static Matrix4x4 ^operator *(float lhs, Matrix4x4 ^rhs)
+		static Matrix4x4 ^operator *(Scalar ^lhs, Matrix4x4 ^rhs)
 		{
-			return gcnew Matrix4x4(lhs * rhs->ref);
+			return gcnew Matrix4x4(lhs->ref * rhs->ref);
 		}
 
-		static Matrix4x4 ^operator *(Matrix4x4 ^lhs, float rhs)
+		static Matrix4x4 ^operator *(Matrix4x4 ^lhs, Scalar ^rhs)
 		{
-			return gcnew Matrix4x4(lhs->ref * rhs);
+			return gcnew Matrix4x4(lhs->ref * rhs->ref);
 		}
 
-		static Matrix4x4 ^operator /(Matrix4x4 ^lhs, float rhs)
+		static Matrix4x4 ^operator /(Matrix4x4 ^lhs, Scalar ^rhs)
 		{
-			return gcnew Matrix4x4(lhs->ref / rhs);
+			return gcnew Matrix4x4(lhs->ref / rhs->ref);
 		}
 
 		static Vector4 ^operator *(Vector4 ^lhs, Matrix4x4 ^rhs)

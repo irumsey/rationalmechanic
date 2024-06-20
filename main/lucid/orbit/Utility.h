@@ -1,11 +1,12 @@
 #pragma once
 
 #include <cmath>
-#include <lucid/math/Constants.h>
+#include <lucid/math/Scalar.h>
 #include <lucid/math/Vector.h>
 #include <lucid/math/Matrix.h>
-#include <lucid/orbit/Types.h>
+#include <lucid/gal/Types.h>
 #include <lucid/orbit/Constants.h>
+#include <lucid/orbit/Types.h>
 #include <lucid/orbit/Properties.h>
 #include <lucid/orbit/Elements.h>
 
@@ -20,52 +21,52 @@ namespace orbit {
 	///
 	///
 
-	inline float32_t cast(scalar_t rhs)
+	inline gal::Scalar cast(scalar_t rhs)
 	{
-		return float32_t(rhs);
+		return gal::Scalar(float32_t(rhs.value));
 	}
 
-	inline scalar_t cast(float32_t rhs)
+	inline scalar_t cast(gal::Scalar rhs)
 	{
-		return scalar_t(rhs);
+		return scalar_t(float64_t(rhs.value));
 	}
 
-	inline float32_t scale(scalar_t rhs)
+	inline gal::Scalar scale(scalar_t const &rhs)
 	{
-		return cast(rhs * constants::RUs_per_meter<scalar_t>());
+		return cast(constants::RUs_per_meter<float64_t> * rhs);
 	}
 
-	inline scalar_t inv_scale(float32_t rhs)
+	inline scalar_t inv_scale(gal::Scalar const &rhs)
 	{
-		return cast(rhs * constants::meters_per_RU<float32_t>());
+		return cast(constants::meters_per_RU<float32_t> * rhs);
 	}
 
 	inline gal::Vector3 cast(vector3_t const &rhs)
 	{
-		return gal::Vector3(cast(rhs.x), cast(rhs.y), cast(rhs.z));
+		return gal::Vector3(float32_t(rhs.x), float32_t(rhs.y), float32_t(rhs.z));
 	}
 
 	inline vector3_t cast(gal::Vector3 const &rhs)
 	{
-		return vector3_t(cast(rhs.x), cast(rhs.y), cast(rhs.z));
+		return vector3_t(float64_t(rhs.x), float64_t(rhs.y), float64_t(rhs.z));
 	}
 
 	inline gal::Vector3 scale(vector3_t const &rhs)
 	{
-		return cast(rhs * constants::RUs_per_meter<scalar_t>());
+		return cast(constants::RUs_per_meter<float64_t> * rhs);
 	}
 
 	inline vector3_t inv_scale(gal::Vector3 const &rhs)
 	{
-		return cast(rhs * constants::meters_per_RU<float32_t>());
+		return cast(constants::meters_per_RU<float32_t> * rhs);
 	}
 
 	inline gal::Matrix3x3 cast(matrix3x3_t const &rhs)
 	{
 		return gal::Matrix3x3(
-			cast(rhs.xx), cast(rhs.xy), cast(rhs.xz),
-			cast(rhs.yx), cast(rhs.yy), cast(rhs.yz),
-			cast(rhs.zx), cast(rhs.zy), cast(rhs.zz)
+			float32_t(rhs.xx), float32_t(rhs.xy), float32_t(rhs.xz),
+			float32_t(rhs.yx), float32_t(rhs.yy), float32_t(rhs.yz),
+			float32_t(rhs.zx), float32_t(rhs.zy), float32_t(rhs.zz)
 		);
 	}
 
@@ -76,7 +77,7 @@ namespace orbit {
 	{
 		scalar_t c = math::cos(theta);
 		scalar_t s = math::sin(theta);
-		scalar_t r = hu / (cast(1.f) + e * c);
+		scalar_t r = hu / (scalar_t(1.0) + e * c);
 
 		return r * vector2_t(c, s);
 	}
@@ -94,9 +95,9 @@ namespace orbit {
 	///
 	inline void kinematicsFromElements(vector3_t &position, vector3_t &velocity, PhysicalProperties const &centerProperties, Elements const &targetElements, scalar_t jdn)
 	{
-		scalar_t const twopi = math::constants::two_pi<scalar_t>();
-		scalar_t const tolsq = math::constants::tol_tol<scalar_t>();
-		scalar_t const    dt = constants::seconds_per_day<scalar_t>() * (jdn - targetElements.JDN);
+		scalar_t const twopi = constants::two_pi<float64_t>;
+		scalar_t const tolsq = constants::tolsq<float64_t>;
+		scalar_t const    dt = constants::seconds_per_day<float64_t> * (jdn - targetElements.JDN);
 		scalar_t const    GM = centerProperties.GM;
 		scalar_t const     e = targetElements.EC;
 		scalar_t const     a = targetElements.A;
@@ -120,11 +121,11 @@ namespace orbit {
 			++iter;
 		}
 
-		scalar_t TA = 2.0 * std::atan2(std::sqrt(1.0 + e) * std::sin(0.5 * EA[0]), std::sqrt(1.0 - e) * std::cos(0.5 * EA[0]));
-		scalar_t  r = a * (1.0 - e * std::cos(EA[0]));
+		scalar_t TA = scalar_t(2.0) * math::atan2(math::sqrt(scalar_t(1.0) + e) * math::sin(scalar_t(0.5) * EA[0]), math::sqrt(scalar_t(1.0) - e) * math::cos(scalar_t(0.5) * EA[0]));
+		scalar_t  r = a * (1.0 - e * math::cos(EA[0]));
 
-		position = r * vector3_t(std::cos(TA), std::sin(TA), 0.0);
-		velocity = std::sqrt(GM * a) / r * vector3_t(-std::sin(EA[0]), std::sqrt(1.0 - e * e) * std::cos(EA[0]), 0.0);
+		position = r * vector3_t(math::cos(TA), math::sin(TA), scalar_t(0.0));
+		velocity = math::sqrt(GM * a) / r * vector3_t(-math::sin(EA[0]), math::sqrt(scalar_t(1.0) - e * e) * math::cos(EA[0]), scalar_t(0.0));
 
 		matrix3x3_t R = rotationFromElements(targetElements);
 

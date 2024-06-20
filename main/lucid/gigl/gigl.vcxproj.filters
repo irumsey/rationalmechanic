@@ -11,6 +11,7 @@
     <ClInclude Include="Batched.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Image.h" />
+    <ClInclude Include="Types.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Primitive.cpp" />

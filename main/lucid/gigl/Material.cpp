@@ -1,10 +1,12 @@
 #include "Material.h"
 #include "Context.h"
 #include "Resources.h"
+#include "Types.h"
 #include <lucid/gal/Program.h>
 #include <lucid/gal/Texture2D.h>
 #include <lucid/gal/Unordered2D.h>
 #include <lucid/gal/Pipeline.h>
+#include <lucid/gal/Types.h>
 #include <lucid/core/FileReader.h>
 #include <lucid/core/Reader.h>
 #include <lucid/core/Logger.h>
@@ -193,15 +195,15 @@ namespace /* anonymous */
 		apply<primitive_t::UNDEFINED>,
 		apply<bool>,
 		apply<int32_t>,
-		apply<float32_t>,
-		apply<::lucid::gal::Color>,
-		apply<::lucid::gal::Vector2>,
-		apply<::lucid::gal::Vector3>,
-		apply<::lucid::gal::Vector4>,
-		apply<::lucid::gal::Quaternion>,
-		apply<::lucid::gal::Matrix2x2>,
-		apply<::lucid::gal::Matrix3x3>,
-		apply<::lucid::gal::Matrix4x4>,
+		apply<::lucid::gigl::Scalar>,
+		apply<::lucid::gigl::Color>,
+		apply<::lucid::gigl::Vector2>,
+		apply<::lucid::gigl::Vector3>,
+		apply<::lucid::gigl::Vector4>,
+		apply<::lucid::gigl::Quaternion>,
+		apply<::lucid::gigl::Matrix2x2>,
+		apply<::lucid::gigl::Matrix3x3>,
+		apply<::lucid::gigl::Matrix4x4>,
 		apply<shared_texture2d_t>,
 		apply<shared_target2d_t>,
 		apply<std::string>,

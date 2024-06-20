@@ -14,6 +14,7 @@
 #include <lucid/gal/Program.h>
 #include <lucid/gal/System.h>
 #include <lucid/math/Scalar.h>
+#include <lucid/math/Algorithm.h>
 #include <algorithm>
 
 namespace  math = ::lucid:: math;
@@ -115,22 +116,18 @@ namespace orbit {
 		if (cull(body))
 			return;
 
-		Frame const *center = body->centerFrame;
-		gal::Vector3 centerPosition = math::lerp(_interpolant, scale(center->absolutePosition[0]), scale(center->absolutePosition[1]));
-
 		PhysicalProperties const &physicalProperties = body->physicalProperties;
 		Elements const *elements = body->elements;
 
 		RenderProperties &renderProperties = body->renderProperties;
 		DetailLevels &detailLevels = renderProperties.detailLevels;
 
-		gal::Vector3 position = math::lerp(
-			_interpolant,
-			scale(body->absolutePosition[0]),
-			scale(body->absolutePosition[1])
-		);
+		Frame const *centerFrame = body->centerFrame;
 
-		size_t detailIndex = detailLevels.level(math::len(position - _cameraPosition));
+		gal::Vector3 centerPosition = math::lerp(_interpolant, scale(centerFrame->absolutePosition[0]), scale(centerFrame->absolutePosition[1]));
+		gal::Vector3 bodyPosition = math::lerp(_interpolant, scale(body->absolutePosition[0]), scale(body->absolutePosition[1]));
+
+		size_t detailIndex = detailLevels.level(math::len(bodyPosition - _cameraPosition));
 		if (DetailLevels::INVALID_LEVEL == detailIndex)
 		{
 			return;
@@ -138,19 +135,19 @@ namespace orbit {
 
 		DetailLevels::Level const &detailLevel = detailLevels[detailIndex];
 
-		float32_t  a = math::lerp(_interpolant, scale(elements[0].A), scale(elements[1].A));
-		float32_t  e = math::lerp(_interpolant, cast(elements[0].EC), cast(elements[1].EC));
-		float32_t hu = a * (1.f - e * e);
+		gal::Scalar  a = math::lerp(_interpolant, scale(elements[0].A), scale(elements[1].A));
+		gal::Scalar  e = math::lerp(_interpolant, cast(elements[0].EC), cast(elements[1].EC));
+		gal::Scalar hu = a * (1.f - e * e);
 
 		gal::Quaternion rotation = math::slerp(
-			_interpolant,
+			_interpolant.value,
 			math::quaternionFromMatrix(cast(rotationFromElements(elements[0]))),
 			math::quaternionFromMatrix(cast(rotationFromElements(elements[1])))
 		);
 
 		MeshInstance bodyInstance;
 		bodyInstance.id = (SELECT_FRAME << SELECT_SHIFT) | uint32_t(SELECT_MASK & body->id);
-		bodyInstance.position = position;
+		bodyInstance.position = bodyPosition;
 		bodyInstance.scale = detailLevel.scale * scale(physicalProperties.radius);
 		bodyInstance.rotation = gal::Quaternion(0, 0, 0, 1);
 		bodyInstance.color = detailLevel.color;
@@ -166,7 +163,7 @@ namespace orbit {
 		orbitInstance.scale = 0.125f;
 		orbitInstance.rotation = rotation;
 		orbitInstance.color = renderProperties.orbitHighlight ? gal::Color(1.f, 1.f, 1.f, 1.f) : gal::Color(0, 0, 1, 1);
-		orbitInstance.parameters = gal::Vector4(hu, e, 0.f, math::constants::two_pi<float32_t>());
+		orbitInstance.parameters = gal::Vector4(hu, e, 0.f, constants::two_pi<float32_t>);
 		_batched.addInstance(_orbitMesh, orbitInstance);
 	}
 	  
@@ -204,9 +201,10 @@ namespace orbit {
 
 			instance.id = uint32_t((SELECT_STAR << SELECT_SHIFT) | i);
 
-			instance.parameters.x = 0.3f;
-			instance.parameters.y = orbit::cast(entry.right_ascension);
-			instance.parameters.z = orbit::cast(entry.declination);
+			/// TBD: need a lookup mapping star type to texcoord into spectral texture...
+			instance.parameters.x = 0.01f * (rand() % 100);
+			instance.parameters.y = float32_t(entry.right_ascension);
+			instance.parameters.z = float32_t(entry.declination);
 			instance.parameters.w = entry.magnitude;
 		}
 		_starInstances->unlock();
@@ -243,14 +241,12 @@ namespace orbit {
 		_fxaa .reset(gigl::Mesh::create("content/fxaa.mesh"));
 
 		_copyParameters.  theSource = _copy->material()->program()->lookup(  "theSource");
-		_blurParameters.  texelSize = _blur->material()->program()->lookup(  "texelSize");
+		_blurParameters.texelOffset = _blur->material()->program()->lookup("texelOffset");
 		_blurParameters.  theSource = _blur->material()->program()->lookup(  "theSource");
-		_postParameters.  texelSize = _post->material()->program()->lookup(  "texelSize");
 		_postParameters.colorTarget = _post->material()->program()->lookup("colorTarget");
 		_postParameters. glowTarget = _post->material()->program()->lookup( "glowTarget");
-		_fxaaParameters.  texelSize = _fxaa->material()->program()->lookup(  "texelSize");
 		_fxaaParameters.colorTarget = _fxaa->material()->program()->lookup("colorTarget");
-		_fxaaParameters. glowTarget = _fxaa->material()->program()->lookup("glowTarget");
+		_fxaaParameters. glowTarget = _fxaa->material()->program()->lookup( "glowTarget");
 	}
 
 	void Renderer::shutdown()
@@ -280,39 +276,45 @@ namespace orbit {
 	void Renderer::render(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t time, scalar_t interpolant, bool useFXAA)
 	{
 		LUCID_PROFILE_SCOPE("Renderer::render(...)");
+		LUCID_VALIDATE(nullptr != cameraFrame->focus, "camera does not have a focus specified");
 
 		resize();
 
-		gigl::Camera2D &camera = cameraFrame->camera;
+		Frame const *focusFrame = cameraFrame->focus;
 
 		_time = cast(time);
 		_interpolant = cast(interpolant);
-		_cameraPosition = camera.getPosition();
 
-		Frame const *focusFrame = cameraFrame->focus;
+		_cameraPosition = math::lerp(_interpolant, scale(cameraFrame->absolutePosition[0]), scale(cameraFrame->absolutePosition[1]));
+		_focusPosition = math::lerp(_interpolant, scale(focusFrame->absolutePosition[0]), scale(focusFrame->absolutePosition[1]));
 
-		camera.look(
-			scale(math::lerp(interpolant, cameraFrame->absolutePosition[0], cameraFrame->absolutePosition[1])),
-			scale(math::lerp(interpolant, focusFrame->absolutePosition[0], focusFrame->absolutePosition[1])),
-			gal::Vector3(0, 0, 1)
-		);
+		gal::Matrix4x4 viewMatrix = math::look(_cameraPosition, _focusPosition, gal::Vector3(0, 0, 1));
+		gal::Matrix4x4 const &projMatrix = cameraFrame->projMatrix;
+		gal::Matrix4x4 viewProjMatrix = projMatrix * viewMatrix;
+		gal::Matrix4x4 invViewProjMatrix = math::inverse(viewProjMatrix);
 
-		_renderContext["screenWidth"] = float32_t(_width);
-		_renderContext["screenHeight"] = float32_t(_height);
+		// _cameraFrustum.from(invViewProjMatrix);
+
+		float32_t width = float32_t(_width);
+		float32_t height = float32_t(_height);
+
+		_renderContext["screenWidth"] = gal::Scalar(width);
+		_renderContext["screenHeight"] = gal::Scalar(height);
+		_renderContext["texelSize"] = gal::Vector2(1.f / width, 1.f / height);
 
 		_renderContext["time"] = _time;
 		_renderContext["interpolant"] = _interpolant;
 		
-		_renderContext["viewPosition"] = camera.getPosition();
-		_renderContext["viewForward"] = camera.getForward();
-		_renderContext["viewRight"] = camera.getRight();
-		_renderContext["viewUp"] = camera.getUp();
-		_renderContext["viewMatrix"] = camera.getViewMatrix();
-		_renderContext["invViewMatrix"] = math::inverse(camera.getViewMatrix());
-		_renderContext["projMatrix"] = camera.getProjMatrix();
-		_renderContext["invProjMatrix"] = math::inverse(camera.getProjMatrix());
-		_renderContext["viewProjMatrix"] = camera.getViewProjMatrix();
-		_renderContext["invViewProjMatrix"] = math::inverse(camera.getViewProjMatrix());
+		_renderContext["viewPosition"] = _cameraPosition;
+		_renderContext["viewForward"] = ::lucid::math::extractViewForward(viewMatrix);
+		_renderContext["viewRight"] = ::lucid::math::extractViewRight(viewMatrix);
+		_renderContext["viewUp"] = ::lucid::math::extractViewUp(viewMatrix);
+		_renderContext["viewMatrix"] = viewMatrix;
+		_renderContext["invViewMatrix"] = math::inverse(viewMatrix);
+		_renderContext["projMatrix"] = projMatrix;
+		_renderContext["invProjMatrix"] = math::inverse(projMatrix);
+		_renderContext["viewProjMatrix"] = viewProjMatrix;
+		_renderContext["invViewProjMatrix"] = invViewProjMatrix;
 
 		_batched.clear();
 		batch(rootFrame);
@@ -396,27 +398,29 @@ namespace orbit {
 
 	void Renderer::blur()
 	{
-		gal::Vector2 horizontal = gal::Vector2(1.f / _width, 0);
-		gal::Vector2 vertical = gal::Vector2(0, 1.f / _height);
+		float32_t width = float32_t(_width);
+		float32_t height = float32_t(_height);
+
+		gal::Vector2 horizontal = gal::Vector2(1.f / width, 0);
+		gal::Vector2 vertical = gal::Vector2(0, 1.f / height);
 
 		galPipeline().setRenderTarget(0, _blurTarget[1].get());
 		galPipeline().updateTargets();
 
 		_blur->material()->program()->set(_blurParameters.theSource, _blurTarget[0].get());
-		_blur->material()->program()->set(_blurParameters.texelSize, horizontal);
+		_blur->material()->program()->set(_blurParameters.texelOffset, horizontal);
 		_blur->render(_renderContext);
 
 		galPipeline().setRenderTarget(0, _blurTarget[0].get());
 		galPipeline().updateTargets();
 
 		_blur->material()->program()->set(_blurParameters.theSource, _blurTarget[1].get());
-		_blur->material()->program()->set(_blurParameters.texelSize, vertical);
+		_blur->material()->program()->set(_blurParameters.texelOffset, vertical);
 		_blur->render(_renderContext);
 	}
 
 	void Renderer::post()
 	{
-		_post->material()->program()->set(_postParameters.texelSize, gal::Vector2(1.f / _width, 1.f / _height));
 		_post->material()->program()->set(_postParameters.colorTarget, _colorTarget.get());
 		_post->material()->program()->set(_postParameters. glowTarget, _glowTarget. get());
 		_post->render(_renderContext);
@@ -424,7 +428,6 @@ namespace orbit {
 
 	void Renderer::fxaa()
 	{
-		_fxaa->material()->program()->set(_fxaaParameters.texelSize, gal::Vector2(1.f / _width, 1.f / _height));
 		_fxaa->material()->program()->set(_fxaaParameters.colorTarget, _colorTarget.get());
 		_fxaa->material()->program()->set(_fxaaParameters.glowTarget, _glowTarget.get());
 		_fxaa->render(_renderContext);

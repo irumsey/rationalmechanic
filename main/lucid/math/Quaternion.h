@@ -1,8 +1,24 @@
 #pragma once
 
-#include <lucid/math/Constants.h>
+#include <lucid/units/System.h>
 #include <lucid/math/Scalar.h>
 #include <lucid/math/Vector.h>
+
+/// 
+/// 
+/// 
+
+#pragma push_macro("QUANTITY_PURE")
+#define QUANTITY_PURE ::lucid::units::quantity::pure
+
+#pragma push_macro("SCALAR")
+#define SCALAR(T, S, Q) ::lucid::math::Scalar<T, ::lucid::units::Unit<S, Q> >
+
+#pragma push_macro("VECTOR")
+#define VECTOR(T, DIM, S, Q) ::lucid::math::Vector<T, DIM, ::lucid::units::Unit<S, Q> >
+
+#pragma push_macro("QUATERNION")
+#define QUATERNION(T) ::lucid::math::Quaternion<T>
 
 ///
 ///
@@ -12,7 +28,7 @@ namespace math {
 
 	///	Quaternion<T>
 	///
-	///	templated quaternion
+	///	Note: leaving the quaternion as "dimensionless"
 	template<typename T> struct Quaternion
 	{
 		T x, y, z;
@@ -33,11 +49,9 @@ namespace math {
 }	///	math
 }	///	lucid
 
-///	quaternion shorthand for the following operator overloads
-///
-///	note: relies upon push/pop macro pragmas
-#pragma push_macro("QUATERNION")
-#define QUATERNION(T) lucid::math::Quaternion<T>
+/// 
+/// 
+/// 
 
 template<typename T> inline QUATERNION(T) operator-(QUATERNION(T) const &rhs)
 {
@@ -77,15 +91,9 @@ template<typename T> inline QUATERNION(T) operator*(QUATERNION(T) const &lhs, QU
 
 template<typename T> inline QUATERNION(T) operator/(QUATERNION(T) const &lhs, T const &rhs)
 {
-	T const coeff = ::lucid::math::constants::one<T>() / rhs;
+	T const coeff = T(1) / rhs;
 	return QUATERNION(T)(coeff * lhs.x, coeff * lhs.y, coeff * lhs.z, coeff * lhs.w);
 }
-
-///
-///	remove the shorthand
-///
-#undef QUATERNION
-#pragma pop_macro("QUATERNION")
 
 ///
 ///
@@ -96,7 +104,8 @@ namespace math {
 	///	conjugate
 	///
 	///	returns the conjugate of the supplied quaternion
-	template<typename T> inline Quaternion<T> conjugate(Quaternion<T> const &rhs)
+	template<typename T>
+	inline Quaternion<T> conjugate(Quaternion<T> const &rhs)
 	{
 		return Quaternion<T>(-rhs.x, -rhs.y, -rhs.z, rhs.w);
 	}
@@ -104,7 +113,8 @@ namespace math {
 	///	dot
 	///
 	///	dot product
-	template<typename T> inline T dot(Quaternion<T> const &lhs, Quaternion<T> const &rhs)
+	template<typename T>
+	inline T dot(Quaternion<T> const &lhs, Quaternion<T> const &rhs)
 	{
 		return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z + lhs.w * rhs.w;
 	}
@@ -112,7 +122,8 @@ namespace math {
 	///	lsq
 	///
 	///	length squared
-	template<typename T> inline T lsq(Quaternion<T> const &rhs)
+	template<typename T>
+	inline T lsq(Quaternion<T> const &rhs)
 	{
 		return dot(rhs, rhs);
 	}
@@ -120,7 +131,8 @@ namespace math {
 	///	len
 	///
 	///	length
-	template<typename T> inline T len(Quaternion<T> const &rhs)
+	template<typename T>
+	inline T len(Quaternion<T> const &rhs)
 	{
 		return sqrt(lsq(rhs));
 	}
@@ -128,32 +140,20 @@ namespace math {
 	///	normalize
 	///
 	///	return normalized quaternion
-	template<typename T> inline Quaternion<T> normalize(Quaternion<T> const &rhs)
+	template<typename T>
+	inline Quaternion<T> normalize(Quaternion<T> const &rhs)
 	{
 		return rhs / len(rhs);
-	}
-
-	///	equ and neq
-	///
-	///	equality tests
-	
-	template<typename T> inline bool equ(Quaternion<T> const &lhs, Quaternion<T> const &rhs)
-	{
-		return lsq(lhs - rhs) < constants::tol_tol<T>();
-	}
-
-	template<typename T> inline bool neq(Quaternion<T> const &lhs, Quaternion<T> const &rhs)
-	{
-		return !equ(lhs, rhs);
 	}
 
 	///	rotateUsingAxis
 	///
 	///
-	template<typename T> Quaternion<T> rotateUsingAxis(Vector<T,3> const &axis, T theta)
+	template<typename T, typename S, typename Q>
+	inline Quaternion<T> rotateUsingAxis(VECTOR(T, 3, S, Q) const &axis, SCALAR(T, S, QUANTITY_PURE) const &theta)
 	{
-		T hTheta = constants::half<T>() * theta;
-		Vector<T,3> n = normalize(axis) * sin(hTheta);
+		T hTheta = T(0.5) * theta.value;
+		VECTOR(T, 3, S, QUANTITY_PURE) n = normalize(axis) * sin(hTheta);
 
 		return Quaternion<T>(n.x, n.y, n.z, cos(hTheta));
 	}
@@ -161,22 +161,24 @@ namespace math {
 	///	transform direction
 	///
 	///
-	template<typename T> inline Vector<T,3> transformDirection(Quaternion<T> const q, Vector<T,3> const &r)
+	template<typename T, typename S, typename Q>
+	inline VECTOR(T, 3, S, Q) transformDirection(Quaternion<T> const q, VECTOR(T, 3, S, Q) const &r)
 	{
-		Quaternion<T> u = q * Quaternion<T>(r.x, r.y, r.z, constants::zero<T>()) * conjugate(q);
+		Quaternion<T> u = q * Quaternion<T>(r.x, r.y, r.z, T(0)) * conjugate(q);
 
-		return Vector<T,3>(u.x, u.y, u.z);
+		return VECTOR(T, 3, S, Q)(u.x, u.y, u.z);
 	}
 
 	///	slerp
 	///
 	///	spherical interpolation.
-	template<typename T> inline Quaternion<T> slerp(T t, Quaternion<T> const &q1, Quaternion<T> const &q2)
+	template<typename T>
+	inline Quaternion<T> slerp(T t, Quaternion<T> const &q1, Quaternion<T> const &q2)
 	{
 		T dp = dot(q1, q2);
 		Quaternion<T> q3 = q2;
 
-		if (dp < constants::zero<T>())
+		if (dp < T(0))
 		{
 			dp = -dp;
 			q3 = -q2;
@@ -185,9 +187,9 @@ namespace math {
 		if (dp < T(0.95))
 		{
 			T theta = acos(dp);
-			T coeff = constants::one<T>() / sin(theta);
+			T coeff = T(1) / sin(theta);
 
-			return coeff * (q1 * sin(theta * (constants::one<T>() - t)) + q3 * sin(theta * t));
+			return coeff * (q1 * sin(theta * (T(1) - t)) + q3 * sin(theta * t));
 		}
 
 		return lerp(t, q1, q3);
@@ -196,16 +198,17 @@ namespace math {
 	///	slerpNoInvert
 	///
 	///
-	template<typename T> inline Quaternion<T> slerpNoInvert(T t, Quaternion<T> const &q1, Quaternion<T> const &q2)
+	template<typename T>
+	inline Quaternion<T> slerpNoInvert(T t, Quaternion<T> const &q1, Quaternion<T> const &q2)
 	{
 		T dp = dot(q1, q2);
 
 		if ((T(-0.95) < dp) && (dp < T(0.95)))
 		{
 			T theta = acos(dp);
-			T coeff = constants::one<T>() / sin(theta);
+			T coeff = T(1) / sin(theta);
 
-			return coeff * (q1 * sin(theta * (constants::one<T>() - t)) + q2 * sin(theta * t));
+			return coeff * (q1 * sin(theta * (T(1) - t)) + q2 * sin(theta * t));
 		}
 
 		return lerp(t, q1, q2);
@@ -214,14 +217,15 @@ namespace math {
 	///	exp
 	///
 	///	returns the exp value of the specified quaternion.
-	template<typename T> inline Quaternion<T> exp(Quaternion<T> const &rhs)
+	template<typename T>
+	inline Quaternion<T> exp(Quaternion<T> const &rhs)
 	{
 		T a = sqrt(rhs.x * rhs.x + rhs.y * rhs.y + rhs.z * rhs.z);
 		T sina = sin(a);
 		T cosa = cos(a);
 
 		Quaternion<T> result(0, 0, 0, cosa);
-		if (a > constants::zero<T>())
+		if (a > T(0))
 		{
 			T coeff = sina / a;
 
@@ -236,13 +240,14 @@ namespace math {
 	///	log
 	///
 	///	returns the log of the specified quaternion.
-	template<typename T> inline Quaternion<T> log(Quaternion<T> const &rhs)
+	template<typename T>
+	inline Quaternion<T> log(Quaternion<T> const &rhs)
 	{
 		T a = acos(rhs.w);
 		T sina = sin(a);
 
 		Quaternion<T> result(0, 0, 0, 0);
-		if (sina > constants::zero<T>())
+		if (sina > T(0))
 		{
 			T coeff = a / sina;
 
@@ -257,18 +262,20 @@ namespace math {
 	///	squad
 	///
 	///	spherical spline interpolation.  s1 and s2 are computed using computeControl(...) below.
-	template<typename T> inline Quaternion<T> squad(T t, Quaternion<T> const &q1, Quaternion<T> const &q2, Quaternion<T> const &s1, Quaternion<T> const &s2)
+	template<typename T>
+	inline Quaternion<T> squad(T t, Quaternion<T> const &q1, Quaternion<T> const &q2, Quaternion<T> const &s1, Quaternion<T> const &s2)
 	{
 		Quaternion<T> c = slerpNoInvert(t, q1, q2);
 		Quaternion<T> d = slerpNoInvert(t, s1, s2);
 
-		return slerpNoInvert(constants::two<T>() * t * (constants::one<T>() - t), c, d);
+		return slerpNoInvert(T(2) * t * (T(1) - t), c, d);
 	}
 
 	///	compute control
 	///
 	///	used to compute spline control values given: previous (q1), current (q2), and next (q3) values.
-	template<typename T> inline Quaternion<T> computeControl(Quaternion<T> const &q1, Quaternion<T> const &q2, Quaternion<T> const &q3)
+	template<typename T>
+	inline Quaternion<T> computeControl(Quaternion<T> const &q1, Quaternion<T> const &q2, Quaternion<T> const &q3)
 	{
 		Quaternion<T> q(-q2.x, -q2.y, -q2.z, q2.w);
 
@@ -277,3 +284,19 @@ namespace math {
 
 }	///	math
 }	///	lucid
+
+///
+/// 
+///
+
+#undef QUATERNION
+#pragma pop_macro("QUATERNION")
+
+#undef VECTOR
+#pragma pop_macro("VECTOR")
+
+#undef SCALAR
+#pragma pop_macro("SCALAR")
+
+#undef QUANTITY_PURE
+#pragma pop_macro("QUANTITY_PURE")

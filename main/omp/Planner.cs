@@ -23,6 +23,7 @@ namespace omp
         private Lucid.Orbit.CameraFrame cameraFrame = null;
         private ListViewItem cameraParentItem = null;
 
+        private bool useFXAA = true;
         public Planner()
         {
             InitializeComponent();

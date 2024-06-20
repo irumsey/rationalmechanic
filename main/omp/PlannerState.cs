@@ -309,7 +309,7 @@ namespace omp
             public override void renderMainView(Planner planner)
             {
                 Lucid.GAL.Pipeline.beginScene();
-                    planner.orbitalMechainics.Render(planner.cameraFrame, false);
+                    planner.orbitalMechainics.Render(planner.cameraFrame, planner.useFXAA);
                 Lucid.GAL.Pipeline.endScene();
             }
 

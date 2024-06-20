@@ -51,6 +51,14 @@ namespace orbit {
 
 		body->absolutePosition[0] = body->absolutePosition[1];
 		body->absolutePosition[1] = body->relativePosition[1] + center->absolutePosition[1];
+
+		PhysicalProperties const &bodyProperties = body->physicalProperties;
+		scalar_t radius = bodyProperties.radius;
+
+		vector3_t extents = vector3_t(radius, radius, radius);
+
+		body->aabb[0] = body->aabb[1];
+		body->aabb[1] = aabb3_t(body->absolutePosition[1] - extents, body->absolutePosition[1] + extents);
 	}
 
 	void Simulator::evaluate(DynamicBody *body)
@@ -86,6 +94,9 @@ namespace orbit {
 		{
 			///	recursive example: sun <- earth <- moon <- apollo lander (arrow points to parent so, in this example, depth of 4) 
 			simulate(child);
+
+			/// child has expanded itself to contain its children (using this recursion), now fit it
+			frame->aabb[1] = math::fit(frame->aabb[1], child->aabb[1]);
 		}
 	}
 
@@ -94,6 +105,11 @@ namespace orbit {
 		Frame const *center = frame->centerFrame;
 		LUCID_VALIDATE(nullptr != center, "internal consistency error: detached frame in simulation");
 
+		// an axis aligned box centered at the position with zero volume
+		frame->aabb[0] = frame->aabb[1];
+		frame->aabb[1] = aabb3_t(frame->absolutePosition[1], frame->absolutePosition[1]);
+
+		// if this is a "root" frame, don't update positions (keep them as originally set).
 		if (frame == center)
 			return;
 

@@ -82,9 +82,11 @@ namespace Orbit {
 
 	Frame::!Frame()
 	{
+#if false
 		/// this owns _internal iff centerFrame is null
 		if (nullptr == _internal->centerFrame)
 			delete _internal;
+#endif
 	}
 
 	Frame ^Frame::CenterFrame::get()

@@ -10,15 +10,15 @@ namespace units {
 	///	Quantity
 	///
 	///	an aspect of something to be measured
-	template<int TI ,int LE, int MA, int TE, int CU, int AM, int IN> struct Quantity
+	template<int TME ,int LNG, int MSS, int TMP, int CRR, int AMN, int INT> struct Quantity
 	{
-		enum {        TIME = TI };
-		enum {      LENGTH = LE };
-		enum {        MASS = MA };
-		enum { TEMPERATURE = TE };
-		enum {     CURRENT = CU };
-		enum {      AMOUNT = AM };
-		enum {   INTENSITY = IN };
+		enum {        TIME = TME };
+		enum {      LENGTH = LNG };
+		enum {        MASS = MSS };
+		enum { TEMPERATURE = TMP };
+		enum {     CURRENT = CRR };
+		enum {      AMOUNT = AMN };
+		enum {   INTENSITY = INT };
 	};
 
 	namespace quantity
@@ -45,8 +45,8 @@ namespace units {
 		///	derived quantities
 		///
 
-		typedef Quantity< 2, 0, 0, 0, 0, 0, 0> area;
-		typedef Quantity< 3, 0, 0, 0, 0, 0, 0> volume;
+		typedef Quantity< 0, 2, 0, 0, 0, 0, 0> area;
+		typedef Quantity< 0, 3, 0, 0, 0, 0, 0> volume;
 		typedef Quantity<-1, 0, 0, 0, 0, 0, 0> frequency;
 		typedef Quantity<-1, 1, 0, 0, 0, 0, 0> velocity;	
 		typedef Quantity<-2, 1, 0, 0, 0, 0, 0> acceleration;
@@ -67,6 +67,74 @@ namespace units {
 		typedef Quantity<-2, 2, 1, 0,-1, 0, 0> magnetic_flux;
 		typedef Quantity<-2, 2, 1, 0,-1, 0, 0> magnetic_induction;
 		typedef Quantity< 0,-2, 0, 0, 0, 0, 1> illuminance;
+
+		///	add
+		///
+		/// 
+		template<typename LHS, typename RHS> struct add
+		{
+			typedef typename Quantity
+			<
+				LHS::       TIME + RHS::       TIME,
+				LHS::     LENGTH + RHS::     LENGTH,
+				LHS::       MASS + RHS::       MASS,
+				LHS::TEMPERATURE + RHS::TEMPERATURE,
+				LHS::    CURRENT + RHS::    CURRENT,
+				LHS::     AMOUNT + RHS::     AMOUNT,
+				LHS::  INTENSITY + RHS::  INTENSITY
+			> result;
+		};
+
+		///	sub
+		///
+		/// 
+		template<typename LHS, typename RHS> struct sub
+		{
+			typedef typename Quantity
+			<
+				LHS::       TIME - RHS::       TIME,
+				LHS::     LENGTH - RHS::     LENGTH,
+				LHS::       MASS - RHS::       MASS,
+				LHS::TEMPERATURE - RHS::TEMPERATURE,
+				LHS::    CURRENT - RHS::    CURRENT,
+				LHS::     AMOUNT - RHS::     AMOUNT,
+				LHS::  INTENSITY - RHS::  INTENSITY
+			> result;
+		};
+
+		///	half
+		///
+		///	TBD: figure out if i can error on odd quantities
+		template<typename RHS> struct half
+		{
+			typedef typename Quantity
+			<
+				RHS::       TIME / 2,
+				RHS::     LENGTH / 2,
+				RHS::       MASS / 2,
+				RHS::TEMPERATURE / 2,
+				RHS::    CURRENT / 2,
+				RHS::     AMOUNT / 2,
+				RHS::  INTENSITY / 2
+			> result;
+		};
+
+		///	neg
+		///
+		/// 
+		template<typename RHS> struct neg
+		{
+			typedef typename Quantity
+			<
+				-RHS::       TIME,
+				-RHS::     LENGTH,
+				-RHS::       MASS,
+				-RHS::TEMPERATURE,
+				-RHS::    CURRENT,
+				-RHS::     AMOUNT,
+				-RHS::  INTENSITY
+			> result;
+		};
 
 	}	///	quantity
 

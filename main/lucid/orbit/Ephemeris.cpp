@@ -5,7 +5,6 @@
 #include <lucid/gigl/Resources.h>
 #include <lucid/gigl/Mesh.h>
 #include <lucid/math/Algorithm.h>
-#include <lucid/math/Constants.h>
 #include <lucid/core/FileReader.h>
 #include <lucid/core/Logger.h>
 
@@ -149,10 +148,10 @@ namespace orbit {
 		///	exits when the difference would increase.
 
 		size_t index = 0;
-		scalar_t a = ::fabs(entries[index].JDN - jdn);
+		scalar_t a = math::abs(entries[index].JDN - jdn);
 		for (size_t i = 1; i < count; ++i)
 		{
-			scalar_t b = ::fabs(entries[i].JDN - jdn);
+			scalar_t b = math::abs(entries[i].JDN - jdn);
 			if (b < a)
 			{
 				index = i;

@@ -85,13 +85,12 @@ namespace orbit {
 
 		struct BlurParameters
 		{
-			gal::Parameter const *texelSize = nullptr;
+			gal::Parameter const *texelOffset = nullptr;
 			gal::Parameter const *theSource = nullptr;
 		};
 
 		struct PostParameters
 		{
-			gal::Parameter const *texelSize = nullptr;
 			gal::Parameter const *colorTarget = nullptr;
 			gal::Parameter const *glowTarget = nullptr;
 		};
@@ -123,9 +122,11 @@ namespace orbit {
 		int32_t _width = 0;
 		int32_t _height = 0;
 
-		float32_t _time = 0.f;
-		float32_t _interpolant = 0.f;
+		gal::Scalar _time = 0.f;
+		gal::Scalar _interpolant = 0.f;
+
 		gal::Vector3 _cameraPosition;
+		gal::Vector3 _focusPosition;
 
 		gigl::Context _renderContext;
 

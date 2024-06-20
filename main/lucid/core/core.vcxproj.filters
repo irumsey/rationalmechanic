@@ -22,9 +22,9 @@
     <ClInclude Include="Meta.h" />
     <ClInclude Include="Noncreatable.h" />
     <ClInclude Include="String.h" />
-    <ClInclude Include="Constants.h" />
     <ClInclude Include="Bits.h" />
     <ClInclude Include="Random.h" />
+    <ClInclude Include="Numbers.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Error.cpp" />

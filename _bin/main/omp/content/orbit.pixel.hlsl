@@ -11,8 +11,9 @@ OutputPixel main(InputPixel input)
 
 	float fade = clamp((fadeDistance.y - input.distance) / (fadeDistance.y - fadeDistance.x), 0, 1);
 
-	output.color = float4(input.color.rgb, fade);
-	output.glow = float4(0, 0, 0, 0);
+//	output.color = float4(input.color.rgb, fade * fade);
+	output.color = float4(0, 0, 0, 0);
+	output.glow = float4(input.color.rgb, fade * fade);
 	output.id = input.id;
 
 	return output; 

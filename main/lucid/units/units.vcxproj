@@ -19,8 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Measure.h" />
-    <ClInclude Include="Meta.h" />
     <ClInclude Include="Quantity.h" />
     <ClInclude Include="System.h" />
   </ItemGroup>

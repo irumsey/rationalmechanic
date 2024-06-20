@@ -165,6 +165,8 @@ namespace orbit {
 
 	void Mechanics::detach(Frame *frame)
 	{
+		LUCID_VALIDATE(nullptr != frame, "attempt to detach invalid frame");
+
 		Frame *center = frame->centerFrame;
 		auto iter = _frames.find(frame->id);
 
@@ -186,13 +188,13 @@ namespace orbit {
 		_wallTimeLast = _wallTime;
 
 		_wallTimeElapsed = (_wallTimeElapsed > TIME_LIMIT) ? TIME_LIMIT : _wallTimeElapsed;
-		_wallTimeAccum += _wallTimeElapsed;
+		_wallTimeAccum = _wallTimeAccum + _wallTimeElapsed;
 
 		while (_wallTimeAccum >= TIME_STEP)
 		{
-			_simTime += TIME_STEP;
+			_simTime = _simTime + TIME_STEP;
 			update(TIME_STEP);
-			_wallTimeAccum -= TIME_STEP;
+			_wallTimeAccum = _wallTimeAccum - TIME_STEP;
 		}
 
 		_frameInterpolant = _wallTimeAccum / TIME_STEP;

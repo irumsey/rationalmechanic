@@ -3,10 +3,10 @@
 	[
 		{ "name" :      "screenWidth",     "float" : 0 },
 		{ "name" :     "screenHeight",     "float" : 0 },
+		{ "name" :        "texelSize",   "vector2" : [0, 0] },
 
-
-		{ "name" :             "time",     "float" : 0.0 },
-		{ "name" :      "interpolant",     "float" : 0.0 },
+		{ "name" :             "time",     "float" : 0 },
+		{ "name" :      "interpolant",     "float" : 0 },
 
 		{ "name":     "lightPosition",   "vector3" : [ 0, 0, 0 ] },
                                                

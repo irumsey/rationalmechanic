@@ -21,7 +21,6 @@
   <ItemGroup>
     <ClInclude Include="AABB.h" />
     <ClInclude Include="Algorithm.h" />
-    <ClInclude Include="Constants.h" />
     <ClInclude Include="Fixed.h" />
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="Integer.h" />

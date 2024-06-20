@@ -41,6 +41,7 @@
 		},
 
 		"attributes": [
+			{ "name":  "texelSize", "query": "texelSize" }
 		]
 
 	},

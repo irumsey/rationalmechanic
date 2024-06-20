@@ -2,7 +2,6 @@
 
 #include <lucid/math/Vector.h>
 #include <lucid/math/Sphere.h>
-#include <lucid/math/Constants.h>
 
 #ifdef min
 #	undef min
@@ -15,14 +14,14 @@ namespace math {
 	///
 	///
 	///
-	template<typename T, int DIM> struct AABB
+	template<typename T, size_t DIM, typename U> struct AABB
 	{
-		Vector<T, DIM> min;
-		Vector<T, DIM> max;
+		Vector<T, DIM, U> min;
+		Vector<T, DIM, U> max;
 
 		AABB() = default;
 
-		AABB(Vector<T, DIM> const &min, Vector<T, DIM> const &max)
+		AABB(Vector<T, DIM, U> const &min, Vector<T, DIM, U> const &max)
 			: min(min)
 			, max(max)
 		{
@@ -30,24 +29,24 @@ namespace math {
 
 		~AABB() = default;
 
-		Vector<T, DIM> center() const
+		Vector<T, DIM, U> center() const
 		{
-			return constants::half<T>() * (max + min);
+			return Scalar<T, U>(0.5) * (max + min);
 		}
 
-		Vector<T, DIM> extent() const
+		Vector<T, DIM, U> extent() const
 		{
-			return constants::half<T>() * (max - min);
+			return Scalar<T, U>(0.5) * (max - min);
 		}
 	};
 
 	///
 	///
 	///
-	template<typename T> struct AABB<T,1>
+	template<typename T, typename U> struct AABB<T, 1, U>
 	{
-		T min = constants::neg_inf<T>();
-		T max = constants::pos_inf<T>();
+		Scalar<T, U> min;
+		Scalar<T, U> max;
 
 		AABB() = default;
 
@@ -57,87 +56,39 @@ namespace math {
 		{
 		}
 
-		T center() const
+		~AABB() = default;
+
+		Scalar<T, U> center() const
 		{
-			return constants::half<T>() * (max + min);
+			return Scalar<T, U>(0.5) * (max + min);
 		}
 
-		T extent() const
+		Scalar<T, U> extent() const
 		{
-			return constants::half<T>() * (max - min);
-		}
-	};
-
-	///
-	///
-	///
-	template<typename T> struct AABB<T,2>
-	{
-		Vector<T, 2> min = Vector<T,2>(constants::neg_inf<T>(), constants::neg_inf<T>());
-		Vector<T, 2> max = Vector<T,2>(constants::pos_inf<T>(), constants::pos_inf<T>());
-
-		AABB() = default;
-
-		AABB(Vector<T, 2> const &min, Vector<T, 2> const &max)
-			: min(min)
-			, max(max)
-		{
-		}
-
-		Vector<T, 2> center() const
-		{
-			return constants::half<T>() * (max + min);
-		}
-
-		Vector<T, 2> extent() const
-		{
-			return constants::half<T>() * (max - min);
-		}
-	};
-
-	///
-	///
-	///
-	template<typename T> struct AABB<T,3>
-	{
-		Vector<T, 3> min = Vector<T,3>(constants::neg_inf<T>(), constants::neg_inf<T>(), constants::neg_inf<T>());
-		Vector<T, 3> max = Vector<T,3>(constants::pos_inf<T>(), constants::pos_inf<T>(), constants::pos_inf<T>());
-
-		AABB() = default;
-
-		AABB(Vector<T, 3> const &min, Vector<T, 3> const &max)
-			: min(min)
-			, max(max)
-		{
-		}
-
-		Vector<T, 3> center() const
-		{
-			return constants::half<T>() * (max + min);
-		}
-
-		Vector<T, 3> extent() const
-		{
-			return constants::half<T>() * (max - min);
+			return Scalar<T, U>(0.5) * (max - min);
 		}
 	};
 
 	///	fit
 	///
 	///	expand the given box to include the specified point.
-	template<typename T, int DIM> inline void fit(AABB<T, DIM> &box, Vector<T, DIM> const &point)
+	template<typename T, size_t DIM, typename U>
+	inline AABB<T, DIM, U> &fit(AABB<T, DIM, U> &box, Vector<T, DIM, U> const &point)
 	{
-		for (int i = 0; i < DIM; ++i)
+		for (size_t i = 0; i < DIM; ++i)
 		{
 			box.min[i] = std::min(box.min[i], point[i]);
 			box.max[i] = std::max(box.max[i], point[i]);
 		}
+
+		return box;
 	}
 
 	///	fit
 	///
 	///	convienience method for creating a box which fits a triangle.
-	template<typename T, int DIM> inline AABB<T, DIM> fit(Vector<T, DIM> const &v_i, Vector<T, DIM> const &v_j, Vector<T, DIM> const &v_k)
+	template<typename T, size_t DIM, typename U>
+	inline AABB<T, DIM, U> fit(Vector<T, DIM, U> const &v_i, Vector<T, DIM, U> const &v_j, Vector<T, DIM, U> const &v_k)
 	{
 		AABB<T, DIM> box;
 
@@ -148,12 +99,28 @@ namespace math {
 		return box;
 	}
 
+	///	fit
+	///
+	///
+	template<typename T, size_t DIM, typename U>
+	inline AABB<T, DIM, U> &fit(AABB<T, DIM, U> &lval, AABB<T, DIM, U> const &rhs)
+	{
+		for (size_t i = 0; i < DIM; ++i)
+		{
+			lval.min[i] = std::min(lval.min[i], rhs.min[i]);
+			lval.max[i] = std::max(lval.max[i], rhs.max[i]);
+		}
+
+		return lval;
+	}
+
 	///	contains
 	///
 	///
-	template<typename T, int DIM> inline bool contains(AABB<T, DIM> const &box, Vector<T, DIM> const &point)
+	template<typename T, size_t DIM, typename U>
+	inline bool contains(AABB<T, DIM, U> const &box, Vector<T, DIM, U> const &point)
 	{
-		for (int i = 0; i < DIM; ++i)
+		for (size_t i = 0; i < DIM; ++i)
 		{
 			if ((point[i] < box.min[i]) || (box.max[i] < point[i]))
 				return false;
@@ -164,7 +131,8 @@ namespace math {
 	///
 	///
 	///
-	template<typename T, int DIM> inline bool contains(AABB<T, DIM> const &box, Sphere<T, DIM> const &sphere)
+	template<typename T, size_t DIM, typename U>
+	inline bool contains(AABB<T, DIM, U> const &box, Sphere<T, DIM, U> const &sphere)
 	{
 		for (size_t i = 0; i < DIM; ++i)
 		{
@@ -181,20 +149,21 @@ namespace math {
 	///
 	///
 	///
-	template<typename T, int DIM> inline bool looselyContains(AABB<T, DIM> const &box, Vector<T, DIM> const &v_i, Vector<T, DIM> const &v_j, Vector<T, DIM> const &v_k)
+	template<typename T, size_t DIM, typename U>
+	inline bool looselyContains(AABB<T, DIM, U> const &box, Vector<T, DIM, U> const &v_i, Vector<T, DIM, U> const &v_j, Vector<T, DIM, U> const &v_k)
 	{
-		AABB<T, DIM> faceBox = fit(v_i, v_j, v_k);
-		Vector<T, DIM> faceCenter = faceBox.center();
+		AABB<T, DIM, U> faceBox = fit(v_i, v_j, v_k);
+		Vector<T, DIM, U> faceCenter = faceBox.center();
 
 		if (!contains(box, faceCenter))
 		{
 			return false;
 		}
 
-		Vector<T, DIM> faceExtent = faceBox.extent();
-		Vector<T, DIM> boxExtent = box.extent();
+		Vector<T, DIM, U> faceExtent = faceBox.extent();
+		Vector<T, DIM, U> boxExtent = box.extent();
 
-		for (int i = 0; i < DIM; ++i)
+		for (size_t i = 0; i < DIM; ++i)
 		{
 			if (faceExtent[i] > boxExtent[i])
 				return false;
