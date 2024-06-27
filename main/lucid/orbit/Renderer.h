@@ -10,6 +10,7 @@
 #include <lucid/gigl/Batched.h>
 #include <lucid/orbit/Types.h>
 #include <lucid/orbit/Algorithm.h>
+#include <lucid/orbit/Culler.h>
 
 namespace lucid {
 namespace gal {
@@ -122,11 +123,11 @@ namespace orbit {
 		int32_t _width = 0;
 		int32_t _height = 0;
 
-		gal::Scalar _time = 0.f;
-		gal::Scalar _interpolant = 0.f;
+		scalar_t _interpolant = 0.0;
 
-		gal::Vector3 _cameraPosition;
-		gal::Vector3 _focusPosition;
+		vector3_t _cameraPosition;
+
+		Culler _culler;
 
 		gigl::Context _renderContext;
 
@@ -160,9 +161,11 @@ namespace orbit {
 		PostParameters _fxaaParameters;
 		std::unique_ptr<gigl::Mesh> _fxaa;
 
-		void batch(Frame *frame);
+		gal::Scalar adaptiveScale(scalar_t const &value);
 
-		bool cull(Frame *frame);
+		gal::Vector3 adaptiveScale(vector3_t const &value);
+
+		void batch(Frame *frame);
 
 		void render();
 
@@ -179,6 +182,17 @@ namespace orbit {
 		LUCID_PREVENT_COPY(Renderer);
 		LUCID_PREVENT_ASSIGNMENT(Renderer);
 	};
+
+	inline gal::Scalar Renderer::adaptiveScale(scalar_t const &value)
+	{
+		scalar_t result = _culler.scaleFactor * value;
+		return gal::Scalar(float32_t(result.value));
+	}
+
+	inline gal::Vector3 Renderer::adaptiveScale(vector3_t const &value)
+	{
+		return gal::Vector3(adaptiveScale(value.x), adaptiveScale(value.y), adaptiveScale(value.z));
+	}
 
 }	///	orbit
 }	///	lucid

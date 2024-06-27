@@ -121,19 +121,20 @@ namespace Orbit {
 
 	Math::Vector3 ^Frame::RelativePosition::get()
 	{
-		return gcnew Math::Vector3(orbit::scale(_internal->relativePosition[1]));
+		return gcnew Math::Vector3(orbit::cast(_internal->relativePosition[1]));
 	}
 
 	void Frame::RelativePosition::set(Math::Vector3 ^value)
 	{
 		LUCID_VALIDATE(_internal != _internal->centerFrame, "attempt to move root frame");
 
-		_internal->relativePosition[1] = orbit::inv_scale(value->ref);
+		_internal->relativePosition[1] = orbit::cast(value->ref);
+		_internal->relativePosition[0] = orbit::cast(value->ref);
 	}
 
 	Math::Vector3 ^Frame::AbsolutePosition::get()
 	{
-		return gcnew Math::Vector3(orbit::scale(_internal->absolutePosition[1]));
+		return gcnew Math::Vector3(orbit::cast(_internal->absolutePosition[1]));
 	}
 
 	Frame ^Frame::Wrap(::lucid::orbit::Frame *frame)
@@ -244,16 +245,6 @@ namespace Orbit {
 
 	CameraFrame::!CameraFrame()
 	{
-	}
-
-	void CameraFrame::InitPerspective(float fov, float aspect, float znear, float zfar)
-	{
-		_internal->initPerspective(fov, aspect, znear, zfar);
-	}
-
-	void CameraFrame::InitOrthographic(float width, float height, float znear, float zfar)
-	{
-		_internal->initOrthographic(width, height, znear, zfar);
 	}
 
 	Frame ^CameraFrame::Focus::get()

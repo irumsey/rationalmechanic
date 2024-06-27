@@ -99,14 +99,12 @@ namespace omp
                 populateListview(planner, planner.orbitalMechainics.Root);
                 // } test
 
-                planner.cameraFrame = new Lucid.Orbit.CameraFrame(1001, "camera", "");
-                planner.orbitalMechainics.Attach(planner.orbitalMechainics.Root, planner.cameraFrame);
-                planner.cameraFrame.RelativePosition = new Lucid.Math.Vector3(10, 10, 10);
-
                 planner.aspectRatio = (float)clientSize.Width / (float)clientSize.Height;
 
-                planner.cameraFrame.InitPerspective(0.25f * 3.1415926f, planner.aspectRatio, 1, 1000);
+                planner.cameraFrame = new Lucid.Orbit.CameraFrame(1001, "camera", "");
+                planner.cameraFrame.RelativePosition = new Lucid.Math.Vector3(6.37101e06f + 1000.0f, 1000.0f, 6.37101e06f);
                 planner.cameraFrame.Focus = planner.orbitalMechainics.Root;
+                planner.orbitalMechainics.Attach(planner.orbitalMechainics.Root, planner.cameraFrame);
 
                 planner.setMainMenuDefaults();
                 planner.changeState(Editing.Instance);
@@ -132,11 +130,8 @@ namespace omp
             {
                 SplitterPanel panel = planner.mainSplitter.Panel1;
                 Size clientSize = panel.ClientSize;
-                planner.aspectRatio = (float)clientSize.Width / (float)clientSize.Height;
 
                 Lucid.GAL.Pipeline.resize(clientSize.Width, clientSize.Height);
-
-                planner.cameraFrame.InitPerspective(0.25f * 3.1415926f, planner.aspectRatio, 5, 5000);
 
                 planner.renderMainView();
             }
@@ -284,6 +279,7 @@ namespace omp
 
                 planner.orbitalMechainics.Detach(planner.cameraFrame);
                 planner.orbitalMechainics.Attach(parentFrame, planner.cameraFrame);
+                planner.cameraFrame.RelativePosition = new Lucid.Math.Vector3(42164000.0f, 0, 0);
 
                 Logger.Log("INFO", "camera attached to frame: " + parentFrame.Name);
             }

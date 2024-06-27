@@ -17,6 +17,9 @@
                                                
 		{ "name":        "viewMatrix", "matrix4x4" : [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ] },
 		{ "name":     "invViewMatrix", "matrix4x4" : [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ] },
+
+		{ "name":             "znear",     "float" : 0 },
+		{ "name":              "zfar",     "float" : 0 },
                                                
 		{ "name":        "projMatrix", "matrix4x4" : [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ] },
 		{ "name":     "invProjMatrix", "matrix4x4" : [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ] },

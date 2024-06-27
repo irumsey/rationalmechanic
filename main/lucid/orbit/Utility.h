@@ -31,15 +31,15 @@ namespace orbit {
 		return scalar_t(float64_t(rhs.value));
 	}
 
-	inline gal::Scalar scale(scalar_t const &rhs)
-	{
-		return cast(constants::RUs_per_meter<float64_t> * rhs);
-	}
+//	inline gal::Scalar scale(scalar_t const &rhs)
+//	{
+//		return cast(constants::RUs_per_meter<float64_t> * rhs);
+//	}
 
-	inline scalar_t inv_scale(gal::Scalar const &rhs)
-	{
-		return cast(constants::meters_per_RU<float32_t> * rhs);
-	}
+//	inline scalar_t inv_scale(gal::Scalar const &rhs)
+//	{
+//		return cast(constants::meters_per_RU<float32_t> * rhs);
+//	}
 
 	inline gal::Vector3 cast(vector3_t const &rhs)
 	{
@@ -51,15 +51,15 @@ namespace orbit {
 		return vector3_t(float64_t(rhs.x), float64_t(rhs.y), float64_t(rhs.z));
 	}
 
-	inline gal::Vector3 scale(vector3_t const &rhs)
-	{
-		return cast(constants::RUs_per_meter<float64_t> * rhs);
-	}
+//	inline gal::Vector3 scale(vector3_t const &rhs)
+//	{
+//		return cast(constants::RUs_per_meter<float64_t> * rhs);
+//	}
 
-	inline vector3_t inv_scale(gal::Vector3 const &rhs)
-	{
-		return cast(constants::meters_per_RU<float32_t> * rhs);
-	}
+//	inline vector3_t inv_scale(gal::Vector3 const &rhs)
+//	{
+//		return cast(constants::meters_per_RU<float32_t> * rhs);
+//	}
 
 	inline gal::Matrix3x3 cast(matrix3x3_t const &rhs)
 	{
@@ -67,6 +67,16 @@ namespace orbit {
 			float32_t(rhs.xx), float32_t(rhs.xy), float32_t(rhs.xz),
 			float32_t(rhs.yx), float32_t(rhs.yy), float32_t(rhs.yz),
 			float32_t(rhs.zx), float32_t(rhs.zy), float32_t(rhs.zz)
+		);
+	}
+
+	inline gal::Matrix4x4 cast(matrix4x4_t const &rhs)
+	{
+		return gal::Matrix4x4(
+			float32_t(rhs.xx), float32_t(rhs.xy), float32_t(rhs.xz), float32_t(rhs.xw),
+			float32_t(rhs.yx), float32_t(rhs.yy), float32_t(rhs.yz), float32_t(rhs.yw),
+			float32_t(rhs.zx), float32_t(rhs.zy), float32_t(rhs.zz), float32_t(rhs.zw),
+			float32_t(rhs.wx), float32_t(rhs.wy), float32_t(rhs.wz), float32_t(rhs.ww)
 		);
 	}
 

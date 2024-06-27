@@ -52,7 +52,8 @@ namespace orbit {
 
 		vector3_t absolutePosition[2];
 
-		aabb3_t   aabb[2];
+		aabb3_t   aabbSelf[2];
+		aabb3_t   aabbTotal[2];
 
 		virtual ~Frame();
 
@@ -170,7 +171,6 @@ namespace orbit {
 	class CameraFrame : public Frame
 	{
 	public:
-		gal::Matrix4x4 projMatrix;
 		Frame *focus = nullptr;
 
 		CameraFrame(size_t id, std::string const &name, std::string const &description);
@@ -178,10 +178,6 @@ namespace orbit {
 		virtual ~CameraFrame() = default;
 
 		virtual void apply(Algorithm *algorithm) override;
-
-		void initPerspective(gal::Scalar fov, gal::Scalar aspect, gal::Scalar znear, gal::Scalar zfar);
-
-		void initOrthographic(gal::Scalar width, gal::Scalar height, gal::Scalar znear, gal::Scalar zfar);
 
 		void look(Frame *frame);
 

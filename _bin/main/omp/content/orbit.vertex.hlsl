@@ -1,6 +1,17 @@
 #include "utility.header.hlsl"
 #include "orbit.header.hlsl"
 
+float exclude(float x, float a, float b)
+{
+	if ((x < a) || (b < x))
+		return x;
+
+	if ((b - x) > (x - a))
+		return a;
+
+	return b;
+}
+
 OutputVertex main(InputVertex input)
 {
 	OutputVertex output = (OutputVertex)0;
@@ -21,17 +32,18 @@ OutputVertex main(InputVertex input)
 	float4 ppsPosition0 = mul(viewProjMatrix, worldPosition0);
 	float4 ppsPosition1 = mul(viewProjMatrix, worldPosition1);
 
-	ppsPosition0 = (ppsPosition0.w > 0.000001) ? ppsPosition0 / ppsPosition0.w : 100000.f * ppsPosition0;
-	ppsPosition1 = (ppsPosition1.w > 0.000001) ? ppsPosition1 / ppsPosition1.w : 100000.f * ppsPosition1;
+	ppsPosition0 = ppsPosition0 / exclude(ppsPosition0.w, -znear, znear);
+	ppsPosition1 = ppsPosition1 / exclude(ppsPosition1.w, -znear, znear);
 
-	float2 ppsTangent = ppsPosition1.xy - ppsPosition0.xy;
+	float2 tangent = ppsPosition1.xy - ppsPosition0.xy;
+	float2 normal = float2(-tangent.y, tangent.x);
 
-	float ppsLength = length(ppsTangent);
-	ppsLength = (ppsLength > 0.000001) ? ppsLength : 1;
+	float N = length(normal);
+	N = (N > 0) ? N : 0.001;
 
-	float2 ppsNormal = input.scale * texelSize * input.vertex.z * float2(-ppsTangent.y, ppsTangent.x) / ppsLength;
+	normal = input.vertex.z * input.scale * texelSize.x * normal / N;
 
-	output.ppsPosition = float4(ppsPosition0.xy + ppsNormal, ppsPosition1.zw);
+	output.ppsPosition = float4(ppsPosition0.xy + normal, ppsPosition0.zw);
 	output.         id = input.id;
 	output.      color = input.color;
 	 

@@ -3,6 +3,7 @@
 #
 
 import os
+import os
 import optparse
 import uuid
 import json
@@ -644,18 +645,6 @@ onOrbitalElement = [
 	bootDouble
 ]
 
-def bootLOD(dst, LOD):
-	bootVector2(dst, LOD['range'])
-
-	model = LOD['model']
-	bootUnsigned(dst, len(model))
-	for mesh in model:
-		bootString(dst, mesh)
-			
-	bootColor(dst, LOD['color'])
-	bootFloat(dst, LOD['scale'])
-	bootVector4(dst, LOD['parameters'])
-
 def bootFrameDynamicPoint(dst, frame):
 	bootUnsigned(dst, orbitalFrameType['DYNAMIC_POINT'])
 	bootUnsigned(dst, frame['hid'])
@@ -677,10 +666,13 @@ def bootFrameOrbitalBody(dst, frame):
 	bootDouble(dst, properties['physical']['radius'])
 
 	bootBoolean(dst, properties['render']['orbit'])
-	LODs = properties['render']['LODs']
-	bootUnsigned(dst, len(LODs))
-	for LOD in LODs:
-		bootLOD(dst, LOD)
+
+	model = properties['render']['model']
+	bootUnsigned(dst, len(model))
+	for mesh in model:
+		bootString(dst, mesh)			
+	bootColor(dst, properties['render']['color'])
+	bootVector4(dst, properties['render']['parameters'])
 
 	elements = frame['elements']
 	bootUnsigned(dst, len(elements))

@@ -57,8 +57,11 @@ namespace orbit {
 
 		vector3_t extents = vector3_t(radius, radius, radius);
 
-		body->aabb[0] = body->aabb[1];
-		body->aabb[1] = aabb3_t(body->absolutePosition[1] - extents, body->absolutePosition[1] + extents);
+		body->aabbSelf[0] = body->aabbSelf[1];
+		body->aabbSelf[1] = aabb3_t(body->absolutePosition[1] - extents, body->absolutePosition[1] + extents);
+
+		body->aabbTotal[0] = body->aabbTotal[1];
+		body->aabbTotal[1] = body->aabbSelf[1];
 	}
 
 	void Simulator::evaluate(DynamicBody *body)
@@ -95,8 +98,7 @@ namespace orbit {
 			///	recursive example: sun <- earth <- moon <- apollo lander (arrow points to parent so, in this example, depth of 4) 
 			simulate(child);
 
-			/// child has expanded itself to contain its children (using this recursion), now fit it
-			frame->aabb[1] = math::fit(frame->aabb[1], child->aabb[1]);
+			math::fit(frame->aabbTotal[1], child->aabbTotal[1]);
 		}
 	}
 
@@ -106,8 +108,11 @@ namespace orbit {
 		LUCID_VALIDATE(nullptr != center, "internal consistency error: detached frame in simulation");
 
 		// an axis aligned box centered at the position with zero volume
-		frame->aabb[0] = frame->aabb[1];
-		frame->aabb[1] = aabb3_t(frame->absolutePosition[1], frame->absolutePosition[1]);
+		frame->aabbSelf[0] = frame->aabbSelf[1];
+		frame->aabbSelf[1] = aabb3_t(frame->absolutePosition[1], frame->absolutePosition[1]);
+
+		frame->aabbTotal[0] = frame->aabbTotal[1];
+		frame->aabbTotal[1] = frame->aabbSelf[1];
 
 		// if this is a "root" frame, don't update positions (keep them as originally set).
 		if (frame == center)

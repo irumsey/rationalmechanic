@@ -47,11 +47,10 @@
 
 	"attributes":
 	[
-    { "name" :         "viewUp",     "query" :              "viewUp" },
-    { "name" :   "viewPosition",     "query" :        "viewPosition" },
-		{ "name" : "viewProjMatrix",     "query" :      "viewProjMatrix" },
-		{ "name" :       "segCoeff",     "float" :                 0.001 },
-		{ "name" :   "fadeDistance",   "vector2" :           [ 75, 250 ] },
-		{ "name" :    "orbitLookup", "texture2d" : "content/orbitLookup.texture" }
+    { "name" :             "znear",     "query" :                       "znear" },
+    { "name" :              "zfar",     "query" :                        "zfar" },
+    { "name" :            "viewUp",     "query" :                      "viewUp" },
+		{ "name" :    "viewProjMatrix",     "query" :              "viewProjMatrix" },
+		{ "name" :       "orbitLookup", "texture2d" : "content/orbitLookup.texture" }
   ]
 }

@@ -17,6 +17,10 @@
 #include <lucid/math/Algorithm.h>
 #include <algorithm>
 
+// test {
+#include "Culler.h"
+// } test
+
 namespace  math = ::lucid:: math;
 namespace   gal = ::lucid::  gal;
 namespace  gigl = ::lucid:: gigl;
@@ -113,34 +117,20 @@ namespace orbit {
 		///	TBD: data drive line width and color
 		///	TBD: data drive domain of orbit
 
-		if (cull(body))
-			return;
-
 		PhysicalProperties const &physicalProperties = body->physicalProperties;
+		RenderProperties const &renderProperties = body->renderProperties;
 		Elements const *elements = body->elements;
 
-		RenderProperties &renderProperties = body->renderProperties;
-		DetailLevels &detailLevels = renderProperties.detailLevels;
-
 		Frame const *centerFrame = body->centerFrame;
+		gal::Vector3 centerPosition = adaptiveScale(math::lerp(_interpolant, centerFrame->absolutePosition[0], centerFrame->absolutePosition[1]) - _cameraPosition);
+		gal::Vector3 bodyPosition = adaptiveScale(math::lerp(_interpolant, body->absolutePosition[0], body->absolutePosition[1]) - _cameraPosition);
 
-		gal::Vector3 centerPosition = math::lerp(_interpolant, scale(centerFrame->absolutePosition[0]), scale(centerFrame->absolutePosition[1]));
-		gal::Vector3 bodyPosition = math::lerp(_interpolant, scale(body->absolutePosition[0]), scale(body->absolutePosition[1]));
-
-		size_t detailIndex = detailLevels.level(math::len(bodyPosition - _cameraPosition));
-		if (DetailLevels::INVALID_LEVEL == detailIndex)
-		{
-			return;
-		}
-
-		DetailLevels::Level const &detailLevel = detailLevels[detailIndex];
-
-		gal::Scalar  a = math::lerp(_interpolant, scale(elements[0].A), scale(elements[1].A));
-		gal::Scalar  e = math::lerp(_interpolant, cast(elements[0].EC), cast(elements[1].EC));
+		gal::Scalar  a = adaptiveScale(math::lerp(_interpolant, elements[0].A, elements[1].A));
+		gal::Scalar  e = cast(math::lerp(_interpolant, elements[0].EC, elements[1].EC));
 		gal::Scalar hu = a * (1.f - e * e);
 
 		gal::Quaternion rotation = math::slerp(
-			_interpolant.value,
+			cast(_interpolant).value,
 			math::quaternionFromMatrix(cast(rotationFromElements(elements[0]))),
 			math::quaternionFromMatrix(cast(rotationFromElements(elements[1])))
 		);
@@ -148,14 +138,19 @@ namespace orbit {
 		MeshInstance bodyInstance;
 		bodyInstance.id = (SELECT_FRAME << SELECT_SHIFT) | uint32_t(SELECT_MASK & body->id);
 		bodyInstance.position = bodyPosition;
-		bodyInstance.scale = detailLevel.scale * scale(physicalProperties.radius);
+		bodyInstance.scale = adaptiveScale(physicalProperties.radius);
 		bodyInstance.rotation = gal::Quaternion(0, 0, 0, 1);
-		bodyInstance.color = detailLevel.color;
-		bodyInstance.parameters = detailLevel.parameters;
-		_batched.addInstance(detailLevel.model, bodyInstance);
+		bodyInstance.color = renderProperties.color;
+		bodyInstance.parameters = renderProperties.parameters;
+		_batched.addInstance(renderProperties.model, bodyInstance);
 
 		if (!renderProperties.showOrbit)
 			return;
+
+		// test {
+		// skip orbits for now.
+		return;
+		// } test
 
 		MeshInstance orbitInstance;
 		orbitInstance.id = (SELECT_ORBIT << SELECT_SHIFT) | uint32_t(SELECT_MASK & body->id);
@@ -280,32 +275,33 @@ namespace orbit {
 
 		resize();
 
-		Frame const *focusFrame = cameraFrame->focus;
+		_interpolant = interpolant;
+		_cameraPosition = math::lerp(interpolant, cameraFrame->absolutePosition[0], cameraFrame->absolutePosition[1]);
 
-		_time = cast(time);
-		_interpolant = cast(interpolant);
+		// test {
+		_culler.cull(rootFrame, cameraFrame, interpolant);
+		// } test
 
-		_cameraPosition = math::lerp(_interpolant, scale(cameraFrame->absolutePosition[0]), scale(cameraFrame->absolutePosition[1]));
-		_focusPosition = math::lerp(_interpolant, scale(focusFrame->absolutePosition[0]), scale(focusFrame->absolutePosition[1]));
-
-		gal::Matrix4x4 viewMatrix = math::look(_cameraPosition, _focusPosition, gal::Vector3(0, 0, 1));
-		gal::Matrix4x4 const &projMatrix = cameraFrame->projMatrix;
+		gal::Matrix4x4 viewMatrix = cast(_culler.viewMatrix);
+		gal::Matrix4x4 projMatrix = cast(_culler.projMatrix);
 		gal::Matrix4x4 viewProjMatrix = projMatrix * viewMatrix;
 		gal::Matrix4x4 invViewProjMatrix = math::inverse(viewProjMatrix);
-
-		// _cameraFrustum.from(invViewProjMatrix);
 
 		float32_t width = float32_t(_width);
 		float32_t height = float32_t(_height);
 
 		_renderContext["screenWidth"] = gal::Scalar(width);
 		_renderContext["screenHeight"] = gal::Scalar(height);
+		_renderContext["znear"] = adaptiveScale(_culler.znear);
+		_renderContext["zfar"] = adaptiveScale(_culler.zfar);
 		_renderContext["texelSize"] = gal::Vector2(1.f / width, 1.f / height);
 
-		_renderContext["time"] = _time;
-		_renderContext["interpolant"] = _interpolant;
+		_renderContext["time"] = cast(time);
+		_renderContext["interpolant"] = cast(_interpolant);
 		
-		_renderContext["viewPosition"] = _cameraPosition;
+		_renderContext["lightPosition"] = adaptiveScale(vector3_t(0, 0, 0) - _cameraPosition);
+
+		_renderContext["viewPosition"] = gal::Vector3(0, 0, 0);
 		_renderContext["viewForward"] = ::lucid::math::extractViewForward(viewMatrix);
 		_renderContext["viewRight"] = ::lucid::math::extractViewRight(viewMatrix);
 		_renderContext["viewUp"] = ::lucid::math::extractViewUp(viewMatrix);
@@ -350,20 +346,14 @@ namespace orbit {
 		if (nullptr == frame)
 			return;
 
-		frame->apply(this);
+		if (Culler::Visibility::STATE_PRUNED == _culler.visibility[frame->id].state)
+			return;
+
+		if (Culler::Visibility::STATE_VISIBLE == _culler.visibility[frame->id].state)
+			frame->apply(this);
+
 		for (Frame *child = frame->firstChild; nullptr != child; child = child->nextSibling)
-		{
 			batch(child);
-		}
-	}
-
-	bool Renderer::cull(Frame *frame)
-	{
-		LUCID_PROFILE_SCOPE("Renderer::cull(Frame)");
-
-		// TBD: implement
-
-		return false;
 	}
 
 	void Renderer::render()
@@ -376,8 +366,10 @@ namespace orbit {
 
 		_clear->render(_renderContext);
 
-		galPipeline().setVertexStream(1, _starInstances.get());
-		_starMesh->renderInstanced(_renderContext, int32_t(_starCount));
+		/// test {
+//		galPipeline().setVertexStream(1, _starInstances.get());
+//		_starMesh->renderInstanced(_renderContext, int32_t(_starCount));
+		/// } test
 
 		_batched.render(_renderContext);
 		

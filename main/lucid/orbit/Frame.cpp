@@ -19,7 +19,8 @@ namespace orbit {
 		, name(name)
 		, description(description)
 	{
-		::memset(            aabb, 0, 2 * sizeof(  aabb3_t));
+		::memset(        aabbSelf, 0, 2 * sizeof(  aabb3_t));
+		::memset(       aabbTotal, 0, 2 * sizeof(  aabb3_t));
 		::memset(relativePosition, 0, 2 * sizeof(vector3_t));
 		::memset(relativeVelocity, 0, 2 * sizeof(vector3_t));
 		::memset(absolutePosition, 0, 2 * sizeof(vector3_t));
@@ -89,16 +90,6 @@ namespace orbit {
 	void CameraFrame::apply(Algorithm *algorithm)
 	{
 		algorithm->evaluate(this);
-	}
-
-	void CameraFrame::initPerspective(gal::Scalar fov, gal::Scalar aspect, gal::Scalar znear, gal::Scalar zfar)
-	{
-		projMatrix = math::perspective(fov, aspect, znear, zfar);
-	}
-
-	void CameraFrame::initOrthographic(gal::Scalar width, gal::Scalar height, gal::Scalar znear, gal::Scalar zfar)
-	{
-		projMatrix = math::orthographic(width, height, znear, zfar);
 	}
 
 	void CameraFrame::look(Frame *frame)

@@ -61,31 +61,10 @@
         },
         "render" :
         {
-          "orbit" : false,
-          "LODs" :
-          [
-		        {
-			        "range"      : [ 0.0, 100.0 ],
-			        "model"      : [ "content/hemisphere.mesh" ],
-              "color"      : [ 1, 1, 0, 1],
-			        "scale"      : 10.0,
-			        "parameters" : [ 0, 0, 0, 0 ]
-		        },
-		        {
-			        "range"      : [ 99.0, 500.0 ],
-			        "model"      : [ "content/disk.mesh" ],
-              "color"      : [ 1, 1, 0, 1],
-			        "scale"      : 10.0,
-			        "parameters" : [ 0, 0, 0, 0 ]
-		        },
-            {
-              "range"      : [ 499.0, 1000.0 ],
-              "model"      : [ "content/sprite.mesh" ],
-              "color"      : [ 1, 1, 0, 1 ],
-              "scale"      : 10.0,
-              "parameters" : [ 0, 0, 0, 0 ]
-            }
-          ]
+          "orbit"      : false,
+			    "model"      : [ "content/hemisphere.mesh" ],
+          "color"      : [ 1, 1, 0, 1],
+			    "parameters" : [ 0, 0, 0, 0 ]
         }
       },
       "elements" :
@@ -112,24 +91,10 @@
         },
         "render" :
         {
-          "orbit" : true,
-          "LODs" :
-          [
-		        {
-			        "range"      : [ 0.0, 30.0 ],
-			        "model"      : [ "content/hemisphere.mesh" ],
-              "color"      : [ 0.7, 0.7, 0.7, 0],
-			        "scale"      : 750,
-			        "parameters" : [ 0, 0, 0, 0 ]
-		        },
-            {
-              "range"      : [ 29.0, 1000.0 ],
-              "model"      : [ "content/disk.mesh" ],
-              "color"      : [ 0.7, 0.7, 0.7, 0 ],
-              "scale"      : 750,
-              "parameters" : [ 0, 0, 0, 0 ]
-            }
-          ]
+          "orbit"      : true,
+			    "model"      : [ "content/hemisphere.mesh" ],
+          "color"      : [ 0.7, 0.7, 0.7, 0],
+			    "parameters" : [ 0, 0, 0, 0 ]
         }
       },
       "elements" :
@@ -156,24 +121,10 @@
         },
         "render" :
         {
-          "orbit" : true,
-          "LODs" :
-          [
-		        {
-			        "range"      : [ 0.0, 30.0 ],
-			        "model"      : [ "content/hemisphere.mesh" ],
-              "color"      : [ 0.9, 0.7, 0.7, 0],
-			        "scale"      : 750,
-			        "parameters" : [ 0, 0, 0, 0 ]
-		        },
-		        {
-			        "range"      : [ 29.0, 1000.0 ],
-			        "model"      : [ "content/disk.mesh" ],
-              "color"      : [ 0.9, 0.7, 0.7, 0],
-			        "scale"      : 750,
-			        "parameters" : [ 0, 0, 0, 0 ]
-		        }
-          ]
+          "orbit"      : true,
+			    "model"      : [ "content/hemisphere.mesh" ],
+          "color"      : [ 0.9, 0.7, 0.7, 0],
+			    "parameters" : [ 0, 0, 0, 0 ]
         }
       },
       "elements" :
@@ -200,31 +151,10 @@
         },
         "render" :
         {
-          "orbit" : true,
-          "LODs" :
-          [
-		        {
-			        "range"      : [ 0.0, 30.0 ],
-			        "model"      : [ "content/hemisphere.mesh" ],
-              "color"      : [ 0.2, 0.2, 1, 0],
-			        "scale"      : 750,
-			        "parameters" : [ 0, 0, 0, 0 ]
-		        },
-		        {
-			        "range"      : [ 29.0, 100.0 ],
-			        "model"      : [ "content/disk.mesh" ],
-              "color"      : [ 0.2, 0.2, 1, 0],
-			        "scale"      : 750,
-			        "parameters" : [ 0, 0, 0, 0 ]
-		        },
-            {
-              "range"      : [ 99.0, 1000.0 ],
-              "model"      : [ "content/sprite.mesh" ],
-              "color"      : [ 0.2, 0.2, 1, 0 ],
-              "scale"      : 750,
-              "parameters" : [ 0, 0, 0, 0 ]
-            }
-          ]
+          "orbit"      : true,
+			    "model"      : [ "content/hemisphere.mesh" ],
+          "color"      : [ 0.2, 0.2, 1, 0],
+			    "parameters" : [ 0, 0, 0, 0 ]
         }
       },
       "elements" :
@@ -252,17 +182,10 @@
         },
         "render" :
         {
-          "orbit" : true,
-          "LODs" :
-          [
-		        {
-			        "range"      : [ 0.0, 30.0 ],
-			        "model"      : [ "content/disk.mesh" ],
-              "color"      : [ 0.7, 0.7, 0.7, 0],
-			        "scale"      : 10,
-			        "parameters" : [ 0, 0, 0, 0 ]
-		        }
-          ]
+          "orbit"      : true,
+			    "model"      : [ "content/disk.mesh" ],
+          "color"      : [ 0.7, 0.7, 0.7, 0],
+			    "parameters" : [ 0, 0, 0, 0 ]
         }
       },
       "elements" :
@@ -289,24 +212,10 @@
         },
         "render" :
         {
-          "orbit" : true,
-          "LODs" :
-          [
-		        {
-			        "range"      : [ 0.0, 30.0 ],
-			        "model"      : [ "content/hemisphere.mesh" ],
-              "color"      : [ 1.0, 0.3, 0.3, 0],
-			        "scale"      : 750,
-			        "parameters" : [ 0, 0, 0, 0 ]
-		        },
-		        {
-			        "range"      : [ 29.0, 1000.0 ],
-			        "model"      : [ "content/disk.mesh" ],
-              "color"      : [ 1.0, 0.3, 0.3, 0],
-			        "scale"      : 750,
-			        "parameters" : [ 0, 0, 0, 0 ]
-		        }
-          ]
+          "orbit"      : true,
+			    "model"      : [ "content/hemisphere.mesh" ],
+          "color"      : [ 1.0, 0.3, 0.3, 0],
+			    "parameters" : [ 0, 0, 0, 0 ]
         }
       },
       "elements" :
@@ -331,26 +240,12 @@
           "mass" : 1.89813e27,
           "radius" : 6.991100e07
         },
-        "render" :
+        "render":
         {
-          "orbit" : true,
-          "LODs" :
-          [
-            {
-              "range"      : [ 0.0, 30.0 ],
-              "model"      : [ "content/disk.mesh" ],
-              "color"      : [ 1.0, 0.7, 0.7, 0 ],
-              "scale"      : 750,
-              "parameters" : [ 0, 0, 0, 0 ]
-            },
-		        {
-			        "range"      : [ 29.0, 1000.0 ],
-			        "model"      : [ "content/disk.mesh" ],
-              "color"      : [ 1.0, 0.7, 0.7, 0],
-			        "scale"      : 750,
-			        "parameters" : [ 0, 0, 0, 0 ]
-		        }
-          ]
+          "orbit"      : true,
+          "model"      : [ "content/hemisphere.mesh" ],
+          "color"      : [ 1.0, 0.7, 0.7, 0 ],
+          "parameters" : [ 0, 0, 0, 0 ]
         }
       },
       "elements" :
@@ -377,24 +272,10 @@
         },
         "render" :
         {
-          "orbit" : true,
-          "LODs" :
-          [
-            {
-              "range"      : [ 0.0, 30.0 ],
-              "model"      : [ "content/hemisphere.mesh" ],
-              "color"      : [ 0.7, 0.7, 0.7, 0 ],
-              "scale"      : 750,
-              "parameters" : [ 0, 0, 0, 0 ]
-            },
-		        {
-			        "range"      : [ 29.0, 1000.0 ],
-			        "model"      : [ "content/disk.mesh" ],
-              "color"      : [ 0.7, 0.7, 0.7, 0],
-			        "scale"      : 750,
-			        "parameters" : [ 0, 0, 0, 0 ]
-		        }
-          ]
+          "orbit"      : true,
+          "model"      : [ "content/hemisphere.mesh" ],
+          "color"      : [ 0.7, 0.7, 0.7, 0 ],
+          "parameters" : [ 0, 0, 0, 0 ]
         }
       },
       "elements" :
@@ -420,24 +301,10 @@
         },
         "render" :
         {
-          "orbit" : true,
-          "LODs" :
-          [
-            {
-              "range"      : [ 0.0, 30.0 ],
-              "model"      : [ "content/hemisphere.mesh" ],
-              "color"      : [ 0.7, 0.7, 1.0, 0 ],
-              "scale"      : 750,
-              "parameters" : [ 0, 0, 0, 0 ]
-            },
-		        {
-			        "range"      : [ 29.0, 1000.0 ],
-			        "model"      : [ "content/disk.mesh" ],
-              "color"      : [ 0.7, 0.7, 1.0, 0],
-			        "scale"      : 750,
-			        "parameters" : [ 0, 0, 0, 0 ]
-		        }
-          ]
+          "orbit"      : true,
+          "model"      : [ "content/hemisphere.mesh" ],
+          "color"      : [ 0.7, 0.7, 1.0, 0 ],
+          "parameters" : [ 0, 0, 0, 0 ]
         }
       },
       "elements" :
@@ -464,24 +331,10 @@
         },
         "render" :
         {
-          "orbit" : true,
-          "LODs" :
-          [
-            {
-              "range"      : [ 0.0, 30.0 ],
-              "model"      : [ "content/hemisphere.mesh" ],
-              "color"      : [ 0.7, 0.7, 1.0, 0 ],
-              "scale"      : 750,
-              "parameters" : [ 0, 0, 0, 0 ]
-            },
-		        {
-			        "range"      : [ 29.0, 1000.0 ],
-			        "model"      : [ "content/disk.mesh" ],
-              "color"      : [ 0.7, 0.7, 1.0, 0],
-			        "scale"      : 750,
-			        "parameters" : [ 0, 0, 0, 0 ]
-		        }
-          ]
+          "orbit"      : true,
+          "model"      : [ "content/hemisphere.mesh" ],
+          "color"      : [ 0.7, 0.7, 1.0, 0 ],
+          "parameters" : [ 0, 0, 0, 0 ]
         }
       },
       "elements" :
@@ -506,24 +359,10 @@
         },
         "render" :
         {
-          "orbit" : true,
-          "LODs" :
-          [
-            {
-              "range"      : [ 0.0, 30.0 ],
-              "model"      : [ "content/hemisphere.mesh" ],
-              "color"      : [ 0.7, 0.7, 1.0, 0 ],
-              "scale"      : 750,
-              "parameters" : [ 0, 0, 0, 0 ]
-            },
-		        {
-			        "range"      : [ 29.0, 1000.0 ],
-			        "model"      : [ "content/disk.mesh" ],
-              "color"      : [ 0.7, 0.7, 1.0, 0],
-			        "scale"      : 750,
-			        "parameters" : [ 0, 0, 0, 0 ]
-		        }
-          ]
+          "orbit"      : true,
+          "model"      : [ "content/hemisphere.mesh" ],
+          "color"      : [ 0.7, 0.7, 1.0, 0 ],
+          "parameters" : [ 0, 0, 0, 0 ]
         }
       },
       "elements" :

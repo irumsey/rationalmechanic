@@ -4,8 +4,8 @@
 #include <lucid/core/Types.h>
 #include <lucid/core/Reader.h>
 #include <lucid/gal/Types.h>
+#include <lucid/gigl/Model.h>
 #include <lucid/orbit/Types.h>
-#include <lucid/orbit/DetailLevels.h>
 
 namespace lucid {
 namespace orbit {
@@ -46,7 +46,9 @@ namespace orbit {
 		bool bodyHighlight = false;		//	used only at runtime to toggle highlighting
 		bool orbitHighlight = false;	//	used only at runtime to toggle highlighting 
 
-		DetailLevels detailLevels;
+		std::shared_ptr<gigl::Model> model;
+		gal::Color color;
+		gal::Vector4 parameters;
 
 		RenderProperties() = default;
 
@@ -61,7 +63,9 @@ namespace orbit {
 		{
 			showOrbit = reader.read<bool>();
 
-			detailLevels.read(reader);
+			model.reset(new gigl::Model(reader));
+			reader.read(&color, sizeof(gal::Color));
+			reader.read(&parameters, sizeof(gal::Vector4));
 		}
 	};
 

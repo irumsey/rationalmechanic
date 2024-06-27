@@ -22,7 +22,7 @@
     <ClInclude Include="Algorithm.h" />
     <ClInclude Include="Callout.h" />
     <ClInclude Include="Constants.h" />
-    <ClInclude Include="DetailLevels.h" />
+    <ClInclude Include="Culler.h" />
     <ClInclude Include="Elements.h" />
     <ClInclude Include="Ephemeris.h" />
     <ClInclude Include="Frame.h" />
@@ -37,7 +37,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Callout.cpp" />
-    <ClCompile Include="DetailLevels.cpp" />
+    <ClCompile Include="Culler.cpp" />
     <ClCompile Include="Ephemeris.cpp" />
     <ClCompile Include="Frame.cpp" />
     <ClCompile Include="Mechanics.cpp" />

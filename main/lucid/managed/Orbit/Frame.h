@@ -164,10 +164,6 @@ namespace Orbit {
 
 		!CameraFrame();
 
-		void InitPerspective(float fov, float aspect, float znear, float zfar);
-
-		void InitOrthographic(float width, float height, float znear, float zfar);
-
 		property Frame ^Focus { Frame ^get(); void set(Frame ^value); }
 
 		property ::lucid::orbit::CameraFrame &ref { ::lucid::orbit::CameraFrame &get() { return *_internal; } }
