@@ -4,6 +4,7 @@
 #include <lucid/core/Noncopyable.h>
 #include <lucid/core/Error.h>
 #include <lucid/gal/Types.h>
+#include <lucid/orbit/Constants.h>
 #include <lucid/orbit/Types.h>
 #include <lucid/orbit/Properties.h>
 #include <lucid/orbit/Elements.h>
@@ -171,6 +172,7 @@ namespace orbit {
 	class CameraFrame : public Frame
 	{
 	public:
+		scalar_t fov = 0.25 * constants::pi<float64_t>;
 		Frame *focus = nullptr;
 
 		CameraFrame(size_t id, std::string const &name, std::string const &description);

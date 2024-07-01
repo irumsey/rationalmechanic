@@ -152,7 +152,7 @@
         "render" :
         {
           "orbit"      : true,
-			    "model"      : [ "content/hemisphere.mesh" ],
+          "model": [ "content/hemisphere.mesh" ],
           "color"      : [ 0.2, 0.2, 1, 0],
 			    "parameters" : [ 0, 0, 0, 0 ]
         }
@@ -183,7 +183,7 @@
         "render" :
         {
           "orbit"      : true,
-			    "model"      : [ "content/disk.mesh" ],
+			    "model"      : [ "content/hemisphere.mesh" ],
           "color"      : [ 0.7, 0.7, 0.7, 0],
 			    "parameters" : [ 0, 0, 0, 0 ]
         }

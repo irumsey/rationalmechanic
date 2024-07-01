@@ -3,14 +3,15 @@
 #include "Utility.h"
 #include <lucid/gal/System.h>
 #include <lucid/math/Algorithm.h>
+#include <lucid/core/Profiler.h>
 
 namespace lucid {
 namespace orbit {
 
 	Culler::Culler()
 	{
-		// make the SSB (solar system barycenter) to visible
-		visibility[0] = Visibility::STATE_VISIBLE;
+		// set the SSB (solar system barycenter) to visible
+		_visibility[0] = STATE_VISIBLE;
 	}
 
 	Culler::~Culler()
@@ -19,41 +20,69 @@ namespace orbit {
 
 	void Culler::cull(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t const &interpolant)
 	{
+		LUCID_PROFILE_SCOPE("Culler::cull()");
+
 		gal::System const &galSystem = gal::System::instance();
-		scalar_t screenWidth = float64_t(galSystem.width());
-		scalar_t screenHeight = float64_t(galSystem.height());
+
+		scalar_t screenWidth = scalar_t(galSystem.width());
+		scalar_t screenHeight = scalar_t(galSystem.height());
+		scalar_t const aspect = scalar_t(galSystem.aspect());
+
+		scalar_t const fov = cameraFrame->fov;
 
 		_interpolant = interpolant;
 
-		scalar_t aspect = screenWidth / screenHeight;
-		znear = znearInitial;
-		zfar = 39.23547229976602 * constants::meters_per_AU<float64_t>;
+		znear = ZNEAR_INITIAL;
+		zfar = ZFAR_INITIAL;
 
 		vector3_t cameraPosition = math::lerp(interpolant, cameraFrame->absolutePosition[0], cameraFrame->absolutePosition[1]);
 		vector3_t focusPosition = math::lerp(interpolant, cameraFrame->focus->absolutePosition[0], cameraFrame->focus->absolutePosition[1]);
 
-		projMatrix = math::perspective(scalar_t(0.25 * constants::pi<float64_t>), aspect, znear, zfar);
-		viewMatrix = math::look(cameraPosition, focusPosition, vector3_t(0, 0, 1));
-		_viewProjMatrix = projMatrix * viewMatrix;
+		_projMatrix = math::perspective(fov, aspect, znear, zfar);
+		_viewMatrix = math::look(cameraPosition, focusPosition, vector3_t(0, 0, 1));
+		_viewProjMatrix = _projMatrix * _viewMatrix;
+		_invViewProjMatrix = math::inverse(_viewProjMatrix);
 
-		_frustum = math::makeFrustum3(math::inverse(_viewProjMatrix));
+		_frustum = math::makeFrustum3(_invViewProjMatrix);
 
 		std::swap(znear, zfar);
 
 		cull(rootFrame);
 
-		scaleFactor = 500.0 / (zfar - znear);
+		znear = math::min(znear, zfar * math::cos(fov));
 
-		projMatrix = math::perspective(scalar_t(0.25 * constants::pi<float64_t>), aspect, scaleFactor * znear, scaleFactor * zfar);
-		viewMatrix = math::look(vector3_t(0, 0, 0), math::normalize(focusPosition - cameraPosition), vector3_t(0, 0, 1));
+		_projMatrix = math::perspective(fov, aspect, znear, zfar);
+		_viewMatrix = math::look(vector3_t(0, 0, 0), math::normalize(focusPosition - cameraPosition), vector3_t(0, 0, 1));
+		_viewProjMatrix = _projMatrix * _viewMatrix;
+		_invViewProjMatrix = math::inverse(_viewProjMatrix);
+		
+		vector4_t sprite[3] = {
+			vector4_t(               0.0,                 0.0, 1.0, 1.0),
+			vector4_t(-1.0 / screenWidth, -1.0 / screenHeight, 1.0, 1.0),
+			vector4_t( 1.0 / screenWidth,  1.0 / screenHeight, 1.0, 1.0),
+		};
+		
+		for (size_t i = 0; i < 3; ++i)
+		{
+			sprite[i] = _invViewProjMatrix * sprite[i];
+			sprite[i] = sprite[i] / scalar_t(sprite[i].w);
+		}
+
+		starFieldRadius = math::len(vector3_t(sprite[0].x, sprite[0].y, sprite[0].z));
+		starScalingFactor = math::len(vector3_t(sprite[2].x, sprite[2].y, sprite[2].z) - vector3_t(sprite[1].x, sprite[1].y, sprite[1].z));
+
+		sceneScalingFactor = 1.0 / (zfar - znear);
 	}
 
 	void Culler::evaluate(DynamicPoint *point)
 	{
+		LUCID_PROFILE_SCOPE("Culler::evaluate(DynamicPoint *)");
 	}
 
 	void Culler::evaluate(OrbitalBody *body)
 	{
+		LUCID_PROFILE_SCOPE("Culler::evaluate(OrbitalBody *)");
+
 		static scalar_t const hysteresis[2] = { 0.0001, 0.0003, };
 
 		aabb3_t aabbTotal = aabb3_t(
@@ -63,7 +92,7 @@ namespace orbit {
 
 		if (!math::intersects(_frustum, aabbTotal))
 		{
-			visibility[body->id] = Visibility::STATE_PRUNED;
+			_visibility[body->id] = STATE_PRUNED;
 			return;
 		}
 
@@ -74,18 +103,21 @@ namespace orbit {
 
 		if (!math::intersects(_frustum, aabbBody))
 		{
-			visibility[body->id] = Visibility::STATE_CULLED;
+			_visibility[body->id] = STATE_CULLED;
 			return;
 		}
 
-		scalar_t area = math::areaProjected(_viewProjMatrix, znearInitial, aabbBody);
+		scalar_t area = math::areaProjected(_viewProjMatrix, ZNEAR_INITIAL, aabbBody);
 
 		if (area <= hysteresis[0])
-			visibility[body->id] = Visibility::STATE_IMPERCEPTIBLE;
-		else if ((hysteresis[0] < area) && (area <= hysteresis[1]) && (Visibility::STATE_VISIBLE != visibility[body->id].state))
-			visibility[body->id] = Visibility::STATE_IMPERCEPTIBLE;
+			_visibility[body->id] = STATE_IMPERCEPTIBLE;
+		else if ((hysteresis[0] < area) && (area <= hysteresis[1]) && (STATE_VISIBLE != frameState(body->id)))
+			_visibility[body->id] = STATE_IMPERCEPTIBLE;
 		else
-			visibility[body->id] = Visibility::STATE_VISIBLE;
+			_visibility[body->id] = STATE_VISIBLE;
+
+		if (STATE_VISIBLE != frameState(body->id))
+			return;
 
 		vector3_t const corners[] =
 		{
@@ -110,18 +142,23 @@ namespace orbit {
 
 	void Culler::evaluate(DynamicBody *body)
 	{
+		LUCID_PROFILE_SCOPE("Culler::evaluate(DynamicBody *)");
 
 	}
 
 	void Culler::evaluate(CameraFrame *camera)
 	{
+		LUCID_PROFILE_SCOPE("Culler::evaluate(CameraFrame *)");
+
 	}
 
 	void Culler::cull(Frame *frame)
 	{
+		LUCID_PROFILE_SCOPE("Culler::cull(Frame *)");
+
 		frame->apply(this);
 
-		if (Visibility::STATE_PRUNED == visibility[frame->id].state)
+		if (STATE_PRUNED == frameState(frame->id))
 			return;
 
 		for (Frame *child = frame->firstChild; nullptr != child; child = child->nextSibling)

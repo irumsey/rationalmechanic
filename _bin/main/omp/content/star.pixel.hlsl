@@ -13,7 +13,7 @@ OutputPixel main(InputPixel input)
 	float4 color = spectralTexture.Sample(theSampler, float2(input.specoord, 0.5));
 
 	output.color = float4(color.rgb, alpha);
-	output.glow = float4(color.rgb, alpha);
+	output.glow = float4(0, 0, 0, 0);
 	output.select = input.id;
 
 	return output;

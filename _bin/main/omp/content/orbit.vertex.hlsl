@@ -32,8 +32,8 @@ OutputVertex main(InputVertex input)
 	float4 ppsPosition0 = mul(viewProjMatrix, worldPosition0);
 	float4 ppsPosition1 = mul(viewProjMatrix, worldPosition1);
 
-	ppsPosition0 = ppsPosition0 / exclude(ppsPosition0.w, -znear, znear);
-	ppsPosition1 = ppsPosition1 / exclude(ppsPosition1.w, -znear, znear);
+	ppsPosition0 = ppsPosition0 / ppsPosition0.w;
+	ppsPosition1 = ppsPosition1 / ppsPosition1.w;
 
 	float2 tangent = ppsPosition1.xy - ppsPosition0.xy;
 	float2 normal = float2(-tangent.y, tangent.x);

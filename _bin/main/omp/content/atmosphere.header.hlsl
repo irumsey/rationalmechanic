@@ -8,11 +8,12 @@ struct InputVertex
 {
 	float3     vertex : LOCATION0;
 	float2   texcoord : LOCATION1;
-	float3   position : LOCATION2;
-	float       scale : LOCATION3;
-	float4   rotation : LOCATION4;
-	float4      color : LOCATION5;
-	float4 parameters : LOCATION6;
+	uint1          id : LOCATION2;
+	float3   position : LOCATION3;
+	float       scale : LOCATION4;
+	float4   rotation : LOCATION5;
+	float4      color : LOCATION6;
+	float4 parameters : LOCATION7;
 };
 
 struct OutputVertex

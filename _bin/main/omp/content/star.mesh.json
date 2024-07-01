@@ -49,7 +49,6 @@
 
 		"attributes":
 		[
-		  { "name":    "sphereRadius",     "query" :                          "zfar" },
       { "name" :   "viewPosition",     "query" :                  "viewPosition" },
       { "name" :         "viewUp",     "query" :                        "viewUp" },
 			{ "name" : "viewProjMatrix",     "query" :                "viewProjMatrix" },

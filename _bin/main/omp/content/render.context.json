@@ -15,9 +15,6 @@
 		{ "name":            "viewUp",   "vector3" : [ 0, 0, 0 ] },
 		{ "name":      "viewPosition",   "vector3" : [ 0, 0, 0 ] },
                                                
-		{ "name":             "znear",     "float" : 0 },
-		{ "name":              "zfar",     "float" : 0 },
-
 		{ "name":        "viewMatrix", "matrix4x4" : [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ] },
 		{ "name":     "invViewMatrix", "matrix4x4" : [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ] },
                                                

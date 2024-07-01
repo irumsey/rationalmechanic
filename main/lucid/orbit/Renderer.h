@@ -79,6 +79,12 @@ namespace orbit {
 	private:
 		enum { BATCH_MAXIMUM = 250 };
 
+		struct StarParameters
+		{
+			gal::Parameter const *sphereRadius = nullptr;
+			gal::Parameter const *spriteScale = nullptr;
+		};
+
 		struct CopyParameters
 		{
 			gal::Parameter const *theSource = nullptr;
@@ -126,19 +132,21 @@ namespace orbit {
 		scalar_t _interpolant = 0.0;
 
 		vector3_t _cameraPosition;
+		vector3_t _focusPosition;
 
 		Culler _culler;
 
 		gigl::Context _renderContext;
 
 		size_t _starCount = 0;
+		StarParameters _starParameters;
 		std::unique_ptr<gal::VertexBuffer> _starInstances;
 		std::unique_ptr<gigl::Mesh> _starMesh;
 
 		std::shared_ptr<gigl::Mesh> _orbitMesh;
-		std::shared_ptr<gigl::Mesh> _calloutMesh;
 
-		gigl::Batched _batched;
+		gigl::Batched _sceneBatch;
+		gigl::Batched _orbitBatch;
 
 		std::unique_ptr<gal::RenderTarget2D> _colorTarget;
 		std::unique_ptr<gal::RenderTarget2D> _glowTarget;
@@ -169,13 +177,19 @@ namespace orbit {
 
 		void render();
 
+		void renderStarfield();
+
+		void renderScene();
+
+		void renderOrbits();
+
 		void copy(gal::RenderTarget2D *dst, gal::RenderTarget2D *src);
 
 		void blur();
 
 		void post();
 
-		void fxaa();
+		void fxaaPost();
 
 		void resize();
 
@@ -185,7 +199,7 @@ namespace orbit {
 
 	inline gal::Scalar Renderer::adaptiveScale(scalar_t const &value)
 	{
-		scalar_t result = _culler.scaleFactor * value;
+		scalar_t result = _culler.sceneScalingFactor * value;
 		return gal::Scalar(float32_t(result.value));
 	}
 

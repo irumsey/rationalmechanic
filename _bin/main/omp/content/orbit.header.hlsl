@@ -1,7 +1,4 @@
-float znear;
-float zfar;
 float2 texelSize;
-float3 viewUp;
 float4x4 viewProjMatrix;
 
 struct InputVertex

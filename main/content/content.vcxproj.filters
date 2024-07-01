@@ -27,9 +27,6 @@
     <FxCompile Include="..\..\_bin\main\omp\content\copy.pixel.hlsl">
       <Filter>omp</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\_bin\main\omp\content\disk.pixel.hlsl">
-      <Filter>omp</Filter>
-    </FxCompile>
     <FxCompile Include="..\..\_bin\main\omp\content\hemisphere.pixel.hlsl">
       <Filter>omp</Filter>
     </FxCompile>

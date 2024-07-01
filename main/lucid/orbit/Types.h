@@ -28,6 +28,7 @@ namespace orbit {
 
 	typedef math::Vector<float64_t, 2, unit_of_measure>  vector2_t;
 	typedef math::Vector<float64_t, 3, unit_of_measure>  vector3_t;
+	typedef math::Vector<float64_t, 4, unit_of_measure>  vector4_t;
 
 	typedef math::Matrix<float64_t, 3, 3, unit_of_measure> matrix3x3_t;
 	typedef math::Matrix<float64_t, 4, 4, unit_of_measure> matrix4x4_t;

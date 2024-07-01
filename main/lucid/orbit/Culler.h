@@ -2,12 +2,8 @@
 
 #include <unordered_map>
 #include <lucid/orbit/Types.h>
+#include <lucid/orbit/Constants.h>
 #include <lucid/orbit/Algorithm.h>
-
-///	test {
-#include <lucid/gal/Types.h>
-#include <vector>
-///	} test
 
 namespace lucid {
 namespace orbit {
@@ -18,20 +14,54 @@ namespace orbit {
 	class DynamicBody;
 	class CameraFrame;
 
+	///	Culler
+	/// 
+	///	Used to traverse the scene and cull/prune branches based upon visibility.
+	/// At the same time, Culler fits the view volume to that which is visible
+	/// and determines appropriate scaling factors for rendering.
 	class Culler : public Algorithm
 	{
 	public:
-		///	test {
+		enum STATE {
+			STATE_PRUNED = 0,		// whole branch not in view volume
+			STATE_CULLED,			// just the parent frame not in view volume
+			STATE_IMPERCEPTIBLE,	// too small to render
+			STATE_VISIBLE,			// frame is visible
+		};
+
+		scalar_t znear;
+		scalar_t zfar;
+
+		scalar_t sceneScalingFactor;
+		scalar_t starFieldRadius;
+		scalar_t starScalingFactor;
+
+		Culler();
+
+		virtual ~Culler();
+
+		void cull(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t const &interpolant);
+
+		STATE operator[](size_t id);
+
+		STATE frameState(size_t id);
+
+		virtual void evaluate(DynamicPoint *point) override;
+
+		virtual void evaluate(OrbitalBody *body) override;
+
+		virtual void evaluate(DynamicBody *body) override;
+
+		virtual void evaluate(CameraFrame *camera) override;
+
+	private:
+		///	Visibility
+		/// 
+		///	Needed to provide a default visibility state when looking up
+		/// an id using an unordered_map<>
 		struct Visibility
 		{
-			enum STATE {
-				STATE_PRUNED = 0,
-				STATE_CULLED,
-				STATE_IMPERCEPTIBLE,
-				STATE_VISIBLE,
-			};
-
-			STATE state = STATE_CULLED;
+			STATE state = STATE_PRUNED;
 
 			Visibility() = default;
 
@@ -48,42 +78,33 @@ namespace orbit {
 
 		};
 
-		std::unordered_map<size_t, Visibility> visibility;
+		scalar_t const ZNEAR_INITIAL = 10.0;
+		scalar_t const  ZFAR_INITIAL = 39.23547229976602 * constants::meters_per_AU<float64_t>;
 
-		matrix4x4_t projMatrix;
-		matrix4x4_t viewMatrix;
-
-		scalar_t znear;
-		scalar_t zfar;
-		scalar_t aspect;
-
-		scalar_t scaleFactor;
-
-		scalar_t const znearInitial = 10.0;
-		///	} test
-
-		Culler();
-
-		virtual ~Culler();
-
-		void cull(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t const &interpolant);
-
-		virtual void evaluate(DynamicPoint *point) override;
-
-		virtual void evaluate(OrbitalBody *body) override;
-
-		virtual void evaluate(DynamicBody *body) override;
-
-		virtual void evaluate(CameraFrame *camera) override;
-
-	private:
 		scalar_t _interpolant;
+
+		matrix4x4_t _projMatrix;
+		matrix4x4_t _viewMatrix;
 		matrix4x4_t _viewProjMatrix;
+		matrix4x4_t _invViewProjMatrix;
+
 		frustum_t _frustum;
+
+		std::unordered_map<size_t, Visibility> _visibility;
 
 		void cull(Frame *frame);
 
 	};
+
+	inline Culler::STATE Culler::operator[](size_t id)
+	{
+		return frameState(id);
+	}
+
+	inline Culler::STATE Culler::frameState(size_t id)
+	{
+		return _visibility[id].state;
+	}
 
 }	/// orbit
 }	///	lucid

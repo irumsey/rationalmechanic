@@ -1,4 +1,5 @@
 float      sphereRadius;
+float       spriteScale;
 
 float3     viewPosition;
 float3           viewUp;

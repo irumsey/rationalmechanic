@@ -17,10 +17,6 @@
 #include <lucid/math/Algorithm.h>
 #include <algorithm>
 
-// test {
-#include "Culler.h"
-// } test
-
 namespace  math = ::lucid:: math;
 namespace   gal = ::lucid::  gal;
 namespace  gigl = ::lucid:: gigl;
@@ -121,9 +117,22 @@ namespace orbit {
 		RenderProperties const &renderProperties = body->renderProperties;
 		Elements const *elements = body->elements;
 
-		Frame const *centerFrame = body->centerFrame;
-		gal::Vector3 centerPosition = adaptiveScale(math::lerp(_interpolant, centerFrame->absolutePosition[0], centerFrame->absolutePosition[1]) - _cameraPosition);
 		gal::Vector3 bodyPosition = adaptiveScale(math::lerp(_interpolant, body->absolutePosition[0], body->absolutePosition[1]) - _cameraPosition);
+
+		MeshInstance bodyInstance;
+		bodyInstance.id = (SELECT_FRAME << SELECT_SHIFT) | uint32_t(SELECT_MASK & body->id);
+		bodyInstance.position = bodyPosition;
+		bodyInstance.scale = adaptiveScale(physicalProperties.radius);
+		bodyInstance.rotation = gal::Quaternion(0, 0, 0, 1);
+		bodyInstance.color = renderProperties.color;
+		bodyInstance.parameters = renderProperties.parameters;
+		_sceneBatch.addInstance(renderProperties.model, bodyInstance);
+
+		if (!renderProperties.showOrbit)
+			return;
+
+		Frame const *centerFrame = body->centerFrame;
+		gal::Vector3 centerPosition = adaptiveScale(math::lerp(_interpolant, centerFrame->absolutePosition[0], centerFrame->absolutePosition[1]));
 
 		gal::Scalar  a = adaptiveScale(math::lerp(_interpolant, elements[0].A, elements[1].A));
 		gal::Scalar  e = cast(math::lerp(_interpolant, elements[0].EC, elements[1].EC));
@@ -135,23 +144,6 @@ namespace orbit {
 			math::quaternionFromMatrix(cast(rotationFromElements(elements[1])))
 		);
 
-		MeshInstance bodyInstance;
-		bodyInstance.id = (SELECT_FRAME << SELECT_SHIFT) | uint32_t(SELECT_MASK & body->id);
-		bodyInstance.position = bodyPosition;
-		bodyInstance.scale = adaptiveScale(physicalProperties.radius);
-		bodyInstance.rotation = gal::Quaternion(0, 0, 0, 1);
-		bodyInstance.color = renderProperties.color;
-		bodyInstance.parameters = renderProperties.parameters;
-		_batched.addInstance(renderProperties.model, bodyInstance);
-
-		if (!renderProperties.showOrbit)
-			return;
-
-		// test {
-		// skip orbits for now.
-		return;
-		// } test
-
 		MeshInstance orbitInstance;
 		orbitInstance.id = (SELECT_ORBIT << SELECT_SHIFT) | uint32_t(SELECT_MASK & body->id);
 		orbitInstance.position = centerPosition;
@@ -159,7 +151,7 @@ namespace orbit {
 		orbitInstance.rotation = rotation;
 		orbitInstance.color = renderProperties.orbitHighlight ? gal::Color(1.f, 1.f, 1.f, 1.f) : gal::Color(0, 0, 1, 1);
 		orbitInstance.parameters = gal::Vector4(hu, e, 0.f, constants::two_pi<float32_t>);
-		_batched.addInstance(_orbitMesh, orbitInstance);
+		_orbitBatch.addInstance(_orbitMesh, orbitInstance);
 	}
 	  
 	void Renderer::evaluate(DynamicBody *body)
@@ -204,22 +196,18 @@ namespace orbit {
 		}
 		_starInstances->unlock();
 
-		_batched.initialize();
+		_sceneBatch.initialize();
+		_orbitBatch.initialize();
 
 		/// test {
 		///	need a data driven method for registering these... 
 		/// ...just read the ephemeris stupid!!!
-		_batched.createBatch<MeshInstance, Back2Front<MeshInstance> >(gigl::Resources::get<gigl::Mesh>(    "content/sprite.mesh"), BATCH_MAXIMUM);
-		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>(      "content/disk.mesh"), BATCH_MAXIMUM);
-		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>("content/atmosphere.mesh"), BATCH_MAXIMUM);
-		_batched.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>("content/hemisphere.mesh"), BATCH_MAXIMUM);
+		_sceneBatch.createBatch<MeshInstance, Back2Front<MeshInstance> >(gigl::Resources::get<gigl::Mesh>("content/atmosphere.mesh"), BATCH_MAXIMUM);
+		_sceneBatch.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>("content/hemisphere.mesh"), BATCH_MAXIMUM);
 		/// } test
 		 
 		_orbitMesh = gigl::Resources::get<gigl::Mesh>("content/orbit.mesh");
-		_batched.createBatch<MeshInstance, Back2Front<MeshInstance> >(_orbitMesh, BATCH_MAXIMUM);
-
-		_calloutMesh = gigl::Resources::get<gigl::Mesh>("content/callout.mesh");
-		_batched.createBatch<CalloutInstance, NullSort<CalloutInstance> >(_calloutMesh, BATCH_MAXIMUM);
+		_orbitBatch.createBatch<MeshInstance, Back2Front<MeshInstance> >(_orbitMesh, BATCH_MAXIMUM);
 
 		_selectTarget.reset(gal::RenderTarget2D::create(gal::RenderTarget2D::FORMAT_UINT_R32, _width, _height));
 		_selectReader.reset(gal::TargetReader2D::create(_selectTarget.get(), _width, _height));
@@ -235,11 +223,17 @@ namespace orbit {
 		_post .reset(gigl::Mesh::create("content/post.mesh"));
 		_fxaa .reset(gigl::Mesh::create("content/fxaa.mesh"));
 
+		_starParameters.sphereRadius = _starMesh->material()->program()->lookup("sphereRadius");
+		_starParameters. spriteScale = _starMesh->material()->program()->lookup( "spriteScale");
+
 		_copyParameters.  theSource = _copy->material()->program()->lookup(  "theSource");
+
 		_blurParameters.texelOffset = _blur->material()->program()->lookup("texelOffset");
 		_blurParameters.  theSource = _blur->material()->program()->lookup(  "theSource");
+
 		_postParameters.colorTarget = _post->material()->program()->lookup("colorTarget");
 		_postParameters. glowTarget = _post->material()->program()->lookup( "glowTarget");
+
 		_fxaaParameters.colorTarget = _fxaa->material()->program()->lookup("colorTarget");
 		_fxaaParameters. glowTarget = _fxaa->material()->program()->lookup( "glowTarget");
 	}
@@ -250,7 +244,8 @@ namespace orbit {
 		_starInstances.reset();
 		_starMesh.reset();
 
-		_batched.shutdown();
+		_orbitBatch.shutdown();
+		_sceneBatch.shutdown();
 
 		_selectReader.reset();
 		_selectTarget.reset();
@@ -275,25 +270,23 @@ namespace orbit {
 
 		resize();
 
-		_interpolant = interpolant;
-		_cameraPosition = math::lerp(interpolant, cameraFrame->absolutePosition[0], cameraFrame->absolutePosition[1]);
-
-		// test {
 		_culler.cull(rootFrame, cameraFrame, interpolant);
-		// } test
-
-		gal::Matrix4x4 viewMatrix = cast(_culler.viewMatrix);
-		gal::Matrix4x4 projMatrix = cast(_culler.projMatrix);
-		gal::Matrix4x4 viewProjMatrix = projMatrix * viewMatrix;
-		gal::Matrix4x4 invViewProjMatrix = math::inverse(viewProjMatrix);
 
 		float32_t width = float32_t(_width);
 		float32_t height = float32_t(_height);
 
+		Frame *focusFrame = cameraFrame->focus;
+		_interpolant = interpolant;
+
+		_cameraPosition = math::lerp(interpolant, cameraFrame->absolutePosition[0], cameraFrame->absolutePosition[1]);
+		_focusPosition = math::lerp(interpolant, focusFrame->absolutePosition[0], focusFrame->absolutePosition[1]);
+
+		gal::Matrix4x4 viewMatrix = math::look(gal::Vector3(0, 0, 0), adaptiveScale(_focusPosition - _cameraPosition), gal::Vector3(0, 0, 1));
+		gal::Matrix4x4 projMatrix = math::perspective(cast(cameraFrame->fov), gal::Scalar(width / height), adaptiveScale(_culler.znear), adaptiveScale(_culler.zfar));
+		gal::Matrix4x4 viewProjMatrix = projMatrix * viewMatrix;
+
 		_renderContext["screenWidth"] = gal::Scalar(width);
 		_renderContext["screenHeight"] = gal::Scalar(height);
-		_renderContext["znear"] = adaptiveScale(_culler.znear);
-		_renderContext["zfar"] = adaptiveScale(_culler.zfar);
 		_renderContext["texelSize"] = gal::Vector2(1.f / width, 1.f / height);
 
 		_renderContext["time"] = cast(time);
@@ -310,9 +303,11 @@ namespace orbit {
 		_renderContext["projMatrix"] = projMatrix;
 		_renderContext["invProjMatrix"] = math::inverse(projMatrix);
 		_renderContext["viewProjMatrix"] = viewProjMatrix;
-		_renderContext["invViewProjMatrix"] = invViewProjMatrix;
+		_renderContext["invViewProjMatrix"] = math::inverse(viewProjMatrix);
 
-		_batched.clear();
+		_sceneBatch.clear();
+		_orbitBatch.clear();
+
 		batch(rootFrame);
 
 		render();
@@ -325,7 +320,7 @@ namespace orbit {
 		galPipeline().updateTargets();
 
 		if (useFXAA)
-			fxaa();
+			fxaaPost();
 		else
 			post();
 	}
@@ -346,10 +341,10 @@ namespace orbit {
 		if (nullptr == frame)
 			return;
 
-		if (Culler::Visibility::STATE_PRUNED == _culler.visibility[frame->id].state)
+		if (Culler::STATE_PRUNED == _culler[frame->id])
 			return;
 
-		if (Culler::Visibility::STATE_VISIBLE == _culler.visibility[frame->id].state)
+		if (Culler::STATE_VISIBLE == _culler[frame->id])
 			frame->apply(this);
 
 		for (Frame *child = frame->firstChild; nullptr != child; child = child->nextSibling)
@@ -366,15 +361,33 @@ namespace orbit {
 
 		_clear->render(_renderContext);
 
-		/// test {
-//		galPipeline().setVertexStream(1, _starInstances.get());
-//		_starMesh->renderInstanced(_renderContext, int32_t(_starCount));
-		/// } test
+		renderStarfield();
+		renderScene();
+		renderOrbits();
 
-		_batched.render(_renderContext);
-		
 		galPipeline().restoreBackBuffer(true, false, false);
 		galPipeline().updateTargets();
+	}
+
+	void Renderer::renderStarfield()
+	{
+		auto program = _starMesh->material()->program();
+
+		program->set(_starParameters.sphereRadius, adaptiveScale(_culler.starFieldRadius));
+		program->set(_starParameters. spriteScale, adaptiveScale(_culler.starScalingFactor));
+		
+		galPipeline().setVertexStream(1, _starInstances.get());
+		_starMesh->renderInstanced(_renderContext, int32_t(_starCount));
+	}
+
+	void Renderer::renderScene()
+	{
+		_sceneBatch.render(_renderContext);
+	}
+
+	void Renderer::renderOrbits()
+	{
+		/// TBD: implement
 	}
 
 	void Renderer::copy(gal::RenderTarget2D *dst, gal::RenderTarget2D *src)
@@ -418,7 +431,7 @@ namespace orbit {
 		_post->render(_renderContext);
 	}
 
-	void Renderer::fxaa()
+	void Renderer::fxaaPost()
 	{
 		_fxaa->material()->program()->set(_fxaaParameters.colorTarget, _colorTarget.get());
 		_fxaa->material()->program()->set(_fxaaParameters.glowTarget, _glowTarget.get());
