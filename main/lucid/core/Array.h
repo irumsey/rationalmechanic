@@ -1,73 +1,74 @@
 #pragma once
 
+#include <unordered_map>
+
+#include <lucid/core/Defines.h>
 #include <lucid/core/Meta.h>
 
 ///
 ///
 ///
-namespace lucid {
-namespace core {
+LUCID_CORE_BEGIN
 
-	///	Array
-	///
-	///	Fixed size array.
-	template<size_t N, typename T> class Array
+///	Array
+///
+///	Fixed size array.
+template<size_t N, typename T> class Array
+{
+public:
+	enum { COUNT = N };
+	enum { LAST = COUNT - 1 };
+
+	typedef typename T  value_t;
+	typedef typename Array<COUNT, value_t> self_t;
+
+	Array()
 	{
-	public:
-		enum { COUNT = N };
-		enum { LAST = COUNT - 1 };
+		fill(T());
+	}
 
-		typedef typename T  value_t;
-		typedef typename Array<COUNT, value_t> self_t;
+	Array(Array const &) = default;
 
-		Array()
-		{
-			fill(T());
-		}
+	~Array() = default;
 
-		Array(Array const &) = default;
+	size_t count() const
+	{
+		return N;
+	}
 
-		~Array() = default;
+	value_t const &operator[](size_t index) const
+	{
+		return at(index);
+	}
 
-		size_t count() const
-		{
-			return N;
-		}
+	value_t &operator[](size_t index)
+	{
+		return at(index);
+	}
 
-		value_t const &operator[](size_t index) const
-		{
-			return at(index);
-		}
+	value_t const &at(size_t index) const
+	{
+		return _data[index];
+	}
 
-		value_t &operator[](size_t index)
-		{
-			return at(index);
-		}
+	value_t &at(size_t index)
+	{
+		return _data[index];
+	}
 
-		value_t const &at(size_t index) const
-		{
-			return _data[index];
-		}
+	void fill(T const &value)
+	{
+		meta<T>::fill<LAST>(_data, value);
+	}
 
-		value_t &at(size_t index)
-		{
-			return _data[index];
-		}
+	T const *ptr() const
+	{
+		return _data;
+	}
 
-		void fill(T const &value)
-		{
-			meta<T>::fill<LAST>(_data, value);
-		}
+private:
+	T _data[N];
 
-		T const *ptr() const
-		{
-			return _data;
-		}
+};
 
-	private:
-		T _data[N];
-
-	};
-
-}	///	core
-}	/// lucid
+LUCID_CORE_END

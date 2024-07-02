@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Clock.h" />
+    <ClInclude Include="Defines.h" />
     <ClInclude Include="FileSystem.h" />
   </ItemGroup>
   <ItemGroup>

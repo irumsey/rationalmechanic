@@ -10,127 +10,114 @@
 #include <lucid/gal/Types.h>
 #include <lucid/gal/Statistics.h>
 #include <lucid/gal/Pipeline.h>
+#include <lucid/gal.private/gal.d3d11/Defines.h>
 
-///
-///
-///
-
-#define galConcretePipeline (::lucid::gal::d3d11::Pipeline::instance())
+#define galConcretePipeline (LUCID_GAL_D3D11::Pipeline::instance())
 #define galConcreteStatistic(name) (galConcretePipeline.statistics().name)
 
+LUCID_GAL_D3D11_BEGIN
+
+
+class Program;
+
 ///
 ///
 ///
-namespace lucid {
-namespace gal {
-namespace d3d11 {
+class Pipeline : public ::lucid::gal::Pipeline
+{
+public:
+	Pipeline();
 
-	///
-	///
-	///
+	virtual ~Pipeline();
 
-	class Program;
+	void initialize(int32_t width, int32_t height, int32_t samples, ID3D11Device *d3dDevice, ID3D11DeviceContext *d3dContext, IDXGISwapChain *d3dChain);
 
-	///
-	///
-	///
-	class Pipeline : public ::lucid::gal::Pipeline
-	{
-	public:
-		Pipeline();
+	void shutdown();
 
-		virtual ~Pipeline();
+	void resize(int32_t width, int32_t height, int32_t samples);
 
-		void initialize(int32_t width, int32_t height, int32_t samples, ID3D11Device *d3dDevice, ID3D11DeviceContext *d3dContext, IDXGISwapChain *d3dChain);
+	virtual Statistics &statistics() override;
 
-		void shutdown();
+	virtual Statistics const &statistics() const override;
 
-		void resize(int32_t width, int32_t height, int32_t samples);
+	virtual void beginScene() override;
 
-		virtual Statistics &statistics() override;
+	virtual void endScene() override;
 
-		virtual Statistics const &statistics() const override;
+	virtual void beginProgram(::lucid::gal::Program const *program) override;
 
-		virtual void beginScene() override;
+	virtual void endProgram(::lucid::gal::Program const *program) override;
 
-		virtual void endScene() override;
+	virtual void beginGeometry(::lucid::gal::VertexFormat const *format) override;
 
-		virtual void beginProgram(::lucid::gal::Program const *program) override;
+	virtual void endGeometry(::lucid::gal::VertexFormat const *format) override;
 
-		virtual void endProgram(::lucid::gal::Program const *program) override;
+	virtual void setUnorderedTarget(::lucid::gal::Unordered2D *unordered) override;
 
-		virtual void beginGeometry(::lucid::gal::VertexFormat const *format) override;
+	virtual void setRenderTarget(int32_t index, ::lucid::gal::RenderTarget2D *renderTarget) override;
 
-		virtual void endGeometry(::lucid::gal::VertexFormat const *format) override;
+	virtual void setDepthTarget(::lucid::gal::DepthTarget2D *depthtarget) override;
 
-		virtual void setUnorderedTarget(::lucid::gal::Unordered2D *unordered) override;
+	virtual void restoreBackBuffer(bool color = true, bool depth = true, bool unordered = true) override;
 
-		virtual void setRenderTarget(int32_t index, ::lucid::gal::RenderTarget2D *renderTarget) override;
+	virtual void updateTargets() override;
 
-		virtual void setDepthTarget(::lucid::gal::DepthTarget2D *depthtarget) override;
+	virtual void viewport(::lucid::gal::Viewport const &viewport) override;
 
-		virtual void restoreBackBuffer(bool color = true, bool depth = true, bool unordered = true) override;
+	virtual ::lucid::gal::Viewport const &viewport() const override;
 
-		virtual void updateTargets() override;
+	virtual void clear(bool clearTarget = true, bool clearDepth = true, bool clearStencil = true, ::lucid::gal::Color const &color = ::lucid::gal::Color(), float32_t depth = 1.f, uint8_t stencil = 0x00) override;
 
-		virtual void viewport(::lucid::gal::Viewport const &viewport) override;
+	virtual void setVertexStream(int32_t index, ::lucid::gal::VertexBuffer const *buffer, int32_t start = 0) override;
 
-		virtual ::lucid::gal::Viewport const &viewport() const override;
+	virtual void setIndexStream(::lucid::gal::IndexBuffer const *buffer) override;
 
-		virtual void clear(bool clearTarget = true, bool clearDepth = true, bool clearStencil = true, ::lucid::gal::Color const &color = ::lucid::gal::Color(), float32_t depth = 1.f, uint8_t stencil = 0x00) override;
+	virtual void draw(TOPOLOGY topology, int32_t vertexCount) override;
 
-		virtual void setVertexStream(int32_t index, ::lucid::gal::VertexBuffer const *buffer, int32_t start = 0) override;
+	virtual void draw(TOPOLOGY topology, int32_t vertexCount, int32_t indexCount, int32_t indexStart = 0, int32_t indexOffset = 0) override;
 
-		virtual void setIndexStream(::lucid::gal::IndexBuffer const *buffer) override;
+	virtual void drawInstanced(TOPOLOGY topology, int32_t vertexCount, int32_t indexCount, int32_t instanceCount, int32_t indexStart = 0, int32_t instanceStart = 0, int32_t indexOffset = 0) override;
 
-		virtual void draw(TOPOLOGY topology, int32_t vertexCount) override;
+	static ::lucid::gal::d3d11::Pipeline &instance();
 
-		virtual void draw(TOPOLOGY topology, int32_t vertexCount, int32_t indexCount, int32_t indexStart = 0, int32_t indexOffset = 0) override;
+private:
+	static int32_t const TARGET_MAXIMUM = 4;
+	static int32_t const UNORDERED_SLOT = TARGET_MAXIMUM;
 
-		virtual void drawInstanced(TOPOLOGY topology, int32_t vertexCount, int32_t indexCount, int32_t instanceCount, int32_t indexStart = 0, int32_t instanceStart = 0, int32_t indexOffset = 0) override;
+	Statistics _statistics;
+	::lucid::gal::Viewport _viewport;
 
-		static ::lucid::gal::d3d11::Pipeline &instance();
+	ID3D11Device *_d3dDevice = nullptr;
+	ID3D11DeviceContext *_d3dContext = nullptr;
+	IDXGISwapChain *_d3dChain = nullptr;
 
-	private:
-		static int32_t const TARGET_MAXIMUM = 4;
-		static int32_t const UNORDERED_SLOT = TARGET_MAXIMUM;
+	ID3D11Texture2D *_d3dTarget = nullptr;
+	ID3D11RenderTargetView *_d3dTargetView = nullptr;
 
-		Statistics _statistics;
-		::lucid::gal::Viewport _viewport;
+	ID3D11Texture2D *_d3dDepth = nullptr;
+	ID3D11DepthStencilView *_d3dDepthView = nullptr;
 
-		ID3D11Device *_d3dDevice = nullptr;
-		ID3D11DeviceContext *_d3dContext = nullptr;
-		IDXGISwapChain *_d3dChain = nullptr;
+	ID3D11UnorderedAccessView *_d3dCurrentUnordered = nullptr;
+	ID3D11RenderTargetView *_d3dCurrentTargets[TARGET_MAXIMUM];
+	ID3D11DepthStencilView *_d3dCurrentDepth = nullptr;
+	bool _targetsChanged = true;
 
-		ID3D11Texture2D *_d3dTarget = nullptr;
-		ID3D11RenderTargetView *_d3dTargetView = nullptr;
+	::lucid::gal::d3d11::Program const *_activeProgram = nullptr;
 
-		ID3D11Texture2D *_d3dDepth = nullptr;
-		ID3D11DepthStencilView *_d3dDepthView = nullptr;
+	void createDepthBuffer(int32_t width, int32_t height, int32_t samples);
 
-		ID3D11UnorderedAccessView *_d3dCurrentUnordered = nullptr;
-		ID3D11RenderTargetView *_d3dCurrentTargets[TARGET_MAXIMUM];
-		ID3D11DepthStencilView *_d3dCurrentDepth = nullptr;
-		bool _targetsChanged = true;
+	LUCID_PREVENT_COPY(Pipeline);
+	LUCID_PREVENT_ASSIGNMENT(Pipeline);
+};
 
-		::lucid::gal::d3d11::Program const *_activeProgram = nullptr;
+inline Statistics &Pipeline::statistics()
+{
+	return _statistics;
+}
 
-		void createDepthBuffer(int32_t width, int32_t height, int32_t samples);
+inline Statistics const &Pipeline::statistics() const
+{
+	return _statistics;
+}
 
-		LUCID_PREVENT_COPY(Pipeline);
-		LUCID_PREVENT_ASSIGNMENT(Pipeline);
-	};
-
-	inline Statistics &Pipeline::statistics()
-	{
-		return _statistics;
-	}
-
-	inline Statistics const &Pipeline::statistics() const
-	{
-		return _statistics;
-	}
-
-}	///	d3d11
-}	///	gal
-}	///	lucid
+LUCID_GAL_D3D11_END

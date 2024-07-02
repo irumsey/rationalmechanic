@@ -7,85 +7,74 @@
 #include <lucid/core/Noncopyable.h>
 #include <lucid/core/Types.h>
 #include <lucid/gal/IndexBuffer.h>
+#include <lucid/gal.private/gal.d3d11/Defines.h>
 #include <lucid/gal.private/gal.d3d11/Buffer.h>
 
-///
-///
-///
-namespace lucid {
-namespace core {
+LUCID_CORE_BEGIN
 
-	class Reader;
+class Reader;
 
-}	///	core
-}	///	lucid
+LUCID_CORE_END
+
+LUCID_GAL_D3D11_BEGIN
 
 ///
 ///
 ///
-namespace lucid {
-namespace gal {
-namespace d3d11 {
+class IndexBuffer : public ::lucid::gal::IndexBuffer
+{
+public:
+	IndexBuffer(USAGE usage, FORMAT format, int32_t count);
 
-	///
-	///
-	///
-	class IndexBuffer : public ::lucid::gal::IndexBuffer
-	{
-	public:
-		IndexBuffer(USAGE usage, FORMAT format, int32_t count);
+	IndexBuffer(::lucid::core::Reader &reader);
 
-		IndexBuffer(::lucid::core::Reader &reader);
+	virtual ~IndexBuffer();
 
-		virtual ~IndexBuffer();
+	virtual FORMAT format() const override;
 
-		virtual FORMAT format() const override;
+	virtual USAGE usage() const override;
 
-		virtual USAGE usage() const override;
+	virtual int32_t count() const override;
 
-		virtual int32_t count() const override;
+	virtual void *lock(int32_t start = 0, int32_t count = 0) override;
 
-		virtual void *lock(int32_t start = 0, int32_t count = 0) override;
+	virtual void unlock() override;
 
-		virtual void unlock() override;
+	ID3D11Buffer *d3dBuffer() const;
 
-		ID3D11Buffer *d3dBuffer() const;
+private:
+	USAGE _usage = USAGE_UNDEFINED;
+	FORMAT _format = FORMAT_UNDEFINED;
+	Buffer *_d3dBuffer = nullptr;
 
-	private:
-		USAGE _usage = USAGE_UNDEFINED;
-		FORMAT _format = FORMAT_UNDEFINED;
-		Buffer *_d3dBuffer = nullptr;
+	int32_t _size = 0;
 
-		int32_t _size = 0;
+	void initialize(int32_t count);
 
-		void initialize(int32_t count);
+	void shutdown();
 
-		void shutdown();
+	LUCID_PREVENT_COPY(IndexBuffer);
+	LUCID_PREVENT_ASSIGNMENT(IndexBuffer);
+};
 
-		LUCID_PREVENT_COPY(IndexBuffer);
-		LUCID_PREVENT_ASSIGNMENT(IndexBuffer);
-	};
+inline IndexBuffer::USAGE IndexBuffer::usage() const
+{
+	return _usage;
+}
 
-	inline IndexBuffer::USAGE IndexBuffer::usage() const
-	{
-		return _usage;
-	}
+inline IndexBuffer::FORMAT IndexBuffer::format() const
+{
+	return _format;
+}
 
-	inline IndexBuffer::FORMAT IndexBuffer::format() const
-	{
-		return _format;
-	}
+inline int32_t IndexBuffer::count() const
+{
+	return _d3dBuffer->count();
+}
 
-	inline int32_t IndexBuffer::count() const
-	{
-		return _d3dBuffer->count();
-	}
+inline ID3D11Buffer *IndexBuffer::d3dBuffer() const
+{
+	return _d3dBuffer->d3dBuffer();
+}
 
-	inline ID3D11Buffer *IndexBuffer::d3dBuffer() const
-	{
-		return _d3dBuffer->d3dBuffer();
-	}
-
-}	///	d3d11
-}	///	gal
-}	///	lucid
+LUCID_GAL_D3D11_END

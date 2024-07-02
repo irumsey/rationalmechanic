@@ -1,40 +1,31 @@
 #pragma once
 
 #include <lucid/core/Noncopyable.h>
+#include <lucid/gal/Defines.h>
 
+LUCID_CORE_BEGIN
+
+class Reader;
+
+LUCID_CORE_END
+
+LUCID_GAL_BEGIN
+
+///	RenderState
 ///
-///
-///
-namespace lucid {
-namespace core {
+///	opaque class representing render state.
+class RenderState
+{
+public:
+	virtual ~RenderState() = 0 {}
 
-	class Reader;
+	static RenderState *create(LUCID_CORE::Reader &reader);
 
-}	///	core
-}	///	lucid
+protected:
+	RenderState() {}
 
-///
-///
-///
-namespace lucid {
-namespace gal {
+	LUCID_PREVENT_COPY(RenderState);
+	LUCID_PREVENT_ASSIGNMENT(RenderState);
+};
 
-	///	RenderState
-	///
-	///	opaque class representing render state.
-	class RenderState
-	{
-	public:
-		virtual ~RenderState() = 0 {}
-
-		static RenderState *create(::lucid::core::Reader &reader);
-
-	protected:
-		RenderState() {}
-
-		LUCID_PREVENT_COPY(RenderState);
-		LUCID_PREVENT_ASSIGNMENT(RenderState);
-	};
-
-}	///	gal
-}	///	lucid
+LUCID_GAL_END

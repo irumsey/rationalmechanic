@@ -3,270 +3,215 @@
 #include <algorithm>
 #include <cmath>
 #include <lucid/units/System.h>
+#include <lucid/math/Defines.h>
 
 #ifdef min
 #	undef min
 #	undef max
 #endif
 
+LUCID_MATH_BEGIN
+
+///	Scalar
 ///
-///
-///
+///	a value with a unit of measure
+template<typename T, typename U>
+struct Scalar
+{
+	T value;
 
-#pragma push_macro("QUANTITY_PURE")
-#define QUANTITY_PURE ::lucid::units::quantity::pure
-
-#pragma push_macro("SCALAR")
-#define SCALAR(T, S, Q) ::lucid::math::Scalar<T, ::lucid::units::Unit<S, Q> >
-
-#pragma push_macro("ADD")
-#define ADD(LHS, RHS) typename ::lucid::units::quantity::add<LHS, RHS>::result
-
-#pragma push_macro("SUB")
-#define SUB(LHS, RHS) typename ::lucid::units::quantity::sub<LHS, RHS>::result
-
-#pragma push_macro("HALF")
-#define HALF(RHS) typename ::lucid::units::quantity::half<RHS>::result
-
-#pragma push_macro("NEG")
-#define NEG(RHS) typename ::lucid::units::quantity::neg<RHS>::result
-
-///
-///
-///
-
-namespace lucid {
-namespace math {
-
-	///	Scalar
-	///
-	///	a value with a unit of measure
-	template<typename T, typename U>
-	struct Scalar
+	Scalar()
+		: value()
 	{
-		T value;
+	}
 
-		Scalar()
-			: value()
-		{
-		}
+	Scalar(T const &rhs)
+		: value(rhs)
+	{
+	}
 
-		Scalar(T const &rhs)
-			: value(rhs)
-		{
-		}
+	~Scalar() = default;
 
-		~Scalar() = default;
+	operator T const &() const
+	{
+		return value;
+	}
 
-		operator T const &() const
-		{
-			return value;
-		}
+};
 
-	};
-
-}	///	math
-}	///	lucid
-
-///
-///
-///
+LUCID_MATH_END
 
 template<typename T, typename S, typename Q>
-inline bool operator<(SCALAR(T, S, Q) const &lhs, SCALAR(T, S, Q) const &rhs)
+inline bool operator<(LUCID_SCALAR(T, S, Q) const &lhs, LUCID_SCALAR(T, S, Q) const &rhs)
 {
 	return lhs.value < rhs.value;
 }
 
 template<typename T, typename S, typename Q>
-inline bool operator>(SCALAR(T, S, Q) const &lhs, SCALAR(T, S, Q) const &rhs)
+inline bool operator>(LUCID_SCALAR(T, S, Q) const &lhs, LUCID_SCALAR(T, S, Q) const &rhs)
 {
 	return lhs.value > rhs.value;
 }
 
 template<typename T, typename S, typename Q>
-inline SCALAR(T, S, Q) operator-(SCALAR(T, S, Q) const &rhs)
+inline LUCID_SCALAR(T, S, Q) operator-(LUCID_SCALAR(T, S, Q) const &rhs)
 {
-	return SCALAR(T, S, Q)(-rhs.value);
+	return LUCID_SCALAR(T, S, Q)(-rhs.value);
 }
 
 template<typename T, typename S, typename Q>
-inline SCALAR(T, S, Q) operator+(SCALAR(T, S, Q) const &lhs, SCALAR(T, S, Q) const &rhs)
+inline LUCID_SCALAR(T, S, Q) operator+(LUCID_SCALAR(T, S, Q) const &lhs, LUCID_SCALAR(T, S, Q) const &rhs)
 {
-	return SCALAR(T, S, Q)(lhs.value + rhs.value);
+	return LUCID_SCALAR(T, S, Q)(lhs.value + rhs.value);
 }
 
 template<typename T, typename S, typename Q>
-inline SCALAR(T, S, Q) operator-(SCALAR(T, S, Q) const &lhs, SCALAR(T, S, Q) const &rhs)
+inline LUCID_SCALAR(T, S, Q) operator-(LUCID_SCALAR(T, S, Q) const &lhs, LUCID_SCALAR(T, S, Q) const &rhs)
 {
-	return SCALAR(T, S, Q)(lhs.value - rhs.value);
+	return LUCID_SCALAR(T, S, Q)(lhs.value - rhs.value);
 }
 
 template<typename T, typename S, typename LQ, typename RQ>
-inline SCALAR(T, S, ADD(LQ, RQ)) operator*(SCALAR(T, S, LQ) const &lhs, SCALAR(T, S, RQ) const &rhs)
+inline LUCID_SCALAR(T, S, LUCID_QUANTITY_ADD(LQ, RQ)) operator*(LUCID_SCALAR(T, S, LQ) const &lhs, LUCID_SCALAR(T, S, RQ) const &rhs)
 {
-	return SCALAR(T, S, ADD(LQ, RQ))(lhs.value * rhs.value);
+	return LUCID_SCALAR(T, S, LUCID_QUANTITY_ADD(LQ, RQ))(lhs.value * rhs.value);
 }
 
 template<typename T, typename S, typename LQ, typename RQ>
-inline SCALAR(T, S, SUB(LQ, RQ)) operator/(SCALAR(T, S, LQ) const &lhs, SCALAR(T, S, RQ) const &rhs)
+inline LUCID_SCALAR(T, S, LUCID_QUANTITY_SUB(LQ, RQ)) operator/(LUCID_SCALAR(T, S, LQ) const &lhs, LUCID_SCALAR(T, S, RQ) const &rhs)
 {
-	return SCALAR(T, S, SUB(LQ, RQ))(lhs.value / rhs.value);
+	return LUCID_SCALAR(T, S, LUCID_QUANTITY_SUB(LQ, RQ))(lhs.value / rhs.value);
+}
+
+LUCID_MATH_BEGIN
+
+/// min / max
+/// 
+/// 
+
+template<typename T, typename S, typename Q>
+inline LUCID_SCALAR(T, S, Q) min(LUCID_SCALAR(T, S, Q) const &x, LUCID_SCALAR(T, S, Q) const &y)
+{
+	return LUCID_SCALAR(T, S, Q)((x.value <= y.value) ? x.value : y.value);
+}
+
+template<typename T, typename S, typename Q>
+inline LUCID_SCALAR(T, S, Q) max(LUCID_SCALAR(T, S, Q) const &x, LUCID_SCALAR(T, S, Q) const &y)
+{
+	return LUCID_SCALAR(T, S, Q)((x.value >= y.value) ? x.value : y.value);
+}
+
+template<typename T, typename S, typename Q>
+inline LUCID_SCALAR(T, S, Q) abs(LUCID_SCALAR(T, S, Q) const &rhs)
+{
+	return std::abs(rhs.value);
+}
+
+///	interpolate
+///
+///	linear interpolation from a to b.
+template<typename T, typename S, typename Q>
+inline LUCID_SCALAR(T, S, Q) lerp(LUCID_SCALAR(T, S, LUCID_QUANTITY_PURE) const &t, LUCID_SCALAR(T, S, Q) const &a, LUCID_SCALAR(T, S, Q) const &b)
+{
+	return LUCID_SCALAR(T, S, Q)((b.value - a.value) * t.value + a.value);
+}
+
+///	clamp
+///
+///	clamp value between values a and b
+///	where a < b
+template<typename T, typename S, typename Q>
+inline LUCID_SCALAR(T, S, Q) clamp(LUCID_SCALAR(T, S, Q) const &x, LUCID_SCALAR(T, S, Q) const &a, LUCID_SCALAR(T, S, Q) const &b)
+{
+	return LUCID_SCALAR(T, S, Q)(std::min(std::max(a.value, x.value), b.value));
+}
+
+///	exclude
+///
+///	range of exclusion for the value x defined by a and b
+///	where a < b
+template<typename T, typename S, typename Q>
+inline LUCID_SCALAR(T, S, Q) exclude(LUCID_SCALAR(T, S, Q) const &x, LUCID_SCALAR(T, S, Q) const &a, LUCID_SCALAR(T, S, Q) const &b)
+{
+	if ((x.value < a.value) || (b.value < x.value))
+		return x;
+
+	if ((b.value - x.value) > (x.value - a.value))
+		return a;
+
+	return LUCID_SCALAR(T, S, Q)(b.value);
 }
 
 ///
 ///
 ///
+template<typename T, typename S, typename Q>
+inline LUCID_SCALAR(T, S, LUCID_QUANTITY_NEG(Q)) inv(LUCID_SCALAR(T, S, Q) const &rhs)
+{
+	return LUCID_SCALAR(T, S, LUCID_QUANTITY_NEG(Q))(T(1) / rhs.value);
+}
 
-namespace lucid {
-namespace math {
+///
+///
+///
+template<typename T, typename S, typename Q>
+inline LUCID_SCALAR(T, S, LUCID_QUANTITY_HALF(Q)) sqrt(LUCID_SCALAR(T, S, Q) const &rhs)
+{
+	return LUCID_SCALAR(T, S, LUCID_QUANTITY_HALF(Q))(std::sqrt(rhs.value));
+}
 
-	/// min / max
-	/// 
-	/// 
+///
+///	cosine "wrappers"
+///
 
-	template<typename T, typename S, typename Q>
-	inline SCALAR(T, S, Q) min(SCALAR(T, S, Q) const &x, SCALAR(T, S, Q) const &y)
-	{
-		return SCALAR(T, S, Q)((x.value <= y.value) ? x.value : y.value);
-	}
+template<typename T, typename S>
+inline LUCID_SCALAR(T, S, LUCID_QUANTITY_PURE) cos(LUCID_SCALAR(T, S, LUCID_QUANTITY_PURE) const &theta)
+{
+	return LUCID_SCALAR(T, S, LUCID_QUANTITY_PURE)(std::cos(theta.value));
+}
 
-	template<typename T, typename S, typename Q>
-	inline SCALAR(T, S, Q) max(SCALAR(T, S, Q) const &x, SCALAR(T, S, Q) const &y)
-	{
-		return SCALAR(T, S, Q)((x.value >= y.value) ? x.value : y.value);
-	}
+template<typename T, typename S>
+inline LUCID_SCALAR(T, S, LUCID_QUANTITY_PURE) acos(LUCID_SCALAR(T, S, LUCID_QUANTITY_PURE) const &x)
+{
+	return LUCID_SCALAR(T, S, LUCID_QUANTITY_PURE)(std::acos(x.value));
+}
 
-	template<typename T, typename S, typename Q>
-	inline SCALAR(T, S, Q) abs(SCALAR(T, S, Q) const &rhs)
-	{
-		return std::abs(rhs.value);
-	}
+///
+///	sine "wrappers"
+///
 
-	///	interpolate
-	///
-	///	linear interpolation from a to b.
-	template<typename T, typename S, typename Q>
-	inline SCALAR(T, S, Q) lerp(SCALAR(T, S, QUANTITY_PURE) const &t, SCALAR(T, S, Q) const &a, SCALAR(T, S, Q) const &b)
-	{
-		return SCALAR(T, S, Q)((b.value - a.value) * t.value + a.value);
-	}
+template<typename T, typename S>
+inline LUCID_SCALAR(T, S, LUCID_QUANTITY_PURE) sin(LUCID_SCALAR(T, S, LUCID_QUANTITY_PURE) const &theta)
+{
+	return LUCID_SCALAR(T, S, LUCID_QUANTITY_PURE)(std::sin(theta.value));
+}
 
-	///	clamp
-	///
-	///	clamp value between values a and b
-	///	where a < b
-	template<typename T, typename S, typename Q>
-	inline SCALAR(T, S, Q) clamp(SCALAR(T, S, Q) const &x, SCALAR(T, S, Q) const &a, SCALAR(T, S, Q) const &b)
-	{
-		return SCALAR(T, S, Q)(std::min(std::max(a.value, x.value), b.value));
-	}
+template<typename T, typename S>
+inline LUCID_SCALAR(T, S, LUCID_QUANTITY_PURE) asin(LUCID_SCALAR(T, S, LUCID_QUANTITY_PURE) const &x)
+{
+	return LUCID_SCALAR(T, S, LUCID_QUANTITY_PURE)(std::asin(x.value));
+}
 
-	///	exclude
-	///
-	///	range of exclusion for the value x defined by a and b
-	///	where a < b
-	template<typename T, typename S, typename Q>
-	inline SCALAR(T, S, Q) exclude(SCALAR(T, S, Q) const &x, SCALAR(T, S, Q) const &a, SCALAR(T, S, Q) const &b)
-	{
-		if ((x.value < a.value) || (b.value < x.value))
-			return x;
+///
+///	tangent "wrappers"
+///
 
-		if ((b.value - x.value) > (x.value - a.value))
-			return a;
+template<typename T, typename S>
+inline LUCID_SCALAR(T, S, LUCID_QUANTITY_PURE) tan(LUCID_SCALAR(T, S, LUCID_QUANTITY_PURE) const &theta)
+{
+	return LUCID_SCALAR(T, S, LUCID_QUANTITY_PURE)(std::tan(theta.value));
+}
 
-		return SCALAR(T, S, Q)(b.value);
-	}
+template<typename T, typename S>
+inline LUCID_SCALAR(T, S, LUCID_QUANTITY_PURE) atan(LUCID_SCALAR(T, S, LUCID_QUANTITY_PURE) const &x)
+{
+	return LUCID_SCALAR(T, S, LUCID_QUANTITY_PURE)(std::atan(x.value));
+}
 
-	///
-	///
-	///
-	template<typename T, typename S, typename Q>
-	inline SCALAR(T, S, NEG(Q)) inv(SCALAR(T, S, Q) const &rhs)
-	{
-		return SCALAR(T, S, NEG(Q))(T(1) / rhs.value);
-	}
+template<typename T, typename S>
+inline LUCID_SCALAR(T, S, LUCID_QUANTITY_PURE) atan2(LUCID_SCALAR(T, S, LUCID_QUANTITY_PURE) const &y, LUCID_SCALAR(T, S, LUCID_QUANTITY_PURE) const &x)
+{
+	return LUCID_SCALAR(T, S, LUCID_QUANTITY_PURE)(std::atan2(y.value, x.value));
+}
 
-	///
-	///
-	///
-	template<typename T, typename S, typename Q>
-	inline SCALAR(T, S, HALF(Q)) sqrt(SCALAR(T, S, Q) const &rhs)
-	{
-		return SCALAR(T, S, HALF(Q))(std::sqrt(rhs.value));
-	}
-
-	///
-	///	cosine "wrappers"
-	///
-
-	template<typename T, typename S>
-	inline SCALAR(T, S, QUANTITY_PURE) cos(SCALAR(T, S, QUANTITY_PURE) const &theta)
-	{
-		return SCALAR(T, S, QUANTITY_PURE)(std::cos(theta.value));
-	}
-
-	template<typename T, typename S>
-	inline SCALAR(T, S, QUANTITY_PURE) acos(SCALAR(T, S, QUANTITY_PURE) const &x)
-	{
-		return SCALAR(T, S, QUANTITY_PURE)(std::acos(x.value));
-	}
-
-	///
-	///	sine "wrappers"
-	///
-
-	template<typename T, typename S>
-	inline SCALAR(T, S, QUANTITY_PURE) sin(SCALAR(T, S, QUANTITY_PURE) const &theta)
-	{
-		return SCALAR(T, S, QUANTITY_PURE)(std::sin(theta.value));
-	}
-
-	template<typename T, typename S>
-	inline SCALAR(T, S, QUANTITY_PURE) asin(SCALAR(T, S, QUANTITY_PURE) const &x)
-	{
-		return SCALAR(T, S, QUANTITY_PURE)(std::asin(x.value));
-	}
-
-	///
-	///	tangent "wrappers"
-	///
-
-	template<typename T, typename S>
-	inline SCALAR(T, S, QUANTITY_PURE) tan(SCALAR(T, S, QUANTITY_PURE) const &theta)
-	{
-		return SCALAR(T, S, QUANTITY_PURE)(std::tan(theta.value));
-	}
-
-	template<typename T, typename S>
-	inline SCALAR(T, S, QUANTITY_PURE) atan(SCALAR(T, S, QUANTITY_PURE) const &x)
-	{
-		return SCALAR(T, S, QUANTITY_PURE)(std::atan(x.value));
-	}
-
-	template<typename T, typename S>
-	inline SCALAR(T, S, QUANTITY_PURE) atan2(SCALAR(T, S, QUANTITY_PURE) const &y, SCALAR(T, S, QUANTITY_PURE) const &x)
-	{
-		return SCALAR(T, S, QUANTITY_PURE)(std::atan2(y.value, x.value));
-	}
-
-}	///	math
-}	///	lucid
-
-#undef NEG
-#pragma pop_macro("NEG")
-
-#undef HALF
-#pragma pop_macro("HALF")
-
-#undef SUB
-#pragma pop_macro("SUB")
-
-#undef ADD
-#pragma pop_macro("ADD")
-
-#undef SCALAR
-#pragma pop_macro("SCALAR")
-
-#undef QUANTITY_PURE
-#pragma pop_macro("QUANTITY_PURE")
+LUCID_MATH_END

@@ -7,85 +7,73 @@
 #include <lucid/core/Noncopyable.h>
 #include <lucid/core/Types.h>
 #include <lucid/gal/VertexBuffer.h>
+#include <lucid/gal.private/gal.d3d11/Defines.h>
 #include <lucid/gal.private/gal.d3d11/Buffer.h>
 
+LUCID_CORE_BEGIN
+
+class Reader;
+
+LUCID_CORE_END
+
+LUCID_GAL_D3D11_BEGIN
 
 ///
 ///
 ///
-namespace lucid {
-namespace core {
+class VertexBuffer : public ::lucid::gal::VertexBuffer
+{
+public:
+	VertexBuffer(USAGE usage, int32_t count, int32_t stride);
 
-	class Reader;
+	VertexBuffer(::lucid::core::Reader &reader);
 
-}	///	core
-}	///	lucid
+	virtual ~VertexBuffer();
 
-///
-///
-///
-namespace lucid {
-namespace gal {
-namespace d3d11 {
+	virtual USAGE usage() const override;
 
-	///
-	///
-	///
-	class VertexBuffer : public ::lucid::gal::VertexBuffer
-	{
-	public:
-		VertexBuffer(USAGE usage, int32_t count, int32_t stride);
+	virtual int32_t count() const override;
 
-		VertexBuffer(::lucid::core::Reader &reader);
+	virtual int32_t stride() const override;
 
-		virtual ~VertexBuffer();
+	virtual void *lock(int32_t start = 0, int32_t count = 0) override;
 
-		virtual USAGE usage() const override;
+	virtual void unlock() override;
 
-		virtual int32_t count() const override;
+	ID3D11Buffer *d3dBuffer() const;
 
-		virtual int32_t stride() const override;
+private:
+	USAGE _usage = USAGE_UNDEFINED;
+	Buffer *_d3dBuffer = nullptr;
 
-		virtual void *lock(int32_t start = 0, int32_t count = 0) override;
+	int32_t _size = 0;
 
-		virtual void unlock() override;
+	void initialize(int32_t count, int32_t stride);
 
-		ID3D11Buffer *d3dBuffer() const;
+	void shutdown();
 
-	private:
-		USAGE _usage = USAGE_UNDEFINED;
-		Buffer *_d3dBuffer = nullptr;
+	LUCID_PREVENT_COPY(VertexBuffer);
+	LUCID_PREVENT_ASSIGNMENT(VertexBuffer);
+};
 
-		int32_t _size = 0;
+inline VertexBuffer::USAGE VertexBuffer::usage() const
+{
+	return _usage;
+}
 
-		void initialize(int32_t count, int32_t stride);
+inline int32_t VertexBuffer::count() const
+{
+	return _d3dBuffer->count();
+}
 
-		void shutdown();
+inline int32_t VertexBuffer::stride() const
+{
+	return _d3dBuffer->stride();
+}
 
-		LUCID_PREVENT_COPY(VertexBuffer);
-		LUCID_PREVENT_ASSIGNMENT(VertexBuffer);
-	};
+inline ID3D11Buffer *VertexBuffer::d3dBuffer() const
+{
+	return _d3dBuffer->d3dBuffer();
+}
 
-	inline VertexBuffer::USAGE VertexBuffer::usage() const
-	{
-		return _usage;
-	}
-
-	inline int32_t VertexBuffer::count() const
-	{
-		return _d3dBuffer->count();
-	}
-
-	inline int32_t VertexBuffer::stride() const
-	{
-		return _d3dBuffer->stride();
-	}
-
-	inline ID3D11Buffer *VertexBuffer::d3dBuffer() const
-	{
-		return _d3dBuffer->d3dBuffer();
-	}
-
-}	///	d3d11
-}	///	gal
-}	///	lucid
+LUCID_GAL_D3D11_END

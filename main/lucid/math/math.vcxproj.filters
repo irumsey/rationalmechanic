@@ -12,5 +12,6 @@
     <ClInclude Include="Integer.h" />
     <ClInclude Include="Fixed.h" />
     <ClInclude Include="Scalar.h" />
+    <ClInclude Include="Defines.h" />
   </ItemGroup>
 </Project>

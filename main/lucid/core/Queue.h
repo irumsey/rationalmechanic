@@ -2,59 +2,58 @@
 
 #include <algorithm>
 #include <vector>
+#include <lucid/core/Defines.h>
 
-namespace lucid {
-namespace core {
+LUCID_CORE_BEGIN
 
-	///	Queue
-	///
-	///	same as stl priority_queue.
-	///	however, this allows me to experiment with the internals.
-	///	also, it contains a clear() method.
-	template<typename T, typename Pred> class Queue final
+///	Queue
+///
+///	same as stl priority_queue.
+///	however, this allows me to experiment with the internals.
+///	also, it contains a clear() method.
+template<typename T, typename Pred> class Queue final
+{
+public:
+	Queue() = default;
+
+	~Queue() = default;
+
+	bool empty() const
 	{
-	public:
-		Queue() = default;
+		return _heap.empty();
+	}
 
-		~Queue() = default;
+	uint32_t count() const
+	{
+		return _heap.size();
+	}
 
-		bool empty() const
-		{
-			return _heap.empty();
-		}
+	void push(T const &value)
+	{
+		_heap.push_back(value);
+		std::push_heap(_heap.begin(), _heap.end(), _pred);
+	}
 
-		uint32_t count() const
-		{
-			return _heap.size();
-		}
+	void pop()
+	{
+		std::pop_heap(_heap.begin(), _heap.end(), _pred);
+		_heap.pop_back();
+	}
 
-		void push(T const &value)
-		{
-			_heap.push_back(value);
-			std::push_heap(_heap.begin(), _heap.end(), _pred);
-		}
+	T const &top() const
+	{
+		return _heap.front();
+	}
 
-		void pop()
-		{
-			std::pop_heap(_heap.begin(), _heap.end(), _pred);
-			_heap.pop_back();
-		}
+	void clear()
+	{
+		_heap.clear();
+	}
 
-		T const &top() const
-		{
-			return _heap.front();
-		}
+private:
+	Pred _pred;
+	std::vector<T> _heap;
 
-		void clear()
-		{
-			_heap.clear();
-		}
+};
 
-	private:
-		Pred _pred;
-		std::vector<T> _heap;
-
-	};
-
-}	///	core
-}	///	lucid
+LUCID_CORE_END

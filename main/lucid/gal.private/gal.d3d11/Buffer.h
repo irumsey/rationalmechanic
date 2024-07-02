@@ -7,190 +7,184 @@
 #include <d3d11.h>
 #include <lucid/core/Noncopyable.h>
 #include <lucid/core/Types.h>
+#include <lucid/gal.private//gal.d3d11/Defines.h>
 #include <lucid/gal.private/gal.d3d11/Utility.h>
 #include <lucid/gal.private/gal.d3d11/System.h>
 
-///
-///
-///
-namespace lucid {
-namespace gal {
-namespace d3d11 {
+LUCID_GAL_D3D11_BEGIN
 
-	///
-	///
-	///
-	class Buffer
+///
+///
+///
+class Buffer
+{
+public:
+	virtual ~Buffer() {}
+
+	virtual int32_t count() const = 0;
+
+	virtual int32_t stride() const = 0;
+
+	virtual void *lock(int32_t start = 0, int32_t count = 0) = 0;
+
+	virtual void unlock() = 0;
+
+	virtual ID3D11Buffer *d3dBuffer() const = 0;
+
+protected:
+	Buffer() {}
+
+	LUCID_PREVENT_COPY(Buffer);
+	LUCID_PREVENT_ASSIGNMENT(Buffer);
+};
+
+///
+///
+///
+template<D3D11_BIND_FLAG BINDING> class StaticBuffer : public Buffer
+{
+public:
+	StaticBuffer(int32_t count, int32_t stride)
+		: _count(count)
+		, _stride(stride)
 	{
-	public:
-		virtual ~Buffer() {}
+		::memset(&_d3dDesc, 0, sizeof(D3D11_BUFFER_DESC));
 
-		virtual int32_t count() const = 0;
+		_d3dDesc.Usage = D3D11_USAGE_IMMUTABLE;
+		_d3dDesc.ByteWidth = _count * _stride;
+		_d3dDesc.BindFlags = BINDING;
+	}
 
-		virtual int32_t stride() const = 0;
-
-		virtual void *lock(int32_t start = 0, int32_t count = 0) = 0;
-
-		virtual void unlock() = 0;
-
-		virtual ID3D11Buffer *d3dBuffer() const = 0;
-
-	protected:
-		Buffer() {}
-
-		LUCID_PREVENT_COPY(Buffer);
-		LUCID_PREVENT_ASSIGNMENT(Buffer);
-	};
-
-	///
-	///
-	///
-	template<D3D11_BIND_FLAG BINDING> class StaticBuffer : public Buffer
+	virtual ~StaticBuffer()
 	{
-	public:
-		StaticBuffer(int32_t count, int32_t stride)
-			: _count(count)
-			, _stride(stride)
-		{
-			::memset(&_d3dDesc, 0, sizeof(D3D11_BUFFER_DESC));
+		safeRelease(_d3dBuffer);
+	}
 
-			_d3dDesc.Usage = D3D11_USAGE_IMMUTABLE;
-			_d3dDesc.ByteWidth = _count * _stride;
-			_d3dDesc.BindFlags = BINDING;
-		}
+	virtual int32_t count() const override
+	{
+		return _count;
+	}
 
-		virtual ~StaticBuffer()
-		{
-			safeRelease(_d3dBuffer);
-		}
+	virtual int32_t stride() const override
+	{
+		return _stride;
+	}
 
-		virtual int32_t count() const override
-		{
-			return _count;
-		}
+	virtual void *lock(int32_t start = 0, int32_t count = 0) override
+	{
+		///	sanity check...
+		delete [] _buffer;
+		_buffer = new uint8_t[_count * _stride];
 
-		virtual int32_t stride() const override
-		{
-			return _stride;
-		}
+		///	TBD: use start and count;
+		return _buffer;
+	}
 
-		virtual void *lock(int32_t start = 0, int32_t count = 0) override
-		{
-			///	sanity check...
-			delete [] _buffer;
-			_buffer = new uint8_t[_count * _stride];
+	virtual void unlock() override
+	{
+		safeRelease(_d3dBuffer);
 
-			///	TBD: use start and count;
-			return _buffer;
-		}
+		D3D11_SUBRESOURCE_DATA data;
 
-		virtual void unlock() override
-		{
-			safeRelease(_d3dBuffer);
+		data.pSysMem = _buffer;
+		data.SysMemPitch = 0;
+		data.SysMemSlicePitch = 0;
 
-			D3D11_SUBRESOURCE_DATA data;
-
-			data.pSysMem = _buffer;
-			data.SysMemPitch = 0;
-			data.SysMemSlicePitch = 0;
-
-			HRESULT hResult = d3d11ConcreteDevice->CreateBuffer(&_d3dDesc, &data, &_d3dBuffer);
+		HRESULT hResult = d3d11ConcreteDevice->CreateBuffer(&_d3dDesc, &data, &_d3dBuffer);
 			
-			delete [] _buffer;
-			_buffer = nullptr;
+		delete [] _buffer;
+		_buffer = nullptr;
 
-			GAL_VALIDATE_HRESULT(hResult, "unable to create buffer");
-		}
+		GAL_VALIDATE_HRESULT(hResult, "unable to create buffer");
+	}
 
-		virtual ID3D11Buffer *d3dBuffer() const override
-		{
-			return _d3dBuffer;
-		}
-
-	private:
-		int32_t _count = 0;
-		int32_t _stride = 0;
-		void *_buffer = nullptr;
-
-		ID3D11Buffer *_d3dBuffer = 0;
-		D3D11_BUFFER_DESC _d3dDesc;
-
-		LUCID_PREVENT_COPY(StaticBuffer);
-		LUCID_PREVENT_ASSIGNMENT(StaticBuffer);
-	};
-
-	///
-	///
-	///
-	template<D3D11_BIND_FLAG BINDING> class DynamicBuffer : public Buffer
+	virtual ID3D11Buffer *d3dBuffer() const override
 	{
-	public:
-		DynamicBuffer(int32_t count, int32_t stride)
-			: _count(count)
-			, _stride(stride)
-		{
-			D3D11_BUFFER_DESC d3dDesc;
-			::memset(&d3dDesc, 0, sizeof(D3D11_BUFFER_DESC));
+		return _d3dBuffer;
+	}
 
-			d3dDesc.Usage = D3D11_USAGE_DYNAMIC;
-			d3dDesc.ByteWidth = count * stride;
-			d3dDesc.BindFlags = BINDING;
-			d3dDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+private:
+	int32_t _count = 0;
+	int32_t _stride = 0;
+	void *_buffer = nullptr;
 
-			HRESULT hResult = d3d11ConcreteDevice->CreateBuffer(&d3dDesc, nullptr, &_d3dBuffer);
-			GAL_VALIDATE_HRESULT(hResult, "unable to create buffer");
-		}
+	ID3D11Buffer *_d3dBuffer = 0;
+	D3D11_BUFFER_DESC _d3dDesc;
 
-		virtual ~DynamicBuffer()
-		{
-			safeRelease(_d3dBuffer);
-		}
+	LUCID_PREVENT_COPY(StaticBuffer);
+	LUCID_PREVENT_ASSIGNMENT(StaticBuffer);
+};
 
-		virtual int32_t count() const override
-		{
-			return _count;
-		}
+///
+///
+///
+template<D3D11_BIND_FLAG BINDING> class DynamicBuffer : public Buffer
+{
+public:
+	DynamicBuffer(int32_t count, int32_t stride)
+		: _count(count)
+		, _stride(stride)
+	{
+		D3D11_BUFFER_DESC d3dDesc;
+		::memset(&d3dDesc, 0, sizeof(D3D11_BUFFER_DESC));
 
-		virtual int32_t stride() const override
-		{
-			return _stride;
-		}
+		d3dDesc.Usage = D3D11_USAGE_DYNAMIC;
+		d3dDesc.ByteWidth = count * stride;
+		d3dDesc.BindFlags = BINDING;
+		d3dDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-		virtual void *lock(int32_t start = 0, int32_t count = 0) override
-		{
-			D3D11_MAPPED_SUBRESOURCE mapped;
-			HRESULT hResult = d3d11ConcreteContext->Map(_d3dBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
-			GAL_VALIDATE_HRESULT(hResult, "unable to lock buffer");
+		HRESULT hResult = d3d11ConcreteDevice->CreateBuffer(&d3dDesc, nullptr, &_d3dBuffer);
+		GAL_VALIDATE_HRESULT(hResult, "unable to create buffer");
+	}
 
-			_locked = true;
+	virtual ~DynamicBuffer()
+	{
+		safeRelease(_d3dBuffer);
+	}
 
-			///	TBD: use start and count
-			return mapped.pData;
-		}
+	virtual int32_t count() const override
+	{
+		return _count;
+	}
 
-		virtual void unlock() override
-		{
-			d3d11ConcreteContext->Unmap(_d3dBuffer, 0);
-			_locked = false;
-		}
+	virtual int32_t stride() const override
+	{
+		return _stride;
+	}
 
-		virtual ID3D11Buffer *d3dBuffer() const override
-		{
-			return _d3dBuffer;
-		}
+	virtual void *lock(int32_t start = 0, int32_t count = 0) override
+	{
+		D3D11_MAPPED_SUBRESOURCE mapped;
+		HRESULT hResult = d3d11ConcreteContext->Map(_d3dBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
+		GAL_VALIDATE_HRESULT(hResult, "unable to lock buffer");
 
-	private:
-		int32_t _count = 0;
-		int32_t _stride = 0;
+		_locked = true;
 
-		bool _locked = false;
+		///	TBD: use start and count
+		return mapped.pData;
+	}
 
-		ID3D11Buffer *_d3dBuffer = nullptr;
+	virtual void unlock() override
+	{
+		d3d11ConcreteContext->Unmap(_d3dBuffer, 0);
+		_locked = false;
+	}
 
-		LUCID_PREVENT_COPY(DynamicBuffer);
-		LUCID_PREVENT_ASSIGNMENT(DynamicBuffer);
-	};
+	virtual ID3D11Buffer *d3dBuffer() const override
+	{
+		return _d3dBuffer;
+	}
 
-}	///	d3d11
-}	///	gal
-}	///	lucid
+private:
+	int32_t _count = 0;
+	int32_t _stride = 0;
+
+	bool _locked = false;
+
+	ID3D11Buffer *_d3dBuffer = nullptr;
+
+	LUCID_PREVENT_COPY(DynamicBuffer);
+	LUCID_PREVENT_ASSIGNMENT(DynamicBuffer);
+};
+
+LUCID_GAL_D3D11_END

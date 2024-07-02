@@ -3,54 +3,42 @@
 #include <lucid/core/Types.h>
 #include <windows.h>
 
-///
-///
-///
-namespace lucid {
-namespace core {
+LUCID_CORE_BEGIN
 
-	Clock *Clock::create()
-	{
-		return new win::Clock();
-	}
+Clock *Clock::create()
+{
+	return new win::Clock();
+}
 
-}	/// core
-}	///	lucid
+LUCID_CORE_END
 
-///
-///
-///
-namespace lucid {
-namespace core {
-namespace win {
+LUCID_CORE_WIN_BEGIN
 
-	Clock::Clock()
-	{
-		LARGE_INTEGER frequency;
-		LUCID_VALIDATE(::QueryPerformanceFrequency(&frequency), "unable to determine clock frequency");
+Clock::Clock()
+{
+	LARGE_INTEGER frequency;
+	LUCID_VALIDATE(::QueryPerformanceFrequency(&frequency), "unable to determine clock frequency");
 
-		_period = 1.0 / frequency.QuadPart;
+	_period = 1.0 / frequency.QuadPart;
 
-		reset();
-	}
+	reset();
+}
 
-	Clock::~Clock()
-	{
-	}
+Clock::~Clock()
+{
+}
 
-	float64_t Clock::time() const
-	{
-		int64_t count;
-		LUCID_VALIDATE(::QueryPerformanceCounter((LARGE_INTEGER*)&count), "unable to determine current count");
+float64_t Clock::time() const
+{
+	int64_t count;
+	LUCID_VALIDATE(::QueryPerformanceCounter((LARGE_INTEGER*)&count), "unable to determine current count");
 
-		return _period * (float64_t)(count - _startCount);
-	}
+	return _period * (float64_t)(count - _startCount);
+}
 
-	void Clock::reset()
-	{
-		LUCID_VALIDATE(::QueryPerformanceCounter((LARGE_INTEGER*)&_startCount), "unable to determine start count");
-	}
+void Clock::reset()
+{
+	LUCID_VALIDATE(::QueryPerformanceCounter((LARGE_INTEGER*)&_startCount), "unable to determine start count");
+}
 
-}	///	win
-}	/// core
-}	///	lucid
+LUCID_CORE_WIN_END

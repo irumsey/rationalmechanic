@@ -14,137 +14,117 @@
 #include <lucid/math/Matrix.h>
 #include <lucid/gal/Types.h>
 #include <lucid/gal/Program.h>
+#include <lucid/gal.private/gal.d3d11/Defines.h>
+
+LUCID_CORE_BEGIN
+
+class Identity;
+class Reader;
+
+LUCID_CORE_END
+
+LUCID_GAL_BEGIN
+
+class Parameter;
+class RenderState;
+
+LUCID_GAL_END
+
+LUCID_GAL_D3D11_BEGIN
+
+class Uniform;
+class Sampler;
+class Parameter;
+class RenderState;
+class VertexShader;
+class GeometryShader;
+class PixelShader;
 
 ///
 ///
 ///
-namespace lucid {
-namespace core {
+class Program : public ::lucid::gal::Program
+{
+public:
+	Program(std::string const &path);
 
-	class Identity;
-	class Reader;
+	Program(::lucid::core::Reader &reader);
 
-}	///	core
-}	///	lucid
+	virtual ~Program();
 
-///
-///
-///
-namespace lucid {
-namespace gal {
+	virtual ::lucid::core::Identity const &identity() const override;
 
-	class Parameter;
-	class RenderState;
+	virtual ::lucid::gal::RenderState const *renderState() const override;
 
-}	///	gal
-}	///	lucid
+	virtual ::lucid::gal::Parameter const *lookup(std::string const &name) const override;
 
-///
-///
-///
-namespace lucid {
-namespace gal {
-namespace d3d11 {
+	virtual void set(::lucid::gal::Parameter const *parameter, uint8_t const *data, int size) const override;
 
-	///
-	///
-	///
+	virtual void set(::lucid::gal::Parameter const *parameter, bool value) const override;
 
-	class Uniform;
-	class Sampler;
-	class Parameter;
-	class RenderState;
-	class VertexShader;
-	class GeometryShader;
-	class PixelShader;
+	virtual void set(::lucid::gal::Parameter const *parameter, int32_t value) const override;
 
-	///
-	///
-	///
-	class Program : public ::lucid::gal::Program
-	{
-	public:
-		Program(std::string const &path);
+	virtual void set(::lucid::gal::Parameter const *parameter, float32_t value) const override;
 
-		Program(::lucid::core::Reader &reader);
+	virtual void set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Color const &value) const override;
 
-		virtual ~Program();
+	virtual void set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Vector2 const &value) const override;
 
-		virtual ::lucid::core::Identity const &identity() const override;
+	virtual void set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Vector3 const &value) const override;
 
-		virtual ::lucid::gal::RenderState const *renderState() const override;
+	virtual void set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Vector4 const &value) const override;
 
-		virtual ::lucid::gal::Parameter const *lookup(std::string const &name) const override;
+	virtual void set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Quaternion const &value) const override;
 
-		virtual void set(::lucid::gal::Parameter const *parameter, uint8_t const *data, int size) const override;
+	virtual void set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Matrix2x2 const &value) const override;
 
-		virtual void set(::lucid::gal::Parameter const *parameter, bool value) const override;
+	virtual void set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Matrix3x3 const &value) const override;
 
-		virtual void set(::lucid::gal::Parameter const *parameter, int32_t value) const override;
+	virtual void set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Matrix4x4 const &value) const override;
 
-		virtual void set(::lucid::gal::Parameter const *parameter, float32_t value) const override;
+	virtual void set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Texture2D const *value) const override;
 
-		virtual void set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Color const &value) const override;
+	virtual void set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Unordered2D const *value) const override;
 
-		virtual void set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Vector2 const &value) const override;
+	virtual void set(::lucid::gal::Parameter const *parameter, ::lucid::gal::RenderTarget2D const *value) const override;
 
-		virtual void set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Vector3 const &value) const override;
+	void onBegin() const;
 
-		virtual void set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Vector4 const &value) const override;
+	void onEnd() const;
 
-		virtual void set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Quaternion const &value) const override;
+	void onDraw() const;
 
-		virtual void set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Matrix2x2 const &value) const override;
+private:
+	::lucid::core::Identity const _identity;
 
-		virtual void set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Matrix3x3 const &value) const override;
+	::lucid::gal::d3d11::RenderState *_renderState = nullptr;
+	Sampler *_samplers = nullptr;
 
-		virtual void set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Matrix4x4 const &value) const override;
+	VertexShader *_vertexShader = nullptr;
+	GeometryShader *_geometryShader = nullptr;
+	PixelShader *_pixelShader = nullptr;
 
-		virtual void set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Texture2D const *value) const override;
+	std::map<std::string, ::lucid::gal::d3d11::Parameter*> _parameters;
 
-		virtual void set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Unordered2D const *value) const override;
+	void addParameterVS(Uniform const &uniform);
 
-		virtual void set(::lucid::gal::Parameter const *parameter, ::lucid::gal::RenderTarget2D const *value) const override;
+	void addParameterGS(Uniform const &uniform);
 
-		void onBegin() const;
+	void addParameterPS(Uniform const &uniform);
 
-		void onEnd() const;
+	void finalizeSamplers();
 
-		void onDraw() const;
+	void initialize(::lucid::core::Reader &reader);
 
-	private:
-		::lucid::core::Identity const _identity;
+	void shutdown();
 
-		::lucid::gal::d3d11::RenderState *_renderState = nullptr;
-		Sampler *_samplers = nullptr;
+	LUCID_PREVENT_COPY(Program);
+	LUCID_PREVENT_ASSIGNMENT(Program);
+};
 
-		VertexShader *_vertexShader = nullptr;
-		GeometryShader *_geometryShader = nullptr;
-		PixelShader *_pixelShader = nullptr;
+inline ::lucid::core::Identity const &Program::identity() const
+{
+	return _identity;
+}
 
-		std::map<std::string, ::lucid::gal::d3d11::Parameter*> _parameters;
-
-		void addParameterVS(Uniform const &uniform);
-
-		void addParameterGS(Uniform const &uniform);
-
-		void addParameterPS(Uniform const &uniform);
-
-		void finalizeSamplers();
-
-		void initialize(::lucid::core::Reader &reader);
-
-		void shutdown();
-
-		LUCID_PREVENT_COPY(Program);
-		LUCID_PREVENT_ASSIGNMENT(Program);
-	};
-
-	inline ::lucid::core::Identity const &Program::identity() const
-	{
-		return _identity;
-	}
-
-}	///	d3d11
-}	///	gal
-}	///	lucid
+LUCID_GAL_D3D11_END

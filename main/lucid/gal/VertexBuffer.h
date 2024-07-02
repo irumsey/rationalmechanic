@@ -2,60 +2,51 @@
 
 #include <lucid/core/Noncopyable.h>
 #include <lucid/core/Types.h>
+#include <lucid/gal/Defines.h>
 
-///
-///
-///
-namespace lucid {
-namespace core {
+LUCID_CORE_BEGIN
 
-	class Reader;
+class Reader;
 
-}	///	core
-}	///	lucid
+LUCID_CORE_END
 
-///
-///
-///
-namespace lucid {
-namespace gal {
+LUCID_GAL_BEGIN
 
-	///	VertexBuffer
-	///
-	///	collection of vertices used to render geometry.
-	class VertexBuffer
+///	VertexBuffer
+///
+///	collection of vertices used to render geometry.
+class VertexBuffer
+{
+public:
+	enum USAGE
 	{
-	public:
-		enum USAGE
-		{
-			USAGE_UNDEFINED = -1,
+		USAGE_UNDEFINED = -1,
 
-			USAGE_STATIC,
-			USAGE_DYNAMIC
-		};
-
-		virtual ~VertexBuffer() = 0 {}
-
-		virtual USAGE usage() const = 0;
-
-		virtual int32_t count() const = 0;
-
-		virtual int32_t stride() const = 0;
-
-		virtual void *lock(int32_t start = 0, int32_t count = 0) = 0;
-
-		virtual void unlock() = 0;
-
-		static VertexBuffer *create(USAGE usage, int32_t count, int32_t stride);
-
-		static VertexBuffer *create(::lucid::core::Reader &reader);
-
-	protected:
-		VertexBuffer() {}
-
-		LUCID_PREVENT_COPY(VertexBuffer);
-		LUCID_PREVENT_ASSIGNMENT(VertexBuffer);
+		USAGE_STATIC,
+		USAGE_DYNAMIC
 	};
 
-}	///	gal
-}	///	lucid
+	virtual ~VertexBuffer() = 0 {}
+
+	virtual USAGE usage() const = 0;
+
+	virtual int32_t count() const = 0;
+
+	virtual int32_t stride() const = 0;
+
+	virtual void *lock(int32_t start = 0, int32_t count = 0) = 0;
+
+	virtual void unlock() = 0;
+
+	static VertexBuffer *create(USAGE usage, int32_t count, int32_t stride);
+
+	static VertexBuffer *create(LUCID_CORE::Reader &reader);
+
+protected:
+	VertexBuffer() {}
+
+	LUCID_PREVENT_COPY(VertexBuffer);
+	LUCID_PREVENT_ASSIGNMENT(VertexBuffer);
+};
+
+LUCID_GAL_END

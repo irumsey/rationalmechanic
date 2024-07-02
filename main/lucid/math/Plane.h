@@ -1,80 +1,43 @@
 #pragma once
 
 #include <lucid/units/System.h>
+#include <lucid/math/Defines.h>
 #include <lucid/math/Scalar.h>
 #include <lucid/math/Vector.h>
 
-#pragma push_macro("QUANTITY_PURE")
-#define QUANTITY_PURE ::lucid::units::quantity::pure
+LUCID_MATH_BEGIN
 
-#pragma push_macro("SCALAR")
-#define SCALAR(T, S, Q) ::lucid::math::Scalar<T, ::lucid::units::Unit<S, Q> >
+///	Plane
+///
+///	defines two "half spaces"
+template<typename T, size_t DIM, typename S, typename Q> struct Plane
+{
+	LUCID_VECTOR(T, DIM, S, LUCID_QUANTITY_PURE) n;
+	LUCID_SCALAR(T, S, Q) d;
 
-#pragma push_macro("VECTOR")
-#define VECTOR(T, DIM, S, Q) ::lucid::math::Vector<T, DIM, ::lucid::units::Unit<S, Q> >
+	Plane() = default;
 
-#pragma push_macro("PLANE")
-#define PLANE(T, DIM, S, Q) ::lucid::math::Plane<T, DIM, S, Q>
-
-namespace lucid {
-namespace math {
-
-	///	Plane
-	///
-	///	defines two "half spaces"
-	template<typename T, size_t DIM, typename S, typename Q> struct Plane
+	Plane(LUCID_VECTOR(T, DIM, S, LUCID_QUANTITY_PURE) const &n, LUCID_SCALAR(T, S, Q) const &d)
+		: n(n)
+		, d(d)
 	{
-		VECTOR(T, DIM, S, QUANTITY_PURE) n;
-		SCALAR(T, S, Q) d;
-
-		Plane() = default;
-
-		Plane(VECTOR(T, DIM, S, QUANTITY_PURE) const &n, SCALAR(T, S, Q) const &d)
-			: n(n)
-			, d(d)
-		{
-		}
-
-		~Plane() = default;
-
-	};
-
-}	///	math
-}	///	lucid
-
-///	TBD: operators...
-
-namespace lucid {
-namespace math {
-
-	template<typename T, size_t DIM, typename S, typename Q>
-	inline SCALAR(T, S, Q) dot(PLANE(T, DIM, S, Q) const &lhs, VECTOR(T, DIM, S, Q) const &rhs)
-	{
-		return dot(lhs.n, rhs) + lhs.d;
 	}
 
-	template<typename T, typename S, typename Q>
-	inline PLANE(T, 3, S, Q) makePlane3(VECTOR(T, 3, S, Q) const &a, VECTOR(T, 3, S, Q) const &b, VECTOR(T, 3, S, Q) const &c)
-	{
-		VECTOR(T, 3, S, QUANTITY_PURE) normal = normalize(cross(b - a, c - a));
-		return PLANE(T, 3, S, Q)(normal, -dot(normal, a));
-	}
+	~Plane() = default;
 
-}	///	math
-}	///	lucid
+};
 
-///
-///
-///
+template<typename T, size_t DIM, typename S, typename Q>
+inline LUCID_SCALAR(T, S, Q) dot(LUCID_PLANE(T, DIM, S, Q) const &lhs, LUCID_VECTOR(T, DIM, S, Q) const &rhs)
+{
+	return dot(lhs.n, rhs) + lhs.d;
+}
 
-#undef PLANE
-#pragma pop_macro("PLANE")
+template<typename T, typename S, typename Q>
+inline LUCID_PLANE(T, 3, S, Q) makePlane3(LUCID_VECTOR(T, 3, S, Q) const &a, LUCID_VECTOR(T, 3, S, Q) const &b, LUCID_VECTOR(T, 3, S, Q) const &c)
+{
+	LUCID_VECTOR(T, 3, S, LUCID_QUANTITY_PURE) normal = normalize(cross(b - a, c - a));
+	return LUCID_PLANE(T, 3, S, Q)(normal, -dot(normal, a));
+}
 
-#undef VECTOR
-#pragma pop_macro("VECTOR")
-
-#undef SCALAR
-#pragma pop_macro("SCALAR")
-
-#undef QUANTITY_PURE
-#pragma pop_macro("QUANTITY_PURE")
+LUCID_MATH_END

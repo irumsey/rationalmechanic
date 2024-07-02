@@ -1,53 +1,52 @@
 #pragma once
 
 #include <list>
+#include <lucid/core/Defines.h>
 
-namespace lucid {
-namespace core {
+LUCID_CORE_BEGIN
 
-	///	Stack
-	///
-	///	simple stack as a wrapper about std::list.
-	///	exists just to consolidate top and pop.
-	///	also to have a clear method.
-	template<class T> class Stack final
+///	Stack
+///
+///	simple stack as a wrapper about std::list.
+///	exists just to consolidate top and pop.
+///	also to have a clear method.
+template<class T> class Stack final
+{
+public:
+	Stack() = default;
+
+	~Stack() = default;
+
+	bool empty() const
 	{
-	public:
-		Stack() = default;
+		return _internal.empty();
+	}
 
-		~Stack() = default;
+	size_t size() const
+	{
+		return _internal.size();
+	}
 
-		bool empty() const
-		{
-			return _internal.empty();
-		}
+	void push(T value)
+	{
+		_internal.push_front(value);
+	}
 
-		size_t size() const
-		{
-			return _internal.size();
-		}
+	T pop()
+	{
+		T value = _internal.front();
+		_internal.pop_front();
+		return value;
+	}
 
-		void push(T value)
-		{
-			_internal.push_front(value);
-		}
+	void clear()
+	{
+		return _internal.clear();
+	}
 
-		T pop()
-		{
-			T value = _internal.front();
-			_internal.pop_front();
-			return value;
-		}
+private:
+	std::list<T> _internal;
 
-		void clear()
-		{
-			return _internal.clear();
-		}
+};
 
-	private:
-		std::list<T> _internal;
-
-	};
-
-}	///	core
-}	///	lucid
+LUCID_CORE_END

@@ -10,76 +10,65 @@
 #include <lucid/core/Noncopyable.h>
 #include <lucid/core/Types.h>
 #include <lucid/gal/Types.h>
+#include <lucid/gal.private/gal.d3d11/Defines.h>
+
+LUCID_CORE_BEGIN
+
+class Reader;
+
+LUCID_CORE_END
+
+LUCID_GAL_D3D11_BEGIN
 
 ///
 ///
 ///
-namespace lucid {
-namespace core {
+class SamplerState
+{
+public:
+	D3D11_FILTER filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	D3D11_TEXTURE_ADDRESS_MODE addru = D3D11_TEXTURE_ADDRESS_CLAMP;
+	D3D11_TEXTURE_ADDRESS_MODE addrv = D3D11_TEXTURE_ADDRESS_CLAMP;
+	D3D11_TEXTURE_ADDRESS_MODE addrw = D3D11_TEXTURE_ADDRESS_CLAMP;
+	float lodMipBias = 0.f;
+	uint32_t maxAnisotropy = 1;
+	D3D11_COMPARISON_FUNC compare = D3D11_COMPARISON_NEVER;
+	::lucid::gal::Color borderColor = ::lucid::gal::Color(1, 1, 1, 1);
+	float lodMin = -3.4e38F;
+	float lodMax = 3.4e38F;
 
-	class Reader;
+	ID3D11SamplerState *d3dState = nullptr;
 
-}	///	core
-}	///	lucid
+	SamplerState(::lucid::core::Reader &reader);
+
+	virtual ~SamplerState();
+
+	LUCID_PREVENT_COPY(SamplerState);
+	LUCID_PREVENT_ASSIGNMENT(SamplerState);
+};
 
 ///
 ///
 ///
-namespace lucid {
-namespace gal {
-namespace d3d11	{
+class Sampler
+{
+public:
+	Sampler *next = nullptr;
 
-	///
-	///
-	///
-	class SamplerState
-	{
-	public:
-		D3D11_FILTER filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-		D3D11_TEXTURE_ADDRESS_MODE addru = D3D11_TEXTURE_ADDRESS_CLAMP;
-		D3D11_TEXTURE_ADDRESS_MODE addrv = D3D11_TEXTURE_ADDRESS_CLAMP;
-		D3D11_TEXTURE_ADDRESS_MODE addrw = D3D11_TEXTURE_ADDRESS_CLAMP;
-		float lodMipBias = 0.f;
-		uint32_t maxAnisotropy = 1;
-		D3D11_COMPARISON_FUNC compare = D3D11_COMPARISON_NEVER;
-		::lucid::gal::Color borderColor = ::lucid::gal::Color(1, 1, 1, 1);
-		float lodMin = -3.4e38F;
-		float lodMax = 3.4e38F;
+	std::string name = "<unknown>";
 
-		ID3D11SamplerState *d3dState = nullptr;
+	int32_t vsPosition = -1;
+	int32_t gsPosition = -1;
+	int32_t psPosition = -1;
 
-		SamplerState(::lucid::core::Reader &reader);
+	SamplerState state;
 
-		virtual ~SamplerState();
+	Sampler(std::string const &name, ::lucid::core::Reader &reader);
 
-		LUCID_PREVENT_COPY(SamplerState);
-		LUCID_PREVENT_ASSIGNMENT(SamplerState);
-	};
+	virtual ~Sampler();
 
-	///
-	///
-	///
-	class Sampler
-	{
-	public:
-		Sampler *next = nullptr;
+	LUCID_PREVENT_COPY(Sampler);
+	LUCID_PREVENT_ASSIGNMENT(Sampler);
+};
 
-		std::string name = "<unknown>";
-
-		int32_t vsPosition = -1;
-		int32_t gsPosition = -1;
-		int32_t psPosition = -1;
-
-		SamplerState state;
-
-		Sampler(std::string const &name, ::lucid::core::Reader &reader);
-
-		virtual ~Sampler();
-
-		LUCID_PREVENT_COPY(Sampler);
-		LUCID_PREVENT_ASSIGNMENT(Sampler);
-	};
-
-}	///	d3d11
-}	///	gal
-}	///	lucid
+LUCID_GAL_D3D11_END

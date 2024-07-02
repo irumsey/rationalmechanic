@@ -1,18 +1,11 @@
 #include "Parameter.h"
 
-///
-///
-///
-namespace lucid {
-namespace gal {
-namespace d3d11 {
+LUCID_GAL_D3D11_BEGIN
 
-	Parameter::Parameter(Uniform::TYPE type, std::string const &name)
-		: type(type)
-		, _name(name)
-	{
-	}
+Parameter::Parameter(Uniform::TYPE type, std::string const &name)
+	: type(type)
+	, _name(name)
+{
+}
 
-}	///	d3d11
-}	///	gal
-}	///	lucid
+LUCID_GAL_D3D11_END

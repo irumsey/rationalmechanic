@@ -3,46 +3,37 @@
 #include <string>
 #include <lucid/core/Noncopyable.h>
 #include <lucid/core/Types.h>
+#include <lucid/gal/Defines.h>
 
+LUCID_CORE_BEGIN
+
+class Reader;
+
+LUCID_CORE_END
+
+LUCID_GAL_BEGIN
+
+///	Texture2D
 ///
 ///
-///
-namespace lucid {
-namespace core {
+class Texture2D
+{
+public:
+	virtual ~Texture2D() = 0 {}
 
-	class Reader;
+	virtual int32_t width() const = 0;
 
-}	///	core
-}	///	lucid
+	virtual int32_t height() const = 0;
 
-///
-///
-///
-namespace lucid {
-namespace gal {
+	static Texture2D *create(std::string const &path);
 
-	///	Texture2D
-	///
-	///
-	class Texture2D
-	{
-	public:
-		virtual ~Texture2D() = 0 {}
+	static Texture2D *create(LUCID_CORE::Reader &reader);
 
-		virtual int32_t width() const = 0;
+protected:
+	Texture2D() {}
 
-		virtual int32_t height() const = 0;
+	LUCID_PREVENT_COPY(Texture2D);
+	LUCID_PREVENT_ASSIGNMENT(Texture2D);
+};
 
-		static Texture2D *create(std::string const &path);
-
-		static Texture2D *create(::lucid::core::Reader &reader);
-
-	protected:
-		Texture2D() {}
-
-		LUCID_PREVENT_COPY(Texture2D);
-		LUCID_PREVENT_ASSIGNMENT(Texture2D);
-	};
-
-}	///	gal
-}	///	lucid
+LUCID_GAL_END

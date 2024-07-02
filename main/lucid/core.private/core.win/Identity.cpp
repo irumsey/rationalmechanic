@@ -1,13 +1,10 @@
+#include "Defines.h"
 #include <lucid/core/Identity.h>
 #include <rpc.h>
 
 #pragma comment (lib, "rpcrt4.lib")
 
-///
-///
-///
-namespace lucid {
-namespace core {
+LUCID_CORE_BEGIN
 
 	uint8_t const nullData[Identity::SIZE] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, };
 	Identity const Identity::null(nullData);
@@ -33,5 +30,4 @@ namespace core {
 	{
 	}
 
-}	///	core
-}	///	lucid
+LUCID_CORE_END

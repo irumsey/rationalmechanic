@@ -1,13 +1,9 @@
 #pragma once
 
+#include <lucid/units/Defines.h>
 #include <lucid/units/Quantity.h>
 
-///
-///
-///
-
-namespace lucid {
-namespace units {
+LUCID_UNITS_BEGIN
 
 	///	Unit
 	///
@@ -136,5 +132,4 @@ namespace units {
 
 	}
 
-}	///	units
-}	///	lucid
+LUCID_UNITS_END

@@ -37,5 +37,6 @@
     <ClInclude Include="DepthTarget2D.h" />
     <ClInclude Include="TargetReader2D.h" />
     <ClInclude Include="Unordered2D.h" />
+    <ClInclude Include="Defines.h" />
   </ItemGroup>
 </Project>

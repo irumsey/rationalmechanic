@@ -3,6 +3,7 @@
   <ItemGroup>
     <ClInclude Include="Clock.h" />
     <ClInclude Include="FileSystem.h" />
+    <ClInclude Include="Defines.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Clock.cpp" />

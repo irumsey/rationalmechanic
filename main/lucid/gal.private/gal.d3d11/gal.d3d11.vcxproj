@@ -38,6 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Buffer.h" />
+    <ClInclude Include="Defines.h" />
     <ClInclude Include="DepthTarget2D.h" />
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="Parameter.h" />

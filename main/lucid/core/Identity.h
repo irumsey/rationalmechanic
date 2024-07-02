@@ -2,83 +2,79 @@
 
 #include <cstdint>
 #include <memory>
+#include <lucid/core/Defines.h>
 
+LUCID_CORE_BEGIN
+
+///	Identity
 ///
-///
-///
-namespace lucid {
-namespace core {
+///	uuid
+class Identity
+{
+public:
+	enum { SIZE = 16 };
 
-	///	Identity
-	///
-	///	uuid
-	class Identity
-	{
-	public:
-		enum { SIZE = 16 };
+	static Identity const null;
 
-		static Identity const null;
+	Identity();
 
-		Identity();
+	Identity(uint8_t const *data);
 
-		Identity(uint8_t const *data);
+	operator size_t () const;
 
-		operator size_t () const;
+	virtual ~Identity();
 
-		virtual ~Identity();
+	uint8_t *data();
 
-		uint8_t *data();
+	uint8_t const *data() const;
 
-		uint8_t const *data() const;
+	bool operator==(Identity const &rhs) const;
 
-		bool operator==(Identity const &rhs) const;
+	bool operator!=(Identity const &rhs) const;
 
-		bool operator!=(Identity const &rhs) const;
+	bool operator<(Identity const &rhs) const;
 
-		bool operator<(Identity const &rhs) const;
+	bool operator>(Identity const &rhs) const;
 
-		bool operator>(Identity const &rhs) const;
+private:
+	size_t _hash = 0;
+	uint8_t _data[SIZE];
 
-	private:
-		size_t _hash = 0;
-		uint8_t _data[SIZE];
+};
 
-	};
+inline Identity::operator size_t () const
+{
+	return _hash;
+}
 
-	inline Identity::operator size_t () const
-	{
-		return _hash;
-	}
+inline uint8_t *Identity::data()
+{
+	return _data;
+}
 
-	inline uint8_t *Identity::data()
-	{
-		return _data;
-	}
+inline uint8_t const *Identity::data() const
+{
+	return _data;
+}
 
-	inline uint8_t const *Identity::data() const
-	{
-		return _data;
-	}
+inline bool Identity::operator==(Identity const &rhs) const
+{
+	return (0 == ::memcmp(_data, rhs._data, SIZE));
+}
 
-	inline bool Identity::operator==(Identity const &rhs) const
-	{
-		return (0 == ::memcmp(_data, rhs._data, SIZE));
-	}
+inline bool Identity::operator!=(Identity const &rhs) const
+{
+	return (0 != ::memcmp(_data, rhs._data, SIZE));
+}
 
-	inline bool Identity::operator!=(Identity const &rhs) const
-	{
-		return (0 != ::memcmp(_data, rhs._data, SIZE));
-	}
+inline bool Identity::operator<(Identity const &rhs) const
+{
+	return (0 > ::memcmp(_data, rhs._data, SIZE));
+}
 
-	inline bool Identity::operator<(Identity const &rhs) const
-	{
-		return (0 > ::memcmp(_data, rhs._data, SIZE));
-	}
+inline bool Identity::operator>(Identity const &rhs) const
+{
+	return (0 < ::memcmp(_data, rhs._data, SIZE));
+}
 
-	inline bool Identity::operator>(Identity const &rhs) const
-	{
-		return (0 < ::memcmp(_data, rhs._data, SIZE));
-	}
-
-}	///	core
-}	///	lucid
+LUCID_CORE_END

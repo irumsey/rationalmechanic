@@ -1,13 +1,7 @@
 #include "Random.h"
 
-namespace /* anonymous */ {
+LUCID_CORE_BEGIN
 
-}
+random::Instance random::instance;
 
-namespace lucid {
-namespace core {
-
-	random::Instance random::instance;
-
-}	// core
-}	// lucid 
+LUCID_CORE_END

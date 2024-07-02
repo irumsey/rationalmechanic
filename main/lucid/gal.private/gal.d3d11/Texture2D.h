@@ -8,73 +8,62 @@
 #include <lucid/core/Noncopyable.h>
 #include <lucid/core/Types.h>
 #include <lucid/gal/Texture2D.h>
+#include <lucid/gal.private/gal.d3d11/Defines.h>
+
+LUCID_CORE_BEGIN
+
+class Reader;
+
+LUCID_CORE_END
+
+LUCID_GAL_D3D11_BEGIN
 
 ///
 ///
 ///
-namespace lucid {
-namespace core {
+class Texture2D : public ::lucid::gal::Texture2D
+{
+public:
+	Texture2D(std::string const &path);
 
-	class Reader;
+	Texture2D(::lucid::core::Reader &reader);
 
-}	///	core
-}	///	lucid
+	virtual ~Texture2D();
 
-///
-///
-///
-namespace lucid {
-namespace gal {
-namespace d3d11 {
+	virtual int32_t width() const override;
 
-	///
-	///
-	///
-	class Texture2D : public ::lucid::gal::Texture2D
-	{
-	public:
-		Texture2D(std::string const &path);
+	virtual int32_t height() const override;
 
-		Texture2D(::lucid::core::Reader &reader);
+	ID3D11ShaderResourceView *d3dResourceView() const;
 
-		virtual ~Texture2D();
+private:
+	int32_t _width = 0;
+	int32_t _height = 0;
 
-		virtual int32_t width() const override;
+	ID3D11Resource *_d3dResource = nullptr;
+	ID3D11ShaderResourceView *_d3dResourceView = nullptr;
 
-		virtual int32_t height() const override;
+	void initialize(std::string const &path);
 
-		ID3D11ShaderResourceView *d3dResourceView() const;
+	void shutdown();
 
-	private:
-		int32_t _width = 0;
-		int32_t _height = 0;
+	LUCID_PREVENT_COPY(Texture2D);
+	LUCID_PREVENT_ASSIGNMENT(Texture2D);
+};
 
-		ID3D11Resource *_d3dResource = nullptr;
-		ID3D11ShaderResourceView *_d3dResourceView = nullptr;
+inline int32_t Texture2D::width() const
+{
+	return _width;
+}
 
-		void initialize(std::string const &path);
+inline int32_t Texture2D::height() const
+{
+	return _height;
+}
 
-		void shutdown();
+inline ID3D11ShaderResourceView *Texture2D::d3dResourceView() const
+{
+	return _d3dResourceView;
+}
 
-		LUCID_PREVENT_COPY(Texture2D);
-		LUCID_PREVENT_ASSIGNMENT(Texture2D);
-	};
-
-	inline int32_t Texture2D::width() const
-	{
-		return _width;
-	}
-
-	inline int32_t Texture2D::height() const
-	{
-		return _height;
-	}
-
-	inline ID3D11ShaderResourceView *Texture2D::d3dResourceView() const
-	{
-		return _d3dResourceView;
-	}
-
-}	///	d3d11
-}	///	gal
-}	///	lucid
+LUCID_GAL_D3D11_END

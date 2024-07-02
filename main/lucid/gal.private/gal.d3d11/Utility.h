@@ -8,6 +8,7 @@
 #include <comdef.h>
 #include <lucid/core/Error.h>
 #include <lucid/core/Reader.h>
+#include <lucid/gal.private/gal.d3d11/Defines.h>
 
 ///
 ///
@@ -27,33 +28,26 @@ inline void GAL_VALIDATE_HRESULT(HRESULT hr, std::string const &msg)
 	}
 }
 
-///
-///
-///
-namespace lucid {
-namespace gal {
-namespace d3d11 {
+LUCID_GAL_D3D11_BEGIN
 
-	template<class T> inline void safeRelease(T *&ptr)
+template<class T> inline void safeRelease(T *&ptr)
+{
+	if (nullptr != ptr)
 	{
-		if (nullptr != ptr)
-		{
-			ptr->Release();
-		}
-		ptr = nullptr;
+		ptr->Release();
 	}
+	ptr = nullptr;
+}
 
-	///	readEnum
-	///
-	///
-	template<class T, int32_t N> inline T readEnum(::lucid::core::Reader &reader, T const (&lookup)[N])
-	{
-		int32_t index = reader.read<int32_t>();
-		LUCID_VALIDATE(index < N, "gal enumeration index out of bounds");
+///	readEnum
+///
+///
+template<class T, int32_t N> inline T readEnum(::lucid::core::Reader &reader, T const (&lookup)[N])
+{
+	int32_t index = reader.read<int32_t>();
+	LUCID_VALIDATE(index < N, "gal enumeration index out of bounds");
 
-		return lookup[index];
-	}
+	return lookup[index];
+}
 
-}	///	d3d11
-}	///	gal
-}	///	lucid
+LUCID_GAL_D3D11_END

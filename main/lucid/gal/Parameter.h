@@ -2,38 +2,34 @@
 
 #include <string>
 #include <lucid/core/Noncopyable.h>
+#include <lucid/gal/Defines.h>
 
+LUCID_GAL_BEGIN
+
+///	Parameter
 ///
+///	opaque gal program parameter used to "push" data
+///	to a program.
 ///
+///	example:
+///		Parameter const *myFloatParameter = program->lookup("myParameter");
+///		/// ...
+///		program->set(myFloatParameter, 5.f);
 ///
-namespace lucid {
-namespace gal {
+///	note: Program retains ownership of the returned parameter.  it, the parameter,
+///	is valid for the life of Program.
+class Parameter
+{
+public:
+	virtual ~Parameter() = 0 {}
 
-	///	Parameter
-	///
-	///	opaque gal program parameter used to "push" data
-	///	to a program.
-	///
-	///	example:
-	///		Parameter const *myFloatParameter = program->lookup("myParameter");
-	///		/// ...
-	///		program->set(myFloatParameter, 5.f);
-	///
-	///	note: Program retains ownership of the returned parameter.  it, the parameter,
-	///	is valid for the life of Program.
-	class Parameter
-	{
-	public:
-		virtual ~Parameter() = 0 {}
+	virtual std::string const &name() const = 0;
 
-		virtual std::string const &name() const = 0;
+protected:
+	Parameter() {}
 
-	protected:
-		Parameter() {}
+	LUCID_PREVENT_COPY(Parameter);
+	LUCID_PREVENT_ASSIGNMENT(Parameter);
+};
 
-		LUCID_PREVENT_COPY(Parameter);
-		LUCID_PREVENT_ASSIGNMENT(Parameter);
-	};
-
-}	///	gal
-}	///	lucid
+LUCID_GAL_END

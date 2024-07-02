@@ -68,7 +68,7 @@ namespace orbit {
 			sprite[i] = sprite[i] / scalar_t(sprite[i].w);
 		}
 
-		starFieldRadius = math::len(vector3_t(sprite[0].x, sprite[0].y, sprite[0].z));
+		starFieldRadius = 0.99 * math::len(vector3_t(sprite[0].x, sprite[0].y, sprite[0].z));
 		starScalingFactor = math::len(vector3_t(sprite[2].x, sprite[2].y, sprite[2].z) - vector3_t(sprite[1].x, sprite[1].y, sprite[1].z));
 
 		sceneScalingFactor = 1.0 / (zfar - znear);

@@ -2,193 +2,166 @@
 
 #include <cassert>
 #include <lucid/units/System.h>
+#include <lucid/math/Defines.h>
 #include <lucid/math/Scalar.h>
 
+LUCID_MATH_BEGIN
+
+///	Vector<T, DIM, U>
 ///
-///	
-///
+///	general vector template
+template<typename T, size_t DIM, typename U>
+struct Vector
+{
+	T elements[DIM];
 
-#pragma push_macro("QUANTITY_PURE")
-#define QUANTITY_PURE ::lucid::units::quantity::pure
+	Vector() = default;
 
-#pragma push_macro("SCALAR")
-#define SCALAR(T, S, Q) ::lucid::math::Scalar<T, ::lucid::units::Unit<S, Q> >
+	~Vector() = default;
 
-#pragma push_macro("VECTOR")
-#define VECTOR(T, DIM, S, Q) ::lucid::math::Vector<T, DIM, ::lucid::units::Unit<S, Q> >
-
-#pragma push_macro("ADD")
-#define ADD(LHS, RHS) typename ::lucid::units::quantity::add<LHS, RHS>::result
-
-#pragma push_macro("SUB")
-#define SUB(LHS, RHS) typename ::lucid::units::quantity::sub<LHS, RHS>::result
-
-#pragma push_macro("HALF")
-#define HALF(Q) typename ::lucid::units::quantity::half<Q>::result
-
-///
-///
-///
-
-namespace lucid {
-namespace math {
-
-	///	Vector<T, DIM, U>
-	///
-	///	general vector template
-	template<typename T, size_t DIM, typename U>
-	struct Vector
+	T &operator[](size_t i)
 	{
-		T elements[DIM];
+		assert(i < DIM);
+		return elements[i];
+	}
 
-		Vector() = default;
+	T const &operator[](size_t i) const
+	{
+		assert(i < DIM);
+		return elements[i];
+	}
+};
 
-		~Vector() = default;
-
-		T &operator[](size_t i)
-		{
-			assert(i < DIM);
-			return elements[i];
-		}
-
-		T const &operator[](size_t i) const
-		{
-			assert(i < DIM);
-			return elements[i];
-		}
+///	Vector<T, 2, U>
+///
+///	2D specialization of Vector<>
+///	providing (x,y) members.
+template<typename T, typename U>
+struct Vector<T, 2, U>
+{
+	union
+	{
+		T elements[2];
+		struct { T x, y; };
 	};
 
-	///	Vector<T, 2, U>
-	///
-	///	2D specialization of Vector<>
-	///	providing (x,y) members.
-	template<typename T, typename U>
-	struct Vector<T, 2, U>
+	Vector()
+		: x(), y()
 	{
-		union
-		{
-			T elements[2];
-			struct { T x, y; };
-		};
+	}
 
-		Vector()
-			: x(), y()
-		{
-		}
+	Vector(T const &x, T const &y)
+		: x(x), y(y)
+	{
+	}
 
-		Vector(T const &x, T const &y)
-			: x(x), y(y)
-		{
-		}
+	~Vector() = default;
 
-		~Vector() = default;
+	T &operator[](size_t i)
+	{
+		assert(i < 2);
+		return elements[i];
+	}
 
-		T &operator[](size_t i)
-		{
-			assert(i < 2);
-			return elements[i];
-		}
+	T const &operator[](size_t i) const
+	{
+		assert(i < 2);
+		return elements[i];
+	}
+};
 
-		T const &operator[](size_t i) const
-		{
-			assert(i < 2);
-			return elements[i];
-		}
+///	Vector<T, 3, U>
+///
+///	3D specialization of Vector<>
+///	providing (x,y,z) members.
+template<typename T, typename U>
+struct Vector<T, 3, U>
+{
+	union
+	{
+		T elements[3];
+		struct { T x, y, z; };
 	};
 
-	///	Vector<T, 3, U>
-	///
-	///	3D specialization of Vector<>
-	///	providing (x,y,z) members.
-	template<typename T, typename U>
-	struct Vector<T, 3, U>
+	Vector()
+		: x(), y(), z()
 	{
-		union
-		{
-			T elements[3];
-			struct { T x, y, z; };
-		};
+	}
 
-		Vector()
-			: x(), y(), z()
-		{
-		}
+	Vector(T const &x, T const &y, T const &z)
+		: x(x), y(y), z(z)
+	{
+	}
 
-		Vector(T const &x, T const &y, T const &z)
-			: x(x), y(y), z(z)
-		{
-		}
+	~Vector() = default;
 
-		~Vector() = default;
+	T &operator[](size_t i)
+	{
+		assert(i < 3);
+		return elements[i];
+	}
 
-		T &operator[](size_t i)
-		{
-			assert(i < 3);
-			return elements[i];
-		}
+	T const &operator[](size_t i) const
+	{
+		assert(i < 3);
+		return elements[i];
+	}
+};
 
-		T const &operator[](size_t i) const
-		{
-			assert(i < 3);
-			return elements[i];
-		}
+///	Vector<T, 4, U>
+///
+///	4D specialization of Vector<>
+///	providing (x,y,z,w) members.
+template<typename T, typename U>
+struct Vector<T, 4, U>
+{
+	union
+	{
+		T elements[4];
+		struct { T x, y, z, w; };
 	};
 
-	///	Vector<T, 4, U>
-	///
-	///	4D specialization of Vector<>
-	///	providing (x,y,z,w) members.
-	template<typename T, typename U>
-	struct Vector<T, 4, U>
+	Vector()
+		: x(), y(), z(), w()
 	{
-		union
-		{
-			T elements[4];
-			struct { T x, y, z, w; };
-		};
+	}
 
-		Vector()
-			: x(), y(), z(), w()
-		{
-		}
+	Vector(T const &x, T const &y, T const &z, T const &w)
+		: x(x), y(y), z(z), w(w)
+	{
+	}
 
-		Vector(T const &x, T const &y, T const &z, T const &w)
-			: x(x), y(y), z(z), w(w)
-		{
-		}
+	Vector(Vector<T, 3, U> const &v, T const &w)
+		: x(v.x), y(v.y), z(v.z)
+		, w(w)
+	{
+	}
 
-		Vector(Vector<T, 3, U> const &v, T const &w)
-			: x(v.x), y(v.y), z(v.z)
-			, w(w)
-		{
-		}
+	~Vector() = default;
 
-		~Vector() = default;
+	T &operator[](size_t i)
+	{
+		assert(i < 4);
+		return elements[i];
+	}
 
-		T &operator[](size_t i)
-		{
-			assert(i < 4);
-			return elements[i];
-		}
+	T const &operator[](size_t i) const
+	{
+		assert(i < 4);
+		return elements[i];
+	}
+};
 
-		T const &operator[](size_t i) const
-		{
-			assert(i < 4);
-			return elements[i];
-		}
-	};
-
-}	///	math
-}	///	lucid
+LUCID_MATH_END
 
 ///
 ///	
 ///
 
 template<typename T, size_t DIM, typename S, typename Q>
-inline VECTOR(T, DIM, S, Q) operator-(VECTOR(T, DIM, S, Q) const &rhs)
+inline LUCID_VECTOR(T, DIM, S, Q) operator-(LUCID_VECTOR(T, DIM, S, Q) const &rhs)
 {
-	VECTOR(T, DIM, S, Q) result;
+	LUCID_VECTOR(T, DIM, S, Q) result;
 
 	result.elements[0] = -rhs.elements[0];
 	for (size_t i = 1; i < DIM; ++i)
@@ -198,9 +171,9 @@ inline VECTOR(T, DIM, S, Q) operator-(VECTOR(T, DIM, S, Q) const &rhs)
 }
 
 template<typename T, size_t DIM, typename S, typename Q>
-inline VECTOR(T, DIM, S, Q) operator+(VECTOR(T, DIM, S, Q) const &lhs, VECTOR(T, DIM, S, Q) const &rhs)
+inline LUCID_VECTOR(T, DIM, S, Q) operator+(LUCID_VECTOR(T, DIM, S, Q) const &lhs, LUCID_VECTOR(T, DIM, S, Q) const &rhs)
 {
-	VECTOR(T, DIM, S, Q) result;
+	LUCID_VECTOR(T, DIM, S, Q) result;
 
 	result.elements[0] = lhs.elements[0] + rhs.elements[0];
 	for (size_t i = 1; i < DIM; ++i)
@@ -210,9 +183,9 @@ inline VECTOR(T, DIM, S, Q) operator+(VECTOR(T, DIM, S, Q) const &lhs, VECTOR(T,
 }
 
 template<typename T, size_t DIM, typename S, typename Q>
-inline VECTOR(T, DIM, typename S, typename Q) operator-(VECTOR(T, DIM, S, Q) const &lhs, VECTOR(T, DIM, S, Q) const &rhs)
+inline LUCID_VECTOR(T, DIM, typename S, typename Q) operator-(LUCID_VECTOR(T, DIM, S, Q) const &lhs, LUCID_VECTOR(T, DIM, S, Q) const &rhs)
 {
-	VECTOR(T, DIM, S, Q) result;
+	LUCID_VECTOR(T, DIM, S, Q) result;
 
 	result.elements[0] = lhs.elements[0] - rhs.elements[0];
 	for (size_t i = 1; i < DIM; ++i)
@@ -222,9 +195,9 @@ inline VECTOR(T, DIM, typename S, typename Q) operator-(VECTOR(T, DIM, S, Q) con
 }
 
 template<typename T, size_t DIM, typename S, typename LQ, typename RQ>
-inline VECTOR(T, DIM, S, ADD(LQ, RQ)) operator*(VECTOR(T, DIM, S, LQ) const &lhs, SCALAR(T, S, RQ) const &rhs)
+inline LUCID_VECTOR(T, DIM, S, LUCID_QUANTITY_ADD(LQ, RQ)) operator*(LUCID_VECTOR(T, DIM, S, LQ) const &lhs, LUCID_SCALAR(T, S, RQ) const &rhs)
 {
-	VECTOR(T, DIM, S, ADD(LQ, RQ)) result;
+	LUCID_VECTOR(T, DIM, S, LUCID_QUANTITY_ADD(LQ, RQ)) result;
 
 	result.elements[0] = lhs.elements[0] * rhs.value;
 	for (size_t i = 1; i < DIM; ++i)
@@ -234,9 +207,9 @@ inline VECTOR(T, DIM, S, ADD(LQ, RQ)) operator*(VECTOR(T, DIM, S, LQ) const &lhs
 }
 
 template<typename T, size_t DIM, typename S, typename LQ, typename RQ>
-inline VECTOR(T, DIM, S, ADD(LQ, RQ)) operator*(SCALAR(T, S, LQ) const &lhs, VECTOR(T, DIM, S, RQ) const &rhs)
+inline LUCID_VECTOR(T, DIM, S, LUCID_QUANTITY_ADD(LQ, RQ)) operator*(LUCID_SCALAR(T, S, LQ) const &lhs, LUCID_VECTOR(T, DIM, S, RQ) const &rhs)
 {
-	VECTOR(T, DIM, S, ADD(LQ, RQ)) result;
+	LUCID_VECTOR(T, DIM, S, LUCID_QUANTITY_ADD(LQ, RQ)) result;
 
 	result.elements[0] = lhs.value * rhs.elements[0];
 	for (size_t i = 1; i < DIM; ++i)
@@ -246,9 +219,9 @@ inline VECTOR(T, DIM, S, ADD(LQ, RQ)) operator*(SCALAR(T, S, LQ) const &lhs, VEC
 }
 
 template<typename T, size_t DIM, typename S, typename LQ, typename RQ>
-inline VECTOR(T, DIM, S, SUB(LQ, RQ)) operator/(VECTOR(T, DIM, S, LQ) const &lhs, SCALAR(T, S, RQ) const &rhs)
+inline LUCID_VECTOR(T, DIM, S, LUCID_QUANTITY_SUB(LQ, RQ)) operator/(LUCID_VECTOR(T, DIM, S, LQ) const &lhs, LUCID_SCALAR(T, S, RQ) const &rhs)
 {
-	VECTOR(T, DIM, S, SUB(LQ, RQ)) result;
+	LUCID_VECTOR(T, DIM, S, LUCID_QUANTITY_SUB(LQ, RQ)) result;
 
 	T const coeff = T(1) / rhs.value;
 
@@ -263,95 +236,71 @@ inline VECTOR(T, DIM, S, SUB(LQ, RQ)) operator/(VECTOR(T, DIM, S, LQ) const &lhs
 ///
 ///
 
-namespace lucid {
-namespace math {
+LUCID_MATH_BEGIN
 
-	///	interpolate
-	///
-	///	linear interpolation from a to b.
-	template<typename T, size_t DIM, typename S, typename Q>
-	inline VECTOR(T, DIM, S, Q) lerp(SCALAR(T, S, QUANTITY_PURE) const &t, VECTOR(T, DIM, S, Q) const &a, VECTOR(T, DIM, S, Q) const &b)
-	{
-		return VECTOR(T, DIM, S, Q)((b - a) * t + a);
-	}
+///	interpolate
+///
+///	linear interpolation from a to b.
+template<typename T, size_t DIM, typename S, typename Q>
+inline LUCID_VECTOR(T, DIM, S, Q) lerp(LUCID_SCALAR(T, S, LUCID_QUANTITY_PURE) const &t, LUCID_VECTOR(T, DIM, S, Q) const &a, LUCID_VECTOR(T, DIM, S, Q) const &b)
+{
+	return LUCID_VECTOR(T, DIM, S, Q)((b - a) * t + a);
+}
 
-	///	dot
-	///
-	///	dot product
-	template<typename T, size_t DIM, typename S, typename LQ, typename RQ>
-	inline SCALAR(T, S, ADD(LQ, RQ)) dot(VECTOR(T, DIM, S, LQ) const &lhs, VECTOR(T, DIM, S, RQ) const &rhs)
-	{
-		SCALAR(T, S, ADD(LQ, RQ)) result = lhs.elements[0] * rhs.elements[0];
+///	dot
+///
+///	dot product
+template<typename T, size_t DIM, typename S, typename LQ, typename RQ>
+inline LUCID_SCALAR(T, S, LUCID_QUANTITY_ADD(LQ, RQ)) dot(LUCID_VECTOR(T, DIM, S, LQ) const &lhs, LUCID_VECTOR(T, DIM, S, RQ) const &rhs)
+{
+	LUCID_SCALAR(T, S, LUCID_QUANTITY_ADD(LQ, RQ)) result = lhs.elements[0] * rhs.elements[0];
 
-		for (size_t i = 1; i < DIM; ++i)
-			result.value += lhs.elements[i] * rhs.elements[i];
+	for (size_t i = 1; i < DIM; ++i)
+		result.value += lhs.elements[i] * rhs.elements[i];
 
-		return result;
-	}
+	return result;
+}
 
-	///	lsq
-	///
-	///	length squared
-	template<typename T, size_t DIM, typename S, typename Q>
-	inline SCALAR(T, S, ADD(Q, Q)) lsq(VECTOR(T, DIM, S, Q) const &rhs)
-	{
-		return dot(rhs, rhs);
-	}
+///	lsq
+///
+///	length squared
+template<typename T, size_t DIM, typename S, typename Q>
+inline LUCID_SCALAR(T, S, LUCID_QUANTITY_ADD(Q, Q)) lsq(LUCID_VECTOR(T, DIM, S, Q) const &rhs)
+{
+	return dot(rhs, rhs);
+}
 
-	///	len
-	///
-	///	length
-	template<typename T, size_t DIM, typename S, typename Q>
-	inline SCALAR(T, S, Q) len(VECTOR(T, DIM, S, Q) const &rhs)
-	{
-		return SCALAR(T, S, Q)(std::sqrt(dot(rhs, rhs).value));
-	}
+///	len
+///
+///	length
+template<typename T, size_t DIM, typename S, typename Q>
+inline LUCID_SCALAR(T, S, Q) len(LUCID_VECTOR(T, DIM, S, Q) const &rhs)
+{
+	return LUCID_SCALAR(T, S, Q)(std::sqrt(dot(rhs, rhs).value));
+}
 
-	///	normalize
-	///
-	///	normalize vector
-	template<typename T, size_t DIM, typename S, typename Q>
-	inline VECTOR(T, DIM, S, QUANTITY_PURE) normalize(VECTOR(T, DIM, S, Q) const &rhs)
-	{
-		return rhs / len(rhs);
-	}
+///	normalize
+///
+///	normalize vector
+template<typename T, size_t DIM, typename S, typename Q>
+inline LUCID_VECTOR(T, DIM, S, LUCID_QUANTITY_PURE) normalize(LUCID_VECTOR(T, DIM, S, Q) const &rhs)
+{
+	return rhs / len(rhs);
+}
 
-	///	cross
-	///
-	///	3D vector cross product
-	template<typename T, typename S, typename Q>
-	inline VECTOR(T, 3, S, ADD(Q, Q)) cross(VECTOR(T, 3, S, Q) const &lhs, VECTOR(T, 3, S, Q) const &rhs)
-	{
-		VECTOR(T, 3, S, ADD(Q, Q)) result;
+///	cross
+///
+///	3D vector cross product
+template<typename T, typename S, typename Q>
+inline LUCID_VECTOR(T, 3, S, LUCID_QUANTITY_ADD(Q, Q)) cross(LUCID_VECTOR(T, 3, S, Q) const &lhs, LUCID_VECTOR(T, 3, S, Q) const &rhs)
+{
+	LUCID_VECTOR(T, 3, S, LUCID_QUANTITY_ADD(Q, Q)) result;
 
-		result.x = lhs.y * rhs.z - rhs.y * lhs.z;
-		result.y = rhs.x * lhs.z - lhs.x * rhs.z;
-		result.z = lhs.x * rhs.y - rhs.x * lhs.y;
+	result.x = lhs.y * rhs.z - rhs.y * lhs.z;
+	result.y = rhs.x * lhs.z - lhs.x * rhs.z;
+	result.z = lhs.x * rhs.y - rhs.x * lhs.y;
 		
-		return result;
-	}
+	return result;
+}
 
-}	/// math
-}	///	lucid
-
-///
-///	remove the shorthands
-///
-
-#undef HALF
-#pragma pop_macro("HALF")
-
-#undef SUB
-#pragma pop_macro("SUB")
-
-#undef ADD
-#pragma pop_macro("ADD")
-
-#undef VECTOR
-#pragma pop_macro("VECTOR")
-
-#undef SCALAR
-#pragma pop_macro("SCALAR")
-
-#undef QUANTITY_PURE
-#pragma pop_macro("QUANTITY_PURE")
+LUCID_MATH_END
