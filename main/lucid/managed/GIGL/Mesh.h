@@ -4,14 +4,13 @@
 #include <lucid/math/AABB.h>
 #include <lucid/gal/Types.h>
 #include <lucid/gal/Pipeline.h>
+#include <lucid/gigl/Defines.h>
 
-namespace lucid {
-namespace gigl  {
+LUCID_GIGL_BEGIN
 
-	class Mesh;
+class Mesh;
 
-}	///	gigl
-}	///	lucid
+LUCID_GIGL_END
 
 namespace Lucid {
 namespace GIGL {
@@ -32,12 +31,12 @@ namespace GIGL {
 
 		void render(Context ^context);
 
-		property ::lucid::gigl::Mesh &ref { ::lucid::gigl::Mesh &get() { return *ptr; } }
+		property LUCID_GIGL::Mesh &ref { LUCID_GIGL::Mesh &get() { return *ptr; } }
 
-		property ::lucid::gigl::Mesh *ptr { ::lucid::gigl::Mesh *get() { return _internal->get(); } }
+		property LUCID_GIGL::Mesh *ptr { LUCID_GIGL::Mesh *get() { return _internal->get(); } }
 
 	private:
-		std::shared_ptr<::lucid::gigl::Mesh> *_internal = nullptr;
+		std::shared_ptr<LUCID_GIGL::Mesh> *_internal = nullptr;
 
 	};
 

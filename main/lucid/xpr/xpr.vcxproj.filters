@@ -9,6 +9,7 @@
     <ClInclude Include="Repr.h" />
     <ClInclude Include="Simplify.h" />
     <ClInclude Include="Symbols.h" />
+    <ClInclude Include="Defines.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Clone.cpp" />

@@ -1,13 +1,8 @@
 #pragma once
 
 #include <lucid/core/Types.h>
+#include <lucid/gigl/Defines.h>
 #include <lucid/gigl/Camera2D.h>
-
-namespace lucid {
-namespace gigl {
-
-}	///	gigl
-}	///	lucid
 
 namespace Lucid {
 namespace Math {
@@ -32,7 +27,7 @@ namespace GIGL {
 	public:
 		Camera2D(System::String ^path);
 
-		Camera2D(::lucid::gigl::Camera2D const &camera);
+		Camera2D(LUCID_GIGL::Camera2D const &camera);
 
 		Camera2D();
 
@@ -62,12 +57,12 @@ namespace GIGL {
 
 		property Math::Matrix4x4 ^invViewProjMatrix { Math::Matrix4x4 ^get(); }
 
-		property ::lucid::gigl::Camera2D &ref { ::lucid::gigl::Camera2D &get() { return *ptr; } }
+		property LUCID_GIGL::Camera2D &ref { LUCID_GIGL::Camera2D &get() { return *ptr; } }
 
-		property ::lucid::gigl::Camera2D *ptr { ::lucid::gigl::Camera2D *get() { return _internal; } }
+		property LUCID_GIGL::Camera2D *ptr { LUCID_GIGL::Camera2D *get() { return _internal; } }
 
 	private:
-		::lucid::gigl::Camera2D *_internal = nullptr;
+		LUCID_GIGL::Camera2D *_internal = nullptr;
 
 	};
 

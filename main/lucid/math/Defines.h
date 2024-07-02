@@ -6,7 +6,7 @@
 #define LUCID_MATH ::lucid::math
 
 #define LUCID_MATH_BEGIN LUCID_BEGIN namespace math {
-#define LUCID_MATH_END LUCID_END }
+#define LUCID_MATH_END } LUCID_END
 
 #define LUCID_SCALAR(T, S, Q) LUCID_MATH::Scalar<T, LUCID_UNITS::Unit<S, Q> >
 

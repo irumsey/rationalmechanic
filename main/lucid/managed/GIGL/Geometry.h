@@ -1,14 +1,13 @@
 #pragma once
 
 #include <memory>
+#include <lucid/gigl/Defines.h>
 
-namespace lucid {
-namespace gigl {
+LUCID_GIGL_BEGIN
 
-	class Geometry;
+class Geometry;
 
-}	///	gigl
-}	///	lucid
+LUCID_GIGL_END
 
 namespace Lucid {
 namespace GIGL {
@@ -29,12 +28,12 @@ namespace GIGL {
 
 		void drawInstanced(int count);
 
-		property ::lucid::gigl::Geometry &ref { ::lucid::gigl::Geometry &get() { return *ptr; } }
+		property LUCID_GIGL::Geometry &ref { LUCID_GIGL::Geometry &get() { return *ptr; } }
 
-		property ::lucid::gigl::Geometry *ptr { ::lucid::gigl::Geometry *get() { return _internal->get(); } }
+		property LUCID_GIGL::Geometry *ptr { LUCID_GIGL::Geometry *get() { return _internal->get(); } }
 
 	private:
-		std::shared_ptr<::lucid::gigl::Geometry> *_internal = nullptr;
+		std::shared_ptr<LUCID_GIGL::Geometry> *_internal = nullptr;
 
 	};
 

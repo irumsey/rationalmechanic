@@ -7,15 +7,11 @@
 
 #include <lucid/managed/Math/Types.h>
 
-namespace /* anonymous */
-{
+LUCID_ANONYMOUS_BEGIN
 
-	namespace   MI = msclr::interop;
-	namespace core = ::lucid::core;
-	namespace math = ::lucid::math;
-	namespace gigl = ::lucid::gigl;
+namespace MI = msclr::interop;
 
-}	///	anonymous
+LUCID_ANONYMOUS_END
 
 namespace Lucid {
 namespace GIGL {
@@ -24,23 +20,23 @@ namespace GIGL {
 	{
 		try
 		{
-			_internal = new gigl::Camera2D(core::FileReader(MI::marshal_as<std::string>(path)));
+			_internal = new LUCID_GIGL::Camera2D(LUCID_CORE::FileReader(MI::marshal_as<std::string>(path)));
 		}
-		catch (core::Error const &error)
+		catch (LUCID_CORE::Error const &error)
 		{
-			core::log("ERROR", error.what());
+			LUCID_CORE::log("ERROR", error.what());
 			throw;
 		}
 	}
 
-	Camera2D::Camera2D(gigl::Camera2D const &camera)
+	Camera2D::Camera2D(LUCID_GIGL::Camera2D const &camera)
 	{
-		_internal = new gigl::Camera2D(camera);
+		_internal = new LUCID_GIGL::Camera2D(camera);
 	}
 
 	Camera2D::Camera2D()
 	{
-		_internal = new gigl::Camera2D();
+		_internal = new LUCID_GIGL::Camera2D();
 	}
 
 	Camera2D::~Camera2D()
@@ -105,7 +101,7 @@ namespace GIGL {
 
 	Math::Matrix4x4 ^Camera2D::invViewProjMatrix::get()
 	{
-		return gcnew Math::Matrix4x4(math::inverse(_internal->getViewProjMatrix()));
+		return gcnew Math::Matrix4x4(LUCID_MATH::inverse(_internal->getViewProjMatrix()));
 	}
 
 } /// GIGL

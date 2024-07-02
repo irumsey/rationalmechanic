@@ -1,14 +1,13 @@
 #pragma once
 
 #include <memory>
+#include <lucid/gigl/Defines.h>
 
-namespace lucid {
-namespace gigl  {
+LUCID_GIGL_BEGIN
 
-	class Material;
+class Material;
 
-}	///	gigl
-}	///	lucid
+LUCID_GIGL_END
 
 namespace Lucid {
 namespace GAL {
@@ -41,12 +40,12 @@ namespace GIGL {
 
 		property GAL::Program ^program { GAL::Program ^get(); }
 
-		property ::lucid::gigl::Material &ref { ::lucid::gigl::Material &get() { return *ptr; } }
+		property LUCID_GIGL::Material &ref { LUCID_GIGL::Material &get() { return *ptr; } }
 
-		property ::lucid::gigl::Material *ptr { ::lucid::gigl::Material *get() { return _internal->get(); } }
+		property LUCID_GIGL::Material *ptr { LUCID_GIGL::Material *get() { return _internal->get(); } }
 
 	private:
-		std::shared_ptr<::lucid::gigl::Material> *_internal = nullptr;
+		std::shared_ptr<LUCID_GIGL::Material> *_internal = nullptr;
 
 	};
 

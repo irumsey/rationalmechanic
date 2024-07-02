@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="Algorithm.h" />
     <ClInclude Include="Clone.h" />
+    <ClInclude Include="Defines.h" />
     <ClInclude Include="Differentiate.h" />
     <ClInclude Include="Evaluate.h" />
     <ClInclude Include="Node.h" />

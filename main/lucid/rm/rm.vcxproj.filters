@@ -12,5 +12,6 @@
     <ClInclude Include="Mind.h" />
     <ClInclude Include="GA.h" />
     <ClInclude Include="Disassembler.h" />
+    <ClInclude Include="Defines.h" />
   </ItemGroup>
 </Project>

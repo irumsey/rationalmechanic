@@ -1,5 +1,6 @@
 #pragma once
 
+#include <lucid/orbit/Defines.h>
 #include <lucid/orbit/Selection.h>
 
 #pragma push_macro("PROPERTY")
@@ -14,12 +15,12 @@ namespace Orbit{
 	public enum class SelectionType
 	{
 		TYPE_NONE    = 0,
-		TYPE_STAR    = ::lucid::orbit::Selection::TYPE_STAR,
-		TYPE_FRAME   = ::lucid::orbit::Selection::TYPE_FRAME,
-		TYPE_ORBIT   = ::lucid::orbit::Selection::TYPE_ORBIT,
-		TYPE_CAMERA  = ::lucid::orbit::Selection::TYPE_CAMERA,
-		TYPE_CALLOUT = ::lucid::orbit::Selection::TYPE_CALLOUT,
-		TYPE_OTHER   = ::lucid::orbit::Selection::TYPE_OTHER,
+		TYPE_STAR    = LUCID_ORBIT::Selection::TYPE_STAR,
+		TYPE_FRAME   = LUCID_ORBIT::Selection::TYPE_FRAME,
+		TYPE_ORBIT   = LUCID_ORBIT::Selection::TYPE_ORBIT,
+		TYPE_CAMERA  = LUCID_ORBIT::Selection::TYPE_CAMERA,
+		TYPE_CALLOUT = LUCID_ORBIT::Selection::TYPE_CALLOUT,
+		TYPE_OTHER   = LUCID_ORBIT::Selection::TYPE_OTHER,
 	};
 
 	///
@@ -28,7 +29,7 @@ namespace Orbit{
 	public ref class Selection
 	{
 	public:
-		Selection(::lucid::orbit::Selection const &selection);
+		Selection(LUCID_ORBIT::Selection const &selection);
 
 		~Selection();
 
@@ -41,12 +42,12 @@ namespace Orbit{
 
 		PROPERTY(   Token,   token,      uint32_t)
 
-		property ::lucid::orbit::Selection const &ref { ::lucid::orbit::Selection const &get() { return *ptr; } }
+		property LUCID_ORBIT::Selection const &ref { LUCID_ORBIT::Selection const &get() { return *ptr; } }
 
-		property ::lucid::orbit::Selection const *ptr { ::lucid::orbit::Selection const *get() { return _internal; } }
+		property LUCID_ORBIT::Selection const *ptr { LUCID_ORBIT::Selection const *get() { return _internal; } }
 
 	private:
-		::lucid::orbit::Selection *_internal = nullptr;
+		LUCID_ORBIT::Selection *_internal = nullptr;
 
 	};
 

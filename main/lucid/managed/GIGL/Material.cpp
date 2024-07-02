@@ -8,15 +8,11 @@
 
 #include <lucid/managed/GAL/Program.h>
 
-namespace /* anonymous */
-{
+LUCID_ANONYMOUS_BEGIN
 
-	namespace   MI = msclr::interop;
-	namespace core = ::lucid::core;
-	namespace  gal = ::lucid::gal;
-	namespace gigl = ::lucid::gigl;
+namespace MI = msclr::interop;
 
-}	///	anonymous
+LUCID_ANONYMOUS_END
 
 namespace Lucid {
 namespace GIGL {
@@ -25,11 +21,11 @@ namespace GIGL {
 	{
 		try
 		{
-			_internal = new std::shared_ptr<gigl::Material>(gigl::Resources::get<gigl::Material>(MI::marshal_as<std::string>(path)));
+			_internal = new std::shared_ptr<LUCID_GIGL::Material>(LUCID_GIGL::Resources::get<LUCID_GIGL::Material>(MI::marshal_as<std::string>(path)));
 		}
-		catch (core::Error const &error)
+		catch (LUCID_CORE::Error const &error)
 		{
-			core::log("ERROR", error.what());
+			LUCID_CORE::log("ERROR", error.what());
 			throw;
 		}
 	}

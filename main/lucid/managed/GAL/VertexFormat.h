@@ -1,14 +1,13 @@
 #pragma once
 
 #include <memory>
+#include <lucid/gal/Defines.h>
 
-namespace lucid {
-namespace gal {
+LUCID_GAL_BEGIN
 
-	class VertexFormat;
+class VertexFormat;
 
-}	///	gal
-}	///	lucid
+LUCID_GAL_END
 
 namespace Lucid {
 namespace GAL {
@@ -25,12 +24,12 @@ namespace GAL {
 
 		!VertexFormat();
 
-		property ::lucid::gal::VertexFormat &ref { ::lucid::gal::VertexFormat &get() { return *ptr; } }
+		property LUCID_GAL::VertexFormat &ref { LUCID_GAL::VertexFormat &get() { return *ptr; } }
 
-		property ::lucid::gal::VertexFormat *ptr { ::lucid::gal::VertexFormat *get() { return _internal->get(); } }
+		property LUCID_GAL::VertexFormat *ptr { LUCID_GAL::VertexFormat *get() { return _internal->get(); } }
 
 	private:
-		std::shared_ptr<::lucid::gal::VertexFormat> *_internal = nullptr;
+		std::shared_ptr<LUCID_GAL::VertexFormat> *_internal = nullptr;
 
 	};
 

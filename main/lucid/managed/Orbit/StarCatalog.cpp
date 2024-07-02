@@ -2,14 +2,13 @@
 #include <lucid/orbit/Ephemeris.h>
 #include <msclr/marshal_cppstd.h>
 
-namespace /* anonymous */ {
+LUCID_ANONYMOUS_BEGIN
 
-	namespace    MI = msclr::interop;
-	namespace orbit = ::lucid::orbit;
+namespace MI = msclr::interop;
 
-}
+LUCID_ANONYMOUS_END
 
-#define theCatalog (orbit::StarCatalog::instance())
+#define theCatalog (LUCID_ORBIT::StarCatalog::instance())
 
 namespace Lucid {
 namespace Orbit {
@@ -18,9 +17,9 @@ namespace Orbit {
 	/// 
 	/// 
 
-	StarCatalogEntry::StarCatalogEntry(orbit::StarCatalog::Entry const &entry)
+	StarCatalogEntry::StarCatalogEntry(LUCID_ORBIT::StarCatalog::Entry const &entry)
 	{
-		_internal = new orbit::StarCatalog::Entry(entry);
+		_internal = new LUCID_ORBIT::StarCatalog::Entry(entry);
 	}
 
 	StarCatalogEntry::~StarCatalogEntry()

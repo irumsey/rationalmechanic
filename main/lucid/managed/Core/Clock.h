@@ -1,14 +1,13 @@
 #pragma once
 
+#include <lucid/core/Defines.h>
 #include <lucid/core/Types.h>
 
-namespace lucid {
-namespace core {
+LUCID_CORE_BEGIN
 
-	class Clock;
+class Clock;
 
-}	///	core
-}	///	lucid
+LUCID_CORE_END
 
 namespace Lucid {
 namespace Core {

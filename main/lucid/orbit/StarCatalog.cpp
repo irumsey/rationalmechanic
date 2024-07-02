@@ -3,36 +3,32 @@
 #include <lucid/core/FileReader.h>
 #include <lucid/core/Logger.h>
 
-namespace core = ::lucid::core;
+LUCID_ORBIT_BEGIN
 
-namespace lucid {
-namespace orbit {
+void StarCatalog::initialize(std::string const &path)
+{
+	LUCID_CORE::Reader &reader = LUCID_CORE::FileReader(path);
 
-	void StarCatalog::initialize(std::string const &path)
+	size_t count = reader.read<int32_t>();
+
+	_ordinal.resize(count);
+	for (size_t i = 0; i < count; ++i)
 	{
-		core::Reader &reader = core::FileReader(path);
+		Entry &entry = _ordinal[i];
 
-		size_t count = reader.read<int32_t>();
-
-		_ordinal.resize(count);
-		for (size_t i = 0; i < count; ++i)
-		{
-			Entry &entry = _ordinal[i];
-
-			entry.            xno = reader.read<int32_t>();
-			entry.           type = reader.read<std::string>();
-			entry.right_ascension = reader.read<float64_t>();
-			entry.    declination = reader.read<float64_t>();
-			entry.      magnitude = reader.read<float32_t>();
-		}
-
-		core::log("INFO", "Star Catalog initialized using: " + path);
+		entry.            xno = reader.read<int32_t>();
+		entry.           type = reader.read<std::string>();
+		entry.right_ascension = reader.read<float64_t>();
+		entry.    declination = reader.read<float64_t>();
+		entry.      magnitude = reader.read<float32_t>();
 	}
 
-	void StarCatalog::shutdown()
-	{
-		_ordinal.clear();
-	}
+	core::log("INFO", "Star Catalog initialized using: " + path);
+}
 
-}	///	orbit
-}	/// lucid
+void StarCatalog::shutdown()
+{
+	_ordinal.clear();
+}
+
+LUCID_ORBIT_END

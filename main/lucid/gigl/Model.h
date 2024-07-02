@@ -5,66 +5,57 @@
 #include <string>
 #include <lucid/core/Noncopyable.h>
 #include <lucid/core/Identity.h>
+#include <lucid/gigl/Defines.h>
 #include <lucid/gigl/Mesh.h>
 
+LUCID_CORE_BEGIN
+
+class Reader;
+
+LUCID_CORE_END
+
+LUCID_GIGL_BEGIN
+
+class Batched;
+
+///	Model
 ///
-///
-///
-namespace lucid {
-namespace core {
+///	Collection of meshes that make up a more complicated object.
+/// 
+///	Note: one caveat is that all meshes must use the same per-instance-vertex.
+class Model final
+{
+public:
+	Model(core::Reader &reader);
 
-	class Reader;
+	virtual ~Model();
 
-}	///	core
-}	///	lucid
+	core::Identity const &identity() const;
 
-///
-///
-///
-namespace lucid {
-namespace gigl {
+	static Model *create(std::string const &path);
 
-	class Batched;
+	static Model *create(core::Reader &reader);
 
-	///	Model
-	///
-	///	Collection of meshes that make up a more complicated object.
-	/// 
-	///	Note: one caveat is that all meshes must use the same per-instance-vertex.
-	class Model final
-	{
-	public:
-		Model(core::Reader &reader);
+private:
+	typedef std::shared_ptr<Mesh> mesh_ptr_t;
+	typedef std::vector<mesh_ptr_t> mesh_vec_t;
 
-		virtual ~Model();
+	friend class Batched;
 
-		core::Identity const &identity() const;
+	core::Identity _identity;
+	mesh_vec_t _meshes;
 
-		static Model *create(std::string const &path);
+	void initialize(core::Reader &reader);
 
-		static Model *create(core::Reader &reader);
+	void shutdown();
 
-	private:
-		typedef std::shared_ptr<Mesh> mesh_ptr_t;
-		typedef std::vector<mesh_ptr_t> mesh_vec_t;
+	LUCID_PREVENT_COPY(Model);
+	LUCID_PREVENT_ASSIGNMENT(Model);
+};
 
-		friend class Batched;
+inline core::Identity const &Model::identity() const
+{
+	return _identity;
+}
 
-		core::Identity _identity;
-		mesh_vec_t _meshes;
-
-		void initialize(core::Reader &reader);
-
-		void shutdown();
-
-		LUCID_PREVENT_COPY(Model);
-		LUCID_PREVENT_ASSIGNMENT(Model);
-	};
-
-	inline core::Identity const &Model::identity() const
-	{
-		return _identity;
-	}
-
-}	///	gigl
-}	///	lucid
+LUCID_GIGL_END

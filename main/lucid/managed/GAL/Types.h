@@ -1,5 +1,6 @@
 #pragma once
 
+#include <lucid/gal/Defines.h>
 #include <lucid/gal/Types.h>
 
 #pragma push_macro("PROPERTY")
@@ -16,12 +17,12 @@ namespace GAL {
 	public:
 		Color()
 		{
-			_internal = new ::lucid::gal::Color();
+			_internal = new LUCID_GAL::Color();
 		}
 
 		Color(float32_t r, float32_t g, float32_t b, float32_t a)
 		{
-			_internal = new ::lucid::gal::Color(r, g, b, a);
+			_internal = new LUCID_GAL::Color(r, g, b, a);
 		}
 
 		~Color()
@@ -39,12 +40,12 @@ namespace GAL {
 		PROPERTY(b, float)
 		PROPERTY(a, float)
 
-		property ::lucid::gal::Color const *ptr { ::lucid::gal::Color const *get() { return _internal; } }
+		property LUCID_GAL::Color const *ptr { LUCID_GAL::Color const *get() { return _internal; } }
 
-		property ::lucid::gal::Color const &ref { ::lucid::gal::Color const &get() { return *_internal; } }
+		property LUCID_GAL::Color const &ref { LUCID_GAL::Color const &get() { return *_internal; } }
 
 	private:
-		::lucid::gal::Color *_internal = nullptr;
+		LUCID_GAL::Color *_internal = nullptr;
 
 	};
 
@@ -56,17 +57,17 @@ namespace GAL {
 	public:
 		Viewport()
 		{
-			_internal = new ::lucid::gal::Viewport();
+			_internal = new LUCID_GAL::Viewport();
 		}
 
-		Viewport(::lucid::gal::Viewport const &viewport)
+		Viewport(LUCID_GAL::Viewport const &viewport)
 		{
-			_internal = new ::lucid::gal::Viewport(viewport);
+			_internal = new LUCID_GAL::Viewport(viewport);
 		}
 
 		Viewport(int x, int y, int width, int height, float znear, float zfar)
 		{
-			_internal = new ::lucid::gal::Viewport(x, y, width, height, znear, zfar);
+			_internal = new LUCID_GAL::Viewport(x, y, width, height, znear, zfar);
 		}
 
 		~Viewport()
@@ -86,12 +87,12 @@ namespace GAL {
 		PROPERTY(znear, float)
 		PROPERTY(zfar, float)
 
-			property ::lucid::gal::Viewport const *ptr { ::lucid::gal::Viewport const *get() { return _internal; } }
+		property LUCID_GAL::Viewport const *ptr { LUCID_GAL::Viewport const *get() { return _internal; } }
 
-		property ::lucid::gal::Viewport const &ref { ::lucid::gal::Viewport const &get() { return *_internal; } }
+		property LUCID_GAL::Viewport const &ref { LUCID_GAL::Viewport const &get() { return *_internal; } }
 
 	private:
-		::lucid::gal::Viewport *_internal = nullptr;
+		LUCID_GAL::Viewport *_internal = nullptr;
 
 	};
 

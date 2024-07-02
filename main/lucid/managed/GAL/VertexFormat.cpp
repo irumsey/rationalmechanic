@@ -1,20 +1,18 @@
 #include "VertexFormat.h"
 #include <lucid/gigl/Resources.h>
+#include <lucid/gigl/Defines.h>
 #include <lucid/gal/VertexFormat.h>
 #include <lucid/core/Logger.h>
 #include <lucid/core/Error.h>
+#include <lucid/core/Defines.h>
 #include <msclr/marshal_cppstd.h>
+
+
+LUCID_ANONYMOUS_BEGIN
 
 namespace MI = msclr::interop;
 
-namespace /* anonymous */
-{
-
-	namespace core = ::lucid::core;
-	namespace  gal = ::lucid::gal;
-	namespace gigl = ::lucid::gigl;
-
-}	///	anonymous
+LUCID_ANONYMOUS_END
 
 namespace Lucid {
 namespace GAL {
@@ -23,11 +21,11 @@ namespace GAL {
 	{
 		try
 		{
-			_internal = new std::shared_ptr<gal::VertexFormat>(gigl::Resources::get<gal::VertexFormat>(MI::marshal_as<std::string>(path)));
+			_internal = new std::shared_ptr<LUCID_GAL::VertexFormat>(LUCID_GIGL::Resources::get<LUCID_GAL::VertexFormat>(MI::marshal_as<std::string>(path)));
 		}
-		catch (core::Error const &error)
+		catch (LUCID_CORE::Error const &error)
 		{
-			core::log("ERROR", error.what());
+			LUCID_CORE::log("ERROR", error.what());
 			throw;
 		}
 	}

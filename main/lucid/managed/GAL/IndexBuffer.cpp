@@ -3,14 +3,6 @@
 #include <lucid/core/Logger.h>
 #include <lucid/core/Error.h>
 
-namespace /* anonymous */
-{
-
-	namespace core = ::lucid::core;
-	namespace  gal = ::lucid::gal;
-
-}	///	anonymous
-
 namespace Lucid {
 namespace GAL {
 
@@ -18,11 +10,11 @@ namespace GAL {
 	{
 		try
 		{
-			_internal = gal::IndexBuffer::create(static_cast<gal::IndexBuffer::USAGE>(usage), static_cast<gal::IndexBuffer::FORMAT>(format), count);
+			_internal = LUCID_GAL::IndexBuffer::create(static_cast<LUCID_GAL::IndexBuffer::USAGE>(usage), static_cast<LUCID_GAL::IndexBuffer::FORMAT>(format), count);
 		}
-		catch (core::Error const &error)
+		catch (LUCID_CORE::Error const &error)
 		{
-			core::log("ERROR", error.what());
+			LUCID_CORE::log("ERROR", error.what());
 			throw;
 		}
 	}

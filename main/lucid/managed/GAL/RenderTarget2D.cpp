@@ -3,14 +3,6 @@
 #include <lucid/core/Logger.h>
 #include <lucid/core/Error.h>
 
-namespace /* anonymous */
-{
-
-	namespace core = ::lucid::core;
-	namespace  gal = ::lucid::gal;
-
-}
-
 namespace Lucid {
 namespace GAL {
 
@@ -18,11 +10,11 @@ namespace GAL {
 	{
 		try
 		{
-			_internal = new shared_ptr_t(gal::RenderTarget2D::create(static_cast<gal::RenderTarget2D::FORMAT>(format), width, height));
+			_internal = new shared_ptr_t(LUCID_GAL::RenderTarget2D::create(static_cast<LUCID_GAL::RenderTarget2D::FORMAT>(format), width, height));
 		}
-		catch (core::Error const &error)
+		catch (LUCID_CORE::Error const &error)
 		{
-			core::log("ERROR", error.what());
+			LUCID_CORE::log("ERROR", error.what());
 			throw;
 		}
 	}

@@ -2,18 +2,16 @@
 #include <lucid/gal/Parameter.h>
 #include <msclr/marshal_cppstd.h>
 
-namespace /* anonymous */
-{
+LUCID_ANONYMOUS_BEGIN
 
-	namespace MI = msclr::interop;
-	namespace gal = ::lucid::gal;
+namespace MI = msclr::interop;
 
-}
+LUCID_ANONYMOUS_END
 
 namespace Lucid {
 namespace GAL {
 
-	Parameter::Parameter(gal::Parameter const *parameter)
+	Parameter::Parameter(LUCID_GAL::Parameter const *parameter)
 		: _internal(parameter)
 	{
 	}

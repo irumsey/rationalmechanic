@@ -23,6 +23,7 @@
     <ClInclude Include="Callout.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Culler.h" />
+    <ClInclude Include="Defines.h" />
     <ClInclude Include="Elements.h" />
     <ClInclude Include="Ephemeris.h" />
     <ClInclude Include="Frame.h" />

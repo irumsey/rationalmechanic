@@ -16,6 +16,7 @@
     <ClInclude Include="Mechanics.h" />
     <ClInclude Include="Callout.h" />
     <ClInclude Include="Culler.h" />
+    <ClInclude Include="Defines.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Frame.cpp" />

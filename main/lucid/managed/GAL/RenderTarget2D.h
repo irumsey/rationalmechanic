@@ -1,14 +1,13 @@
 #pragma once
 
 #include <memory>
+#include <lucid/gal/Defines.h>
 
-namespace lucid {
-namespace gal  {
+LUCID_GAL_BEGIN
 
-	class RenderTarget2D;
+class RenderTarget2D;
 
-}	///	gal
-}	///	lucid
+LUCID_GAL_END
 
 namespace Lucid {
 namespace GAL {
@@ -35,7 +34,7 @@ namespace GAL {
 	public ref class RenderTarget2D
 	{
 	public:
-		typedef std::shared_ptr<::lucid::gal::RenderTarget2D> shared_ptr_t;
+		typedef std::shared_ptr<LUCID_GAL::RenderTarget2D> shared_ptr_t;
 
 		RenderTarget2D(RenderTargetFormat format, int width, int height);
 
@@ -49,9 +48,9 @@ namespace GAL {
 
 		property shared_ptr_t shared { shared_ptr_t get() { return *_internal; } }
 
-		property ::lucid::gal::RenderTarget2D &ref { ::lucid::gal::RenderTarget2D &get() { return *ptr; } }
+		property LUCID_GAL::RenderTarget2D &ref { LUCID_GAL::RenderTarget2D &get() { return *ptr; } }
 
-		property ::lucid::gal::RenderTarget2D *ptr { ::lucid::gal::RenderTarget2D *get() { return _internal->get(); } }
+		property LUCID_GAL::RenderTarget2D *ptr { LUCID_GAL::RenderTarget2D *get() { return _internal->get(); } }
 
 	private:
 		shared_ptr_t *_internal = nullptr;

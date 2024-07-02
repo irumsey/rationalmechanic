@@ -1,7 +1,9 @@
 #pragma once
 
 #include <lucid/core/Types.h>
+#include <lucid/units/Defines.h>
 #include <lucid/units/System.h>
+#include <lucid/math/Defines.h>
 #include <lucid/math/Vector.h>
 #include <lucid/math/Quaternion.h>
 #include <lucid/math/Matrix.h>
@@ -19,21 +21,21 @@ namespace Math {
 	/// avoiding the complication of templates for this managed library
 	/// 
 
-	typedef ::lucid::math::Scalar<float32_t, ::lucid::units::none> scalar_t;
+	typedef LUCID_MATH::Scalar<float32_t, LUCID_UNITS::none> scalar_t;
 
-	typedef ::lucid::math::Vector<float32_t, 2, ::lucid::units::none> vector2_t;
-	typedef ::lucid::math::Vector<float32_t, 3, ::lucid::units::none> vector3_t;
-	typedef ::lucid::math::Vector<float32_t, 4, ::lucid::units::none> vector4_t;
+	typedef LUCID_MATH::Vector<float32_t, 2, LUCID_UNITS::none> vector2_t;
+	typedef LUCID_MATH::Vector<float32_t, 3, LUCID_UNITS::none> vector3_t;
+	typedef LUCID_MATH::Vector<float32_t, 4, LUCID_UNITS::none> vector4_t;
 
-	typedef ::lucid::math::Matrix<float32_t, 2, 2, ::lucid::units::none> matrix2x2_t;
-	typedef ::lucid::math::Matrix<float32_t, 3, 3, ::lucid::units::none> matrix3x3_t;
-	typedef ::lucid::math::Matrix<float32_t, 4, 4, ::lucid::units::none> matrix4x4_t;
+	typedef LUCID_MATH::Matrix<float32_t, 2, 2, LUCID_UNITS::none> matrix2x2_t;
+	typedef LUCID_MATH::Matrix<float32_t, 3, 3, LUCID_UNITS::none> matrix3x3_t;
+	typedef LUCID_MATH::Matrix<float32_t, 4, 4, LUCID_UNITS::none> matrix4x4_t;
 
-	typedef ::lucid::math::Quaternion<float32_t> quaternion_t;
+	typedef LUCID_MATH::Quaternion<float32_t> quaternion_t;
 
-	typedef ::lucid::math::AABB<float32_t, 3, ::lucid::units::none> aabb3_t;
-	typedef ::lucid::math::Sphere<float32_t, 3, ::lucid::units::none> sphere3_t;
-	typedef ::lucid::math::Frustum<float32_t, ::lucid::units::system::none, ::lucid::units::quantity::pure> frustum_t;
+	typedef LUCID_MATH::AABB<float32_t, 3, LUCID_UNITS::none> aabb3_t;
+	typedef LUCID_MATH::Sphere<float32_t, 3, LUCID_UNITS::none> sphere3_t;
+	typedef LUCID_MATH::Frustum<float32_t, LUCID_UNITS::system::none, LUCID_UNITS::quantity::pure> frustum_t;
 
 	///	Scalar
 	/// 

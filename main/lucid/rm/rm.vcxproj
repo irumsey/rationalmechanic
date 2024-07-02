@@ -25,6 +25,7 @@
     <ClCompile Include="Mind.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Defines.h" />
     <ClInclude Include="Disassembler.h" />
     <ClInclude Include="GA.h" />
     <ClInclude Include="Graph.h" />

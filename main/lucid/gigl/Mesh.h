@@ -6,120 +6,106 @@
 #include <lucid/core/Identity.h>
 #include <lucid/core/Noncopyable.h>
 #include <lucid/gal/Pipeline.h>
+#include <lucid/gigl/Defines.h>
+
+LUCID_CORE_BEGIN
+
+class Reader;
+
+LUCID_CORE_END
+
+LUCID_GAL_BEGIN
+
+class Program;
+
+class VertexFormat;
+class VertexBuffer;
+class IndexBuffer;
+
+LUCID_GAL_END
+
+LUCID_GIGL_BEGIN
 
 ///
 ///
 ///
-namespace lucid {
-namespace core {
 
-	class Reader;
+class Context;
+class Material;
+class Geometry;
 
-}	///	core
-}	///	lucid
-
+///	Mesh
 ///
+///	a gigl mesh is defined as: a material and geometry.
 ///
-///
-namespace lucid {
-namespace gal {
+///	note: notice the complete lack of any specific vertex
+///	structure.  mesh is entirely data driven which includes the
+///	vertex layout.  it would be improper to impose a vertex
+///	structure here.
+class Mesh final
+{
+public:
+	Mesh(core::Reader &reader);
 
-	class Program;
+	virtual ~Mesh();
 
-	class VertexFormat;
-	class VertexBuffer;
-	class IndexBuffer;
+	core::Identity const &identity() const;
 
-}	///	gal
-}	///	lucid
+	std::shared_ptr<LUCID_GAL::Program> program() const;
 
-///
-///
-///
-namespace lucid {
-namespace gigl {
+	std::shared_ptr<Material> material() const;
 
-	///
-	///
-	///
+	LUCID_GAL::Pipeline::TOPOLOGY topology() const;
 
-	class Context;
-	class Material;
-	class Geometry;
+	uint32_t vertexCount() const;
 
-	///	Mesh
-	///
-	///	a gigl mesh is defined as: a material and geometry.
-	///
-	///	note: notice the complete lack of any specific vertex
-	///	structure.  mesh is entirely data driven which includes the
-	///	vertex layout.  it would be improper to impose a vertex
-	///	structure here.
-	class Mesh final
-	{
-	public:
-		Mesh(core::Reader &reader);
+	uint32_t indexCount() const;
 
-		virtual ~Mesh();
+	uint32_t primitiveCount() const;
 
-		core::Identity const &identity() const;
+	void render(Context const &context) const;
 
-		std::shared_ptr<::lucid::gal::Program> program() const;
+	///	this assumes the per-instance stream(s) are already set.
+	void renderInstanced(Context const &context, int32_t count) const;
 
-		std::shared_ptr<Material> material() const;
+	void draw() const;
 
-		::lucid::gal::Pipeline::TOPOLOGY topology() const;
+	///	this assumes the per-instance stream(s) are already set.
+	void drawInstanced(int32_t count) const;
 
-		uint32_t vertexCount() const;
+	static Mesh *create(std::string const &path);
 
-		uint32_t indexCount() const;
+	static Mesh *create(LUCID_CORE::Reader &reader);
 
-		uint32_t primitiveCount() const;
+private:
+	core::Identity const _identity;
 
-		void render(Context const &context) const;
+	std::shared_ptr<LUCID_GAL::Program> _program;
 
-		///	this assumes the per-instance stream(s) are already set.
-		void renderInstanced(Context const &context, int32_t count) const;
+	std::shared_ptr<Material> _material;
+	std::shared_ptr<Geometry> _geometry;
 
-		void draw() const;
+	void initialize(LUCID_CORE::Reader &reader);
 
-		///	this assumes the per-instance stream(s) are already set.
-		void drawInstanced(int32_t count) const;
+	void shutdown();
 
-		static Mesh *create(std::string const &path);
+	LUCID_PREVENT_COPY(Mesh);
+	LUCID_PREVENT_ASSIGNMENT(Mesh);
+};
 
-		static Mesh *create(core::Reader &reader);
+inline core::Identity const &Mesh::identity() const
+{
+	return _identity;
+}
 
-	private:
-		core::Identity const _identity;
+inline std::shared_ptr<::lucid::gal::Program> Mesh::program() const
+{
+	return _program;
+}
 
-		std::shared_ptr<::lucid::gal::Program> _program;
+inline std::shared_ptr<Material> Mesh::material() const
+{
+	return _material;
+}
 
-		std::shared_ptr<Material> _material;
-		std::shared_ptr<Geometry> _geometry;
-
-		void initialize(::lucid::core::Reader &reader);
-
-		void shutdown();
-
-		LUCID_PREVENT_COPY(Mesh);
-		LUCID_PREVENT_ASSIGNMENT(Mesh);
-	};
-
-	inline core::Identity const &Mesh::identity() const
-	{
-		return _identity;
-	}
-
-	inline std::shared_ptr<::lucid::gal::Program> Mesh::program() const
-	{
-		return _program;
-	}
-
-	inline std::shared_ptr<Material> Mesh::material() const
-	{
-		return _material;
-	}
-
-}	///	gigl
-}	///	lucid
+LUCID_GIGL_END

@@ -22,6 +22,7 @@
     <ClInclude Include="Batched.h" />
     <ClInclude Include="Camera2D.h" />
     <ClInclude Include="Context.h" />
+    <ClInclude Include="Defines.h" />
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="Material.h" />

@@ -29,5 +29,5 @@ namespace Core {
 		_internal->reset();
 	}
 
-}	///  Core
+} ///  Core
 } /// Lucid

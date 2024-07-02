@@ -9,12 +9,11 @@
 
 #include <lucid/managed/GIGL/Camera2D.h>
 
-namespace /* anonymous */ {
+LUCID_ANONYMOUS_BEGIN
 
-	namespace    MI = msclr::interop;
-	namespace orbit = ::lucid::orbit;
+namespace MI = msclr::interop;
 
-}	/// anonymous
+LUCID_ANONYMOUS_END
 
 namespace Lucid {
 namespace Orbit {
@@ -31,35 +30,35 @@ namespace Orbit {
 	/// TBD: determine how "safe" this is and improve if ness/req.
 	private ref class Wrapper { public: static Frame ^wrapped = nullptr;  };
 
-	class Factory : public orbit::Algorithm
+	class Factory : public LUCID_ORBIT::Algorithm
 	{
 	public:
 		Factory() { Wrapper::wrapped = nullptr; }
 
 		virtual ~Factory() { Wrapper::wrapped = nullptr; }
 
-		Frame ^operator()(orbit::Frame *wrapped)
+		Frame ^operator()(LUCID_ORBIT::Frame *wrapped)
 		{
 			wrapped->apply(this);
 			return Wrapper::wrapped;
 		}
 
-		virtual void evaluate(orbit::DynamicPoint *point) override
+		virtual void evaluate(LUCID_ORBIT::DynamicPoint *point) override
 		{
 			Wrapper::wrapped = gcnew DynamicPoint(point);
 		}
 
-		virtual void evaluate(orbit::OrbitalBody *body) override
+		virtual void evaluate(LUCID_ORBIT::OrbitalBody *body) override
 		{
 			Wrapper::wrapped = gcnew OrbitalBody(body);
 		}
 
-		virtual void evaluate(orbit::DynamicBody *body) override
+		virtual void evaluate(LUCID_ORBIT::DynamicBody *body) override
 		{
 			Wrapper::wrapped = gcnew DynamicBody(body);
 		}
 
-		virtual void evaluate(orbit::CameraFrame *camera) override
+		virtual void evaluate(LUCID_ORBIT::CameraFrame *camera) override
 		{
 			Wrapper::wrapped = gcnew CameraFrame(camera);
 		}
@@ -69,7 +68,7 @@ namespace Orbit {
 	///
 	///
 	
-	Frame::Frame(orbit::Frame *frame)
+	Frame::Frame(LUCID_ORBIT::Frame *frame)
 		: _internal(frame)
 	{
 		LUCID_VALIDATE(nullptr != frame, "internal consistancy error");
@@ -121,23 +120,23 @@ namespace Orbit {
 
 	Math::Vector3 ^Frame::RelativePosition::get()
 	{
-		return gcnew Math::Vector3(orbit::cast(_internal->relativePosition[1]));
+		return gcnew Math::Vector3(LUCID_ORBIT::cast(_internal->relativePosition[1]));
 	}
 
 	void Frame::RelativePosition::set(Math::Vector3 ^value)
 	{
 		LUCID_VALIDATE(_internal != _internal->centerFrame, "attempt to move root frame");
 
-		_internal->relativePosition[1] = orbit::cast(value->ref);
-		_internal->relativePosition[0] = orbit::cast(value->ref);
+		_internal->relativePosition[1] = LUCID_ORBIT::cast(value->ref);
+		_internal->relativePosition[0] = LUCID_ORBIT::cast(value->ref);
 	}
 
 	Math::Vector3 ^Frame::AbsolutePosition::get()
 	{
-		return gcnew Math::Vector3(orbit::cast(_internal->absolutePosition[1]));
+		return gcnew Math::Vector3(LUCID_ORBIT::cast(_internal->absolutePosition[1]));
 	}
 
-	Frame ^Frame::Wrap(::lucid::orbit::Frame *frame)
+	Frame ^Frame::Wrap(LUCID_ORBIT::Frame *frame)
 	{
 		Factory ftor;
 		return (nullptr == frame) ? nullptr : ftor(frame);
@@ -147,14 +146,14 @@ namespace Orbit {
 	///
 	/// 
 
-	DynamicPoint::DynamicPoint(orbit::DynamicPoint *body)
+	DynamicPoint::DynamicPoint(LUCID_ORBIT::DynamicPoint *body)
 		: Frame(body)
 		, _internal(body)
 	{
 	}
 
 	DynamicPoint::DynamicPoint(size_t id, System::String ^name, System::String ^description)
-		: _internal(new orbit::DynamicPoint(id, MI::marshal_as<std::string>(name), MI::marshal_as<std::string>(description)))
+		: _internal(new LUCID_ORBIT::DynamicPoint(id, MI::marshal_as<std::string>(name), MI::marshal_as<std::string>(description)))
 		, Frame(_internal)
 	{
 	}
@@ -172,7 +171,7 @@ namespace Orbit {
 	///
 	/// 
 
-	OrbitalBody::OrbitalBody(orbit::OrbitalBody *body)
+	OrbitalBody::OrbitalBody(LUCID_ORBIT::OrbitalBody *body)
 		: Frame(body)
 		, _internal(body)
 	{
@@ -201,14 +200,14 @@ namespace Orbit {
 	///
 	/// 
 
-	DynamicBody::DynamicBody(orbit::DynamicBody *body)
+	DynamicBody::DynamicBody(LUCID_ORBIT::DynamicBody *body)
 		: Frame(body)
 		, _internal(body)
 	{
 	}
 
 	DynamicBody::DynamicBody(size_t id, System::String ^name, System::String ^description)
-		: _internal(new orbit::DynamicBody(id, MI::marshal_as<std::string>(name), MI::marshal_as<std::string>(description)))
+		: _internal(new LUCID_ORBIT::DynamicBody(id, MI::marshal_as<std::string>(name), MI::marshal_as<std::string>(description)))
 		, Frame(_internal)
 	{
 	}
@@ -227,12 +226,12 @@ namespace Orbit {
 	/// 
 
 	CameraFrame::CameraFrame(size_t id, System::String ^name, System::String ^description)
-		: _internal(new orbit::CameraFrame(id, MI::marshal_as<std::string>(name), MI::marshal_as<std::string>(description)))
+		: _internal(new LUCID_ORBIT::CameraFrame(id, MI::marshal_as<std::string>(name), MI::marshal_as<std::string>(description)))
 		, Frame(_internal)
 	{
 	}
 
-	CameraFrame::CameraFrame(orbit::CameraFrame *body)
+	CameraFrame::CameraFrame(LUCID_ORBIT::CameraFrame *body)
 		: Frame(body)
 		, _internal(body)
 	{

@@ -5,141 +5,127 @@
 #include <unordered_map>
 #include <lucid/core/Identity.h>
 #include <lucid/core/Noncopyable.h>
+#include <lucid/gigl/Defines.h>
 #include <lucid/gigl/Primitive.h>
 
-///
-///
-///
-namespace lucid {
-namespace core {
+LUCID_CORE_BEGIN
 
-	class Reader;
+class Reader;
 
-}	///	core
-}	///	lucid
+LUCID_CORE_END
 
+LUCID_GAL_BEGIN
+
+class Parameter;
+class Program;
+
+LUCID_GAL_END
+
+LUCID_GIGL_BEGIN
+
+class Context;
+
+///	Material
 ///
+///	a gigl material is defined as: a "bag" of data and a
+///	gal program to interpret it.  in other words, a gal
+///	program (render state, vertex shader, and pixel shader)
+///	can require any data it likes.  a gigl material encapsulates
+///	a program and provides a mechanism to supply that data.
 ///
+///	note: in the context of a material, data means shader constant
+///	data.  per vertex and per instance data is supplied via 
+///	the vertex buffers.
 ///
-namespace lucid {
-namespace gal {
+///	note: a material provides a program's constant data in one
+///	of two ways.  a material may contain constant data, meaning
+///	data which does not change for the life of the material.  in addition,
+///	a material may also contain "queries".  a "query" is a request for
+///	data which is supplied by the application via a rendering context.
+class Material final
+{
+public:
+	Material() = delete;
 
-	class Parameter;
-	class Program;
+	Material(std::string const &path);
 
-}	///	gal
-}	///	lucid
+	Material(core::Reader &reader);
 
-///
-///
-///
-namespace lucid {
-namespace gigl {
+	virtual ~Material();
 
-	class Context;
+	::lucid::core::Identity const &identity() const;
 
-	///	Material
+	std::shared_ptr<gal::Program> program() const;
+
+	Primitive const &attribute(std::string const &name) const;
+
+	Primitive &attribute(std::string const &name);
+
+	void begin(Context const &context) const;
+
+	void end();
+
+	static Material *create(std::string const &path);
+
+	static Material *create(core::Reader &reader);
+
+private:
+	///	Attribute
 	///
-	///	a gigl material is defined as: a "bag" of data and a
-	///	gal program to interpret it.  in other words, a gal
-	///	program (render state, vertex shader, and pixel shader)
-	///	can require any data it likes.  a gigl material encapsulates
-	///	a program and provides a mechanism to supply that data.
-	///
-	///	note: in the context of a material, data means shader constant
-	///	data.  per vertex and per instance data is supplied via 
-	///	the vertex buffers.
-	///
-	///	note: a material provides a program's constant data in one
-	///	of two ways.  a material may contain constant data, meaning
-	///	data which does not change for the life of the material.  in addition,
-	///	a material may also contain "queries".  a "query" is a request for
-	///	data which is supplied by the application via a rendering context.
-	class Material final
+	///	a material attribute "binds" a value to a program parameter.
+	struct Attribute
 	{
-	public:
-		Material() = delete;
+		::lucid::gal::Parameter const *parameter = nullptr;
+		Primitive value;
 
-		Material(std::string const &path);
+		Attribute() = default;
 
-		Material(core::Reader &reader);
-
-		virtual ~Material();
-
-		::lucid::core::Identity const &identity() const;
-
-		std::shared_ptr<gal::Program> program() const;
-
-		Primitive const &attribute(std::string const &name) const;
-
-		Primitive &attribute(std::string const &name);
-
-		void begin(Context const &context) const;
-
-		void end();
-
-		static Material *create(std::string const &path);
-
-		static Material *create(core::Reader &reader);
-
-	private:
-		///	Attribute
-		///
-		///	a material attribute "binds" a value to a program parameter.
-		struct Attribute
+		Attribute(::lucid::gal::Parameter const *parameter, Primitive const &value)
+			: parameter(parameter)
+			, value(value)
 		{
-			::lucid::gal::Parameter const *parameter = nullptr;
-			Primitive value;
-
-			Attribute() = default;
-
-			Attribute(::lucid::gal::Parameter const *parameter, Primitive const &value)
-				: parameter(parameter)
-				, value(value)
-			{
-			}
-		};
-
-		friend struct Applicator;
-
-		::lucid::core::Identity const _identity;
-
-		std::shared_ptr<::lucid::gal::Program> _program;
-		std::unordered_map<std::string, Attribute> _attributes;
-
-		void initialize(::lucid::core::Reader &reader);
-
-		void shutdown();
-
-		LUCID_PREVENT_COPY(Material);
-		LUCID_PREVENT_ASSIGNMENT(Material);
+		}
 	};
 
-	inline ::lucid::core::Identity const &Material::identity() const
-	{
-		return _identity;
-	}
+	friend struct Applicator;
 
-	inline std::shared_ptr<gal::Program> Material::program() const
-	{
-		return _program;
-	}
+	::lucid::core::Identity const _identity;
 
-	inline Primitive const &Material::attribute(std::string const &name) const
-	{
-		auto const &iter = _attributes.find(name);
-		LUCID_VALIDATE(iter != _attributes.end(), "unknown material attribute '" + name + "' specified");
+	std::shared_ptr<::lucid::gal::Program> _program;
+	std::unordered_map<std::string, Attribute> _attributes;
 
-		return iter->second.value;
-	}
+	void initialize(::lucid::core::Reader &reader);
 
-	inline Primitive &Material::attribute(std::string const &name)
-	{
-		auto &iter = _attributes.find(name);
-		LUCID_VALIDATE(iter != _attributes.end(), "unknown material attribute '" + name + "' specified");
+	void shutdown();
 
-		return iter->second.value;
-	}
+	LUCID_PREVENT_COPY(Material);
+	LUCID_PREVENT_ASSIGNMENT(Material);
+};
 
-}	///	gigl
-}	///	lucid
+inline ::lucid::core::Identity const &Material::identity() const
+{
+	return _identity;
+}
+
+inline std::shared_ptr<gal::Program> Material::program() const
+{
+	return _program;
+}
+
+inline Primitive const &Material::attribute(std::string const &name) const
+{
+	auto const &iter = _attributes.find(name);
+	LUCID_VALIDATE(iter != _attributes.end(), "unknown material attribute '" + name + "' specified");
+
+	return iter->second.value;
+}
+
+inline Primitive &Material::attribute(std::string const &name)
+{
+	auto &iter = _attributes.find(name);
+	LUCID_VALIDATE(iter != _attributes.end(), "unknown material attribute '" + name + "' specified");
+
+	return iter->second.value;
+}
+
+LUCID_GIGL_END

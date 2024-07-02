@@ -1,13 +1,11 @@
 #include "Callout.h"
 #include <lucid/gigl/Mesh.h>
 
-namespace lucid {
-namespace orbit {
+LUCID_ORBIT_BEGIN
 
-	void Callout::render(gigl::Context const &context) const
-	{
+void Callout::render(gigl::Context const &context) const
+{
 
-	}
+}
 
-}	///	orbit
-}	///	lucid
+LUCID_ORBIT_END

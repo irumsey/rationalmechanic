@@ -1,16 +1,11 @@
 #include "Elements.h"
 
-namespace /* anonymous */ {
-
-	namespace orbit = ::lucid::orbit;
-}
-
 namespace Lucid {
 namespace Orbit {
 
-	Elements::Elements(orbit::Elements const &elements)
+	Elements::Elements(LUCID_ORBIT::Elements const &elements)
 	{
-		_internal = new orbit::Elements(elements);
+		_internal = new LUCID_ORBIT::Elements(elements);
 	}
 
 	Elements::~Elements()

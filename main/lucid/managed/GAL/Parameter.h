@@ -1,12 +1,12 @@
 #pragma once
 
-namespace lucid {
-namespace gal  {
+#include <lucid/gal/Defines.h>
 
-	class Parameter;
+LUCID_GAL_BEGIN
 
-}	///	gal
-}	///	lucid
+class Parameter;
+
+LUCID_GAL_END
 
 namespace Lucid {
 namespace GAL {
@@ -17,7 +17,7 @@ namespace GAL {
 	public ref class Parameter
 	{
 	public:
-		Parameter(::lucid::gal::Parameter const *parameter);
+		Parameter(LUCID_GAL::Parameter const *parameter);
 
 		~Parameter();
 
@@ -25,12 +25,12 @@ namespace GAL {
 
 		property System::String ^name { System::String ^get(); }
 
-		property ::lucid::gal::Parameter const &ref { ::lucid::gal::Parameter const &get() { return *ptr; } }
+		property LUCID_GAL::Parameter const &ref { LUCID_GAL::Parameter const &get() { return *ptr; } }
 
-		property ::lucid::gal::Parameter const *ptr { ::lucid::gal::Parameter const *get() { return _internal; } }
+		property LUCID_GAL::Parameter const *ptr { LUCID_GAL::Parameter const *get() { return _internal; } }
 
 	private:
-		::lucid::gal::Parameter const *_internal = nullptr;
+		LUCID_GAL::Parameter const *_internal = nullptr;
 
 	};
 

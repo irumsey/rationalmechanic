@@ -5,15 +5,11 @@
 #include <lucid/core/Error.h>
 #include <msclr/marshal_cppstd.h>
 
-namespace /* anonymous */
-{
+LUCID_ANONYMOUS_BEGIN
 
-	namespace   MI = msclr::interop;
-	namespace core = ::lucid::core;
-	namespace  gal = ::lucid::gal;
-	namespace gigl = ::lucid::gigl;
+namespace   MI = msclr::interop;
 
-}
+LUCID_ANONYMOUS_END
 
 namespace Lucid {
 namespace GAL {
@@ -22,11 +18,11 @@ namespace GAL {
 	{
 		try
 		{
-			_internal = new std::shared_ptr<gal::Texture2D>(gigl::Resources::get<gal::Texture2D>(MI::marshal_as<std::string>(path)));
+			_internal = new std::shared_ptr<LUCID_GAL::Texture2D>(LUCID_GIGL::Resources::get<LUCID_GAL::Texture2D>(MI::marshal_as<std::string>(path)));
 		}
-		catch (core::Error const &error)
+		catch (LUCID_CORE::Error const &error)
 		{
-			core::log("ERROR", error.what());
+			LUCID_CORE::log("ERROR", error.what());
 			throw;
 		}
 	}

@@ -1,14 +1,13 @@
 #pragma once
 
 #include <memory>
+#include <lucid/gal/Defines.h>
 
-namespace lucid {
-namespace gal  {
+LUCID_GAL_BEGIN
 
-	class Texture2D;
+class Texture2D;
 
-}	///	gal
-}	///	lucid
+LUCID_GAL_END
 
 namespace Lucid {
 namespace GAL {
@@ -25,12 +24,12 @@ namespace GAL {
 
 		!Texture2D();
 
-		property ::lucid::gal::Texture2D &ref { ::lucid::gal::Texture2D &get() { return *ptr; } }
+		property LUCID_GAL::Texture2D &ref { LUCID_GAL::Texture2D &get() { return *ptr; } }
 
-		property ::lucid::gal::Texture2D *ptr { ::lucid::gal::Texture2D *get() { return _internal->get(); } }
+		property LUCID_GAL::Texture2D *ptr { LUCID_GAL::Texture2D *get() { return _internal->get(); } }
 
 	private:
-		std::shared_ptr<::lucid::gal::Texture2D> *_internal = nullptr;
+		std::shared_ptr<LUCID_GAL::Texture2D> *_internal = nullptr;
 
 	};
 

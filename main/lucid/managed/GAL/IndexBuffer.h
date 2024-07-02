@@ -1,12 +1,12 @@
 #pragma once
 
-namespace lucid {
-namespace gal {
+#include <lucid/gal/Defines.h>
 
-	class IndexBuffer;
+LUCID_GAL_BEGIN
 
-}	///	gal
-}	///	lucid
+class IndexBuffer;
+
+LUCID_GAL_END
 
 namespace Lucid {
 namespace GAL {
@@ -53,12 +53,12 @@ namespace GAL {
 
 		void unlock();
 
-		property ::lucid::gal::IndexBuffer &ref { ::lucid::gal::IndexBuffer &get() { return *ptr; } }
+		property LUCID_GAL::IndexBuffer &ref { LUCID_GAL::IndexBuffer &get() { return *ptr; } }
 
-		property ::lucid::gal::IndexBuffer *ptr { ::lucid::gal::IndexBuffer *get() { return _internal; } }
+		property LUCID_GAL::IndexBuffer *ptr { LUCID_GAL::IndexBuffer *get() { return _internal; } }
 
 	private:
-		::lucid::gal::IndexBuffer *_internal = nullptr;
+		LUCID_GAL::IndexBuffer *_internal = nullptr;
 
 	};
 

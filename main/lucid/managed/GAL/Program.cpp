@@ -12,15 +12,11 @@
 #include <lucid/managed/Math/Types.h>
 #include <lucid/managed/GAL/Types.h>
 
-namespace /* anonymous */
-{
+LUCID_ANONYMOUS_BEGIN
 
-	namespace MI   = msclr::interop;
-	namespace core = ::lucid::core;
-	namespace  gal = ::lucid::gal;
-	namespace gigl = ::lucid::gigl;
+namespace MI   = msclr::interop;
 
-}	///	anonymous
+LUCID_ANONYMOUS_END
 
 namespace Lucid {
 namespace GAL {
@@ -29,18 +25,18 @@ namespace GAL {
 	{
 		try
 		{
-			_internal = new std::shared_ptr<gal::Program>(gigl::Resources::get<gal::Program>(MI::marshal_as<std::string>(path)));
+			_internal = new std::shared_ptr<LUCID_GAL::Program>(LUCID_GIGL::Resources::get<LUCID_GAL::Program>(MI::marshal_as<std::string>(path)));
 		}
-		catch (core::Error const &error)
+		catch (LUCID_CORE::Error const &error)
 		{
-			core::log("ERROR", error.what());
+			LUCID_CORE::log("ERROR", error.what());
 			throw;
 		}
 	}
 
-	Program::Program(std::shared_ptr<::lucid::gal::Program> program)
+	Program::Program(std::shared_ptr<LUCID_GAL::Program> program)
 	{
-		_internal = new std::shared_ptr<gal::Program>(program);
+		_internal = new std::shared_ptr<LUCID_GAL::Program>(program);
 	}
 
 	Program::~Program()

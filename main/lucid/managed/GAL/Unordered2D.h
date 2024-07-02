@@ -1,12 +1,12 @@
 #pragma once
 
-namespace lucid {
-namespace gal  {
+#include <lucid/gal/Defines.h>
 
-	class Unordered2D;
+LUCID_GAL_BEGIN
 
-}	///	gal
-}	///	lucid
+class Unordered2D;
+
+LUCID_GAL_END
 
 namespace Lucid {
 namespace GAL {
@@ -23,12 +23,12 @@ namespace GAL {
 
 		!Unordered2D();
 
-		property ::lucid::gal::Unordered2D &ref { ::lucid::gal::Unordered2D &get() { return *ptr; } }
+		property LUCID_GAL::Unordered2D &ref { LUCID_GAL::Unordered2D &get() { return *ptr; } }
 
-		property ::lucid::gal::Unordered2D *ptr { ::lucid::gal::Unordered2D *get() { return _internal; } }
+		property LUCID_GAL::Unordered2D *ptr { LUCID_GAL::Unordered2D *get() { return _internal; } }
 
 	private:
-		::lucid::gal::Unordered2D *_internal = nullptr;
+		LUCID_GAL::Unordered2D *_internal = nullptr;
 
 	};
 

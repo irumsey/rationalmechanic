@@ -10,14 +10,6 @@
 
 #include <lucid/managed/Math/Types.h>
 
-namespace /* anonymous */ {
-
-	namespace  core = ::lucid:: core;
-	namespace  math = ::lucid:: math;
-	namespace orbit = ::lucid::orbit;
-
-}	///	anonymous
-
 namespace Lucid {
 namespace Orbit {
 
@@ -27,9 +19,9 @@ namespace Orbit {
 		{
 			Initialize(dayNumber);
 		}
-		catch (core::Error const &error)
+		catch (LUCID_CORE::Error const &error)
 		{
-			core::log("ERR", error.what());
+			LUCID_CORE::log("ERR", error.what());
 			Shutdown();
 			throw;
 		}
@@ -49,7 +41,7 @@ namespace Orbit {
 	{
 		Shutdown();
 
-		_internal = new orbit::Mechanics(dayNumber);
+		_internal = new LUCID_ORBIT::Mechanics(dayNumber);
 	}
 
 	void Mechanics::Shutdown()
@@ -60,7 +52,7 @@ namespace Orbit {
 
 	float Mechanics::DayNumber::get()
 	{
-		return ::lucid::orbit::cast(_internal->dayNumber());
+		return LUCID_ORBIT::cast(_internal->dayNumber());
 	}
 
 	Frame ^Mechanics::Root::get()

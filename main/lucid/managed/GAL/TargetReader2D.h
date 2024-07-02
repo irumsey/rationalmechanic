@@ -1,12 +1,12 @@
 #pragma once
 
-namespace lucid {
-namespace gal {
+#include <lucid/gal/Defines.h>
 
-	class TargetReader2D;
+LUCID_GAL_BEGIN
 
-}	///	gal
-}	///	lucid
+class TargetReader2D;
+
+LUCID_GAL_END
 
 namespace Lucid {
 namespace GAL {
@@ -24,12 +24,12 @@ namespace GAL {
 
 		unsigned int read(int x, int y);
 
-		property ::lucid::gal::TargetReader2D &ref { ::lucid::gal::TargetReader2D &get() { return *ptr; } }
+		property LUCID_GAL::TargetReader2D &ref { LUCID_GAL::TargetReader2D &get() { return *ptr; } }
 
-		property ::lucid::gal::TargetReader2D *ptr { ::lucid::gal::TargetReader2D *get() { return _internal; } }
+		property LUCID_GAL::TargetReader2D *ptr { LUCID_GAL::TargetReader2D *get() { return _internal; } }
 
 	private:
-		::lucid::gal::TargetReader2D *_internal = nullptr;
+		LUCID_GAL::TargetReader2D *_internal = nullptr;
 
 	};
 

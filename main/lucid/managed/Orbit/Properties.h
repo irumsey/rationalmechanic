@@ -1,5 +1,6 @@
 #pragma once
 
+#include <lucid/orbit/Defines.h>
 #include <lucid/orbit/Properties.h>
 
 #pragma push_macro("PROPERTY")
@@ -14,9 +15,9 @@ namespace Orbit{
 	public ref class PhysicalProperties
 	{
 	public:
-		PhysicalProperties(::lucid::orbit::PhysicalProperties *properties);
+		PhysicalProperties(LUCID_ORBIT::PhysicalProperties *properties);
 
-		PhysicalProperties(::lucid::orbit::PhysicalProperties const &properties);
+		PhysicalProperties(LUCID_ORBIT::PhysicalProperties const &properties);
 
 		~PhysicalProperties();
 
@@ -26,13 +27,13 @@ namespace Orbit{
 		PROPERTY(   Mass,   mass, double)
 		PROPERTY( Radius, radius, double)
 
-		property ::lucid::orbit::PhysicalProperties const &ref { ::lucid::orbit::PhysicalProperties const &get() { return *ptr; } }
+		property LUCID_ORBIT::PhysicalProperties const &ref { LUCID_ORBIT::PhysicalProperties const &get() { return *ptr; } }
 
-		property ::lucid::orbit::PhysicalProperties const *ptr { ::lucid::orbit::PhysicalProperties const *get() { return _internal; } }
+		property LUCID_ORBIT::PhysicalProperties const *ptr { LUCID_ORBIT::PhysicalProperties const *get() { return _internal; } }
 
 	private:
 		bool _isOwner = false;
-		::lucid::orbit::PhysicalProperties *_internal = nullptr;
+		LUCID_ORBIT::PhysicalProperties *_internal = nullptr;
 
 	};
 
@@ -42,9 +43,9 @@ namespace Orbit{
 	public ref class RenderProperties
 	{
 	public:
-		RenderProperties(::lucid::orbit::RenderProperties *properties);
+		RenderProperties(LUCID_ORBIT::RenderProperties *properties);
 
-		RenderProperties(::lucid::orbit::RenderProperties const &properties);
+		RenderProperties(LUCID_ORBIT::RenderProperties const &properties);
 
 		~RenderProperties();
 
@@ -54,13 +55,13 @@ namespace Orbit{
 		PROPERTY(OrbitHighlight, orbitHighlight, bool)
 		PROPERTY( BodyHighlight,  bodyHighlight, bool)
 
-		property ::lucid::orbit::RenderProperties const &ref { ::lucid::orbit::RenderProperties const &get() { return *ptr; } }
+		property LUCID_ORBIT::RenderProperties const &ref { LUCID_ORBIT::RenderProperties const &get() { return *ptr; } }
 
-		property ::lucid::orbit::RenderProperties const *ptr { ::lucid::orbit::RenderProperties const *get() { return _internal; } }
+		property LUCID_ORBIT::RenderProperties const *ptr { LUCID_ORBIT::RenderProperties const *get() { return _internal; } }
 
 	private:
 		bool _isOwner = false;
-		::lucid::orbit::RenderProperties *_internal = nullptr;
+		LUCID_ORBIT::RenderProperties *_internal = nullptr;
 
 	};
 

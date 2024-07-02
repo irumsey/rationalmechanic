@@ -15,216 +15,210 @@
 
 #define     _IMM Immediate(ins) 
 
-namespace /* anonymous */ {
+LUCID_RM_BEGIN
 
+//
+//
+//
+
+class Register
+{
+public:
+	Register(Disassembler::Instruction ins, bool indirect, uint32_t mask, size_t shift)
+		: index((mask & ins) >> shift)
+		, indirect(indirect)
+	{
+
+	}
+
+	std::ostream &repr(std::ostream &stream) const
+	{
+		if (indirect)
+			stream << "[r" << std::setw(3) << std::setfill('0') << index << "]";
+		else
+			stream << "  r" << std::setw(3) << std::setfill('0') << index;
+		return stream;
+	}
+
+private:
+	size_t index = 0;
+	bool indirect = false;
+
+};
+
+inline std::ostream &operator<<(std::ostream &stream, Register const &reg)
+{
+	return reg.repr(stream);
 }
 
-namespace lucid {
-namespace rm {
+//
+//
+//
 
-	//
-	//
-	//
-
-	class Register
+class Immediate
+{
+public:
+	Immediate(Disassembler::Instruction ins)
+		: value((0xffff0000 &ins) >> 16)
 	{
-	public:
-		Register(Disassembler::Instruction ins, bool indirect, uint32_t mask, size_t shift)
-			: index((mask & ins) >> shift)
-			, indirect(indirect)
-		{
-
-		}
-
-		std::ostream &repr(std::ostream &stream) const
-		{
-			if (indirect)
-				stream << "[r" << std::setw(3) << std::setfill('0') << index << "]";
-			else
-				stream << "  r" << std::setw(3) << std::setfill('0') << index;
-			return stream;
-		}
-
-	private:
-		size_t index = 0;
-		bool indirect = false;
-
-	};
-
-	inline std::ostream &operator<<(std::ostream &stream, Register const &reg)
-	{
-		return reg.repr(stream);
 	}
 
-	//
-	//
-	//
-
-	class Immediate
+	std::ostream &repr(std::ostream &stream) const
 	{
-	public:
-		Immediate(Disassembler::Instruction ins)
-			: value((0xffff0000 &ins) >> 16)
-		{
-		}
-
-		std::ostream &repr(std::ostream &stream) const
-		{
-			stream << std::hex;
-			stream << "0x" << std::setw(4) << std::setfill('0') << value;
-			stream << std::dec;
-
-			return stream;
-		}
-
-	private:
-		uint16_t value = 0;
-
-	};
-
-	inline std::ostream &operator<<(std::ostream &stream, Immediate const &imm)
-	{
-		return imm.repr(stream);
-	}
-
-	//
-	//
-	//
-
-	std::ostream &Disassembler::disassemble(std::ostream &stream, Program const &program)
-	{
-		for (size_t i = 0; i < program.size(); ++i)
-		{
-			Instruction ins = program[i];
-			(this->*operations[_OPCODE])(stream, ins);
-			stream << std::endl;
-		}
+		stream << std::hex;
+		stream << "0x" << std::setw(4) << std::setfill('0') << value;
+		stream << std::dec;
 
 		return stream;
 	}
 
-	std::ostream &Disassembler::_nullary(std::ostream &stream, Instruction ins)
+private:
+	uint16_t value = 0;
+
+};
+
+inline std::ostream &operator<<(std::ostream &stream, Immediate const &imm)
+{
+	return imm.repr(stream);
+}
+
+//
+//
+//
+
+std::ostream &Disassembler::disassemble(std::ostream &stream, Program const &program)
+{
+	for (size_t i = 0; i < program.size(); ++i)
 	{
-		stream << repr[_OPCODE];
-		return stream;
+		Instruction ins = program[i];
+		(this->*operations[_OPCODE])(stream, ins);
+		stream << std::endl;
 	}
 
-	std::ostream &Disassembler::_unary(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << "\t" << _R0;
-		return stream;
-	}
+	return stream;
+}
 
-	std::ostream &Disassembler::_binary(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << "\t" << _R0 << ", " << _R1;
-		return stream;
-	}
+std::ostream &Disassembler::_nullary(std::ostream &stream, Instruction ins)
+{
+	stream << repr[_OPCODE];
+	return stream;
+}
 
-	std::ostream &Disassembler::_ternary(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << "\t" << _R0 << ", " << _R1 << ", " << _R2;
-		return stream;
-	}
+std::ostream &Disassembler::_unary(std::ostream &stream, Instruction ins)
+{
+	stream << repr[_OPCODE] << "\t" << _R0;
+	return stream;
+}
 
-	std::ostream &Disassembler::_mov(std::ostream &stream, Instruction ins)
-	{
-		if (_FLAG2)
-			stream << repr[_OPCODE] << "\t" << _R0 << ", " << _IMM;
-		else
-			stream << repr[_OPCODE] << "\t" << _R0 << ", " << _R1;
-		return stream;
-	}
+std::ostream &Disassembler::_binary(std::ostream &stream, Instruction ins)
+{
+	stream << repr[_OPCODE] << "\t" << _R0 << ", " << _R1;
+	return stream;
+}
 
-	std::ostream &Disassembler::_bra(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << "\t" << _IMM;
-		return stream;
-	}
+std::ostream &Disassembler::_ternary(std::ostream &stream, Instruction ins)
+{
+	stream << repr[_OPCODE] << "\t" << _R0 << ", " << _R1 << ", " << _R2;
+	return stream;
+}
 
-	std::ostream &Disassembler::_brx(std::ostream &stream, Instruction ins)
-	{
+std::ostream &Disassembler::_mov(std::ostream &stream, Instruction ins)
+{
+	if (_FLAG2)
 		stream << repr[_OPCODE] << "\t" << _R0 << ", " << _IMM;
-		return stream;
-	}
+	else
+		stream << repr[_OPCODE] << "\t" << _R0 << ", " << _R1;
+	return stream;
+}
 
-	std::ostream &Disassembler::_bsx(std::ostream &stream, Instruction ins)
-	{
-		stream << repr[_OPCODE] << "\t" << _IMM;
-		return stream;
-	}
+std::ostream &Disassembler::_bra(std::ostream &stream, Instruction ins)
+{
+	stream << repr[_OPCODE] << "\t" << _IMM;
+	return stream;
+}
 
-	std::string const Disassembler::repr[OPCODE_COUNT] =
-	{
-		"NEG ",
-		"ADD ",
-		"SUB ",
-		"MUL ",
-		"INC ",
-		"DEC ",
-		"NOT ",
-		"AND ",
-		"OR  ",
-		"XOR ",
-		"LSL ",
-		"LSR ",
-		"BRA ",
-		"BZ  ",
-		"BNZ ",
-		"BSE ",
-		"BSNE",
-		"MOV ",
-		"NEGF",
-		"ADDF",
-		"SUBF",
-		"MULF",
-		"DIVF",
-		"CGI ",
-		"CAGN",
-		"CAGE",
-		"MHD ",
-		"RDGN",
-		"RDGE",
-		"PUSH",
-		"POP ",
-		"NOP ",
-	};
+std::ostream &Disassembler::_brx(std::ostream &stream, Instruction ins)
+{
+	stream << repr[_OPCODE] << "\t" << _R0 << ", " << _IMM;
+	return stream;
+}
 
-	Disassembler::operation_t const Disassembler::operations[OPCODE_COUNT] =
-	{
-		&_binary,
-		&_ternary,
-		&_ternary,
-		&_ternary,
-		&_unary,
-		&_unary,
-		&_binary,
-		&_ternary,
-		&_ternary,
-		&_ternary,
-		&_ternary,
-		&_ternary,
-		&_bra,
-		&_brx,
-		&_brx,
-		&_bsx,
-		&_bsx,
-		&_mov,
-		&_binary,
-		&_ternary,
-		&_ternary,
-		&_ternary,
-		&_ternary,
-		&_unary,
-		&_binary,
-		&_unary,
-		&_nullary,
-		&_ternary,
-		&_unary,
-		&_nullary,
-		&_nullary,
-		&_nullary,
-	};
+std::ostream &Disassembler::_bsx(std::ostream &stream, Instruction ins)
+{
+	stream << repr[_OPCODE] << "\t" << _IMM;
+	return stream;
+}
 
-}	// rm
-}	// lucid
+std::string const Disassembler::repr[OPCODE_COUNT] =
+{
+	"NEG ",
+	"ADD ",
+	"SUB ",
+	"MUL ",
+	"INC ",
+	"DEC ",
+	"NOT ",
+	"AND ",
+	"OR  ",
+	"XOR ",
+	"LSL ",
+	"LSR ",
+	"BRA ",
+	"BZ  ",
+	"BNZ ",
+	"BSE ",
+	"BSNE",
+	"MOV ",
+	"NEGF",
+	"ADDF",
+	"SUBF",
+	"MULF",
+	"DIVF",
+	"CGI ",
+	"CAGN",
+	"CAGE",
+	"MHD ",
+	"RDGN",
+	"RDGE",
+	"PUSH",
+	"POP ",
+	"NOP ",
+};
+
+Disassembler::operation_t const Disassembler::operations[OPCODE_COUNT] =
+{
+	&_binary,
+	&_ternary,
+	&_ternary,
+	&_ternary,
+	&_unary,
+	&_unary,
+	&_binary,
+	&_ternary,
+	&_ternary,
+	&_ternary,
+	&_ternary,
+	&_ternary,
+	&_bra,
+	&_brx,
+	&_brx,
+	&_bsx,
+	&_bsx,
+	&_mov,
+	&_binary,
+	&_ternary,
+	&_ternary,
+	&_ternary,
+	&_ternary,
+	&_unary,
+	&_binary,
+	&_unary,
+	&_nullary,
+	&_ternary,
+	&_unary,
+	&_nullary,
+	&_nullary,
+	&_nullary,
+};
+
+LUCID_RM_END

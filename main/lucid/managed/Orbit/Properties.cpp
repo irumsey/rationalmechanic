@@ -1,11 +1,5 @@
 #include "Properties.h"
 
-namespace /* anonymous */ {
-
-	namespace orbit = ::lucid::orbit;
-
-}
-
 namespace Lucid {
 namespace Orbit {
 
@@ -13,13 +7,13 @@ namespace Orbit {
 	/// 
 	/// 
 
-	PhysicalProperties::PhysicalProperties(orbit::PhysicalProperties const &properties)
+	PhysicalProperties::PhysicalProperties(LUCID_ORBIT::PhysicalProperties const &properties)
 	{
-		_internal = new orbit::PhysicalProperties(properties);
+		_internal = new LUCID_ORBIT::PhysicalProperties(properties);
 		_isOwner = true;
 	}
 
-	PhysicalProperties::PhysicalProperties(orbit::PhysicalProperties *properties)
+	PhysicalProperties::PhysicalProperties(LUCID_ORBIT::PhysicalProperties *properties)
 		: _internal(properties)
 		, _isOwner(false)
 	{
@@ -40,13 +34,13 @@ namespace Orbit {
 	/// 
 	/// 
 	
-	RenderProperties::RenderProperties(orbit::RenderProperties const &properties)
+	RenderProperties::RenderProperties(LUCID_ORBIT::RenderProperties const &properties)
 	{
-		_internal = new orbit::RenderProperties(properties);
+		_internal = new LUCID_ORBIT::RenderProperties(properties);
 		_isOwner = true;
 	}
 
-	RenderProperties::RenderProperties(orbit::RenderProperties *properties)
+	RenderProperties::RenderProperties(LUCID_ORBIT::RenderProperties *properties)
 		: _internal(properties)
 		, _isOwner(false)
 	{

@@ -1,12 +1,12 @@
 #pragma once
 
-namespace lucid {
-namespace gal  {
+#include <lucid/gal/Defines.h>
 
-	class DepthTarget2D;
+LUCID_GAL_BEGIN
 
-}	///	gal
-}	///	lucid
+class DepthTarget2D;
+
+LUCID_GAL_END
 
 namespace Lucid {
 namespace GAL {

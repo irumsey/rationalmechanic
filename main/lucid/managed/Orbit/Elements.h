@@ -1,5 +1,6 @@
 #pragma once
 
+#include <lucid/orbit/Defines.h>
 #include <lucid/orbit/Elements.h>
 
 #pragma push_macro("PROPERTY")
@@ -14,7 +15,7 @@ namespace Orbit{
 	public ref class Elements
 	{
 	public:
-		Elements(::lucid::orbit::Elements const &elements);
+		Elements(LUCID_ORBIT::Elements const &elements);
 
 		~Elements();
 
@@ -34,12 +35,12 @@ namespace Orbit{
 		PROPERTY(  AD, double)	/// Apoapsis distance
 		PROPERTY(  PR, double)	/// Sidereal orbit period
 
-		property ::lucid::orbit::Elements const &ref { ::lucid::orbit::Elements const &get() { return *ptr; } }
+		property LUCID_ORBIT::Elements const &ref { LUCID_ORBIT::Elements const &get() { return *ptr; } }
 
-		property ::lucid::orbit::Elements const *ptr { ::lucid::orbit::Elements const *get() { return _internal; } }
+		property LUCID_ORBIT::Elements const *ptr { LUCID_ORBIT::Elements const *get() { return _internal; } }
 
 	private:
-		::lucid::orbit::Elements *_internal = nullptr;
+		LUCID_ORBIT::Elements *_internal = nullptr;
 
 	};
 

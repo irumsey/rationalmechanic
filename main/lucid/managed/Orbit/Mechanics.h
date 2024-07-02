@@ -1,22 +1,20 @@
 #pragma once
 
+#include <lucid/core/Defines.h>
+#include <lucid/orbit/Defines.h>
 #include <lucid/orbit/Types.h>
 
-namespace lucid {
-namespace core {
+LUCID_CORE_BEGIN
 
-	class Clock;
+class Clock;
 
-}	///	orbit
-}	///	lucid
+LUCID_CORE_END
 
-namespace lucid {
-namespace orbit {
+LUCID_ORBIT_BEGIN
 
-	class Mechanics;
+class Mechanics;
 
-}	///	orbit
-}	///	lucid
+LUCID_ORBIT_END
 
 namespace Lucid {
 namespace Math {
@@ -69,7 +67,7 @@ namespace Orbit {
 		Selection ^Hit(int x, int y);
 
 	private:
-		::lucid::orbit::Mechanics *_internal = nullptr;
+		LUCID_ORBIT::Mechanics *_internal = nullptr;
 
 	};
 

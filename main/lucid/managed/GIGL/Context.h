@@ -1,14 +1,13 @@
 #pragma once
 
 #include <lucid/core/Types.h>
+#include <lucid/gigl/Defines.h>
 
-namespace lucid {
-namespace gigl	{
+LUCID_GIGL_BEGIN
 
-	class Context;
+class Context;
 
-}	///	gigl
-}	///	lucid
+LUCID_GIGL_END
 
 namespace Lucid {
 namespace Math {
@@ -65,12 +64,12 @@ namespace GIGL {
 
 		void Set(System::String ^name, System::String ^query);
 
-		property ::lucid::gigl::Context &ref { ::lucid::gigl::Context &get() { return *ptr; } }
+		property LUCID_GIGL::Context &ref { LUCID_GIGL::Context &get() { return *ptr; } }
 
-		property ::lucid::gigl::Context *ptr { ::lucid::gigl::Context *get() { return _internal; } }
+		property LUCID_GIGL::Context *ptr { LUCID_GIGL::Context *get() { return _internal; } }
 
 	private:
-		::lucid::gigl::Context *_internal = nullptr;
+		LUCID_GIGL::Context *_internal = nullptr;
 
 	};
 

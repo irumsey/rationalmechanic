@@ -7,15 +7,11 @@
 #include <msclr/marshal_cppstd.h>
 #include <sstream>
 
-namespace /* anonymous */
-{
+LUCID_ANONYMOUS_BEGIN
 
-	namespace MI = msclr::interop;
-	namespace core = ::lucid::core;
-	namespace  gal = ::lucid::gal;
-	namespace gigl = ::lucid::gigl;
+namespace MI = msclr::interop;
 
-}	///	anonymous
+LUCID_ANONYMOUS_END
 
 namespace Lucid {
 namespace GIGL {
@@ -28,15 +24,15 @@ namespace GIGL {
 	{
 		try
 		{
-			_internal = new std::shared_ptr<gigl::Mesh>(gigl::Resources::get<gigl::Mesh>(MI::marshal_as<std::string>(path)));
+			_internal = new std::shared_ptr<LUCID_GIGL::Mesh>(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(MI::marshal_as<std::string>(path)));
 
 			std::ostringstream os;
 			os << MI::marshal_as<std::string>(path) << " : " << (*_internal)->primitiveCount() << " primitives and " << (*_internal)->vertexCount() << " vertices";
-			core::log("INFO", os.str());
+			LUCID_CORE::log("INFO", os.str());
 		}
-		catch (core::Error const &error)
+		catch (LUCID_CORE::Error const &error)
 		{
-			core::log("ERROR", error.what());
+			LUCID_CORE::log("ERROR", error.what());
 			throw;
 		}
 	}

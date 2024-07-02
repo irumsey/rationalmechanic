@@ -1,34 +1,34 @@
 #pragma once
 
-namespace lucid {
-namespace orbit {
+#include <lucid/orbit/Defines.h>
 
-	class Frame;
-	class DynamicPoint;
-	class OrbitalBody;
-	class DynamicBody;
-	class CameraFrame;
+LUCID_ORBIT_BEGIN
 
-	///
-	///
-	///
-	class Algorithm
-	{
-	public:
-		virtual ~Algorithm() = default;
+class Frame;
+class DynamicPoint;
+class OrbitalBody;
+class DynamicBody;
+class CameraFrame;
 
-		virtual void evaluate(DynamicPoint *point) = 0;
+///
+///
+///
+class Algorithm
+{
+public:
+	virtual ~Algorithm() = default;
 
-		virtual void evaluate(OrbitalBody *body) = 0;
+	virtual void evaluate(DynamicPoint *point) = 0;
 
-		virtual void evaluate(DynamicBody *body) = 0;
+	virtual void evaluate(OrbitalBody *body) = 0;
 
-		virtual void evaluate(CameraFrame *camera) = 0;
+	virtual void evaluate(DynamicBody *body) = 0;
 
-	protected:
-		Algorithm() = default;
+	virtual void evaluate(CameraFrame *camera) = 0;
 
-	};
+protected:
+	Algorithm() = default;
 
-}	///	orbit
-}	///	lucid
+};
+
+LUCID_ORBIT_END

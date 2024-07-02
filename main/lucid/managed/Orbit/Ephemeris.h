@@ -1,5 +1,6 @@
 #pragma once
 
+#include <lucid/orbit/Defines.h>
 #include <lucid/orbit/Ephemeris.h>
 
 #pragma push_macro("PROPERTY")
@@ -16,10 +17,10 @@ namespace Orbit {
 	/// 
 	public enum class EphemerisEntryType
 	{
-		TYPE_UNDEFINED     = ::lucid::orbit::Ephemeris::Entry::TYPE_UNDEFINED,
-		TYPE_DYNAMIC_POINT = ::lucid::orbit::Ephemeris::Entry::TYPE_DYNAMIC_POINT,
-		TYPE_ORBITAL_BODY  = ::lucid::orbit::Ephemeris::Entry::TYPE_ORBITAL_BODY,
-		TYPE_DYNAMIC_BODY  = ::lucid::orbit::Ephemeris::Entry::TYPE_DYNAMIC_BODY,
+		TYPE_UNDEFINED     = LUCID_ORBIT::Ephemeris::Entry::TYPE_UNDEFINED,
+		TYPE_DYNAMIC_POINT = LUCID_ORBIT::Ephemeris::Entry::TYPE_DYNAMIC_POINT,
+		TYPE_ORBITAL_BODY  = LUCID_ORBIT::Ephemeris::Entry::TYPE_ORBITAL_BODY,
+		TYPE_DYNAMIC_BODY  = LUCID_ORBIT::Ephemeris::Entry::TYPE_DYNAMIC_BODY,
 	};
 
 	///
@@ -28,7 +29,7 @@ namespace Orbit {
 	public ref class EphemerisEntry
 	{
 	public:
-		EphemerisEntry(::lucid::orbit::Ephemeris::Entry const &entry);
+		EphemerisEntry(LUCID_ORBIT::Ephemeris::Entry const &entry);
 
 		~EphemerisEntry();
 
@@ -52,12 +53,12 @@ namespace Orbit {
 			void set(System::String ^value);
 		}
 
-		property ::lucid::orbit::Ephemeris::Entry const &ref { ::lucid::orbit::Ephemeris::Entry const &get() { return *ptr; } }
+		property LUCID_ORBIT::Ephemeris::Entry const &ref { LUCID_ORBIT::Ephemeris::Entry const &get() { return *ptr; } }
 
-		property ::lucid::orbit::Ephemeris::Entry const *ptr { ::lucid::orbit::Ephemeris::Entry const *get() { return _internal; } }
+		property LUCID_ORBIT::Ephemeris::Entry const *ptr { LUCID_ORBIT::Ephemeris::Entry const *get() { return _internal; } }
 
 	private:
-		::lucid::orbit::Ephemeris::Entry *_internal = nullptr;
+		LUCID_ORBIT::Ephemeris::Entry *_internal = nullptr;
 
 	};
 

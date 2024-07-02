@@ -10,15 +10,11 @@
 #include <lucid/managed/GAL/Types.h>
 #include <lucid/managed/Math/Types.h>
 
-namespace /* anonymous */
-{
-	
-	namespace   MI = msclr::interop;
-	namespace core = ::lucid::core;
-	namespace  gal = ::lucid::gal;
-	namespace gigl = ::lucid::gigl;
+LUCID_ANONYMOUS_BEGIN
 
-}	///	anonymous
+namespace MI = msclr::interop;
+
+LUCID_ANONYMOUS_END
 
 namespace Lucid {
 namespace GIGL {
@@ -27,11 +23,11 @@ namespace GIGL {
 	{
 		try
 		{
-			_internal = new gigl::Context(core::FileReader(MI::marshal_as<std::string>(path)));
+			_internal = new LUCID_GIGL::Context(LUCID_CORE::FileReader(MI::marshal_as<std::string>(path)));
 		}
-		catch (core::Error const &error)
+		catch (LUCID_CORE::Error const &error)
 		{
-			core::log("ERROR", error.what());
+			LUCID_CORE::log("ERROR", error.what());
 			throw;
 		}
 	}

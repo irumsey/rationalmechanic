@@ -2,14 +2,13 @@
 
 #include <memory>
 #include <lucid/core/Types.h>
+#include <lucid/gal/Defines.h>
 
-namespace lucid {
-namespace gal  {
+LUCID_GAL_BEGIN
 
-	class Program;
+class Program;
 
-}	///	gal
-}	///	lucid
+LUCID_GAL_END
 
 namespace Lucid {
 namespace Math {
@@ -42,7 +41,7 @@ namespace GAL {
 	public:
 		Program(System::String ^path);
 
-		Program(std::shared_ptr<::lucid::gal::Program> program);
+		Program(std::shared_ptr<LUCID_GAL::Program> program);
 
 		~Program();
 
@@ -74,12 +73,12 @@ namespace GAL {
 
 		void set(Parameter ^parameter, RenderTarget2D ^value);
 
-		property ::lucid::gal::Program &ref { ::lucid::gal::Program &get() { return *ptr; } }
+		property LUCID_GAL::Program &ref { LUCID_GAL::Program &get() { return *ptr; } }
 
-		property ::lucid::gal::Program *ptr { ::lucid::gal::Program *get() { return _internal->get(); } }
+		property LUCID_GAL::Program *ptr { LUCID_GAL::Program *get() { return _internal->get(); } }
 
 	private:
-		std::shared_ptr<::lucid::gal::Program> *_internal = nullptr;
+		std::shared_ptr<LUCID_GAL::Program> *_internal = nullptr;
 
 	};
 

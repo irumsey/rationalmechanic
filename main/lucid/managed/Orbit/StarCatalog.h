@@ -1,5 +1,6 @@
 #pragma once
 
+#include <lucid/orbit/Defines.h>
 #include <lucid/orbit/StarCatalog.h>
 
 #pragma push_macro("PROPERTY")
@@ -14,7 +15,7 @@ namespace Orbit {
 	public ref class StarCatalogEntry
 	{
 	public:
-		StarCatalogEntry(::lucid::orbit::StarCatalog::Entry const &entry);
+		StarCatalogEntry(LUCID_ORBIT::StarCatalog::Entry const &entry);
 
 		~StarCatalogEntry();
 
@@ -27,12 +28,12 @@ namespace Orbit {
 
 		property System::String ^Type { System::String ^get(); }
 
-		property ::lucid::orbit::StarCatalog::Entry const &ref { ::lucid::orbit::StarCatalog::Entry const &get() { return *ptr; } }
+		property LUCID_ORBIT::StarCatalog::Entry const &ref { LUCID_ORBIT::StarCatalog::Entry const &get() { return *ptr; } }
 
-		property ::lucid::orbit::StarCatalog::Entry const *ptr { ::lucid::orbit::StarCatalog::Entry const *get() { return _internal; } }
+		property LUCID_ORBIT::StarCatalog::Entry const *ptr { LUCID_ORBIT::StarCatalog::Entry const *get() { return _internal; } }
 
 	private:
-		::lucid::orbit::StarCatalog::Entry *_internal = nullptr;
+		LUCID_ORBIT::StarCatalog::Entry *_internal = nullptr;
 
 	};
 

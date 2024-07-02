@@ -4,28 +4,23 @@
 ///	the gc interferes shutdown order
 /// #define GIGL_DELETE_RESOURCES
 
-///
-///
-///
-namespace lucid {
-namespace gigl {
+LUCID_GIGL_BEGIN
 
-	Resources::Resources()
-	{
-	}
+Resources::Resources()
+{
+}
 
-	Resources::~Resources()
-	{
+Resources::~Resources()
+{
 #if defined(GIGL_DELETE_RESOURCES)
-		for (auto iter : _caches) { delete iter.second; }
+	for (auto iter : _caches) { delete iter.second; }
 #endif
-	}
+}
 
-	Resources &Resources::instance()
-	{
-		static Resources theInstance;
-		return theInstance;
-	}
+Resources &Resources::instance()
+{
+	static Resources theInstance;
+	return theInstance;
+}
 
-}	///	gigl
-}	///	lucid
+LUCID_GIGL_END

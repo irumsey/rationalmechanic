@@ -17,444 +17,437 @@
 #include <lucid/math/Algorithm.h>
 #include <algorithm>
 
-namespace  math = ::lucid:: math;
-namespace   gal = ::lucid::  gal;
-namespace  gigl = ::lucid:: gigl;
-namespace orbit = ::lucid::orbit;
+LUCID_ANONYMOUS_BEGIN
 
-namespace { /// anonymous
+inline LUCID_GAL::Pipeline &galPipeline()
+{
+	return LUCID_GAL::Pipeline::instance();
+}
 
-	inline gal::Pipeline &galPipeline()
-	{
-		return gal::Pipeline::instance();
-	}
+inline LUCID_ORBIT::StarCatalog &theStarCatalog()
+{
+	return LUCID_ORBIT::StarCatalog::instance();
+}
 
-	inline orbit::StarCatalog &theStarCatalog()
-	{
-		return orbit::StarCatalog::instance();
-	}
+inline LUCID_ORBIT::Ephemeris &theEphemeris()
+{
+	return LUCID_ORBIT::Ephemeris::instance();
+}
 
-	inline orbit::Ephemeris &theEphemeris()
-	{
-		return orbit::Ephemeris::instance();
-	}
-
-	template<typename T> struct NullSort
-	{
-		NullSort(gal::Vector3 const & /* dummy */)
-		{
-		}
-
-		bool operator()(T const &, T const &) const
-		{
-			return false;
-		}
-	};
-
-	template<typename T> struct Back2Front
-	{
-		gal::Vector3 viewPosition;
-
-		Back2Front(gal::Vector3 const &viewPosition)
-			: viewPosition(viewPosition)
-		{
-		}
-
-		bool operator()(T const &lhs, T const &rhs) const
-		{
-			return math::lsq(lhs.position - viewPosition) > math::lsq(rhs.position - viewPosition);
-		}
-	};
-
-	template<typename T> struct Front2Back
-	{
-		gal::Vector3 viewPosition;
-
-		Front2Back(gal::Vector3 const &viewPosition)
-			: viewPosition(viewPosition)
-		{
-		}
-
-		bool operator()(T const &lhs, T const &rhs) const
-		{
-			return math::lsq(lhs.position - viewPosition) < math::lsq(rhs.position - viewPosition);
-		}
-	};
-
-}	/// anonymous
-
-namespace lucid {
-namespace orbit {
-
-	///
-	///
-	///
-
-	Renderer::Renderer()
+template<typename T> struct NullSort
+{
+	NullSort(LUCID_GAL::Vector3 const & /* dummy */)
 	{
 	}
 
-	Renderer::~Renderer()
+	bool operator()(T const &, T const &) const
 	{
-		shutdown();
+		return false;
+	}
+};
+
+template<typename T> struct Back2Front
+{
+	LUCID_GAL::Vector3 viewPosition;
+
+	Back2Front(LUCID_GAL::Vector3 const &viewPosition)
+		: viewPosition(viewPosition)
+	{
 	}
 
-	void Renderer::evaluate(DynamicPoint *point)
+	bool operator()(T const &lhs, T const &rhs) const
 	{
-		LUCID_PROFILE_SCOPE("Renderer::evaluate(DynamicPoint)");
+		return LUCID_MATH::lsq(lhs.position - viewPosition) > LUCID_MATH::lsq(rhs.position - viewPosition);
+	}
+};
 
-		///	TBD: implement
+template<typename T> struct Front2Back
+{
+	LUCID_GAL::Vector3 viewPosition;
+
+	Front2Back(LUCID_GAL::Vector3 const &viewPosition)
+		: viewPosition(viewPosition)
+	{
 	}
 
-	void Renderer::evaluate(OrbitalBody *body)
+	bool operator()(T const &lhs, T const &rhs) const
 	{
-		LUCID_PROFILE_SCOPE("Renderer::evaluate(OrbitalBody)");
-
-		///	TBD: data drive line width and color
-		///	TBD: data drive domain of orbit
-
-		PhysicalProperties const &physicalProperties = body->physicalProperties;
-		RenderProperties const &renderProperties = body->renderProperties;
-		Elements const *elements = body->elements;
-
-		gal::Vector3 bodyPosition = adaptiveScale(math::lerp(_interpolant, body->absolutePosition[0], body->absolutePosition[1]) - _cameraPosition);
-
-		MeshInstance bodyInstance;
-		bodyInstance.id = (SELECT_FRAME << SELECT_SHIFT) | uint32_t(SELECT_MASK & body->id);
-		bodyInstance.position = bodyPosition;
-		bodyInstance.scale = adaptiveScale(physicalProperties.radius);
-		bodyInstance.rotation = gal::Quaternion(0, 0, 0, 1);
-		bodyInstance.color = renderProperties.color;
-		bodyInstance.parameters = renderProperties.parameters;
-		_sceneBatch.addInstance(renderProperties.model, bodyInstance);
-
-		if (!renderProperties.showOrbit)
-			return;
-
-		Frame const *centerFrame = body->centerFrame;
-		gal::Vector3 centerPosition = adaptiveScale(math::lerp(_interpolant, centerFrame->absolutePosition[0], centerFrame->absolutePosition[1]));
-
-		gal::Scalar  a = adaptiveScale(math::lerp(_interpolant, elements[0].A, elements[1].A));
-		gal::Scalar  e = cast(math::lerp(_interpolant, elements[0].EC, elements[1].EC));
-		gal::Scalar hu = a * (1.f - e * e);
-
-		gal::Quaternion rotation = math::slerp(
-			cast(_interpolant).value,
-			math::quaternionFromMatrix(cast(rotationFromElements(elements[0]))),
-			math::quaternionFromMatrix(cast(rotationFromElements(elements[1])))
-		);
-
-		MeshInstance orbitInstance;
-		orbitInstance.id = (SELECT_ORBIT << SELECT_SHIFT) | uint32_t(SELECT_MASK & body->id);
-		orbitInstance.position = centerPosition;
-		orbitInstance.scale = 3.f;
-		orbitInstance.rotation = rotation;
-		orbitInstance.color = renderProperties.orbitHighlight ? gal::Color(1.f, 1.f, 1.f, 1.f) : gal::Color(0, 0, 1, 1);
-		orbitInstance.parameters = gal::Vector4(hu, e, 0.f, constants::two_pi<float32_t>);
-		_orbitBatch.addInstance(_orbitMesh, orbitInstance);
+		return LUCID_MATH::lsq(lhs.position - viewPosition) < LUCID_MATH::lsq(rhs.position - viewPosition);
 	}
+};
+
+LUCID_ANONYMOUS_END
+
+LUCID_ORBIT_BEGIN
+
+///
+///
+///
+
+Renderer::Renderer()
+{
+}
+
+Renderer::~Renderer()
+{
+	shutdown();
+}
+
+void Renderer::evaluate(DynamicPoint *point)
+{
+	LUCID_PROFILE_SCOPE("Renderer::evaluate(DynamicPoint)");
+
+	///	TBD: implement
+}
+
+void Renderer::evaluate(OrbitalBody *body)
+{
+	LUCID_PROFILE_SCOPE("Renderer::evaluate(OrbitalBody)");
+
+	///	TBD: data drive line width and color
+	///	TBD: data drive domain of orbit
+
+	PhysicalProperties const &physicalProperties = body->physicalProperties;
+	RenderProperties const &renderProperties = body->renderProperties;
+	Elements const *elements = body->elements;
+
+	LUCID_GAL::Vector3 bodyPosition = adaptiveScale(LUCID_MATH::lerp(_interpolant, body->absolutePosition[0], body->absolutePosition[1]) - _cameraPosition);
+
+	MeshInstance bodyInstance;
+	bodyInstance.id = (SELECT_FRAME << SELECT_SHIFT) | uint32_t(SELECT_MASK & body->id);
+	bodyInstance.position = bodyPosition;
+	bodyInstance.scale = adaptiveScale(physicalProperties.radius);
+	bodyInstance.rotation = LUCID_GAL::Quaternion(0, 0, 0, 1);
+	bodyInstance.color = renderProperties.color;
+	bodyInstance.parameters = renderProperties.parameters;
+	_sceneBatch.addInstance(renderProperties.model, bodyInstance);
+
+	if (!renderProperties.showOrbit)
+		return;
+
+	Frame const *centerFrame = body->centerFrame;
+	LUCID_GAL::Vector3 centerPosition = adaptiveScale(LUCID_MATH::lerp(_interpolant, centerFrame->absolutePosition[0], centerFrame->absolutePosition[1]));
+
+	LUCID_GAL::Scalar  a = adaptiveScale(LUCID_MATH::lerp(_interpolant, elements[0].A, elements[1].A));
+	LUCID_GAL::Scalar  e = cast(LUCID_MATH::lerp(_interpolant, elements[0].EC, elements[1].EC));
+	LUCID_GAL::Scalar hu = a * (1.f - e * e);
+
+	LUCID_GAL::Quaternion rotation = LUCID_MATH::slerp(
+		cast(_interpolant).value,
+		LUCID_MATH::quaternionFromMatrix(cast(rotationFromElements(elements[0]))),
+		LUCID_MATH::quaternionFromMatrix(cast(rotationFromElements(elements[1])))
+	);
+
+	MeshInstance orbitInstance;
+	orbitInstance.id = (SELECT_ORBIT << SELECT_SHIFT) | uint32_t(SELECT_MASK & body->id);
+	orbitInstance.position = centerPosition;
+	orbitInstance.scale = 3.f;
+	orbitInstance.rotation = rotation;
+	orbitInstance.color = renderProperties.orbitHighlight ? LUCID_GAL::Color(1.f, 1.f, 1.f, 1.f) : LUCID_GAL::Color(0, 0, 1, 1);
+	orbitInstance.parameters = LUCID_GAL::Vector4(hu, e, 0.f, constants::two_pi<float32_t>);
+	_orbitBatch.addInstance(_orbitMesh, orbitInstance);
+}
 	  
-	void Renderer::evaluate(DynamicBody *body)
+void Renderer::evaluate(DynamicBody *body)
+{
+	LUCID_PROFILE_SCOPE("Renderer::evaluate(DynamicBody)");
+	///	TBD: implement
+}
+
+void Renderer::evaluate(CameraFrame *camera)
+{
+	LUCID_PROFILE_SCOPE("Renderer::evaluate(CameraFrame)");
+	///	TBD: implement
+}
+
+void Renderer::initialize(std::string const &path)
+{
+	shutdown();
+
+	_renderContext = LUCID_GIGL::Context(path);
+
+	LUCID_GAL::System &galSystem = LUCID_GAL::System::instance();
+	_width = galSystem.width();
+	_height = galSystem.height();
+
+	_starCount = theStarCatalog().count();
+	_starMesh.reset(LUCID_GIGL::Mesh::create("content/star.mesh"));
+	_starInstances.reset(LUCID_GAL::VertexBuffer::create(LUCID_GAL::VertexBuffer::USAGE_STATIC, int32_t(_starCount), sizeof(StarInstance)));
+
+	StarInstance *starInstances = (StarInstance *)(_starInstances->lock());
+	for (size_t i = 0; i < _starCount; ++i)
 	{
-		LUCID_PROFILE_SCOPE("Renderer::evaluate(DynamicBody)");
-		///	TBD: implement
+		StarCatalog::Entry const &entry = theStarCatalog()[i];
+		StarInstance &instance = starInstances[i];
+
+		instance.id = uint32_t((SELECT_STAR << SELECT_SHIFT) | i);
+
+		/// TBD: need a lookup mapping star type to texcoord into spectral texture...
+		instance.parameters.x = 0.01f * (rand() % 100);
+		instance.parameters.y = float32_t(entry.right_ascension);
+		instance.parameters.z = float32_t(entry.declination);
+		instance.parameters.w = entry.magnitude;
 	}
+	_starInstances->unlock();
 
-	void Renderer::evaluate(CameraFrame *camera)
-	{
-		LUCID_PROFILE_SCOPE("Renderer::evaluate(CameraFrame)");
-		///	TBD: implement
-	}
+	_sceneBatch.initialize();
+	_orbitBatch.initialize();
 
-	void Renderer::initialize(std::string const &path)
-	{
-		shutdown();
-
-		_renderContext = gigl::Context(path);
-
-		gal::System &galSystem = gal::System::instance();
-		_width = galSystem.width();
-		_height = galSystem.height();
-
-		_starCount = theStarCatalog().count();
-		_starMesh.reset(gigl::Mesh::create("content/star.mesh"));
-		_starInstances.reset(gal::VertexBuffer::create(gal::VertexBuffer::USAGE_STATIC, int32_t(_starCount), sizeof(StarInstance)));
-
-		StarInstance *starInstances = (StarInstance *)(_starInstances->lock());
-		for (size_t i = 0; i < _starCount; ++i)
-		{
-			StarCatalog::Entry const &entry = theStarCatalog()[i];
-			StarInstance &instance = starInstances[i];
-
-			instance.id = uint32_t((SELECT_STAR << SELECT_SHIFT) | i);
-
-			/// TBD: need a lookup mapping star type to texcoord into spectral texture...
-			instance.parameters.x = 0.01f * (rand() % 100);
-			instance.parameters.y = float32_t(entry.right_ascension);
-			instance.parameters.z = float32_t(entry.declination);
-			instance.parameters.w = entry.magnitude;
-		}
-		_starInstances->unlock();
-
-		_sceneBatch.initialize();
-		_orbitBatch.initialize();
-
-		/// test {
-		///	need a data driven method for registering these... 
-		/// ...just read the ephemeris stupid!!!
-		_sceneBatch.createBatch<MeshInstance, Back2Front<MeshInstance> >(gigl::Resources::get<gigl::Mesh>("content/atmosphere.mesh"), BATCH_MAXIMUM);
-		_sceneBatch.createBatch<MeshInstance, Front2Back<MeshInstance> >(gigl::Resources::get<gigl::Mesh>("content/hemisphere.mesh"), BATCH_MAXIMUM);
-		/// } test
+	/// test {
+	///	need a data driven method for registering these... 
+	/// ...just read the ephemeris stupid!!!
+	_sceneBatch.createBatch<MeshInstance, Back2Front<MeshInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>("content/atmosphere.mesh"), BATCH_MAXIMUM);
+	_sceneBatch.createBatch<MeshInstance, Front2Back<MeshInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>("content/hemisphere.mesh"), BATCH_MAXIMUM);
+	/// } test
 		 
-		_orbitMesh = gigl::Resources::get<gigl::Mesh>("content/orbit.mesh");
-		_orbitBatch.createBatch<MeshInstance, Back2Front<MeshInstance> >(_orbitMesh, BATCH_MAXIMUM);
+	_orbitMesh = LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>("content/orbit.mesh");
+	_orbitBatch.createBatch<MeshInstance, Back2Front<MeshInstance> >(_orbitMesh, BATCH_MAXIMUM);
 
-		_selectTarget.reset(gal::RenderTarget2D::create(gal::RenderTarget2D::FORMAT_UINT_R32, _width, _height));
-		_selectReader.reset(gal::TargetReader2D::create(_selectTarget.get(), _width, _height));
+	_selectTarget.reset(LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UINT_R32, _width, _height));
+	_selectReader.reset(LUCID_GAL::TargetReader2D::create(_selectTarget.get(), _width, _height));
 
-		_colorTarget.reset(gal::RenderTarget2D::create(gal::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, _width, _height));
-		_glowTarget.reset(gal::RenderTarget2D::create(gal::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, _width, _height));
-		_blurTarget[0].reset(gal::RenderTarget2D::create(gal::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, _width, _height));
-		_blurTarget[1].reset(gal::RenderTarget2D::create(gal::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, _width, _height));
+	_colorTarget.reset(LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, _width, _height));
+	_glowTarget.reset(LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, _width, _height));
+	_blurTarget[0].reset(LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, _width, _height));
+	_blurTarget[1].reset(LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, _width, _height));
 
-		_clear.reset(gigl::Mesh::create("content/clear.mesh"));
-		_copy .reset(gigl::Mesh::create("content/copy.mesh"));
-		_blur .reset(gigl::Mesh::create("content/blur.mesh"));
-		_post .reset(gigl::Mesh::create("content/post.mesh"));
-		_fxaa .reset(gigl::Mesh::create("content/fxaa.mesh"));
+	_clear.reset(LUCID_GIGL::Mesh::create("content/clear.mesh"));
+	_copy .reset(LUCID_GIGL::Mesh::create("content/copy.mesh"));
+	_blur .reset(LUCID_GIGL::Mesh::create("content/blur.mesh"));
+	_post .reset(LUCID_GIGL::Mesh::create("content/post.mesh"));
+	_fxaa .reset(LUCID_GIGL::Mesh::create("content/fxaa.mesh"));
 
-		_starParameters.sphereRadius = _starMesh->material()->program()->lookup("sphereRadius");
-		_starParameters. spriteScale = _starMesh->material()->program()->lookup( "spriteScale");
+	_starParameters.sphereRadius = _starMesh->material()->program()->lookup("sphereRadius");
+	_starParameters. spriteScale = _starMesh->material()->program()->lookup( "spriteScale");
 
-		_copyParameters.  theSource = _copy->material()->program()->lookup(  "theSource");
+	_copyParameters.  theSource = _copy->material()->program()->lookup(  "theSource");
 
-		_blurParameters.texelOffset = _blur->material()->program()->lookup("texelOffset");
-		_blurParameters.  theSource = _blur->material()->program()->lookup(  "theSource");
+	_blurParameters.texelOffset = _blur->material()->program()->lookup("texelOffset");
+	_blurParameters.  theSource = _blur->material()->program()->lookup(  "theSource");
 
-		_postParameters.colorTarget = _post->material()->program()->lookup("colorTarget");
-		_postParameters. glowTarget = _post->material()->program()->lookup( "glowTarget");
+	_postParameters.colorTarget = _post->material()->program()->lookup("colorTarget");
+	_postParameters. glowTarget = _post->material()->program()->lookup( "glowTarget");
 
-		_fxaaParameters.colorTarget = _fxaa->material()->program()->lookup("colorTarget");
-		_fxaaParameters. glowTarget = _fxaa->material()->program()->lookup( "glowTarget");
-	}
+	_fxaaParameters.colorTarget = _fxaa->material()->program()->lookup("colorTarget");
+	_fxaaParameters. glowTarget = _fxaa->material()->program()->lookup( "glowTarget");
+}
 
-	void Renderer::shutdown()
-	{
-		_starCount = 0;
-		_starInstances.reset();
-		_starMesh.reset();
+void Renderer::shutdown()
+{
+	_starCount = 0;
+	_starInstances.reset();
+	_starMesh.reset();
 
-		_orbitBatch.shutdown();
-		_sceneBatch.shutdown();
+	_orbitBatch.shutdown();
+	_sceneBatch.shutdown();
 
-		_selectReader.reset();
-		_selectTarget.reset();
+	_selectReader.reset();
+	_selectTarget.reset();
 
-		_colorTarget.reset();
-		_glowTarget.reset();
-		_blurTarget[0].reset(); _blurTarget[1].reset();
+	_colorTarget.reset();
+	_glowTarget.reset();
+	_blurTarget[0].reset(); _blurTarget[1].reset();
 
-		_clear.reset();
-		_copy.reset();
-		_blur.reset();
-		_post.reset();
-		_fxaa.reset();
+	_clear.reset();
+	_copy.reset();
+	_blur.reset();
+	_post.reset();
+	_fxaa.reset();
 
-		_renderContext = gigl::Context();
-	}
+	_renderContext = LUCID_GIGL::Context();
+}
 
-	void Renderer::render(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t time, scalar_t interpolant, bool useFXAA)
-	{
-		LUCID_PROFILE_SCOPE("Renderer::render(...)");
-		LUCID_VALIDATE(nullptr != cameraFrame->focus, "camera does not have a focus specified");
+void Renderer::render(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t time, scalar_t interpolant, bool useFXAA)
+{
+	LUCID_PROFILE_SCOPE("Renderer::render(...)");
+	LUCID_VALIDATE(nullptr != cameraFrame->focus, "camera does not have a focus specified");
 
-		resize();
+	resize();
 
-		_culler.cull(rootFrame, cameraFrame, interpolant);
+	_culler.cull(rootFrame, cameraFrame, interpolant);
 
-		float32_t width = float32_t(_width);
-		float32_t height = float32_t(_height);
+	float32_t width = float32_t(_width);
+	float32_t height = float32_t(_height);
 
-		Frame *focusFrame = cameraFrame->focus;
-		_interpolant = interpolant;
+	Frame *focusFrame = cameraFrame->focus;
+	_interpolant = interpolant;
 
-		_cameraPosition = math::lerp(interpolant, cameraFrame->absolutePosition[0], cameraFrame->absolutePosition[1]);
-		_focusPosition = math::lerp(interpolant, focusFrame->absolutePosition[0], focusFrame->absolutePosition[1]);
+	_cameraPosition = LUCID_MATH::lerp(interpolant, cameraFrame->absolutePosition[0], cameraFrame->absolutePosition[1]);
+	_focusPosition = LUCID_MATH::lerp(interpolant, focusFrame->absolutePosition[0], focusFrame->absolutePosition[1]);
 
-		gal::Matrix4x4 viewMatrix = math::look(gal::Vector3(0, 0, 0), adaptiveScale(_focusPosition - _cameraPosition), gal::Vector3(0, 0, 1));
-		gal::Matrix4x4 projMatrix = math::perspective(cast(cameraFrame->fov), gal::Scalar(width / height), adaptiveScale(_culler.znear), adaptiveScale(_culler.zfar));
-		gal::Matrix4x4 viewProjMatrix = projMatrix * viewMatrix;
+	LUCID_GAL::Matrix4x4 viewMatrix = LUCID_MATH::look(LUCID_GAL::Vector3(0, 0, 0), adaptiveScale(_focusPosition - _cameraPosition), LUCID_GAL::Vector3(0, 0, 1));
+	LUCID_GAL::Matrix4x4 projMatrix = LUCID_MATH::perspective(cast(cameraFrame->fov), LUCID_GAL::Scalar(width / height), adaptiveScale(_culler.znear), adaptiveScale(_culler.zfar));
+	LUCID_GAL::Matrix4x4 viewProjMatrix = projMatrix * viewMatrix;
 
-		_renderContext["screenWidth"] = gal::Scalar(width);
-		_renderContext["screenHeight"] = gal::Scalar(height);
-		_renderContext["texelSize"] = gal::Vector2(1.f / width, 1.f / height);
+	_renderContext["screenWidth"] = LUCID_GAL::Scalar(width);
+	_renderContext["screenHeight"] = LUCID_GAL::Scalar(height);
+	_renderContext["texelSize"] = LUCID_GAL::Vector2(1.f / width, 1.f / height);
 
-		_renderContext["time"] = cast(time);
-		_renderContext["interpolant"] = cast(_interpolant);
+	_renderContext["time"] = cast(time);
+	_renderContext["interpolant"] = cast(_interpolant);
 		
-		_renderContext["lightPosition"] = adaptiveScale(vector3_t(0, 0, 0) - _cameraPosition);
+	_renderContext["lightPosition"] = adaptiveScale(vector3_t(0, 0, 0) - _cameraPosition);
 
-		_renderContext["viewPosition"] = gal::Vector3(0, 0, 0);
-		_renderContext["viewForward"] = ::lucid::math::extractViewForward(viewMatrix);
-		_renderContext["viewRight"] = ::lucid::math::extractViewRight(viewMatrix);
-		_renderContext["viewUp"] = ::lucid::math::extractViewUp(viewMatrix);
-		_renderContext["viewMatrix"] = viewMatrix;
-		_renderContext["invViewMatrix"] = math::inverse(viewMatrix);
-		_renderContext["projMatrix"] = projMatrix;
-		_renderContext["invProjMatrix"] = math::inverse(projMatrix);
-		_renderContext["viewProjMatrix"] = viewProjMatrix;
-		_renderContext["invViewProjMatrix"] = math::inverse(viewProjMatrix);
+	_renderContext["viewPosition"] = LUCID_GAL::Vector3(0, 0, 0);
+	_renderContext["viewForward"] = LUCID_MATH::extractViewForward(viewMatrix);
+	_renderContext["viewRight"] = LUCID_MATH::extractViewRight(viewMatrix);
+	_renderContext["viewUp"] = LUCID_MATH::extractViewUp(viewMatrix);
+	_renderContext["viewMatrix"] = viewMatrix;
+	_renderContext["invViewMatrix"] = LUCID_MATH::inverse(viewMatrix);
+	_renderContext["projMatrix"] = projMatrix;
+	_renderContext["invProjMatrix"] = LUCID_MATH::inverse(projMatrix);
+	_renderContext["viewProjMatrix"] = viewProjMatrix;
+	_renderContext["invViewProjMatrix"] = LUCID_MATH::inverse(viewProjMatrix);
 
-		_sceneBatch.clear();
-		_orbitBatch.clear();
+	_sceneBatch.clear();
+	_orbitBatch.clear();
 
-		batch(rootFrame);
+	batch(rootFrame);
 
-		render();
+	render();
 
-		copy  (_blurTarget[0].get(), _glowTarget.get());
-		blur  ();
-		copy  (_glowTarget.get(), _blurTarget[0].get());
+	copy  (_blurTarget[0].get(), _glowTarget.get());
+	blur  ();
+	copy  (_glowTarget.get(), _blurTarget[0].get());
 
-		galPipeline().restoreBackBuffer(true, false, false);
-		galPipeline().updateTargets();
+	galPipeline().restoreBackBuffer(true, false, false);
+	galPipeline().updateTargets();
 
-		if (useFXAA)
-			fxaaPost();
-		else
-			post();
-	}
+	if (useFXAA)
+		fxaaPost();
+	else
+		post();
+}
 
-	uint32_t Renderer::hit(int32_t x, int32_t y) const
-	{
-		x = math::clamp(x, 0,  _width - 1);
-		y = math::clamp(y, 0, _height - 1);
+uint32_t Renderer::hit(int32_t x, int32_t y) const
+{
+	x = LUCID_MATH::clamp(x, 0,  _width - 1);
+	y = LUCID_MATH::clamp(y, 0, _height - 1);
 
-		uint32_t const *select = (uint32_t const *)(_selectReader->read());
-		return select[y * _width + x];
-	}
+	uint32_t const *select = (uint32_t const *)(_selectReader->read());
+	return select[y * _width + x];
+}
 
-	void Renderer::batch(Frame *frame)
-	{
-		LUCID_PROFILE_SCOPE("Renderer::batch(Frame)");
+void Renderer::batch(Frame *frame)
+{
+	LUCID_PROFILE_SCOPE("Renderer::batch(Frame)");
 
-		if (nullptr == frame)
-			return;
+	if (nullptr == frame)
+		return;
 
-		if (Culler::STATE_PRUNED == _culler[frame->id])
-			return;
+	if (Culler::STATE_PRUNED == _culler[frame->id])
+		return;
 
-		if (Culler::STATE_VISIBLE == _culler[frame->id])
-			frame->apply(this);
+	if (Culler::STATE_VISIBLE == _culler[frame->id])
+		frame->apply(this);
 
-		for (Frame *child = frame->firstChild; nullptr != child; child = child->nextSibling)
-			batch(child);
-	}
+	for (Frame *child = frame->firstChild; nullptr != child; child = child->nextSibling)
+		batch(child);
+}
 
-	void Renderer::render()
-	{
-		galPipeline().setRenderTarget(0, _colorTarget.get());
-		galPipeline().setRenderTarget(1, _glowTarget.get());
-		galPipeline().setRenderTarget(2, _selectTarget.get());
+void Renderer::render()
+{
+	galPipeline().setRenderTarget(0, _colorTarget.get());
+	galPipeline().setRenderTarget(1, _glowTarget.get());
+	galPipeline().setRenderTarget(2, _selectTarget.get());
 
-		galPipeline().updateTargets();
+	galPipeline().updateTargets();
 
-		_clear->render(_renderContext);
+	_clear->render(_renderContext);
 
-		renderStarfield();
-		renderScene();
-		renderOrbits();
+	renderStarfield();
+	renderScene();
+	renderOrbits();
 
-		galPipeline().restoreBackBuffer(true, false, false);
-		galPipeline().updateTargets();
-	}
+	galPipeline().restoreBackBuffer(true, false, false);
+	galPipeline().updateTargets();
+}
 
-	void Renderer::renderStarfield()
-	{
-		auto program = _starMesh->material()->program();
+void Renderer::renderStarfield()
+{
+	auto program = _starMesh->material()->program();
 
-		program->set(_starParameters.sphereRadius, adaptiveScale(_culler.starFieldRadius));
-		program->set(_starParameters. spriteScale, adaptiveScale(_culler.starScalingFactor));
+	program->set(_starParameters.sphereRadius, adaptiveScale(_culler.starFieldRadius));
+	program->set(_starParameters. spriteScale, adaptiveScale(_culler.starScalingFactor));
 		
-		galPipeline().setVertexStream(1, _starInstances.get());
-		_starMesh->renderInstanced(_renderContext, int32_t(_starCount));
-	}
+	galPipeline().setVertexStream(1, _starInstances.get());
+	_starMesh->renderInstanced(_renderContext, int32_t(_starCount));
+}
 
-	void Renderer::renderScene()
-	{
-		_sceneBatch.render(_renderContext);
-	}
+void Renderer::renderScene()
+{
+	_sceneBatch.render(_renderContext);
+}
 
-	void Renderer::renderOrbits()
-	{
-		/// TBD: implement
-	}
+void Renderer::renderOrbits()
+{
+	/// TBD: implement
+}
 
-	void Renderer::copy(gal::RenderTarget2D *dst, gal::RenderTarget2D *src)
-	{
-		galPipeline().setRenderTarget(0, dst);
-		galPipeline().setRenderTarget(1, nullptr);
-		galPipeline().setRenderTarget(2, nullptr);
-		galPipeline().updateTargets();
+void Renderer::copy(LUCID_GAL::RenderTarget2D *dst, LUCID_GAL::RenderTarget2D *src)
+{
+	galPipeline().setRenderTarget(0, dst);
+	galPipeline().setRenderTarget(1, nullptr);
+	galPipeline().setRenderTarget(2, nullptr);
+	galPipeline().updateTargets();
 		
-		_copy->material()->program()->set(_copyParameters.theSource, src);
-		_copy->render(_renderContext);
-	}
+	_copy->material()->program()->set(_copyParameters.theSource, src);
+	_copy->render(_renderContext);
+}
 
-	void Renderer::blur()
-	{
-		float32_t width = float32_t(_width);
-		float32_t height = float32_t(_height);
+void Renderer::blur()
+{
+	float32_t width = float32_t(_width);
+	float32_t height = float32_t(_height);
 
-		gal::Vector2 horizontal = gal::Vector2(1.f / width, 0);
-		gal::Vector2 vertical = gal::Vector2(0, 1.f / height);
+	LUCID_GAL::Vector2 horizontal = LUCID_GAL::Vector2(1.f / width, 0);
+	LUCID_GAL::Vector2 vertical = LUCID_GAL::Vector2(0, 1.f / height);
 
-		galPipeline().setRenderTarget(0, _blurTarget[1].get());
-		galPipeline().updateTargets();
+	galPipeline().setRenderTarget(0, _blurTarget[1].get());
+	galPipeline().updateTargets();
 
-		_blur->material()->program()->set(_blurParameters.theSource, _blurTarget[0].get());
-		_blur->material()->program()->set(_blurParameters.texelOffset, horizontal);
-		_blur->render(_renderContext);
+	_blur->material()->program()->set(_blurParameters.theSource, _blurTarget[0].get());
+	_blur->material()->program()->set(_blurParameters.texelOffset, horizontal);
+	_blur->render(_renderContext);
 
-		galPipeline().setRenderTarget(0, _blurTarget[0].get());
-		galPipeline().updateTargets();
+	galPipeline().setRenderTarget(0, _blurTarget[0].get());
+	galPipeline().updateTargets();
 
-		_blur->material()->program()->set(_blurParameters.theSource, _blurTarget[1].get());
-		_blur->material()->program()->set(_blurParameters.texelOffset, vertical);
-		_blur->render(_renderContext);
-	}
+	_blur->material()->program()->set(_blurParameters.theSource, _blurTarget[1].get());
+	_blur->material()->program()->set(_blurParameters.texelOffset, vertical);
+	_blur->render(_renderContext);
+}
 
-	void Renderer::post()
-	{
-		_post->material()->program()->set(_postParameters.colorTarget, _colorTarget.get());
-		_post->material()->program()->set(_postParameters. glowTarget, _glowTarget. get());
-		_post->render(_renderContext);
-	}
+void Renderer::post()
+{
+	_post->material()->program()->set(_postParameters.colorTarget, _colorTarget.get());
+	_post->material()->program()->set(_postParameters. glowTarget, _glowTarget. get());
+	_post->render(_renderContext);
+}
 
-	void Renderer::fxaaPost()
-	{
-		_fxaa->material()->program()->set(_fxaaParameters.colorTarget, _colorTarget.get());
-		_fxaa->material()->program()->set(_fxaaParameters.glowTarget, _glowTarget.get());
-		_fxaa->render(_renderContext);
-	}
+void Renderer::fxaaPost()
+{
+	_fxaa->material()->program()->set(_fxaaParameters.colorTarget, _colorTarget.get());
+	_fxaa->material()->program()->set(_fxaaParameters.glowTarget, _glowTarget.get());
+	_fxaa->render(_renderContext);
+}
 
-	void Renderer::resize()
-	{
-		gal::System &galSystem = gal::System::instance();
-		if ((_width == galSystem.width()) && (_height == galSystem.height()))
-			return;
+void Renderer::resize()
+{
+	LUCID_GAL::System &galSystem = LUCID_GAL::System::instance();
+	if ((_width == galSystem.width()) && (_height == galSystem.height()))
+		return;
 
-		_width = galSystem.width();
-		_height = galSystem.height();
+	_width = galSystem.width();
+	_height = galSystem.height();
 
-		_selectTarget.reset(gal::RenderTarget2D::create(gal::RenderTarget2D::FORMAT_UINT_R32, _width, _height));
-		_selectReader.reset(gal::TargetReader2D::create(_selectTarget.get(), _width, _height));
+	_selectTarget.reset(LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UINT_R32, _width, _height));
+	_selectReader.reset(LUCID_GAL::TargetReader2D::create(_selectTarget.get(), _width, _height));
 
-		_colorTarget.reset(gal::RenderTarget2D::create(gal::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, _width, _height));
-		_glowTarget.reset(gal::RenderTarget2D::create(gal::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, _width, _height));
-		_blurTarget[0].reset(gal::RenderTarget2D::create(gal::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, _width, _height));
-		_blurTarget[1].reset(gal::RenderTarget2D::create(gal::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, _width, _height));
-	}
+	_colorTarget.reset(LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, _width, _height));
+	_glowTarget.reset(LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, _width, _height));
+	_blurTarget[0].reset(LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, _width, _height));
+	_blurTarget[1].reset(LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, _width, _height));
+}
 
-}	///	orbit 
-}	///	lucid
+LUCID_ORBIT_END

@@ -1,17 +1,11 @@
 #include "Selection.h"
 
-namespace /* anonymous */ {
-
-	namespace orbit = ::lucid::orbit;
-
-}
-
 namespace Lucid {
 namespace Orbit {
 
-	Selection::Selection(orbit::Selection const &selection)
+	Selection::Selection(LUCID_ORBIT::Selection const &selection)
 	{
-		_internal = new orbit::Selection(selection);
+		_internal = new LUCID_ORBIT::Selection(selection);
 	}
 
 	Selection::~Selection()
@@ -31,7 +25,7 @@ namespace Orbit {
 
 	void Selection::Type::set(SelectionType value)
 	{
-		_internal->type = orbit::Selection::TYPE(value);
+		_internal->type = LUCID_ORBIT::Selection::TYPE(value);
 	}
 
 }	///	Orbit

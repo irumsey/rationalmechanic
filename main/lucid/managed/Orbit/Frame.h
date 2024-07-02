@@ -1,18 +1,17 @@
 #pragma once
 
+#include <lucid/orbit/Defines.h>
 #include <lucid/orbit/Frame.h>
 
-namespace lucid {
-namespace orbit {
+LUCID_ORBIT_BEGIN
 
-	class Frame;
-	class DynamicPoint;
-	class OrbitalBody;
-	class DynamicBody;
-	class CameraFrame;
+class Frame;
+class DynamicPoint;
+class OrbitalBody;
+class DynamicBody;
+class CameraFrame;
 
-}	///	orbit
-}	///	lucid
+LUCID_ORBIT_END
 
 namespace Lucid {
 namespace Math {
@@ -62,17 +61,17 @@ namespace Orbit {
 
 		property Math::Vector3 ^AbsolutePosition { Math::Vector3 ^get(); }
 
-		property ::lucid::orbit::Frame &ref { ::lucid::orbit::Frame &get() { return *_internal; } }
+		property LUCID_ORBIT::Frame &ref { LUCID_ORBIT::Frame &get() { return *_internal; } }
 
-		property ::lucid::orbit::Frame *ptr { ::lucid::orbit::Frame *get() { return  _internal; } }
+		property LUCID_ORBIT::Frame *ptr { LUCID_ORBIT::Frame *get() { return  _internal; } }
 
-		static Frame ^Wrap(::lucid::orbit::Frame *frame);
+		static Frame ^Wrap(LUCID_ORBIT::Frame *frame);
 
 	protected:
-		Frame(::lucid::orbit::Frame *frame);
+		Frame(LUCID_ORBIT::Frame *frame);
 
 	private:
-		::lucid::orbit::Frame *_internal = nullptr;
+		LUCID_ORBIT::Frame *_internal = nullptr;
 
 	};
 
@@ -82,7 +81,7 @@ namespace Orbit {
 	public ref class DynamicPoint : public Frame
 	{
 	public:
-		DynamicPoint(::lucid::orbit::DynamicPoint *body);
+		DynamicPoint(LUCID_ORBIT::DynamicPoint *body);
 
 		DynamicPoint(size_t id, System::String ^name, System::String ^description);
 
@@ -90,12 +89,12 @@ namespace Orbit {
 
 		!DynamicPoint();
 
-		property ::lucid::orbit::DynamicPoint &ref { ::lucid::orbit::DynamicPoint &get() { return *_internal; } }
+		property LUCID_ORBIT::DynamicPoint &ref { LUCID_ORBIT::DynamicPoint &get() { return *_internal; } }
 
-		property ::lucid::orbit::DynamicPoint *ptr { ::lucid::orbit::DynamicPoint *get() { return  _internal; } }
+		property LUCID_ORBIT::DynamicPoint *ptr { LUCID_ORBIT::DynamicPoint *get() { return  _internal; } }
 
 	private:
-		::lucid::orbit::DynamicPoint *_internal = nullptr;
+		LUCID_ORBIT::DynamicPoint *_internal = nullptr;
 
 	};
 
@@ -105,7 +104,7 @@ namespace Orbit {
 	public ref class OrbitalBody : public Frame
 	{
 	public:
-		OrbitalBody(::lucid::orbit::OrbitalBody *body);
+		OrbitalBody(LUCID_ORBIT::OrbitalBody *body);
 
 		// OrbitalBody(...) needs a means of specifying properties
 
@@ -117,12 +116,12 @@ namespace Orbit {
 
 		property RenderProperties ^RenderProps { RenderProperties ^get(); }
 
-		property ::lucid::orbit::OrbitalBody &ref { ::lucid::orbit::OrbitalBody &get() { return *_internal; } }
+		property LUCID_ORBIT::OrbitalBody &ref { LUCID_ORBIT::OrbitalBody &get() { return *_internal; } }
 
-		property ::lucid::orbit::OrbitalBody *ptr { ::lucid::orbit::OrbitalBody *get() { return  _internal; } }
+		property LUCID_ORBIT::OrbitalBody *ptr { LUCID_ORBIT::OrbitalBody *get() { return  _internal; } }
 
 	private:
-		::lucid::orbit::OrbitalBody *_internal = nullptr;
+		LUCID_ORBIT::OrbitalBody *_internal = nullptr;
 
 	};
 
@@ -132,7 +131,7 @@ namespace Orbit {
 	public ref class DynamicBody : public Frame
 	{
 	public:
-		DynamicBody(::lucid::orbit::DynamicBody *body);
+		DynamicBody(LUCID_ORBIT::DynamicBody *body);
 
 		DynamicBody(size_t id, System::String ^name, System::String ^description);
 
@@ -140,12 +139,12 @@ namespace Orbit {
 
 		!DynamicBody();
 
-		property ::lucid::orbit::DynamicBody &ref { ::lucid::orbit::DynamicBody &get() { return *_internal; } }
+		property LUCID_ORBIT::DynamicBody &ref { LUCID_ORBIT::DynamicBody &get() { return *_internal; } }
 
-		property ::lucid::orbit::DynamicBody *ptr { ::lucid::orbit::DynamicBody *get() { return  _internal; } }
+		property LUCID_ORBIT::DynamicBody *ptr { LUCID_ORBIT::DynamicBody *get() { return  _internal; } }
 
 	private:
-		::lucid::orbit::DynamicBody *_internal = nullptr;
+		LUCID_ORBIT::DynamicBody *_internal = nullptr;
 
 	};
 
@@ -158,7 +157,7 @@ namespace Orbit {
 	public:
 		CameraFrame(size_t id, System::String ^name, System::String ^description);
 
-		CameraFrame(::lucid::orbit::CameraFrame *camera);
+		CameraFrame(LUCID_ORBIT::CameraFrame *camera);
 
 		~CameraFrame();
 
@@ -166,12 +165,12 @@ namespace Orbit {
 
 		property Frame ^Focus { Frame ^get(); void set(Frame ^value); }
 
-		property ::lucid::orbit::CameraFrame &ref { ::lucid::orbit::CameraFrame &get() { return *_internal; } }
+		property LUCID_ORBIT::CameraFrame &ref { LUCID_ORBIT::CameraFrame &get() { return *_internal; } }
 
-		property ::lucid::orbit::CameraFrame *ptr { ::lucid::orbit::CameraFrame *get() { return  _internal; } }
+		property LUCID_ORBIT::CameraFrame *ptr { LUCID_ORBIT::CameraFrame *get() { return  _internal; } }
 
 	private:
-		::lucid::orbit::CameraFrame *_internal = nullptr;
+		LUCID_ORBIT::CameraFrame *_internal = nullptr;
 
 	};
 

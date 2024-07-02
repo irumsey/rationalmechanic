@@ -1,53 +1,51 @@
 #include "Batched.h"
 #include <algorithm>
 
-namespace lucid {
-namespace gigl {
+LUCID_GIGL_BEGIN
 
-	size_t Batched::TypeID::counter = 0;
+size_t Batched::TypeID::counter = 0;
 
-	Batched::Batched()
+Batched::Batched()
+{
+}
+
+Batched::~Batched()
+{
+	shutdown();
+}
+
+void Batched::initialize()
+{
+	shutdown();
+	/// TBD: nothing to do???
+}
+
+void Batched::shutdown()
+{
+	for (auto iter = _batches.begin(); iter != _batches.end(); ++iter)
+		delete iter->second;
+	_batches.clear();
+	_order.clear();
+}
+
+void Batched::render(Context const &context)
+{
+	for (auto iter = _order.begin(); iter != _order.end(); ++iter)
 	{
+		Key const &key = *iter;
+		_batches[key]->render(context, key.mesh);
 	}
+}
 
-	Batched::~Batched()
+void Batched::clear()
+{
+	for (auto iter = _batches.begin(); iter != _batches.end(); ++iter)
 	{
-		shutdown();
+		Key const &key = iter->first;
+		BatchBase *batch = iter->second;
+
+		batch->clear();
 	}
+}
 
-	void Batched::initialize()
-	{
-		shutdown();
-		/// TBD: nothing to do???
-	}
-
-	void Batched::shutdown()
-	{
-		for (auto iter = _batches.begin(); iter != _batches.end(); ++iter)
-			delete iter->second;
-		_batches.clear();
-		_order.clear();
-	}
-
-	void Batched::render(Context const &context)
-	{
-		for (auto iter = _order.begin(); iter != _order.end(); ++iter)
-		{
-			Key const &key = *iter;
-			_batches[key]->render(context, key.mesh);
-		}
-	}
-
-	void Batched::clear()
-	{
-		for (auto iter = _batches.begin(); iter != _batches.end(); ++iter)
-		{
-			Key const &key = iter->first;
-			BatchBase *batch = iter->second;
-
-			batch->clear();
-		}
-	}
-
-}	///	gigl
-}	///	lucid
+LUCID_GIGL_END
