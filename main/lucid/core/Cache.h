@@ -11,7 +11,7 @@ LUCID_CORE_BEGIN
 ///
 ///	K->T map for caching instances for which sharing is desired.
 ///	Uses the std::shared_ptr<> callback-on-release facility.
-template<class K, class T> class Cache
+template<typename K, typename T> class Cache
 {
 public:
 	Cache()
@@ -20,28 +20,28 @@ public:
 
 	virtual ~Cache()
 	{
-		assert(cache.empty() && "cache not empty");
+		assert(_cache.empty() && "cache not empty");
 	}
 
 	///	Find instance using key.
 	///	If the key value exists the associated shared instance is returned.
 	///	Otherwise, the supplied constructor is used to make a new instance.
-	template<class C> inline std::shared_ptr<T> get(K const &key, C const &ctor)
+	template<typename Ctor> inline std::shared_ptr<T> get(K const &key, Ctor const &ctor)
 	{
-		std::unordered_map<K, std::weak_ptr<T> >::iterator iter = cache.find(key);
-		if (iter != cache.end())
+		auto iter = _cache.find(key);
+		if (iter != _cache.end())
 			return iter->second.lock();
 
-		std::shared_ptr<T> entry(ctor(), Dtor(cache, key));
-		cache[key] = entry;
+		std::shared_ptr<T> entry(ctor(), Dtor(_cache, key));
+		_cache[key] = entry;
 
 		return entry;
 	}
 
 private:
-	typedef K key_t;
-	typedef T value_t;
-	typedef std::unordered_map<K, std::weak_ptr<T> > cache_t;
+	typedef typename K key_t;
+	typedef typename T value_t;
+	typedef typename std::unordered_map<K, std::weak_ptr<T> > cache_t;
 
 	///	Dtor
 	///
@@ -66,7 +66,7 @@ private:
 		}
 	};
 
-	cache_t cache;
+	cache_t _cache;
 };
 
 LUCID_CORE_END

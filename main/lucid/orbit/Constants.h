@@ -11,8 +11,8 @@ template<typename T> struct invalid_type {};
 
 LUCID_ORBIT_END
 
-#define LUCID_ORBIT_CONSTANT(name, value, units)																								\
-	template<typename T> LUCID_MATH::Scalar<T, units> const name = ::lucid::orbit::invalid_type<T>();										\
+#define LUCID_ORBIT_CONSTANT(name, value, units)																						\
+	template<typename T> LUCID_MATH::Scalar<T, units> const name = LUCID_ORBIT::invalid_type<T>();										\
 	template<> LUCID_MATH::Scalar<float32_t, units> const name<float32_t> = LUCID_MATH::Scalar<float32_t, units>(float32_t(value));		\
 	template<> LUCID_MATH::Scalar<float64_t, units> const name<float64_t> = LUCID_MATH::Scalar<float64_t, units>(float64_t(value));		\
 	template<> LUCID_MATH::Scalar<float128_t, units> const name<float128_t> = LUCID_MATH::Scalar<float128_t, units>(float128_t(value))

@@ -4,9 +4,7 @@
 #include <lucid/math/Scalar.h>
 #include <lucid/math/Vector.h>
 #include <lucid/math/Matrix.h>
-#include <lucid/gal/Defines.h>
 #include <lucid/gal/Types.h>
-#include <lucid/orbit/Defines.h>
 #include <lucid/orbit/Constants.h>
 #include <lucid/orbit/Types.h>
 #include <lucid/orbit/Properties.h>
