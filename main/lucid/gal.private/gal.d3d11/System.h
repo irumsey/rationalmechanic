@@ -19,7 +19,7 @@ LUCID_GAL_D3D11_BEGIN
 ///
 ///
 ///
-class System : public ::lucid::gal::System
+class System : public LUCID_GAL::System
 {
 public:
 	System() = default;
@@ -44,7 +44,7 @@ public:
 
 	ID3D11DeviceContext *d3dContext() const;
 
-	static ::lucid::gal::d3d11::System &instance();
+	static LUCID_GAL_D3D11::System &instance();
 
 private:
 	bool _windowed = false;

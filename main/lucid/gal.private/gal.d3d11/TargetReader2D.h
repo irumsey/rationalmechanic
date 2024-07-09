@@ -16,10 +16,10 @@ LUCID_GAL_D3D11_BEGIN
 ///
 ///	note: for now, the lifetime of the source target must include
 ///	the lifetime if this...
-class TargetReader2D : public ::lucid::gal::TargetReader2D
+class TargetReader2D : public LUCID_GAL::TargetReader2D
 {
 public:
-	TargetReader2D(::lucid::gal::RenderTarget2D const *target, int32_t width, int32_t height);
+	TargetReader2D(LUCID_GAL::RenderTarget2D const *target, int32_t width, int32_t height);
 
 	virtual ~TargetReader2D();
 

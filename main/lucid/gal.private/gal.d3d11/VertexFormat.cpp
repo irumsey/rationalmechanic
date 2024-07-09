@@ -57,7 +57,7 @@ VertexFormat *VertexFormat::create(VertexElement const *src, int32_t count)
 
 VertexFormat *VertexFormat::create(std::vector<VertexElement> const &layout)
 {
-	return new ::lucid::gal::d3d11::VertexFormat(layout);
+	return new LUCID_GAL_D3D11::VertexFormat(layout);
 }
 
 VertexFormat *VertexFormat::create(std::string const &path)
@@ -65,7 +65,7 @@ VertexFormat *VertexFormat::create(std::string const &path)
 	return create(core::FileReader(path));
 }
 
-VertexFormat *VertexFormat::create(::lucid::core::Reader &reader)
+VertexFormat *VertexFormat::create(LUCID_CORE::Reader &reader)
 {
 	int32_t count = reader.read<int32_t>();
 
@@ -132,7 +132,7 @@ void createDummyCode(std::vector<uint8_t> &code, std::vector<VertexElement> cons
 ///
 ///
 
-VertexFormat::VertexFormat(std::vector<::lucid::gal::VertexElement> const &layout)
+VertexFormat::VertexFormat(std::vector<LUCID_GAL::VertexElement> const &layout)
 {
 	initialize(layout);
 }
@@ -142,10 +142,10 @@ VertexFormat::~VertexFormat()
 	shutdown();
 }
 
-void VertexFormat::initialize(std::vector<::lucid::gal::VertexElement> const &layout)
+void VertexFormat::initialize(std::vector<LUCID_GAL::VertexElement> const &layout)
 {
 	std::vector<uint8_t> code;
-	::lucid::gal::d3d11::createDummyCode(code, layout);
+	LUCID_GAL_D3D11::createDummyCode(code, layout);
 
 	_layout = layout;
 	int32_t count = (int32_t)_layout.size();

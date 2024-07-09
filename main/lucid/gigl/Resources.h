@@ -71,11 +71,11 @@ private:
 
 		std::shared_ptr<T> get(std::string const &key)
 		{
-			return internal.get(key, ::lucid::core::CtorResource<T>(key));
+			return internal.get(key, LUCID_CORE::CtorResource<T>(key));
 		}
 
 	private:
-		::lucid::core::Cache<std::string, T> internal;
+		LUCID_CORE::Cache<std::string, T> internal;
 	};
 
 	std::unordered_map<void*, CacheBase*> _caches;

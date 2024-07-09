@@ -23,7 +23,7 @@ class Program;
 ///
 ///
 ///
-class Pipeline : public ::lucid::gal::Pipeline
+class Pipeline : public LUCID_GAL::Pipeline
 {
 public:
 	Pipeline();
@@ -44,33 +44,33 @@ public:
 
 	virtual void endScene() override;
 
-	virtual void beginProgram(::lucid::gal::Program const *program) override;
+	virtual void beginProgram(LUCID_GAL::Program const *program) override;
 
-	virtual void endProgram(::lucid::gal::Program const *program) override;
+	virtual void endProgram(LUCID_GAL::Program const *program) override;
 
-	virtual void beginGeometry(::lucid::gal::VertexFormat const *format) override;
+	virtual void beginGeometry(LUCID_GAL::VertexFormat const *format) override;
 
-	virtual void endGeometry(::lucid::gal::VertexFormat const *format) override;
+	virtual void endGeometry(LUCID_GAL::VertexFormat const *format) override;
 
-	virtual void setUnorderedTarget(::lucid::gal::Unordered2D *unordered) override;
+	virtual void setUnorderedTarget(LUCID_GAL::Unordered2D *unordered) override;
 
-	virtual void setRenderTarget(int32_t index, ::lucid::gal::RenderTarget2D *renderTarget) override;
+	virtual void setRenderTarget(int32_t index, LUCID_GAL::RenderTarget2D *renderTarget) override;
 
-	virtual void setDepthTarget(::lucid::gal::DepthTarget2D *depthtarget) override;
+	virtual void setDepthTarget(LUCID_GAL::DepthTarget2D *depthtarget) override;
 
 	virtual void restoreBackBuffer(bool color = true, bool depth = true, bool unordered = true) override;
 
 	virtual void updateTargets() override;
 
-	virtual void viewport(::lucid::gal::Viewport const &viewport) override;
+	virtual void viewport(LUCID_GAL::Viewport const &viewport) override;
 
-	virtual ::lucid::gal::Viewport const &viewport() const override;
+	virtual LUCID_GAL::Viewport const &viewport() const override;
 
-	virtual void clear(bool clearTarget = true, bool clearDepth = true, bool clearStencil = true, ::lucid::gal::Color const &color = ::lucid::gal::Color(), float32_t depth = 1.f, uint8_t stencil = 0x00) override;
+	virtual void clear(bool clearTarget = true, bool clearDepth = true, bool clearStencil = true, LUCID_GAL::Color const &color = LUCID_GAL::Color(), float32_t depth = 1.f, uint8_t stencil = 0x00) override;
 
-	virtual void setVertexStream(int32_t index, ::lucid::gal::VertexBuffer const *buffer, int32_t start = 0) override;
+	virtual void setVertexStream(int32_t index, LUCID_GAL::VertexBuffer const *buffer, int32_t start = 0) override;
 
-	virtual void setIndexStream(::lucid::gal::IndexBuffer const *buffer) override;
+	virtual void setIndexStream(LUCID_GAL::IndexBuffer const *buffer) override;
 
 	virtual void draw(TOPOLOGY topology, int32_t vertexCount) override;
 
@@ -78,14 +78,14 @@ public:
 
 	virtual void drawInstanced(TOPOLOGY topology, int32_t vertexCount, int32_t indexCount, int32_t instanceCount, int32_t indexStart = 0, int32_t instanceStart = 0, int32_t indexOffset = 0) override;
 
-	static ::lucid::gal::d3d11::Pipeline &instance();
+	static LUCID_GAL_D3D11::Pipeline &instance();
 
 private:
 	static int32_t const TARGET_MAXIMUM = 4;
 	static int32_t const UNORDERED_SLOT = TARGET_MAXIMUM;
 
 	Statistics _statistics;
-	::lucid::gal::Viewport _viewport;
+	LUCID_GAL::Viewport _viewport;
 
 	ID3D11Device *_d3dDevice = nullptr;
 	ID3D11DeviceContext *_d3dContext = nullptr;
@@ -102,7 +102,7 @@ private:
 	ID3D11DepthStencilView *_d3dCurrentDepth = nullptr;
 	bool _targetsChanged = true;
 
-	::lucid::gal::d3d11::Program const *_activeProgram = nullptr;
+	LUCID_GAL_D3D11::Program const *_activeProgram = nullptr;
 
 	void createDepthBuffer(int32_t width, int32_t height, int32_t samples);
 

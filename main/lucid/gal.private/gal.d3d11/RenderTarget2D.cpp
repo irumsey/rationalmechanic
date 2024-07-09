@@ -26,12 +26,12 @@ LUCID_GAL_BEGIN
 
 RenderTarget2D *RenderTarget2D::create(FORMAT format, int32_t width, int32_t height)
 {
-	return new ::lucid::gal::d3d11::RenderTarget2D(format, width, height);
+	return new LUCID_GAL_D3D11::RenderTarget2D(format, width, height);
 }
 
-RenderTarget2D *RenderTarget2D::create(::lucid::core::Reader &reader)
+RenderTarget2D *RenderTarget2D::create(LUCID_CORE::Reader &reader)
 {
-	return new ::lucid::gal::d3d11::RenderTarget2D(reader);
+	return new LUCID_GAL_D3D11::RenderTarget2D(reader);
 }
 
 LUCID_GAL_END
@@ -46,15 +46,15 @@ RenderTarget2D::RenderTarget2D(FORMAT format, int32_t width, int32_t height)
 	{
 		initialize();
 	}
-	catch (core::Error const &error)
+	catch (LUCID_CORE::Error const &error)
 	{
-		core::log("ERR", error.what());
+		LUCID_CORE::log("ERR", error.what());
 		shutdown();
 		throw;
 	}
 }
 
-RenderTarget2D::RenderTarget2D(::lucid::core::Reader &reader)
+RenderTarget2D::RenderTarget2D(LUCID_CORE::Reader &reader)
 {
 	reader.read(&_format, sizeof(FORMAT));
 	_width = reader.read<int32_t>();
@@ -64,9 +64,9 @@ RenderTarget2D::RenderTarget2D(::lucid::core::Reader &reader)
 	{
 		initialize();
 	}
-	catch (core::Error const &error)
+	catch (LUCID_CORE::Error const &error)
 	{
-		core::log("ERR", error.what());
+		LUCID_CORE::log("ERR", error.what());
 		shutdown();
 		throw;
 	}

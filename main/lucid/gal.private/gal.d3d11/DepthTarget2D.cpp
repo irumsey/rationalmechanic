@@ -20,12 +20,12 @@ LUCID_GAL_BEGIN
 
 	DepthTarget2D *DepthTarget2D::create(FORMAT format, int32_t width, int32_t height)
 	{
-		return new ::lucid::gal::d3d11::DepthTarget2D(format, width, height);
+		return new LUCID_GAL_D3D11::DepthTarget2D(format, width, height);
 	}
 
-	DepthTarget2D *DepthTarget2D::create(::lucid::core::Reader &reader)
+	DepthTarget2D *DepthTarget2D::create(LUCID_CORE::Reader &reader)
 	{
-		return new ::lucid::gal::d3d11::DepthTarget2D(reader);
+		return new LUCID_GAL_D3D11::DepthTarget2D(reader);
 	}
 
 LUCID_GAL_END
@@ -48,7 +48,7 @@ DepthTarget2D::DepthTarget2D(FORMAT format, int32_t width, int32_t height)
 	}
 }
 
-DepthTarget2D::DepthTarget2D(::lucid::core::Reader &reader)
+DepthTarget2D::DepthTarget2D(LUCID_CORE::Reader &reader)
 {
 	reader.read(&_format, sizeof(FORMAT));
 	_width = reader.read<int32_t>();

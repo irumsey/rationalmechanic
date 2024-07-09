@@ -21,12 +21,12 @@ LUCID_GAL_D3D11_BEGIN
 ///
 ///
 ///
-class VertexBuffer : public ::lucid::gal::VertexBuffer
+class VertexBuffer : public LUCID_GAL::VertexBuffer
 {
 public:
 	VertexBuffer(USAGE usage, int32_t count, int32_t stride);
 
-	VertexBuffer(::lucid::core::Reader &reader);
+	VertexBuffer(LUCID_CORE::Reader &reader);
 
 	virtual ~VertexBuffer();
 

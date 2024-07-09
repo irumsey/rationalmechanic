@@ -26,7 +26,7 @@ public:
 
 	Context(std::string const &path);
 
-	Context(::lucid::core::Reader &reader);
+	Context(LUCID_CORE::Reader &reader);
 
 	Primitive &operator[](std::string const &name);
 
@@ -41,7 +41,7 @@ public:
 private:
 	std::unordered_map<std::string, Primitive> _values;
 
-	void initialize(::lucid::core::Reader &reader);
+	void initialize(LUCID_CORE::Reader &reader);
 
 };
 

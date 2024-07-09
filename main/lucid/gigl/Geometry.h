@@ -30,13 +30,13 @@ LUCID_GIGL_BEGIN
 class Geometry final
 {
 public:
-	Geometry(::lucid::core::Reader &reader);
+	Geometry(LUCID_CORE::Reader &reader);
 
 	virtual ~Geometry();
 
-	core::Identity const &identity() const;
+	LUCID_CORE::Identity const &identity() const;
 
-	::lucid::gal::Pipeline::TOPOLOGY topology() const;
+	LUCID_GAL::Pipeline::TOPOLOGY topology() const;
 
 	uint32_t vertexCount() const;
 
@@ -50,18 +50,18 @@ public:
 
 	static Geometry *create(std::string const &path);
 
-	static Geometry *create(core::Reader &reader);
+	static Geometry *create(LUCID_CORE::Reader &reader);
 
 private:
-	core::Identity const _identity;
+	LUCID_CORE::Identity const _identity;
 
-	::lucid::gal::Pipeline::TOPOLOGY _topology = ::lucid::gal::Pipeline::TOPOLOGY_TRIANGLE_LIST;
+	LUCID_GAL::Pipeline::TOPOLOGY _topology = LUCID_GAL::Pipeline::TOPOLOGY_TRIANGLE_LIST;
 
-	std::unique_ptr<::lucid::gal::VertexFormat> _format;
-	std::unique_ptr<::lucid::gal::VertexBuffer> _vertices;
-	std::unique_ptr<::lucid::gal::IndexBuffer> _indices;
+	std::unique_ptr<LUCID_GAL::VertexFormat> _format;
+	std::unique_ptr<LUCID_GAL::VertexBuffer> _vertices;
+	std::unique_ptr<LUCID_GAL::IndexBuffer> _indices;
 
-	void initialize(::lucid::core::Reader &reader);
+	void initialize(LUCID_CORE::Reader &reader);
 
 	void shutdown();
 
@@ -69,12 +69,12 @@ private:
 	LUCID_PREVENT_ASSIGNMENT(Geometry);
 };
 
-inline core::Identity const &Geometry::identity() const
+inline LUCID_CORE::Identity const &Geometry::identity() const
 {
 	return _identity;
 }
 
-inline ::lucid::gal::Pipeline::TOPOLOGY Geometry::topology() const
+inline LUCID_GAL::Pipeline::TOPOLOGY Geometry::topology() const
 {
 	return _topology;
 }

@@ -53,7 +53,7 @@ public:
 
 	virtual ~Material();
 
-	::lucid::core::Identity const &identity() const;
+	LUCID_CORE::Identity const &identity() const;
 
 	std::shared_ptr<gal::Program> program() const;
 
@@ -75,12 +75,12 @@ private:
 	///	a material attribute "binds" a value to a program parameter.
 	struct Attribute
 	{
-		::lucid::gal::Parameter const *parameter = nullptr;
+		LUCID_GAL::Parameter const *parameter = nullptr;
 		Primitive value;
 
 		Attribute() = default;
 
-		Attribute(::lucid::gal::Parameter const *parameter, Primitive const &value)
+		Attribute(LUCID_GAL::Parameter const *parameter, Primitive const &value)
 			: parameter(parameter)
 			, value(value)
 		{
@@ -89,12 +89,12 @@ private:
 
 	friend struct Applicator;
 
-	::lucid::core::Identity const _identity;
+	LUCID_CORE::Identity const _identity;
 
-	std::shared_ptr<::lucid::gal::Program> _program;
+	std::shared_ptr<LUCID_GAL::Program> _program;
 	std::unordered_map<std::string, Attribute> _attributes;
 
-	void initialize(::lucid::core::Reader &reader);
+	void initialize(LUCID_CORE::Reader &reader);
 
 	void shutdown();
 
@@ -102,7 +102,7 @@ private:
 	LUCID_PREVENT_ASSIGNMENT(Material);
 };
 
-inline ::lucid::core::Identity const &Material::identity() const
+inline LUCID_CORE::Identity const &Material::identity() const
 {
 	return _identity;
 }

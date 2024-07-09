@@ -136,7 +136,7 @@ void Renderer::evaluate(OrbitalBody *body)
 		IconInstance iconInstance;
 		iconInstance.id = (SELECT_FRAME << SELECT_SHIFT) | uint32_t(SELECT_MASK & body->id);
 		iconInstance.position = bodyPosition;
-		iconInstance.scale = LUCID_GAL::Vector2(32, 32);
+		iconInstance.scale = LUCID_GAL::Vector2(24, 24);
 		iconInstance.texcoord = LUCID_GAL::Vector4(0, 0, 1, 1);
 		iconInstance.color = LUCID_GAL::Color(1, 1, 1, 1);
 		_sceneBatch.addInstance(renderProperties.icon, iconInstance);

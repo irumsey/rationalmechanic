@@ -37,7 +37,7 @@ LUCID_GAL_BEGIN
 
 Pipeline &Pipeline::instance()
 {
-	return ::lucid::gal::d3d11::Pipeline::instance();
+	return LUCID_GAL_D3D11::Pipeline::instance();
 }
 
 LUCID_GAL_END
@@ -71,7 +71,7 @@ void Pipeline::initialize(int32_t width, int32_t height, int32_t samples, ID3D11
 	createDepthBuffer(width, height, samples);
 
 	restoreBackBuffer(true, true);
-	viewport(::lucid::gal::Viewport(0, 0, width, height, 0.f, 1.f));
+	viewport(LUCID_GAL::Viewport(0, 0, width, height, 0.f, 1.f));
 }
 
 void Pipeline::shutdown()
@@ -109,7 +109,7 @@ void Pipeline::resize(int32_t width, int32_t height, int32_t samples)
 	_d3dCurrentDepth = nullptr;
 
 	restoreBackBuffer(true, true);
-	viewport(::lucid::gal::Viewport(0, 0, width, height, 0.f, 1.f));
+	viewport(LUCID_GAL::Viewport(0, 0, width, height, 0.f, 1.f));
 }
 
 void Pipeline::beginScene()
@@ -125,15 +125,15 @@ void Pipeline::endScene()
 	_d3dChain->Present(1, 0);
 }
 
-void Pipeline::beginProgram(::lucid::gal::Program const *program)
+void Pipeline::beginProgram(LUCID_GAL::Program const *program)
 {
 	updateTargets();
 
-	_activeProgram = static_cast<::lucid::gal::d3d11::Program const *>(program);
+	_activeProgram = static_cast<LUCID_GAL_D3D11::Program const *>(program);
 	_activeProgram->onBegin();
 }
 
-void Pipeline::endProgram(::lucid::gal::Program const *program)
+void Pipeline::endProgram(LUCID_GAL::Program const *program)
 {
 	_activeProgram->onEnd();
 	_activeProgram = nullptr;
@@ -141,15 +141,15 @@ void Pipeline::endProgram(::lucid::gal::Program const *program)
 	++_statistics.programChanges;
 }
 
-void Pipeline::beginGeometry(::lucid::gal::VertexFormat const *format)
+void Pipeline::beginGeometry(LUCID_GAL::VertexFormat const *format)
 {
 	updateTargets();
 
-	::lucid::gal::d3d11::VertexFormat const *concrete = static_cast<VertexFormat const *>(format);
+	LUCID_GAL_D3D11::VertexFormat const *concrete = static_cast<VertexFormat const *>(format);
 	_d3dContext->IASetInputLayout(concrete->d3dLayout());
 }
 
-void Pipeline::endGeometry(::lucid::gal::VertexFormat const *format)
+void Pipeline::endGeometry(LUCID_GAL::VertexFormat const *format)
 {
 	ID3D11Buffer *buffer[8] = { 0, 0, 0, 0, 0, 0, 0, 0, };
 	uint32_t dummy[8] = { 0, 0, 0, 0, 0, 0, 0, 0, };
@@ -159,19 +159,19 @@ void Pipeline::endGeometry(::lucid::gal::VertexFormat const *format)
 	_d3dContext->IASetIndexBuffer(nullptr, DXGI_FORMAT_UNKNOWN, 0);
 }
 
-void Pipeline::setUnorderedTarget(::lucid::gal::Unordered2D *unordered)
+void Pipeline::setUnorderedTarget(LUCID_GAL::Unordered2D *unordered)
 {
-	::lucid::gal::d3d11::Unordered2D *concrete = static_cast<::lucid::gal::d3d11::Unordered2D *>(unordered);
+	LUCID_GAL_D3D11::Unordered2D *concrete = static_cast<LUCID_GAL_D3D11::Unordered2D *>(unordered);
 	_d3dCurrentUnordered = concrete ? concrete->d3dUnorderedView() : nullptr;
 
 	_targetsChanged = true;
 }
 
-void Pipeline::setRenderTarget(int32_t index, ::lucid::gal::RenderTarget2D *renderTarget)
+void Pipeline::setRenderTarget(int32_t index, LUCID_GAL::RenderTarget2D *renderTarget)
 {
 	LUCID_VALIDATE((-1 < index) && (index < TARGET_MAXIMUM), "invalid index");
 
-	::lucid::gal::d3d11::RenderTarget2D const *concrete = static_cast<gal::d3d11::RenderTarget2D const *>(renderTarget);
+	LUCID_GAL_D3D11::RenderTarget2D const *concrete = static_cast<LUCID_GAL_D3D11::RenderTarget2D const *>(renderTarget);
 	_d3dCurrentTargets[index] = concrete ? concrete->d3dTargetView() : nullptr;
 
 	_targetsChanged = true;
@@ -179,9 +179,9 @@ void Pipeline::setRenderTarget(int32_t index, ::lucid::gal::RenderTarget2D *rend
 	++_statistics.targetChanges;
 }
 
-void Pipeline::setDepthTarget(::lucid::gal::DepthTarget2D *depthTarget)
+void Pipeline::setDepthTarget(LUCID_GAL::DepthTarget2D *depthTarget)
 {
-	::lucid::gal::d3d11::DepthTarget2D const *concrete = static_cast<::lucid::gal::d3d11::DepthTarget2D const *>(depthTarget);
+	LUCID_GAL_D3D11::DepthTarget2D const *concrete = static_cast<LUCID_GAL_D3D11::DepthTarget2D const *>(depthTarget);
 	_d3dCurrentDepth = concrete ? concrete->d3dDepthStencilView() : nullptr;
 
 	_targetsChanged = true;
@@ -221,7 +221,7 @@ void Pipeline::updateTargets()
 	}
 }
 
-void Pipeline::viewport(::lucid::gal::Viewport const &viewport)
+void Pipeline::viewport(LUCID_GAL::Viewport const &viewport)
 {
 	updateTargets();
 
@@ -231,12 +231,12 @@ void Pipeline::viewport(::lucid::gal::Viewport const &viewport)
 	_viewport = viewport;
 }
 
-::lucid::gal::Viewport const &Pipeline::viewport() const
+LUCID_GAL::Viewport const &Pipeline::viewport() const
 {
 	return _viewport;
 }
 
-void Pipeline::clear(bool clearTarget, bool clearDepth, bool clearStencil, ::lucid::gal::Color const &color, float32_t depth, uint8_t stencil)
+void Pipeline::clear(bool clearTarget, bool clearDepth, bool clearStencil, LUCID_GAL::Color const &color, float32_t depth, uint8_t stencil)
 {
 	updateTargets();
 
@@ -262,11 +262,11 @@ void Pipeline::clear(bool clearTarget, bool clearDepth, bool clearStencil, ::luc
 	}
 }
 
-void Pipeline::setVertexStream(int32_t index, ::lucid::gal::VertexBuffer const *buffer, int32_t start)
+void Pipeline::setVertexStream(int32_t index, LUCID_GAL::VertexBuffer const *buffer, int32_t start)
 {
 	updateTargets();
 
-	::lucid::gal::d3d11::VertexBuffer const *concrete = static_cast<::lucid::gal::d3d11::VertexBuffer const *>(buffer);
+	LUCID_GAL_D3D11::VertexBuffer const *concrete = static_cast<LUCID_GAL_D3D11::VertexBuffer const *>(buffer);
 
 	ID3D11Buffer *d3dBuffer = concrete->d3dBuffer();
 	uint32_t stride = concrete->stride();
@@ -275,11 +275,11 @@ void Pipeline::setVertexStream(int32_t index, ::lucid::gal::VertexBuffer const *
 	_d3dContext->IASetVertexBuffers(index, 1, &d3dBuffer, &stride, &offset);
 }
 
-void Pipeline::setIndexStream(::lucid::gal::IndexBuffer const *buffer)
+void Pipeline::setIndexStream(LUCID_GAL::IndexBuffer const *buffer)
 {
 	updateTargets();
 
-	::lucid::gal::d3d11::IndexBuffer const *concrete = static_cast<::lucid::gal::d3d11::IndexBuffer const *>(buffer);
+	LUCID_GAL_D3D11::IndexBuffer const *concrete = static_cast<LUCID_GAL_D3D11::IndexBuffer const *>(buffer);
 	ID3D11Buffer *d3dBuffer = concrete->d3dBuffer();
 
 	_d3dContext->IASetIndexBuffer(d3dBuffer, d3dIndexFormat[buffer->format()], 0);
@@ -321,9 +321,9 @@ void Pipeline::drawInstanced(TOPOLOGY topology, int32_t vertexCount, int32_t ind
 	++_statistics.drawCalls;
 }
 
-::lucid::gal::d3d11::Pipeline &Pipeline::instance()
+LUCID_GAL_D3D11::Pipeline &Pipeline::instance()
 {
-	static ::lucid::gal::d3d11::Pipeline theInstance;
+	static LUCID_GAL_D3D11::Pipeline theInstance;
 	return theInstance;
 }
 

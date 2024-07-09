@@ -34,7 +34,7 @@ struct Node
 	typedef float32_t(*transfer_t)(float32_t x);
 
 	static float32_t    step(float32_t x) { return ((x < 0.f) ? 0.f : 1.f); }
-	static float32_t sigmoid(float32_t x) { float32_t y = std::powf(::lucid::core::numbers::e<float32_t>, x);  return y / (y + 1.f); }
+	static float32_t sigmoid(float32_t x) { float32_t y = std::powf(LUCID_CORE::numbers::e<float32_t>, x);  return y / (y + 1.f); }
 
 	transfer_t transfer = sigmoid;
 

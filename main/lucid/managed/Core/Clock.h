@@ -32,7 +32,7 @@ namespace Core {
 		void reset();
 
 	private:
-		::lucid::core::Clock *_internal = nullptr;
+		LUCID_CORE::Clock *_internal = nullptr;
 
 	};
 

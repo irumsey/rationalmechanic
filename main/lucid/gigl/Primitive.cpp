@@ -7,23 +7,23 @@
 
 LUCID_ANONYMOUS_BEGIN
 
-typedef ::lucid::core::Reader reader_t;
+typedef LUCID_CORE::Reader reader_t;
 
-typedef ::lucid::gal::Unordered2D unordered2d_t;
+typedef LUCID_GAL::Unordered2D unordered2d_t;
 typedef std::shared_ptr<unordered2d_t> shared_unordered2d_t;
 
-typedef ::lucid::gal::Texture2D texture2d_t;
+typedef LUCID_GAL::Texture2D texture2d_t;
 typedef std::shared_ptr<texture2d_t> shared_texture2d_t;
 	
-typedef ::lucid::gal::RenderTarget2D target2d_t;
+typedef LUCID_GAL::RenderTarget2D target2d_t;
 typedef std::shared_ptr<target2d_t> shared_target2d_t;
 	
-typedef ::lucid::gigl::Primitive primitive_t;
+typedef LUCID_GIGL::Primitive primitive_t;
 
 struct UNSUPPORTED final {};
 
 /// ENUM LOOKUP
-::lucid::gal::RenderTarget2D::FORMAT const targetFormat[] =
+LUCID_GAL::RenderTarget2D::FORMAT const targetFormat[] =
 {
 	target2d_t::FORMAT_UNORM_R8G8B8A8,
 	target2d_t::FORMAT_UINT_R16G16,
@@ -48,7 +48,7 @@ Primitive::Info const Primitive::infos[TYPE_COUNT] =
 	{ Type<                bool>::VALUE,           "bool" },
 	{ Type<             int32_t>::VALUE,            "int" },
 	{ Type<              Scalar>::VALUE,          "float" },
-	{ Type< ::lucid::gal::Color>::VALUE,          "Color" },
+	{ Type< LUCID_GAL::Color>::VALUE,          "Color" },
 	{ Type<             Vector2>::VALUE,        "Vector2" },
 	{ Type<             Vector3>::VALUE,        "Vector3" },
 	{ Type<             Vector4>::VALUE,        "Vector4" },
@@ -69,7 +69,7 @@ void Primitive::coerceFrom(Primitive const &rhs)
 	rhs._any ? _any.reset(rhs._any->clone()) : _any.reset();
 }
 
-void Primitive::readFrom(::lucid::core::Reader &reader)
+void Primitive::readFrom(LUCID_CORE::Reader &reader)
 {
 	int32_t tid = reader.read<int32_t>();
 	LUCID_VALIDATE(tid < primitive_t::TYPE_COUNT, "invalid primitive type id");
@@ -100,7 +100,7 @@ template<> primitive_t read<texture2d_t>(reader_t &reader)
 {
 	std::string path = reader.read<std::string>();
 
-	return primitive_t(::lucid::gigl::Resources::get<texture2d_t>(path));
+	return primitive_t(LUCID_GIGL::Resources::get<texture2d_t>(path));
 }
 
 template<> primitive_t read<target2d_t>(reader_t &reader)
@@ -126,15 +126,15 @@ read_func_t const read_jump[primitive_t::TYPE_COUNT] =
 	read<UNSUPPORTED>,
 	read<bool>,
 	read<int32_t>,
-	read<::lucid::gigl::Scalar>,
-	read<::lucid::gigl::Color>,
-	read<::lucid::gigl::Vector2>,
-	read<::lucid::gigl::Vector3>,
-	read<::lucid::gigl::Vector4>,
-	read<::lucid::gigl::Quaternion>,
-	read<::lucid::gigl::Matrix2x2>,
-	read<::lucid::gigl::Matrix3x3>,
-	read<::lucid::gigl::Matrix4x4>,
+	read<LUCID_GIGL::Scalar>,
+	read<LUCID_GIGL::Color>,
+	read<LUCID_GIGL::Vector2>,
+	read<LUCID_GIGL::Vector3>,
+	read<LUCID_GIGL::Vector4>,
+	read<LUCID_GIGL::Quaternion>,
+	read<LUCID_GIGL::Matrix2x2>,
+	read<LUCID_GIGL::Matrix3x3>,
+	read<LUCID_GIGL::Matrix4x4>,
 	read<texture2d_t>,
 	read<target2d_t>,
 	read<std::string>,

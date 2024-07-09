@@ -10,7 +10,7 @@ LUCID_GAL_BEGIN
 
 System &System::instance()
 {
-	return ::lucid::gal::d3d11::System::instance();
+	return LUCID_GAL_D3D11::System::instance();
 }
 
 LUCID_GAL_END
@@ -76,9 +76,9 @@ void System::resize(int32_t width, int32_t height)
 	galConcretePipeline.resize(_width, _height, _samples);
 }
 
-::lucid::gal::d3d11::System &System::instance()
+LUCID_GAL_D3D11::System &System::instance()
 {
-	static ::lucid::gal::d3d11::System theInstance;
+	static LUCID_GAL_D3D11::System theInstance;
 	return theInstance;
 }
 

@@ -10,7 +10,7 @@ enum TYPE
 	TYPE_ORTHOGRAPHIC,
 };
 
-template<class T> inline T read(::lucid::core::Reader &reader)
+template<class T> inline T read(LUCID_CORE::Reader &reader)
 {
 	T value = T();
 	reader.read(&value, sizeof(T));
@@ -25,7 +25,7 @@ Camera2D::Camera2D()
 {
 }
 
-Camera2D::Camera2D(::lucid::core::Reader &reader)
+Camera2D::Camera2D(LUCID_CORE::Reader &reader)
 {
 	TYPE type;
 	reader.read(&type, sizeof(TYPE));
@@ -62,25 +62,25 @@ Camera2D::~Camera2D()
 
 void Camera2D::initOrthographic(Scalar const &width, Scalar const &height, Scalar const &znear, Scalar const &zfar)
 {
-	_projMatrix = ::lucid::math::orthographic(width, height, znear, zfar);
+	_projMatrix = LUCID_MATH::orthographic(width, height, znear, zfar);
 	_viewProjMatrix = _projMatrix * _viewMatrix;
 }
 
 void Camera2D::initOrthographic(Scalar const &left, Scalar const &right, Scalar const &bottom, Scalar const &top, Scalar const &znear, Scalar const &zfar)
 {
-	_projMatrix = ::lucid::math::orthographic(left, right, bottom, top, znear, zfar);
+	_projMatrix = LUCID_MATH::orthographic(left, right, bottom, top, znear, zfar);
 	_viewProjMatrix = _projMatrix * _viewMatrix;
 }
 
 void Camera2D::initPerspective(Scalar const &fov, Scalar const &aspect, Scalar const &znear, Scalar const &zfar)
 {
-	_projMatrix = ::lucid::math::perspective(fov, aspect, znear, zfar);
+	_projMatrix = LUCID_MATH::perspective(fov, aspect, znear, zfar);
 	_viewProjMatrix = _projMatrix * _viewMatrix;
 }
 
 void Camera2D::initPerspective(Scalar const &left, Scalar const &right, Scalar const &bottom, Scalar const &top, Scalar const &znear, Scalar const &zfar)
 {
-	_projMatrix = ::lucid::math::perspective(left, right, bottom, top, znear, zfar);
+	_projMatrix = LUCID_MATH::perspective(left, right, bottom, top, znear, zfar);
 	_viewProjMatrix = _projMatrix * _viewMatrix;
 }
 
@@ -88,7 +88,7 @@ void Camera2D::look(Vector3 const &eye, Vector3 const &target, Vector3 const &up
 {
 	_position = eye;
 
-	_viewMatrix = ::lucid::math::look(_position, target, up);
+	_viewMatrix = LUCID_MATH::look(_position, target, up);
 	_viewProjMatrix = _projMatrix * _viewMatrix;
 }
 

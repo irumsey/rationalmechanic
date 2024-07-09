@@ -7,9 +7,9 @@
 
 LUCID_ANONYMOUS_BEGIN
 
-inline ::lucid::orbit::Ephemeris &theEphemeris()
+inline LUCID_ORBIT::Ephemeris &theEphemeris()
 {
-	return ::lucid::orbit::Ephemeris::instance();
+	return LUCID_ORBIT::Ephemeris::instance();
 }
 
 LUCID_ANONYMOUS_END

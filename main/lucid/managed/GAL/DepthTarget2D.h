@@ -35,12 +35,12 @@ namespace GAL {
 
 		!DepthTarget2D();
 
-		property ::lucid::gal::DepthTarget2D &ref { ::lucid::gal::DepthTarget2D &get() { return *ptr; } }
+		property LUCID_GAL::DepthTarget2D &ref { LUCID_GAL::DepthTarget2D &get() { return *ptr; } }
 
-		property ::lucid::gal::DepthTarget2D *ptr { ::lucid::gal::DepthTarget2D *get() { return _internal; } }
+		property LUCID_GAL::DepthTarget2D *ptr { LUCID_GAL::DepthTarget2D *get() { return _internal; } }
 
 	private:
-		::lucid::gal::DepthTarget2D *_internal = nullptr;
+		LUCID_GAL::DepthTarget2D *_internal = nullptr;
 
 	};
 

@@ -33,13 +33,13 @@ public:
 	float lodMipBias = 0.f;
 	uint32_t maxAnisotropy = 1;
 	D3D11_COMPARISON_FUNC compare = D3D11_COMPARISON_NEVER;
-	::lucid::gal::Color borderColor = ::lucid::gal::Color(1, 1, 1, 1);
+	LUCID_GAL::Color borderColor = LUCID_GAL::Color(1, 1, 1, 1);
 	float lodMin = -3.4e38F;
 	float lodMax = 3.4e38F;
 
 	ID3D11SamplerState *d3dState = nullptr;
 
-	SamplerState(::lucid::core::Reader &reader);
+	SamplerState(LUCID_CORE::Reader &reader);
 
 	virtual ~SamplerState();
 
@@ -63,7 +63,7 @@ public:
 
 	SamplerState state;
 
-	Sampler(std::string const &name, ::lucid::core::Reader &reader);
+	Sampler(std::string const &name, LUCID_CORE::Reader &reader);
 
 	virtual ~Sampler();
 

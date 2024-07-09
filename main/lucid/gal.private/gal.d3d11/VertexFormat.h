@@ -22,22 +22,22 @@ LUCID_GAL_D3D11_BEGIN
 ///
 ///
 ///
-class VertexFormat : public ::lucid::gal::VertexFormat
+class VertexFormat : public LUCID_GAL::VertexFormat
 {
 public:
-	VertexFormat(std::vector<::lucid::gal::VertexElement> const &layout);
+	VertexFormat(std::vector<LUCID_GAL::VertexElement> const &layout);
 
 	virtual ~VertexFormat();
 
-	virtual std::vector<::lucid::gal::VertexElement> const &layout() const override;
+	virtual std::vector<LUCID_GAL::VertexElement> const &layout() const override;
 
 	ID3D11InputLayout *d3dLayout() const;
 
 private:
-	std::vector<::lucid::gal::VertexElement> _layout;
+	std::vector<LUCID_GAL::VertexElement> _layout;
 	ID3D11InputLayout *_d3dLayout = nullptr;
 
-	void initialize(std::vector<::lucid::gal::VertexElement> const &layout);
+	void initialize(std::vector<LUCID_GAL::VertexElement> const &layout);
 
 	void shutdown();
 
@@ -45,7 +45,7 @@ private:
 	LUCID_PREVENT_ASSIGNMENT(VertexFormat);
 };
 
-inline std::vector<::lucid::gal::VertexElement> const &VertexFormat::layout() const
+inline std::vector<LUCID_GAL::VertexElement> const &VertexFormat::layout() const
 {
 	return _layout;
 }

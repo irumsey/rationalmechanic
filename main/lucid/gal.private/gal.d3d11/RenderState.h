@@ -29,7 +29,7 @@ public:
 
 	ID3D11RasterizerState *d3dState = nullptr;
 
-	RasterState(::lucid::core::Reader &reader);
+	RasterState(LUCID_CORE::Reader &reader);
 
 	virtual ~RasterState();
 
@@ -53,7 +53,7 @@ public:
 
 	ID3D11BlendState *d3dState = nullptr;
 
-	BlendState(::lucid::core::Reader &reader);
+	BlendState(LUCID_CORE::Reader &reader);
 
 	virtual ~BlendState();
 
@@ -83,7 +83,7 @@ public:
 
 	ID3D11DepthStencilState *d3dState = nullptr;
 
-	DepthStencilState(::lucid::core::Reader &reader);
+	DepthStencilState(LUCID_CORE::Reader &reader);
 
 	virtual ~DepthStencilState();
 
@@ -94,10 +94,10 @@ public:
 ///
 ///
 ///
-class RenderState : public ::lucid::gal::RenderState
+class RenderState : public LUCID_GAL::RenderState
 {
 public:
-	RenderState(::lucid::core::Reader &reader);
+	RenderState(LUCID_CORE::Reader &reader);
 
 	virtual ~RenderState() = default;
 

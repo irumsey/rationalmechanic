@@ -98,7 +98,7 @@ inline core::Identity const &Mesh::identity() const
 	return _identity;
 }
 
-inline std::shared_ptr<::lucid::gal::Program> Mesh::program() const
+inline std::shared_ptr<LUCID_GAL::Program> Mesh::program() const
 {
 	return _program;
 }

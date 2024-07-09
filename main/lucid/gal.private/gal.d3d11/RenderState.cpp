@@ -71,16 +71,16 @@ LUCID_ANONYMOUS_END
 
 LUCID_GAL_BEGIN
 
-RenderState *RenderState::create(::lucid::core::Reader &reader)
+RenderState *RenderState::create(LUCID_CORE::Reader &reader)
 {
-	return new ::lucid::gal::d3d11::RenderState(reader);
+	return new LUCID_GAL_D3D11::RenderState(reader);
 }
 
 LUCID_GAL_END
 
 LUCID_GAL_D3D11_BEGIN
 
-RasterState::RasterState(::lucid::core::Reader &reader)
+RasterState::RasterState(LUCID_CORE::Reader &reader)
 {
 	///
 	/// read the data...
@@ -122,7 +122,7 @@ RasterState::~RasterState()
 ///
 ///
 
-BlendState::BlendState(::lucid::core::Reader &reader)
+BlendState::BlendState(LUCID_CORE::Reader &reader)
 {
 	colorWriteMask = reader.read<uint8_t>();
 	enable = reader.read<bool>();
@@ -167,7 +167,7 @@ BlendState::~BlendState()
 ///
 ///
 
-DepthStencilState::DepthStencilState(::lucid::core::Reader &reader)
+DepthStencilState::DepthStencilState(LUCID_CORE::Reader &reader)
 {
 	reader.read(depthEnable);
 	writeMask = readEnum(reader, d3dDepthWriteMask);
@@ -220,7 +220,7 @@ DepthStencilState::~DepthStencilState()
 ///
 ///
 
-RenderState::RenderState(::lucid::core::Reader &reader)
+RenderState::RenderState(LUCID_CORE::Reader &reader)
 	: _rasterState(reader)
 	, _blendState(reader)
 	, _depthStencilState(reader)

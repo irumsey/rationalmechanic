@@ -15,12 +15,12 @@ LUCID_GAL_D3D11_BEGIN
 ///
 ///
 ///
-class RenderTarget2D : public ::lucid::gal::RenderTarget2D
+class RenderTarget2D : public LUCID_GAL::RenderTarget2D
 {
 public:
 	RenderTarget2D(FORMAT format, int32_t width, int32_t height);
 
-	RenderTarget2D(::lucid::core::Reader &reader);
+	RenderTarget2D(LUCID_CORE::Reader &reader);
 
 	virtual ~RenderTarget2D();
 

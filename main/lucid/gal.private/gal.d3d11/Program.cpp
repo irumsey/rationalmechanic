@@ -18,12 +18,12 @@ LUCID_GAL_BEGIN
 
 Program *Program::create(std::string const &path)
 {
-	return new ::lucid::gal::d3d11::Program(path);
+	return new LUCID_GAL_D3D11::Program(path);
 }
 
-Program *Program::create(::lucid::core::Reader &reader)
+Program *Program::create(LUCID_CORE::Reader &reader)
 {
-	return new ::lucid::gal::d3d11::Program(reader);
+	return new LUCID_GAL_D3D11::Program(reader);
 }
 
 LUCID_GAL_END
@@ -34,25 +34,25 @@ Program::Program(std::string const &path)
 {
 	try
 	{
-		initialize(::lucid::core::FileReader(path));
+		initialize(LUCID_CORE::FileReader(path));
 	}
-	catch (core::Error const &error)
+	catch (LUCID_CORE::Error const &error)
 	{
-		core::log("ERR", error.what());
+		LUCID_CORE::log("ERR", error.what());
 		shutdown();
 		throw;
 	}
 }
 
-Program::Program(::lucid::core::Reader &reader)
+Program::Program(LUCID_CORE::Reader &reader)
 {
 	try
 	{
 		initialize(reader);
 	}
-	catch (core::Error const &error)
+	catch (LUCID_CORE::Error const &error)
 	{
-		core::log("ERR", error.what());
+		LUCID_CORE::log("ERR", error.what());
 		shutdown();
 		throw;
 	}
@@ -63,12 +63,12 @@ Program::~Program()
 	shutdown();
 }
 
-::lucid::gal::RenderState const *Program::renderState() const
+LUCID_GAL::RenderState const *Program::renderState() const
 {
 	return _renderState;
 }
 
-::lucid::gal::Parameter const *Program::lookup(std::string const &name) const
+LUCID_GAL::Parameter const *Program::lookup(std::string const &name) const
 {
 	auto iter = _parameters.find(name);
 	if (iter != _parameters.end())
@@ -78,9 +78,9 @@ Program::~Program()
 	return nullptr;
 }
 
-void Program::set(::lucid::gal::Parameter const *parameter, uint8_t const *data, int size) const
+void Program::set(LUCID_GAL::Parameter const *parameter, uint8_t const *data, int size) const
 {
-	::lucid::gal::d3d11::Parameter const *concrete = static_cast<::lucid::gal::d3d11::Parameter const *>(parameter);
+	LUCID_GAL_D3D11::Parameter const *concrete = static_cast<LUCID_GAL_D3D11::Parameter const *>(parameter);
 
 	if (nullptr == parameter)
 	{
@@ -92,72 +92,72 @@ void Program::set(::lucid::gal::Parameter const *parameter, uint8_t const *data,
 	if (_pixelShader) { _pixelShader->setConstant(data, concrete->psPosition, size); }
 }
 
-void Program::set(::lucid::gal::Parameter const *parameter, bool value) const
+void Program::set(LUCID_GAL::Parameter const *parameter, bool value) const
 {
 	set(parameter, reinterpret_cast<uint8_t const *>(&value), sizeof(bool));
 }
 
-void Program::set(::lucid::gal::Parameter const *parameter, int32_t value) const
+void Program::set(LUCID_GAL::Parameter const *parameter, int32_t value) const
 {
 	set(parameter, reinterpret_cast<uint8_t const *>(&value), sizeof(int32_t));
 }
 
-void Program::set(::lucid::gal::Parameter const *parameter, float32_t value) const
+void Program::set(LUCID_GAL::Parameter const *parameter, float32_t value) const
 {
 	set(parameter, reinterpret_cast<uint8_t const *>(&value), sizeof(float32_t));
 }
 
-void Program::set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Color const &value) const
+void Program::set(LUCID_GAL::Parameter const *parameter, LUCID_GAL::Color const &value) const
 {
-	set(parameter, reinterpret_cast<uint8_t const *>(&value), sizeof(::lucid::gal::Color));
+	set(parameter, reinterpret_cast<uint8_t const *>(&value), sizeof(LUCID_GAL::Color));
 }
 
-void Program::set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Vector2 const &value) const
+void Program::set(LUCID_GAL::Parameter const *parameter, LUCID_GAL::Vector2 const &value) const
 {
-	set(parameter, reinterpret_cast<uint8_t const *>(&value), sizeof(::lucid::gal::Vector2));
+	set(parameter, reinterpret_cast<uint8_t const *>(&value), sizeof(LUCID_GAL::Vector2));
 }
 
-void Program::set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Vector3 const &value) const
+void Program::set(LUCID_GAL::Parameter const *parameter, LUCID_GAL::Vector3 const &value) const
 {
-	set(parameter, reinterpret_cast<uint8_t const *>(&value), sizeof(::lucid::gal::Vector3));
+	set(parameter, reinterpret_cast<uint8_t const *>(&value), sizeof(LUCID_GAL::Vector3));
 }
 
-void Program::set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Vector4 const &value) const
+void Program::set(LUCID_GAL::Parameter const *parameter, LUCID_GAL::Vector4 const &value) const
 {
-	set(parameter, reinterpret_cast<uint8_t const *>(&value), sizeof(::lucid::gal::Vector4));
+	set(parameter, reinterpret_cast<uint8_t const *>(&value), sizeof(LUCID_GAL::Vector4));
 }
 
-void Program::set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Quaternion const &value) const
+void Program::set(LUCID_GAL::Parameter const *parameter, LUCID_GAL::Quaternion const &value) const
 {
-	set(parameter, reinterpret_cast<uint8_t const *>(&value), sizeof(::lucid::gal::Quaternion));
+	set(parameter, reinterpret_cast<uint8_t const *>(&value), sizeof(LUCID_GAL::Quaternion));
 }
 
-void Program::set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Matrix2x2 const &value) const
+void Program::set(LUCID_GAL::Parameter const *parameter, LUCID_GAL::Matrix2x2 const &value) const
 {
-	set(parameter, reinterpret_cast<uint8_t const *>(&value), sizeof(::lucid::gal::Matrix2x2));
+	set(parameter, reinterpret_cast<uint8_t const *>(&value), sizeof(LUCID_GAL::Matrix2x2));
 }
 
-void Program::set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Matrix3x3 const &value) const
+void Program::set(LUCID_GAL::Parameter const *parameter, LUCID_GAL::Matrix3x3 const &value) const
 {
-	set(parameter, reinterpret_cast<uint8_t const *>(&value), sizeof(::lucid::gal::Matrix3x3));
+	set(parameter, reinterpret_cast<uint8_t const *>(&value), sizeof(LUCID_GAL::Matrix3x3));
 }
 
-void Program::set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Matrix4x4 const &value) const
+void Program::set(LUCID_GAL::Parameter const *parameter, LUCID_GAL::Matrix4x4 const &value) const
 {
-	set(parameter, reinterpret_cast<uint8_t const *>(&value), sizeof(::lucid::gal::Matrix4x4));
+	set(parameter, reinterpret_cast<uint8_t const *>(&value), sizeof(LUCID_GAL::Matrix4x4));
 }
 
-void Program::set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Texture2D const *value) const
+void Program::set(LUCID_GAL::Parameter const *parameter, LUCID_GAL::Texture2D const *value) const
 {
-	::lucid::gal::d3d11::Parameter const *concreteParameter = static_cast<::lucid::gal::d3d11::Parameter const *>(parameter);
-	::lucid::gal::d3d11::Texture2D const *concreteTexture = static_cast<::lucid::gal::d3d11::Texture2D const *>(value);
+	LUCID_GAL_D3D11::Parameter const *concreteParameter = static_cast<LUCID_GAL_D3D11::Parameter const *>(parameter);
+	LUCID_GAL_D3D11::Texture2D const *concreteTexture = static_cast<LUCID_GAL_D3D11::Texture2D const *>(value);
 
 	if (nullptr == parameter)
 	{
 		return;
 	}
 
-	if (::lucid::gal::d3d11::Uniform::TYPE_TEXTURE != concreteParameter->type)
+	if (LUCID_GAL_D3D11::Uniform::TYPE_TEXTURE != concreteParameter->type)
 	{
 		///	TBD: error?
 		return;
@@ -170,17 +170,17 @@ void Program::set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Textur
 	if (_pixelShader) { _pixelShader->setTexture(concreteParameter->psPosition, d3dResource); }
 }
 
-void Program::set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Unordered2D const *value) const
+void Program::set(LUCID_GAL::Parameter const *parameter, LUCID_GAL::Unordered2D const *value) const
 {
-	::lucid::gal::d3d11::Parameter const *concreteParameter = static_cast<::lucid::gal::d3d11::Parameter const *>(parameter);
-	::lucid::gal::d3d11::Unordered2D const *concreteTexture = static_cast<::lucid::gal::d3d11::Unordered2D const *>(value);
+	LUCID_GAL_D3D11::Parameter const *concreteParameter = static_cast<LUCID_GAL_D3D11::Parameter const *>(parameter);
+	LUCID_GAL_D3D11::Unordered2D const *concreteTexture = static_cast<LUCID_GAL_D3D11::Unordered2D const *>(value);
 
 	if (nullptr == parameter)
 	{
 		return;
 	}
 
-	if (::lucid::gal::d3d11::Uniform::TYPE_TEXTURE != concreteParameter->type)
+	if (LUCID_GAL_D3D11::Uniform::TYPE_TEXTURE != concreteParameter->type)
 	{
 		///	TBD: error?
 		return;
@@ -193,17 +193,17 @@ void Program::set(::lucid::gal::Parameter const *parameter, ::lucid::gal::Unorde
 	if (_pixelShader) { _pixelShader->setTexture(concreteParameter->psPosition, d3dResource); }
 }
 
-void Program::set(::lucid::gal::Parameter const *parameter, ::lucid::gal::RenderTarget2D const *value) const
+void Program::set(LUCID_GAL::Parameter const *parameter, LUCID_GAL::RenderTarget2D const *value) const
 {
-	::lucid::gal::d3d11::Parameter const *concreteParameter = static_cast<::lucid::gal::d3d11::Parameter const *>(parameter);
-	::lucid::gal::d3d11::RenderTarget2D const *concreteTarget = static_cast<::lucid::gal::d3d11::RenderTarget2D const *>(value);
+	LUCID_GAL_D3D11::Parameter const *concreteParameter = static_cast<LUCID_GAL_D3D11::Parameter const *>(parameter);
+	LUCID_GAL_D3D11::RenderTarget2D const *concreteTarget = static_cast<LUCID_GAL_D3D11::RenderTarget2D const *>(value);
 
 	if (nullptr == parameter)
 	{
 		return;
 	}
 
-	if (::lucid::gal::d3d11::Uniform::TYPE_TEXTURE != concreteParameter->type)
+	if (LUCID_GAL_D3D11::Uniform::TYPE_TEXTURE != concreteParameter->type)
 	{
 		///	TBD: error?
 		return;
@@ -335,7 +335,7 @@ void Program::finalizeSamplers()
 	}
 }
 
-void Program::initialize(::lucid::core::Reader &reader)
+void Program::initialize(LUCID_CORE::Reader &reader)
 {
 	try
 	{
@@ -369,9 +369,9 @@ void Program::initialize(::lucid::core::Reader &reader)
 
 		finalizeSamplers();
 	}
-	catch (core::Error const &error)
+	catch (LUCID_CORE::Error const &error)
 	{
-		core::log("ERR", error.what());
+		LUCID_CORE::log("ERR", error.what());
 		shutdown();
 		throw;
 	}

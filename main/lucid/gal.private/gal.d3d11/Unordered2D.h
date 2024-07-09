@@ -15,7 +15,7 @@ LUCID_GAL_D3D11_BEGIN
 ///	Unordered2D
 ///
 ///
-class Unordered2D : public ::lucid::gal::Unordered2D
+class Unordered2D : public LUCID_GAL::Unordered2D
 {
 public:
 	Unordered2D(int32_t width, int32_t height);

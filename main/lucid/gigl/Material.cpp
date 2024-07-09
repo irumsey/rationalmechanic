@@ -67,10 +67,10 @@ struct Applicator
 
 Material::Material(std::string const &path)
 {
-	initialize(::lucid::core::FileReader(path));
+	initialize(LUCID_CORE::FileReader(path));
 }
 
-Material::Material(core::Reader &reader)
+Material::Material(LUCID_CORE::Reader &reader)
 {
 	initialize(reader);
 }
@@ -100,12 +100,12 @@ Material *Material::create(std::string const &path)
 	return new Material(path);
 }
 
-Material *Material::create(core::Reader &reader)
+Material *Material::create(LUCID_CORE::Reader &reader)
 {
 	return new Material(reader);
 }
 
-void Material::initialize(::lucid::core::Reader &reader)
+void Material::initialize(LUCID_CORE::Reader &reader)
 {
 	if (reader.read<bool>())
 	{
@@ -113,7 +113,7 @@ void Material::initialize(::lucid::core::Reader &reader)
 	}
 	else
 	{
-		_program.reset(::lucid::gal::Program::create(reader));
+		_program.reset(LUCID_GAL::Program::create(reader));
 	}
 
 	int32_t count = reader.read<int32_t>();

@@ -42,17 +42,17 @@ namespace Core {
 
 			void Start()
 			{
-				::lucid::core::Logger &logger = ::lucid::core::Logger::instance();
+				LUCID_CORE::Logger &logger = LUCID_CORE::Logger::instance();
 
 				System::IntPtr ptr = IS::Marshal::GetFunctionPointerForDelegate(callbackDelegate);
-				callback = new ::lucid::core::Logger::Callback(static_cast<::lucid::core::Logger::Callback::func_type>(ptr.ToPointer()));
+				callback = new LUCID_CORE::Logger::Callback(static_cast<LUCID_CORE::Logger::Callback::func_type>(ptr.ToPointer()));
 
 				logger.addListener(callback);
 			}
 
 			void Stop()
 			{
-				::lucid::core::Logger &logger = ::lucid::core::Logger::instance();
+				LUCID_CORE::Logger &logger = LUCID_CORE::Logger::instance();
 
 				logger.removeListener(callback);
 
@@ -73,12 +73,12 @@ namespace Core {
 			delegate_type ^callbackDelegate = nullptr;
 
 			///	...or the gc will take it away and callback will crash
-			::lucid::core::Logger::Callback *callback = nullptr;
+			LUCID_CORE::Logger::Callback *callback = nullptr;
 		};
 
 		static void Log(System::String ^category, System::String ^message)
 		{
-			::lucid::core::Logger &logger = ::lucid::core::Logger::instance();
+			LUCID_CORE::Logger &logger = LUCID_CORE::Logger::instance();
 
 			logger.log(MI::marshal_as<std::string>(category), MI::marshal_as<std::string>(message));
 		}

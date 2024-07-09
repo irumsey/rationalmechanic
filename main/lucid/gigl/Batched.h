@@ -123,13 +123,13 @@ private:
 	template<typename I, typename Pred> struct Batch : public BatchBase
 	{
 		size_t maximum = 0;
-		std::shared_ptr<lucid::gal::VertexBuffer> batch;
+		std::shared_ptr<LUCID_GAL::VertexBuffer> batch;
 		std::vector<I> instances;
 
 		Batch(size_t maximum)
 			: maximum(maximum)
 		{
-			batch.reset(gal::VertexBuffer::create(gal::VertexBuffer::USAGE_DYNAMIC, int32_t(maximum), sizeof(I)));
+			batch.reset(LUCID_GAL::VertexBuffer::create(LUCID_GAL::VertexBuffer::USAGE_DYNAMIC, int32_t(maximum), sizeof(I)));
 		}
 
 		virtual ~Batch() = default;
@@ -147,9 +147,9 @@ private:
 
 		virtual void render(Context const &context, std::shared_ptr<Mesh> mesh) override
 		{
-			lucid::gal::Pipeline &pipeline = lucid::gal::Pipeline::instance();
+			LUCID_GAL::Pipeline &pipeline = LUCID_GAL::Pipeline::instance();
 
-			gal::Vector3 const &viewPosition = context.lookup("viewPosition").as<gal::Vector3>();
+			LUCID_GAL::Vector3 const &viewPosition = context.lookup("viewPosition").as<LUCID_GAL::Vector3>();
 			std::sort(instances.begin(), instances.end(), Pred(viewPosition));
 
 			size_t totalCount = instances.size();

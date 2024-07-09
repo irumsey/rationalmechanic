@@ -21,7 +21,7 @@ class Camera2D
 public:
 	Camera2D();
 
-	Camera2D(::lucid::core::Reader &reader);
+	Camera2D(LUCID_CORE::Reader &reader);
 
 	virtual ~Camera2D();
 
@@ -64,17 +64,17 @@ inline Vector3 Camera2D::getPosition() const
 
 inline Vector3 Camera2D::getForward() const
 {
-	return ::lucid::math::extractViewForward(_viewMatrix);
+	return LUCID_MATH::extractViewForward(_viewMatrix);
 }
 
 inline Vector3 Camera2D::getRight() const
 {
-	return ::lucid::math::extractViewRight(_viewMatrix);
+	return LUCID_MATH::extractViewRight(_viewMatrix);
 }
 
 inline Vector3 Camera2D::getUp() const
 {
-	return ::lucid::math::extractViewUp(_viewMatrix);
+	return LUCID_MATH::extractViewUp(_viewMatrix);
 }
 
 inline Matrix4x4 const &Camera2D::getViewMatrix() const

@@ -42,7 +42,7 @@ template<class T> inline void safeRelease(T *&ptr)
 ///	readEnum
 ///
 ///
-template<class T, int32_t N> inline T readEnum(::lucid::core::Reader &reader, T const (&lookup)[N])
+template<class T, int32_t N> inline T readEnum(LUCID_CORE::Reader &reader, T const (&lookup)[N])
 {
 	int32_t index = reader.read<int32_t>();
 	LUCID_VALIDATE(index < N, "gal enumeration index out of bounds");

@@ -7,15 +7,15 @@ LUCID_GIGL_BEGIN
 
 Context::Context(std::string const &path)
 {
-	initialize(::lucid::core::FileReader(path));
+	initialize(LUCID_CORE::FileReader(path));
 }
 
-Context::Context(::lucid::core::Reader &reader)
+Context::Context(LUCID_CORE::Reader &reader)
 {
 	initialize(reader);
 }
 
-void Context::initialize(::lucid::core::Reader &reader)
+void Context::initialize(LUCID_CORE::Reader &reader)
 {
 	_values.clear();
 

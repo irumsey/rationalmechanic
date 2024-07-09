@@ -31,9 +31,9 @@ LUCID_GIGL_BEGIN
 class Primitive final
 {
 public:
-	typedef std::shared_ptr<::lucid::gal::   Unordered2D> shared_unordered2d_t;
-	typedef std::shared_ptr<::lucid::gal::     Texture2D>   shared_texture2d_t;
-	typedef std::shared_ptr<::lucid::gal::RenderTarget2D>    shared_target2d_t;
+	typedef std::shared_ptr<LUCID_GAL::   Unordered2D> shared_unordered2d_t;
+	typedef std::shared_ptr<LUCID_GAL::     Texture2D>   shared_texture2d_t;
+	typedef std::shared_ptr<LUCID_GAL::RenderTarget2D>    shared_target2d_t;
 
 	struct UNKNOWN final {};
 	struct UNDEFINED final {};
@@ -76,7 +76,7 @@ public:
 		_any.reset(new Specific<T>(rhs));
 	}
 
-	Primitive(::lucid::core::Reader &reader)
+	Primitive(LUCID_CORE::Reader &reader)
 	{
 		readFrom(reader);
 	}
@@ -159,7 +159,7 @@ private:
 
 	void coerceFrom(Primitive const &rhs);
 
-	void readFrom(::lucid::core::Reader &reader);
+	void readFrom(LUCID_CORE::Reader &reader);
 
 	template<class T> static Specific<T> *asSpecific(std::unique_ptr<Any> const &rhs)
 	{

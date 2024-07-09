@@ -15,7 +15,7 @@ LUCID_GAL_D3D11_BEGIN
 ///
 ///
 ///
-class Parameter : public ::lucid::gal::Parameter
+class Parameter : public LUCID_GAL::Parameter
 {
 public:
 	Uniform::TYPE type = Uniform::TYPE_UNDEFINED;

@@ -6,7 +6,7 @@
 
 #if defined(LUCID_PROFILE_ENABLE)
 #	define LUCID_PROFILER_INITIALIZE()			LUCID_CORE::Profiler::initialize()
-#	define LUCID_PROFILER_ATTACH(external)		LUCID_CORE::Profiler::attach(reinterpret_cast<::lucid::core::Profiler*>(external))
+#	define LUCID_PROFILER_ATTACH(external)		LUCID_CORE::Profiler::attach(reinterpret_cast<LUCID_CORE::Profiler*>(external))
 #	define LUCID_PROFILER_SHUTDOWN()			LUCID_CORE::Profiler::shutdown()
 #	define LUCID_PROFILE_BEGIN(name)			LUCID_CORE::Profiler::beginSample(name)
 #	define LUCID_PROFILE_END()					LUCID_CORE::Profiler::endSample()

@@ -2,14 +2,10 @@
 #include "RenderTarget2D.h"
 #include "System.h"
 #include "Utility.h"
-#include <lucid/math/Scalar.h>
 #include <lucid/core/Logger.h>
 #include <lucid/core/Error.h>
 
 LUCID_ANONYMOUS_BEGIN
-
-namespace math = ::lucid::math;
-namespace gal = ::lucid::gal;
 
 LUCID_ANONYMOUS_END
 
@@ -17,7 +13,7 @@ LUCID_GAL_BEGIN
 
 TargetReader2D *TargetReader2D::create(gal::RenderTarget2D const *target, int32_t width, int32_t height)
 {
-	return new gal::d3d11::TargetReader2D(target, width, height);
+	return new LUCID_GAL_D3D11::TargetReader2D(target, width, height);
 }
 
 LUCID_GAL_END
@@ -29,7 +25,7 @@ TargetReader2D::TargetReader2D(gal::RenderTarget2D const *target, int32_t width,
 {
 	try
 	{
-		gal::d3d11::RenderTarget2D const *concrete = static_cast<gal::d3d11::RenderTarget2D const *>(target);
+		LUCID_GAL_D3D11::RenderTarget2D const *concrete = static_cast<LUCID_GAL_D3D11::RenderTarget2D const *>(target);
 		_srcTexture = concrete->d3dTexture();
 
 		D3D11_TEXTURE2D_DESC descTarget;
@@ -54,9 +50,9 @@ TargetReader2D::TargetReader2D(gal::RenderTarget2D const *target, int32_t width,
 
 		_data = new uint8_t[TEXEL_SIZE * _width * _height];
 	}
-	catch (core::Error const &error)
+	catch (LUCID_CORE::Error const &error)
 	{
-		core::log("ERR", error.what());
+		LUCID_CORE::log("ERR", error.what());
 		shutdown();
 		throw;
 	}

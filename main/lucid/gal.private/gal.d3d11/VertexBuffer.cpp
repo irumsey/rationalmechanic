@@ -5,12 +5,12 @@ LUCID_GAL_BEGIN
 
 VertexBuffer *VertexBuffer::create(USAGE usage, int32_t count, int32_t stride)
 {
-	return new ::lucid::gal::d3d11::VertexBuffer(usage, count, stride);
+	return new LUCID_GAL_D3D11::VertexBuffer(usage, count, stride);
 }
 
-VertexBuffer *VertexBuffer::create(::lucid::core::Reader &reader)
+VertexBuffer *VertexBuffer::create(LUCID_CORE::Reader &reader)
 {
-	return new ::lucid::gal::d3d11::VertexBuffer(reader);
+	return new LUCID_GAL_D3D11::VertexBuffer(reader);
 }
 
 LUCID_GAL_END
@@ -23,7 +23,7 @@ VertexBuffer::VertexBuffer(USAGE usage, int32_t count, int32_t stride)
 	initialize(count, stride);
 }
 
-VertexBuffer::VertexBuffer(::lucid::core::Reader &reader)
+VertexBuffer::VertexBuffer(LUCID_CORE::Reader &reader)
 {
 	reader.read(&_usage, sizeof(_usage));
 

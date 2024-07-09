@@ -10,7 +10,7 @@ LUCID_GAL_BEGIN
 
 Unordered2D *Unordered2D::create(int32_t width, int32_t height)
 {
-	return new ::lucid::gal::d3d11::Unordered2D(width, height);
+	return new LUCID_GAL_D3D11::Unordered2D(width, height);
 }
 
 LUCID_GAL_END
@@ -95,9 +95,9 @@ Unordered2D::Unordered2D(int32_t width, int32_t height)
 
 		_data = new uint32_t [width * height];
 	}
-	catch (core::Error const &error)
+	catch (LUCID_CORE::Error const &error)
 	{
-		core::log("ERR", error.what());
+		LUCID_CORE::log("ERR", error.what());
 		shutdown();
 		throw;
 	}

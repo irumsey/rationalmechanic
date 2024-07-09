@@ -12,12 +12,12 @@ LUCID_GAL_BEGIN
 
 Texture2D *Texture2D::create(std::string const &path)
 {
-	return new ::lucid::gal::d3d11::Texture2D(path);
+	return new LUCID_GAL_D3D11::Texture2D(path);
 }
 
-Texture2D *Texture2D::create(::lucid::core::Reader &reader)
+Texture2D *Texture2D::create(LUCID_CORE::Reader &reader)
 {
-	return new ::lucid::gal::d3d11::Texture2D(reader);
+	return new LUCID_GAL_D3D11::Texture2D(reader);
 }
 
 LUCID_GAL_END
@@ -30,23 +30,23 @@ Texture2D::Texture2D(std::string const &path)
 	{
 		initialize(path);
 	}
-	catch (core::Error const &error)
+	catch (LUCID_CORE::Error const &error)
 	{
-		core::log("ERR", error.what());
+		LUCID_CORE::log("ERR", error.what());
 		shutdown();
 		throw;
 	}
 }
 
-Texture2D::Texture2D(::lucid::core::Reader &reader)
+Texture2D::Texture2D(LUCID_CORE::Reader &reader)
 {
 	try
 	{
 		initialize(reader.read<std::string>());
 	}
-	catch (core::Error const &error)
+	catch (LUCID_CORE::Error const &error)
 	{
-		core::log("ERR", error.what());
+		LUCID_CORE::log("ERR", error.what());
 		shutdown();
 		throw;
 	}

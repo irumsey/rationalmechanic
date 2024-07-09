@@ -21,12 +21,12 @@ LUCID_GAL_D3D11_BEGIN
 ///
 ///
 ///
-class Texture2D : public ::lucid::gal::Texture2D
+class Texture2D : public LUCID_GAL::Texture2D
 {
 public:
 	Texture2D(std::string const &path);
 
-	Texture2D(::lucid::core::Reader &reader);
+	Texture2D(LUCID_CORE::Reader &reader);
 
 	virtual ~Texture2D();
 

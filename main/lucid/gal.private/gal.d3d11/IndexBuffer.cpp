@@ -13,12 +13,12 @@ LUCID_GAL_BEGIN
 
 IndexBuffer *IndexBuffer::create(USAGE usage, FORMAT format, int32_t count)
 {
-	return new ::lucid::gal::d3d11::IndexBuffer(usage, format, count);
+	return new LUCID_GAL_D3D11::IndexBuffer(usage, format, count);
 }
 
-IndexBuffer *IndexBuffer::create(::lucid::core::Reader &reader)
+IndexBuffer *IndexBuffer::create(LUCID_CORE::Reader &reader)
 {
-	return new ::lucid::gal::d3d11::IndexBuffer(reader);
+	return new LUCID_GAL_D3D11::IndexBuffer(reader);
 }
 
 LUCID_GAL_END
@@ -32,7 +32,7 @@ IndexBuffer::IndexBuffer(USAGE usage, FORMAT format, int32_t count)
 	initialize(count);
 }
 
-IndexBuffer::IndexBuffer(::lucid::core::Reader &reader)
+IndexBuffer::IndexBuffer(LUCID_CORE::Reader &reader)
 {
 	reader.read(&_usage, sizeof(USAGE));
 	reader.read(&_format, sizeof(FORMAT));

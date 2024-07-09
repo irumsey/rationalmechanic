@@ -21,12 +21,12 @@ LUCID_GAL_D3D11_BEGIN
 ///
 ///
 ///
-class IndexBuffer : public ::lucid::gal::IndexBuffer
+class IndexBuffer : public LUCID_GAL::IndexBuffer
 {
 public:
 	IndexBuffer(USAGE usage, FORMAT format, int32_t count);
 
-	IndexBuffer(::lucid::core::Reader &reader);
+	IndexBuffer(LUCID_CORE::Reader &reader);
 
 	virtual ~IndexBuffer();
 

@@ -8,122 +8,109 @@
 ///
 ///
 ///
+LUCID_GIGL_BEGIN
 
-namespace /* anonymous */
+///
+///
+///
+
+Geometry *Geometry::create(std::string const &path)
 {
+	return new Geometry(LUCID_CORE::FileReader(path));
+}
 
-	namespace gal = ::lucid::gal;
-
+Geometry *Geometry::create(core::Reader &reader)
+{
+	return new Geometry(reader);
 }
 
 ///
 ///
 ///
-namespace lucid {
-namespace gigl {
 
-	///
-	///
-	///
+Geometry::Geometry(core::Reader &reader)
+{
+	initialize(reader);
+}
 
-	Geometry *Geometry::create(std::string const &path)
+Geometry::~Geometry()
+{
+	shutdown();
+}
+
+uint32_t Geometry::vertexCount() const
+{
+	return _vertices->count();
+}
+
+uint32_t Geometry::indexCount() const
+{
+	return _indices->count();
+}
+
+uint32_t Geometry::primitiveCount() const
+{
+	switch (_topology)
 	{
-		return new Geometry(::lucid::core::FileReader(path));
+	case LUCID_GAL::Pipeline::TOPOLOGY_POINT_LIST:
+		return indexCount();
+		break;
+	case LUCID_GAL::Pipeline::TOPOLOGY_LINE_STRIP:
+		return indexCount() - 1;
+		break;
+	case LUCID_GAL::Pipeline::TOPOLOGY_LINE_LIST:
+		return indexCount() / 2;
+		break;
+	case LUCID_GAL::Pipeline::TOPOLOGY_TRIANGLE_STRIP:
+		return indexCount() - 2;
+		break;
+	case LUCID_GAL::Pipeline::TOPOLOGY_TRIANGLE_LIST:
+		return indexCount() / 3;
+		break;
+	case LUCID_GAL::Pipeline::TOPOLOGY_TRIANGLE_ADJACENCY:
+		return indexCount() / 6;
+		break;
+	default:
+		break;
 	}
 
-	Geometry *Geometry::create(core::Reader &reader)
-	{
-		return new Geometry(reader);
-	}
+	return 0;
+}
 
-	///
-	///
-	///
+void Geometry::draw() const
+{
+	LUCID_GAL::Pipeline &pipeline = LUCID_GAL::Pipeline::instance();
 
-	Geometry::Geometry(core::Reader &reader)
-	{
-		initialize(reader);
-	}
+	pipeline.beginGeometry(_format.get());
+		pipeline.setVertexStream(0, _vertices.get());
+		pipeline.setIndexStream(_indices.get());
+		pipeline.draw(_topology, _vertices->count(), _indices->count());
+	pipeline.endGeometry(_format.get());
+}
 
-	Geometry::~Geometry()
-	{
-		shutdown();
-	}
+void Geometry::drawInstanced(int32_t count) const
+{
+	LUCID_GAL::Pipeline &pipeline = LUCID_GAL::Pipeline::instance();
 
-	uint32_t Geometry::vertexCount() const
-	{
-		return _vertices->count();
-	}
+	pipeline.beginGeometry(_format.get());
+		pipeline.setVertexStream(0, _vertices.get());
+		pipeline.setIndexStream(_indices.get());
+		pipeline.drawInstanced(_topology, _vertices->count(), _indices->count(), count);
+	pipeline.endGeometry(_format.get());
+}
 
-	uint32_t Geometry::indexCount() const
-	{
-		return _indices->count();
-	}
+void Geometry::initialize(LUCID_CORE::Reader &reader)
+{
+	reader.read(&_topology, sizeof(LUCID_GAL::Pipeline::TOPOLOGY));
 
-	uint32_t Geometry::primitiveCount() const
-	{
-		switch (_topology)
-		{
-		case gal::Pipeline::TOPOLOGY_POINT_LIST:
-			return indexCount();
-			break;
-		case gal::Pipeline::TOPOLOGY_LINE_STRIP:
-			return indexCount() - 1;
-			break;
-		case gal::Pipeline::TOPOLOGY_LINE_LIST:
-			return indexCount() / 2;
-			break;
-		case gal::Pipeline::TOPOLOGY_TRIANGLE_STRIP:
-			return indexCount() - 2;
-			break;
-		case gal::Pipeline::TOPOLOGY_TRIANGLE_LIST:
-			return indexCount() / 3;
-			break;
-		case gal::Pipeline::TOPOLOGY_TRIANGLE_ADJACENCY:
-			return indexCount() / 6;
-			break;
-		default:
-			break;
-		}
+	_format.reset(LUCID_GAL::VertexFormat::create(reader));
+	_vertices.reset(LUCID_GAL::VertexBuffer::create(reader));
+	_indices.reset(LUCID_GAL::IndexBuffer::create(reader));		
+}
 
-		return 0;
-	}
+void Geometry::shutdown()
+{
+	///	NOP for now
+}
 
-	void Geometry::draw() const
-	{
-		gal::Pipeline &pipeline = gal::Pipeline::instance();
-
-		pipeline.beginGeometry(_format.get());
-			pipeline.setVertexStream(0, _vertices.get());
-			pipeline.setIndexStream(_indices.get());
-			pipeline.draw(_topology, _vertices->count(), _indices->count());
-		pipeline.endGeometry(_format.get());
-	}
-
-	void Geometry::drawInstanced(int32_t count) const
-	{
-		gal::Pipeline &pipeline = gal::Pipeline::instance();
-
-		pipeline.beginGeometry(_format.get());
-			pipeline.setVertexStream(0, _vertices.get());
-			pipeline.setIndexStream(_indices.get());
-			pipeline.drawInstanced(_topology, _vertices->count(), _indices->count(), count);
-		pipeline.endGeometry(_format.get());
-	}
-
-	void Geometry::initialize(::lucid::core::Reader &reader)
-	{
-		reader.read(&_topology, sizeof(gal::Pipeline::TOPOLOGY));
-
-		_format.reset(gal::VertexFormat::create(reader));
-		_vertices.reset(gal::VertexBuffer::create(reader));
-		_indices.reset(gal::IndexBuffer::create(reader));		
-	}
-
-	void Geometry::shutdown()
-	{
-		///	NOP for now
-	}
-
-}	///	gigl
-}	///	lucid
+LUCID_GIGL_END

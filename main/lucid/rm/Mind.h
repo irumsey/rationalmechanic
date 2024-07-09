@@ -102,7 +102,7 @@ inline size_t Mind::select(population_t const &population) const
 
 	LUCID_PROFILE_SCOPE("rm::Mind::select");
 
-	float32_t position = ::lucid::core::random::real();
+	float32_t position = LUCID_CORE::random::real();
 
 	size_t upper = _genomeCount;
 	size_t lower = 0;

@@ -77,7 +77,7 @@ LUCID_GAL_D3D11_BEGIN
 ///
 ///
 
-SamplerState::SamplerState(::lucid::core::Reader &reader)
+SamplerState::SamplerState(LUCID_CORE::Reader &reader)
 {
 	///
 	///	read the data...
@@ -94,7 +94,7 @@ SamplerState::SamplerState(::lucid::core::Reader &reader)
 
 	compare = readEnum(reader, d3dCompare);
 
-	reader.read(&borderColor, sizeof(::lucid::gal::Color));
+	reader.read(&borderColor, sizeof(LUCID_GAL::Color));
 
 	lodMin = reader.read<float>();
 	lodMax = reader.read<float>();
@@ -135,7 +135,7 @@ SamplerState::~SamplerState()
 ///
 ///
 
-Sampler::Sampler(std::string const &name, ::lucid::core::Reader &reader)
+Sampler::Sampler(std::string const &name, LUCID_CORE::Reader &reader)
 	: name(name)
 	, state(reader)
 {

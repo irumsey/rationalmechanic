@@ -15,12 +15,12 @@ LUCID_GAL_D3D11_BEGIN
 ///
 ///
 ///
-class DepthTarget2D : public ::lucid::gal::DepthTarget2D
+class DepthTarget2D : public LUCID_GAL::DepthTarget2D
 {
 public:
 	DepthTarget2D(FORMAT format, int32_t width, int32_t height);
 
-	DepthTarget2D(::lucid::core::Reader &reader);
+	DepthTarget2D(LUCID_CORE::Reader &reader);
 
 	virtual ~DepthTarget2D();
 
