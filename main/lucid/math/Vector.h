@@ -199,9 +199,9 @@ inline LUCID_VECTOR(T, DIM, S, LUCID_QUANTITY_ADD(LQ, RQ)) operator*(LUCID_VECTO
 {
 	LUCID_VECTOR(T, DIM, S, LUCID_QUANTITY_ADD(LQ, RQ)) result;
 
-	result.elements[0] = lhs.elements[0] * rhs.value;
+	result.elements[0] = lhs.elements[0] * rhs;
 	for (size_t i = 1; i < DIM; ++i)
-		result.elements[i] = lhs.elements[i] * rhs.value;
+		result.elements[i] = lhs.elements[i] * rhs;
 
 	return result;
 }
@@ -211,9 +211,9 @@ inline LUCID_VECTOR(T, DIM, S, LUCID_QUANTITY_ADD(LQ, RQ)) operator*(LUCID_SCALA
 {
 	LUCID_VECTOR(T, DIM, S, LUCID_QUANTITY_ADD(LQ, RQ)) result;
 
-	result.elements[0] = lhs.value * rhs.elements[0];
+	result.elements[0] = lhs * rhs.elements[0];
 	for (size_t i = 1; i < DIM; ++i)
-		result.elements[i] = lhs.value * rhs.elements[i];
+		result.elements[i] = lhs * rhs.elements[i];
 
 	return result;
 }
@@ -223,7 +223,7 @@ inline LUCID_VECTOR(T, DIM, S, LUCID_QUANTITY_SUB(LQ, RQ)) operator/(LUCID_VECTO
 {
 	LUCID_VECTOR(T, DIM, S, LUCID_QUANTITY_SUB(LQ, RQ)) result;
 
-	T const coeff = T(1) / rhs.value;
+	T const coeff = T(1) / rhs;
 
 	result.elements[0] = coeff * lhs.elements[0];
 	for (size_t i = 1; i < DIM; ++i)
@@ -256,7 +256,7 @@ inline LUCID_SCALAR(T, S, LUCID_QUANTITY_ADD(LQ, RQ)) dot(LUCID_VECTOR(T, DIM, S
 	LUCID_SCALAR(T, S, LUCID_QUANTITY_ADD(LQ, RQ)) result = lhs.elements[0] * rhs.elements[0];
 
 	for (size_t i = 1; i < DIM; ++i)
-		result.value += lhs.elements[i] * rhs.elements[i];
+		result = result + lhs.elements[i] * rhs.elements[i];
 
 	return result;
 }
@@ -276,7 +276,7 @@ inline LUCID_SCALAR(T, S, LUCID_QUANTITY_ADD(Q, Q)) lsq(LUCID_VECTOR(T, DIM, S, 
 template<typename T, size_t DIM, typename S, typename Q>
 inline LUCID_SCALAR(T, S, Q) len(LUCID_VECTOR(T, DIM, S, Q) const &rhs)
 {
-	return LUCID_SCALAR(T, S, Q)(std::sqrt(dot(rhs, rhs).value));
+	return LUCID_SCALAR(T, S, Q)(std::sqrt(dot(rhs, rhs)));
 }
 
 ///	normalize

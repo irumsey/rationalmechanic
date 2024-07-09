@@ -251,9 +251,9 @@ inline LUCID_MATRIX(T, ROWS, COLS, S, LUCID_QUANTITY_ADD(LQ, RQ)) operator*(LUCI
 {
 	LUCID_MATRIX(T, ROWS, COLS, S, LUCID_QUANTITY_ADD(LQ, RQ)) result;
 
-	result.elements[0] = lhs.elements[0] * rhs.value;
+	result.elements[0] = lhs.elements[0] * rhs;
 	for (size_t i = 1; i < result.COUNT; ++i)
-		result.elements[i] = lhs.elements[i] * rhs.value;
+		result.elements[i] = lhs.elements[i] * rhs;
 
 	return result;
 }
@@ -266,9 +266,9 @@ inline LUCID_MATRIX(T, ROWS, COLS, S, LUCID_QUANTITY_ADD(LQ, RQ)) operator*(LUCI
 {
 	LUCID_MATRIX(T, ROWS, COLS, S, LUCID_QUANTITY_ADD(LQ, RQ)) result;
 
-	result.elements[0] = lhs.value * rhs.elements[0];
+	result.elements[0] = lhs * rhs.elements[0];
 	for (size_t i = 1; i < result.COUNT; ++i)
-		result.elements[i] = lhs.value * rhs.elements[i];
+		result.elements[i] = lhs * rhs.elements[i];
 
 	return result;
 }
@@ -281,7 +281,7 @@ inline LUCID_MATRIX(T, ROWS, COLS, S, LUCID_QUANTITY_SUB(LQ, RQ)) operator/(LUCI
 {
 	LUCID_MATRIX(T, ROWS, COLS, S, LUCID_QUANTITY_SUB(LQ, RQ)) result;
 
-	T const coeff = T(1) / rhs.value;
+	T const coeff = T(1) / rhs;
 
 	result.elements[0] = coeff * lhs.elements[0];
 	for (size_t i = 1; i < result.COUNT; ++i)
@@ -462,7 +462,7 @@ inline LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_NEG(Q)) inverse(LUCID_MATRIX(T, 4
 {
 	LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_NEG(Q)) lval;
 
-	T const coeff = T(1) / determinate(rhs).value;
+	T const coeff = T(1) / determinate(rhs);
 
 	lval.xx = coeff * (rhs.yz * rhs.zw * rhs.wy - rhs.yw * rhs.zz * rhs.wy + rhs.yw * rhs.zy * rhs.wz - rhs.yy * rhs.zw * rhs.wz - rhs.yz * rhs.zy * rhs.ww + rhs.yy * rhs.zz * rhs.ww);
 	lval.xy = coeff * (rhs.xw * rhs.zz * rhs.wy - rhs.xz * rhs.zw * rhs.wy - rhs.xw * rhs.zy * rhs.wz + rhs.xy * rhs.zw * rhs.wz + rhs.xz * rhs.zy * rhs.ww - rhs.xy * rhs.zz * rhs.ww);
@@ -497,8 +497,8 @@ inline LUCID_MATRIX(T, 3, 3, S, LUCID_QUANTITY_PURE) rotateAboutX(LUCID_SCALAR(T
 {
 	LUCID_MATRIX(T, 3, 3, S, LUCID_QUANTITY_PURE) lval;
 
-	T c = cos(theta).value;
-	T s = sin(theta).value;
+	T c = cos(theta);
+	T s = sin(theta);
 
 	lval.xx =  1;
 	lval.xy =  0;
@@ -598,17 +598,17 @@ inline LUCID_MATRIX(T, 3, 3, S, LUCID_QUANTITY_PURE) rotateUsingDirection(LUCID_
 template<typename T, typename S, typename Q>
 inline LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_PURE) orthographic(LUCID_SCALAR(T, S, Q) const &width, LUCID_SCALAR(T, S, Q) const &height, LUCID_SCALAR(T, S, Q) const &znear, LUCID_SCALAR(T, S, Q) const &zfar)
 {
-	T const w = width.value;
-	T const h = height.value;
-	T const z = znear.value;
-	T const depth = znear.value - zfar.value;
+	T const w = width;
+	T const h = height;
+	T const z = znear;
+	T const depth = znear - zfar;
 
 	return LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_PURE)
 	(
 		T(2) / w,        0,            0,         0,
-		        0, T(2) / h,            0,         0,
-		        0,        0, T(1) / depth, z / depth,
-		        0,        0,            0,         1
+		       0, T(2) / h,            0,         0,
+		       0,        0, T(1) / depth, z / depth,
+		       0,        0,            0,         1
 	);
 }
 
@@ -617,11 +617,11 @@ inline LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_PURE) orthographic(LUCID_SCALAR(T
 {
 	return LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_PURE)
 	(
-		T(2) / (right - left).value,                           0,                           0, (left + right).value / (left - right).value,
-			                        0, T(2) / (top - bottom).value,                           0, (top + bottom).value / (bottom - top).value,
-			                        0,                           0, T(1) / (znear - zfar).value,          znear.value / (znear - zfar).value,
-			                        0,                           0,                           0,                                           1
-	);
+		T(2) / (right - left),                     0,                     0, (left + right) / (left - right),
+	                        0, T(2) / (top - bottom),                     0, (top + bottom) / (bottom - top),
+	                        0,                     0, T(1) / (znear - zfar),          znear / (znear - zfar),
+	                        0,                     0,                     0,                               1
+);
 }
 
 ///	perspective
@@ -633,15 +633,15 @@ inline LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_PURE) orthographic(LUCID_SCALAR(T
 template<typename T, typename S, typename Q>
 inline LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_PURE) perspective(LUCID_SCALAR(T, S, LUCID_QUANTITY_PURE) const &fov, LUCID_SCALAR(T, S, LUCID_QUANTITY_PURE) const &aspect, LUCID_SCALAR(T, S, Q) const &znear, LUCID_SCALAR(T, S, Q) const &zfar)
 {
-	T const yscale = T(1) / tan(LUCID_SCALAR(T, S, Q)(0.5f) * fov).value;
-	T const xscale = yscale / aspect.value;
+	T const yscale = T(1) / tan(LUCID_SCALAR(T, S, Q)(0.5f) * fov);
+	T const xscale = yscale / aspect;
 
 	return LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_PURE)
 	(
-		xscale,      0,                                 0,                                               0,
-			    0, yscale,                                 0,                                               0,
-			    0,      0, zfar.value / (znear - zfar).value, znear.value * zfar.value / (znear - zfar).value,
-			    0,      0,                                -1,                                               0
+		xscale,      0,                     0,                             0,
+             0, yscale,                     0,                             0,
+             0,      0, zfar / (znear - zfar), znear * zfar / (znear - zfar),
+             0,      0,                    -1,                             0
 	);
 }
 
@@ -650,10 +650,10 @@ inline LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_PURE) perspective(LUCID_SCALAR(T,
 {
 	return LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_PURE)
 	(
-		T(2) * znear.value / (right - left).value,                                         0, (left + right).value / (right - left).value,                                               0,
-			                                    0, T(2) * znear.value / (top - bottom).value, (top + bottom).value / (top - bottom).value,                                               0,
-			                                    0,                                         0,           zfar.value / (znear - zfar).value, znear.value * zfar.value / (znear - zfar).value,
-			                                    0,                                         0,                                          -1,                                               0
+		T(2) * znear / (right - left),                             0, (left + right) / (right - left),                             0,
+		                            0, T(2) * znear / (top - bottom), (top + bottom) / (top - bottom),                             0,
+		                            0,                             0,           zfar / (znear - zfar), znear * zfar / (znear - zfar),
+		                            0,                             0,                              -1,                             0
 	);
 }
 
@@ -671,10 +671,10 @@ inline LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_PURE) look(LUCID_VECTOR(T, 3, S, 
 
 	return LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_PURE)
 	(
-		xaxis.x, xaxis.y, xaxis.z, -dot(xaxis, eye).value,
-		yaxis.x, yaxis.y, yaxis.z, -dot(yaxis, eye).value,
-		zaxis.x, zaxis.y, zaxis.z, -dot(zaxis, eye).value,
-			T(0),    T(0),    T(0),                   T(1)
+		xaxis.x, xaxis.y, xaxis.z, -dot(xaxis, eye),
+		yaxis.x, yaxis.y, yaxis.z, -dot(yaxis, eye),
+		zaxis.x, zaxis.y, zaxis.z, -dot(zaxis, eye),
+		   T(0),    T(0),    T(0),             T(1)
 	);
 }
 

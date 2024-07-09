@@ -284,8 +284,8 @@ inline std::pair<T, T> project(LUCID_VECTOR(T, 3, S, Q) const *vertices, size_t 
 	{
 		LUCID_SCALAR(T, S, Q) D = dot(vertices[i], axis);
 
-		result.first = std::min(result.first, D.value);
-		result.second = std::max(result.second, D.value);
+		result.first = std::min(result.first, D);
+		result.second = std::max(result.second, D);
 	}
 
 	return result;
