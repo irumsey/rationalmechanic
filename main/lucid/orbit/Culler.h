@@ -55,8 +55,6 @@ public:
 	virtual void evaluate(CameraFrame *camera) override;
 
 private:
-	friend class Renderer;
-
 	///	Visibility
 	/// 
 	///	Needed to provide a default visibility state when looking up
