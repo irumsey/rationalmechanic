@@ -3,7 +3,7 @@
 
 LUCID_ORBIT_BEGIN
 
-void Callout::render(gigl::Context const &context) const
+void Callout::render(LUCID_GIGL::Context const &context) const
 {
 
 }

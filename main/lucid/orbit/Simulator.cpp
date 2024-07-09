@@ -97,7 +97,7 @@ void Simulator::simulate(Frame *frame)
 		///	recursive example: sun <- earth <- moon <- apollo lander (arrow points to parent so, in this example, depth of 4) 
 		simulate(child);
 
-		math::fit(frame->aabbTotal[1], child->aabbTotal[1]);
+		LUCID_MATH::fit(frame->aabbTotal[1], child->aabbTotal[1]);
 	}
 }
 

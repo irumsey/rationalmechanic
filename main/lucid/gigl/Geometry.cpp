@@ -19,7 +19,7 @@ Geometry *Geometry::create(std::string const &path)
 	return new Geometry(LUCID_CORE::FileReader(path));
 }
 
-Geometry *Geometry::create(core::Reader &reader)
+Geometry *Geometry::create(LUCID_CORE::Reader &reader)
 {
 	return new Geometry(reader);
 }
@@ -28,7 +28,7 @@ Geometry *Geometry::create(core::Reader &reader)
 ///
 ///
 
-Geometry::Geometry(core::Reader &reader)
+Geometry::Geometry(LUCID_CORE::Reader &reader)
 {
 	initialize(reader);
 }

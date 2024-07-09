@@ -31,7 +31,7 @@ template<class Iter1, class Iter2> inline size_t distance(Iter1 src1, Iter1 cons
 
 	size_t dist = 0;
 	for (; src1 != end1; ++src1, ++src2)
-		dist += core::bits::hamming_distance(*src1, *src2);
+		dist += LUCID_CORE::bits::hamming_distance(*src1, *src2);
 
 	return dist;
 }

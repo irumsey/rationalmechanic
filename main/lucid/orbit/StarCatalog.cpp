@@ -23,7 +23,7 @@ void StarCatalog::initialize(std::string const &path)
 		entry.      magnitude = reader.read<float32_t>();
 	}
 
-	core::log("INFO", "Star Catalog initialized using: " + path);
+	LUCID_CORE::log("INFO", "Star Catalog initialized using: " + path);
 }
 
 void StarCatalog::shutdown()

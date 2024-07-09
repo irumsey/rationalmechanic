@@ -21,7 +21,7 @@ void Culler::cull(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t const &in
 {
 	LUCID_PROFILE_SCOPE("Culler::cull()");
 
-	gal::System const &galSystem = gal::System::instance();
+	LUCID_GAL::System const &galSystem = LUCID_GAL::System::instance();
 
 	scalar_t screenWidth = scalar_t(galSystem.width());
 	scalar_t screenHeight = scalar_t(galSystem.height());
@@ -34,28 +34,28 @@ void Culler::cull(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t const &in
 	znear = ZNEAR_INITIAL;
 	zfar = ZFAR_INITIAL;
 
-	vector3_t cameraPosition = math::lerp(interpolant, cameraFrame->absolutePosition[0], cameraFrame->absolutePosition[1]);
-	vector3_t focusPosition = math::lerp(interpolant, cameraFrame->focus->absolutePosition[0], cameraFrame->focus->absolutePosition[1]);
+	vector3_t cameraPosition = LUCID_MATH::lerp(interpolant, cameraFrame->absolutePosition[0], cameraFrame->absolutePosition[1]);
+	vector3_t focusPosition = LUCID_MATH::lerp(interpolant, cameraFrame->focus->absolutePosition[0], cameraFrame->focus->absolutePosition[1]);
 
-	_projMatrix = math::perspective(fov, aspect, znear, zfar);
+	_projMatrix = LUCID_MATH::perspective(fov, aspect, znear, zfar);
 
-	_viewMatrix = math::look(cameraPosition, focusPosition, vector3_t(0, 0, 1));
+	_viewMatrix = LUCID_MATH::look(cameraPosition, focusPosition, vector3_t(0, 0, 1));
 	_viewProjMatrix = _projMatrix * _viewMatrix;
-	_invViewProjMatrix = math::inverse(_viewProjMatrix);
+	_invViewProjMatrix = LUCID_MATH::inverse(_viewProjMatrix);
 
-	_frustum = math::makeFrustum3(_invViewProjMatrix);
+	_frustum = LUCID_MATH::makeFrustum3(_invViewProjMatrix);
 
 	std::swap(znear, zfar);
 
 	cull(rootFrame);
 
-	znear = math::min(znear, zfar * math::cos(fov));
+	znear = LUCID_MATH::min(znear, zfar * LUCID_MATH::cos(fov));
 
-	_projMatrix = math::perspective(fov, aspect, znear, zfar);
+	_projMatrix = LUCID_MATH::perspective(fov, aspect, znear, zfar);
 
-	_viewMatrix = math::look(vector3_t(0, 0, 0), math::normalize(focusPosition - cameraPosition), vector3_t(0, 0, 1));
+	_viewMatrix = LUCID_MATH::look(vector3_t(0, 0, 0), LUCID_MATH::normalize(focusPosition - cameraPosition), vector3_t(0, 0, 1));
 	_viewProjMatrix = _projMatrix * _viewMatrix;
-	_invViewProjMatrix = math::inverse(_viewProjMatrix);
+	_invViewProjMatrix = LUCID_MATH::inverse(_viewProjMatrix);
 		
 	vector4_t sprite[3] = {
 		vector4_t(               0.0,                 0.0, 0.9, 1.0),
@@ -69,8 +69,8 @@ void Culler::cull(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t const &in
 		sprite[i] = sprite[i] / scalar_t(sprite[i].w);
 	}
 
-	starFieldRadius = math::len(vector3_t(sprite[0].x, sprite[0].y, sprite[0].z));
-	starScalingFactor = math::len(vector3_t(sprite[2].x, sprite[2].y, sprite[2].z) - vector3_t(sprite[1].x, sprite[1].y, sprite[1].z));
+	starFieldRadius = LUCID_MATH::len(vector3_t(sprite[0].x, sprite[0].y, sprite[0].z));
+	starScalingFactor = LUCID_MATH::len(vector3_t(sprite[2].x, sprite[2].y, sprite[2].z) - vector3_t(sprite[1].x, sprite[1].y, sprite[1].z));
 
 	sceneScalingFactor = 1.0 / (zfar - znear);
 }
@@ -87,28 +87,28 @@ void Culler::evaluate(OrbitalBody *body)
 	static scalar_t const hysteresis[2] = { 0.0001, 0.0003, };
 
 	aabb3_t aabbTotal = aabb3_t(
-		math::lerp(_interpolant, body->aabbTotal[0].min, body->aabbTotal[1].min),
-		math::lerp(_interpolant, body->aabbTotal[0].max, body->aabbTotal[1].max)
+		LUCID_MATH::lerp(_interpolant, body->aabbTotal[0].min, body->aabbTotal[1].min),
+		LUCID_MATH::lerp(_interpolant, body->aabbTotal[0].max, body->aabbTotal[1].max)
 	);
 
-	if (!math::intersects(_frustum, aabbTotal))
+	if (!LUCID_MATH::intersects(_frustum, aabbTotal))
 	{
 		_visibility[body->id] = STATE_PRUNED;
 		return;
 	}
 
 	aabb3_t aabbBody = aabb3_t(
-		math::lerp(_interpolant, body->aabbSelf[0].min, body->aabbSelf[1].min),
-		math::lerp(_interpolant, body->aabbSelf[0].max, body->aabbSelf[1].max)
+		LUCID_MATH::lerp(_interpolant, body->aabbSelf[0].min, body->aabbSelf[1].min),
+		LUCID_MATH::lerp(_interpolant, body->aabbSelf[0].max, body->aabbSelf[1].max)
 	);
 
-	if (!math::intersects(_frustum, aabbBody))
+	if (!LUCID_MATH::intersects(_frustum, aabbBody))
 	{
 		_visibility[body->id] = STATE_CULLED;
 		return;
 	}
 
-	scalar_t area = math::areaProjected(_viewProjMatrix, ZNEAR_INITIAL, aabbBody);
+	scalar_t area = LUCID_MATH::areaProjected(_viewProjMatrix, ZNEAR_INITIAL, aabbBody);
 
 	if (area <= hysteresis[0])
 		_visibility[body->id] = STATE_IMPERCEPTIBLE;
@@ -134,10 +134,10 @@ void Culler::evaluate(OrbitalBody *body)
 
 	for (size_t i = 0; i < 8; ++i)
 	{
-		scalar_t depth = math::dot(_frustum.planes[frustum_t::PLANE_NEAR], corners[i]);
+		scalar_t depth = LUCID_MATH::dot(_frustum.planes[frustum_t::PLANE_NEAR], corners[i]);
 
-		znear = (depth > 0) ? math::min(depth, znear) : znear;
-		zfar = (depth > 0) ? math::max(depth, zfar) : zfar;
+		znear = (depth > 0) ? LUCID_MATH::min(depth, znear) : znear;
+		zfar = (depth > 0) ? LUCID_MATH::max(depth, zfar) : zfar;
 	}
 }
 

@@ -107,16 +107,15 @@ void Renderer::evaluate(OrbitalBody *body)
 	///	TBD: data drive line width and color
 	///	TBD: data drive domain of orbit
 
-	Culler::STATE cullState = _culler[body->id];
+	PhysicalProperties const &physicalProperties = body->physicalProperties;
+	RenderProperties const &renderProperties = body->renderProperties;
+	Elements const *elements = body->elements;
 
+	LUCID_GAL::Vector3 bodyPosition = adaptiveScale(LUCID_MATH::lerp(_interpolant, body->absolutePosition[0], body->absolutePosition[1]) - _cameraPosition);
+
+	Culler::STATE cullState = _culler[body->id];
 	if (Culler::STATE_VISIBLE == cullState)
 	{
-		PhysicalProperties const &physicalProperties = body->physicalProperties;
-		RenderProperties const &renderProperties = body->renderProperties;
-		Elements const *elements = body->elements;
-
-		LUCID_GAL::Vector3 bodyPosition = adaptiveScale(LUCID_MATH::lerp(_interpolant, body->absolutePosition[0], body->absolutePosition[1]) - _cameraPosition);
-
 		MeshInstance bodyInstance;
 		bodyInstance.id = (SELECT_FRAME << SELECT_SHIFT) | uint32_t(SELECT_MASK & body->id);
 		bodyInstance.position = bodyPosition;
@@ -129,10 +128,6 @@ void Renderer::evaluate(OrbitalBody *body)
 
 	if (Culler::STATE_IMPERCEPTIBLE == cullState)
 	{
-		RenderProperties const &renderProperties = body->renderProperties;
-
-		LUCID_GAL::Vector3 bodyPosition = adaptiveScale(LUCID_MATH::lerp(_interpolant, body->absolutePosition[0], body->absolutePosition[1]) - _cameraPosition);
-
 		IconInstance iconInstance;
 		iconInstance.id = (SELECT_FRAME << SELECT_SHIFT) | uint32_t(SELECT_MASK & body->id);
 		iconInstance.position = bodyPosition;

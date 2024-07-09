@@ -23,14 +23,14 @@ struct PhysicalProperties
 
 	PhysicalProperties() = default;
 
-	PhysicalProperties(core::Reader &reader)
+	PhysicalProperties(LUCID_CORE::Reader &reader)
 	{
 		read(reader);
 	}
 
 	~PhysicalProperties() = default;
 
-	void read(core::Reader &reader)
+	void read(LUCID_CORE::Reader &reader)
 	{
 		reader.read(    &GM, sizeof(scalar_t));
 		reader.read(  &mass, sizeof(scalar_t));
@@ -51,27 +51,27 @@ struct RenderProperties
 	std::shared_ptr<LUCID_GIGL::Model> model;
 	std::shared_ptr<LUCID_GIGL::Mesh> icon;
 
-	gal::Color color;
-	gal::Vector4 parameters;
+	LUCID_GAL::Color color;
+	LUCID_GAL::Vector4 parameters;
 
 	RenderProperties() = default;
 
-	RenderProperties(core::Reader &reader)
+	RenderProperties(LUCID_CORE::Reader &reader)
 	{
 		read(reader);
 	}
 
 	~RenderProperties() = default;
 
-	void read(core::Reader &reader)
+	void read(LUCID_CORE::Reader &reader)
 	{
 		showOrbit = reader.read<bool>();
 
 		model.reset(new LUCID_GIGL::Model(reader));
 		icon = LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(reader.read<std::string>());
 
-		reader.read(&color, sizeof(gal::Color));
-		reader.read(&parameters, sizeof(gal::Vector4));
+		reader.read(&color, sizeof(LUCID_GAL::Color));
+		reader.read(&parameters, sizeof(LUCID_GAL::Vector4));
 	}
 };
 

@@ -131,10 +131,10 @@ bool Ephemeris::lookup(Elements &elements, size_t target, scalar_t jdn) const
 	///	exits when the difference would increase.
 
 	size_t index = 0;
-	scalar_t a = math::abs(entries[index].JDN - jdn);
+	scalar_t a = LUCID_MATH::abs(entries[index].JDN - jdn);
 	for (size_t i = 1; i < count; ++i)
 	{
-		scalar_t b = math::abs(entries[i].JDN - jdn);
+		scalar_t b = LUCID_MATH::abs(entries[i].JDN - jdn);
 		if (b < a)
 		{
 			index = i;

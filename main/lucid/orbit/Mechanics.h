@@ -67,7 +67,7 @@ private:
 	scalar_t          _simTime;
 	scalar_t _frameInterpolant;
 
-	core::Clock *_clock = nullptr;
+	LUCID_CORE::Clock *_clock = nullptr;
 
 	Simulator _simulator;
 	Renderer _renderer;

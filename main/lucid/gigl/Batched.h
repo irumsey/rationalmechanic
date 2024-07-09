@@ -159,7 +159,7 @@ private:
 			material->begin(context);
 			while (index < totalCount)
 			{
-				size_t count = math::min(totalCount - index, maximum);
+				size_t count = LUCID_MATH::min(totalCount - index, maximum);
 
 				::memcpy((I*)(batch->lock()), &instances[index], count * sizeof(I));
 				batch->unlock();

@@ -45,11 +45,11 @@ class Geometry;
 class Mesh final
 {
 public:
-	Mesh(core::Reader &reader);
+	Mesh(LUCID_CORE::Reader &reader);
 
 	virtual ~Mesh();
 
-	core::Identity const &identity() const;
+	LUCID_CORE::Identity const &identity() const;
 
 	std::shared_ptr<LUCID_GAL::Program> program() const;
 
@@ -78,7 +78,7 @@ public:
 	static Mesh *create(LUCID_CORE::Reader &reader);
 
 private:
-	core::Identity const _identity;
+	LUCID_CORE::Identity const _identity;
 
 	std::shared_ptr<LUCID_GAL::Program> _program;
 
@@ -93,7 +93,7 @@ private:
 	LUCID_PREVENT_ASSIGNMENT(Mesh);
 };
 
-inline core::Identity const &Mesh::identity() const
+inline LUCID_CORE::Identity const &Mesh::identity() const
 {
 	return _identity;
 }

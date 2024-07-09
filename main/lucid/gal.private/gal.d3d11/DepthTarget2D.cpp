@@ -40,9 +40,9 @@ DepthTarget2D::DepthTarget2D(FORMAT format, int32_t width, int32_t height)
 	{
 		initialize();
 	}
-	catch (core::Error const &error)
+	catch (LUCID_CORE::Error const &error)
 	{
-		core::log("ERR", error.what());
+		LUCID_CORE::log("ERR", error.what());
 		shutdown();
 		throw;
 	}

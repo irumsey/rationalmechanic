@@ -26,15 +26,15 @@ class Batched;
 class Model final
 {
 public:
-	Model(core::Reader &reader);
+	Model(LUCID_CORE::Reader &reader);
 
 	virtual ~Model();
 
-	core::Identity const &identity() const;
+	LUCID_CORE::Identity const &identity() const;
 
 	static Model *create(std::string const &path);
 
-	static Model *create(core::Reader &reader);
+	static Model *create(LUCID_CORE::Reader &reader);
 
 private:
 	typedef std::shared_ptr<Mesh> mesh_ptr_t;
@@ -42,10 +42,10 @@ private:
 
 	friend class Batched;
 
-	core::Identity _identity;
+	LUCID_CORE::Identity _identity;
 	mesh_vec_t _meshes;
 
-	void initialize(core::Reader &reader);
+	void initialize(LUCID_CORE::Reader &reader);
 
 	void shutdown();
 
@@ -53,7 +53,7 @@ private:
 	LUCID_PREVENT_ASSIGNMENT(Model);
 };
 
-inline core::Identity const &Model::identity() const
+inline LUCID_CORE::Identity const &Model::identity() const
 {
 	return _identity;
 }

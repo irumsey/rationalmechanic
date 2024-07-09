@@ -89,7 +89,7 @@ void Mechanics::initialize(scalar_t dayNumber)
 	_simTime = 0;
 	_frameInterpolant = 0;
 
-	_clock = core::Clock::create();
+	_clock = LUCID_CORE::Clock::create();
 
 	_simulator.initialize();
 	_renderer.initialize("content/render.context");

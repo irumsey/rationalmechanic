@@ -82,8 +82,8 @@ inline LUCID_GAL::Matrix4x4 cast(matrix4x4_t const &rhs)
 /// 
 inline vector2_t computeConicPoint(scalar_t hu, scalar_t e, scalar_t theta)
 {
-	scalar_t c = math::cos(theta);
-	scalar_t s = math::sin(theta);
+	scalar_t c = LUCID_MATH::cos(theta);
+	scalar_t s = LUCID_MATH::sin(theta);
 	scalar_t r = hu / (scalar_t(1.0) + e * c);
 
 	return r * vector2_t(c, s);
@@ -94,7 +94,7 @@ inline vector2_t computeConicPoint(scalar_t hu, scalar_t e, scalar_t theta)
 ///
 inline matrix3x3_t rotationFromElements(Elements const &elements)
 {
-	return math::rotateAboutZ(elements.OM) * math::rotateAboutX(elements.IN) * math::rotateAboutZ(elements.W);
+	return LUCID_MATH::rotateAboutZ(elements.OM) * LUCID_MATH::rotateAboutX(elements.IN) * LUCID_MATH::rotateAboutZ(elements.W);
 }
 
 ///
@@ -128,11 +128,11 @@ inline void kinematicsFromElements(vector3_t &position, vector3_t &velocity, Phy
 		++iter;
 	}
 
-	scalar_t TA = scalar_t(2.0) * math::atan2(math::sqrt(scalar_t(1.0) + e) * math::sin(scalar_t(0.5) * EA[0]), math::sqrt(scalar_t(1.0) - e) * math::cos(scalar_t(0.5) * EA[0]));
-	scalar_t  r = a * (1.0 - e * math::cos(EA[0]));
+	scalar_t TA = scalar_t(2.0) * LUCID_MATH::atan2(LUCID_MATH::sqrt(scalar_t(1.0) + e) * LUCID_MATH::sin(scalar_t(0.5) * EA[0]), LUCID_MATH::sqrt(scalar_t(1.0) - e) * LUCID_MATH::cos(scalar_t(0.5) * EA[0]));
+	scalar_t  r = a * (1.0 - e * LUCID_MATH::cos(EA[0]));
 
-	position = r * vector3_t(math::cos(TA), math::sin(TA), scalar_t(0.0));
-	velocity = math::sqrt(GM * a) / r * vector3_t(-math::sin(EA[0]), math::sqrt(scalar_t(1.0) - e * e) * math::cos(EA[0]), scalar_t(0.0));
+	position = r * vector3_t(LUCID_MATH::cos(TA), LUCID_MATH::sin(TA), scalar_t(0.0));
+	velocity = LUCID_MATH::sqrt(GM * a) / r * vector3_t(-LUCID_MATH::sin(EA[0]), LUCID_MATH::sqrt(scalar_t(1.0) - e * e) * LUCID_MATH::cos(EA[0]), scalar_t(0.0));
 
 	matrix3x3_t R = rotationFromElements(targetElements);
 

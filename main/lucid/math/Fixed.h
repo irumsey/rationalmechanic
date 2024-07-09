@@ -182,7 +182,7 @@ template<size_t N, size_t D> inline bool neq(Fixed<N,D> const lhs, Fixed<N,D> co
 LUCID_MATH_END
 
 #pragma push_macro("NUMBER")
-#define NUMBER(B,D) ::lucid::math::Fixed<B,D>
+#define NUMBER(B,D) LUCID_MATH::Fixed<B,D>
 
 template<size_t B, size_t D> inline NUMBER(B,D) operator-(NUMBER(B,D) const &rhs)
 {

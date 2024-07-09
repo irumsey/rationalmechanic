@@ -62,7 +62,7 @@ VertexFormat *VertexFormat::create(std::vector<VertexElement> const &layout)
 
 VertexFormat *VertexFormat::create(std::string const &path)
 {
-	return create(core::FileReader(path));
+	return create(LUCID_CORE::FileReader(path));
 }
 
 VertexFormat *VertexFormat::create(LUCID_CORE::Reader &reader)

@@ -82,7 +82,7 @@ Material::~Material()
 		
 void Material::begin(Context const &context) const
 {
-	gal::Pipeline &pipeline = gal::Pipeline::instance();
+	LUCID_GAL::Pipeline &pipeline = LUCID_GAL::Pipeline::instance();
 
 	pipeline.updateTargets();
 	std::for_each(_attributes.begin(), _attributes.end(), Applicator(context, _program.get()));
@@ -91,7 +91,7 @@ void Material::begin(Context const &context) const
 
 void Material::end()
 {
-	gal::Pipeline &pipeline = gal::Pipeline::instance();
+	LUCID_GAL::Pipeline &pipeline = LUCID_GAL::Pipeline::instance();
 	pipeline.endProgram(_program.get());
 }
 

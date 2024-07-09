@@ -49,13 +49,13 @@ public:
 
 	Material(std::string const &path);
 
-	Material(core::Reader &reader);
+	Material(LUCID_CORE::Reader &reader);
 
 	virtual ~Material();
 
 	LUCID_CORE::Identity const &identity() const;
 
-	std::shared_ptr<gal::Program> program() const;
+	std::shared_ptr<LUCID_GAL::Program> program() const;
 
 	Primitive const &attribute(std::string const &name) const;
 
@@ -67,7 +67,7 @@ public:
 
 	static Material *create(std::string const &path);
 
-	static Material *create(core::Reader &reader);
+	static Material *create(LUCID_CORE::Reader &reader);
 
 private:
 	///	Attribute
@@ -107,7 +107,7 @@ inline LUCID_CORE::Identity const &Material::identity() const
 	return _identity;
 }
 
-inline std::shared_ptr<gal::Program> Material::program() const
+inline std::shared_ptr<LUCID_GAL::Program> Material::program() const
 {
 	return _program;
 }

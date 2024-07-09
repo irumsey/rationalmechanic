@@ -38,7 +38,7 @@ void FileSystem::addListener(std::string const &path, Listener *listener)
 		}
 		else
 		{
-			core::Logger &logger = core::Logger::instance();
+			LUCID_CORE::Logger &logger = LUCID_CORE::Logger::instance();
 			logger.log("ERROR", "unable to add file listener for '" + path + "'");
 		}
 	}
@@ -103,7 +103,7 @@ void FileSystem::scan()
 		}
 		else
 		{
-			core::Logger &logger = core::Logger::instance();
+			LUCID_CORE::Logger &logger = LUCID_CORE::Logger::instance();
 			logger.log("ERROR", "unable to update file info for '" + info.path + "'");
 		}
 	}

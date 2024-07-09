@@ -17,10 +17,10 @@ LUCID_ORBIT_BEGIN
 /// 
 struct Callout
 {
-	gal::Vector2 reticulePosition[2];
-	gal::Vector2 calloutPosition[2];
+	LUCID_GAL::Vector2 reticulePosition[2];
+	LUCID_GAL::Vector2 calloutPosition[2];
 
-	void render(gigl::Context const &context) const;
+	void render(LUCID_GIGL::Context const &context) const;
 
 };
 

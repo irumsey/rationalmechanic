@@ -25,7 +25,7 @@ template<size_t N> struct Integer
 	enum { SHIFT = 16 };
 
 	typedef typename Integer<N> self_t;
-	typedef typename core::Array<COUNT, uint16_t> data_t;
+	typedef typename LUCID_CORE::Array<COUNT, uint16_t> data_t;
 
 	data_t data;
 
@@ -379,7 +379,7 @@ template<size_t N> struct Integer
 		lval = lhs;
 		while (bits > 0)
 		{
-			uint16_t shift = math::min(bits, uint16_t(SHIFT));
+			uint16_t shift = LUCID_MATH::min(bits, uint16_t(SHIFT));
 			bits -= shift;
 
 			uint32_t carry = 0;
@@ -397,7 +397,7 @@ template<size_t N> struct Integer
 		lval = lhs;
 		while (bits > 0)
 		{
-			uint16_t shift = math::min(bits, uint16_t(SHIFT));
+			uint16_t shift = LUCID_MATH::min(bits, uint16_t(SHIFT));
 			bits -= shift;
 
 			uint32_t carry = 0;
@@ -429,7 +429,7 @@ template<size_t N> inline bool neq(Integer<N> const lhs, Integer<N> const rhs)
 LUCID_MATH_END
 
 #pragma push_macro("NUMBER")
-#define NUMBER(N) ::lucid::math::Integer<N>
+#define NUMBER(N) ::lucid::LUCID_MATH::Integer<N>
 
 template<size_t N> inline bool operator==(NUMBER(N) const &lhs, NUMBER(N) const &rhs)
 {

@@ -11,7 +11,7 @@ LUCID_ANONYMOUS_END
 
 LUCID_GAL_BEGIN
 
-TargetReader2D *TargetReader2D::create(gal::RenderTarget2D const *target, int32_t width, int32_t height)
+TargetReader2D *TargetReader2D::create(LUCID_GAL::RenderTarget2D const *target, int32_t width, int32_t height)
 {
 	return new LUCID_GAL_D3D11::TargetReader2D(target, width, height);
 }
@@ -20,7 +20,7 @@ LUCID_GAL_END
 
 LUCID_GAL_D3D11_BEGIN
 
-TargetReader2D::TargetReader2D(gal::RenderTarget2D const *target, int32_t width, int32_t height)
+TargetReader2D::TargetReader2D(LUCID_GAL::RenderTarget2D const *target, int32_t width, int32_t height)
 	: _width(width), _height(height)
 {
 	try
