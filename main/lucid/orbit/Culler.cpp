@@ -38,6 +38,7 @@ void Culler::cull(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t const &in
 	vector3_t focusPosition = math::lerp(interpolant, cameraFrame->focus->absolutePosition[0], cameraFrame->focus->absolutePosition[1]);
 
 	_projMatrix = math::perspective(fov, aspect, znear, zfar);
+
 	_viewMatrix = math::look(cameraPosition, focusPosition, vector3_t(0, 0, 1));
 	_viewProjMatrix = _projMatrix * _viewMatrix;
 	_invViewProjMatrix = math::inverse(_viewProjMatrix);
@@ -51,14 +52,15 @@ void Culler::cull(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t const &in
 	znear = math::min(znear, zfar * math::cos(fov));
 
 	_projMatrix = math::perspective(fov, aspect, znear, zfar);
+
 	_viewMatrix = math::look(vector3_t(0, 0, 0), math::normalize(focusPosition - cameraPosition), vector3_t(0, 0, 1));
 	_viewProjMatrix = _projMatrix * _viewMatrix;
 	_invViewProjMatrix = math::inverse(_viewProjMatrix);
 		
 	vector4_t sprite[3] = {
-		vector4_t(               0.0,                 0.0, 1.0, 1.0),
-		vector4_t(-1.0 / screenWidth, -1.0 / screenHeight, 1.0, 1.0),
-		vector4_t( 1.0 / screenWidth,  1.0 / screenHeight, 1.0, 1.0),
+		vector4_t(               0.0,                 0.0, 0.9, 1.0),
+		vector4_t(-1.0 / screenWidth, -1.0 / screenHeight, 0.9, 1.0),
+		vector4_t( 1.0 / screenWidth,  1.0 / screenHeight, 0.9, 1.0),
 	};
 		
 	for (size_t i = 0; i < 3; ++i)
@@ -67,7 +69,7 @@ void Culler::cull(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t const &in
 		sprite[i] = sprite[i] / scalar_t(sprite[i].w);
 	}
 
-	starFieldRadius = 0.99 * math::len(vector3_t(sprite[0].x, sprite[0].y, sprite[0].z));
+	starFieldRadius = math::len(vector3_t(sprite[0].x, sprite[0].y, sprite[0].z));
 	starScalingFactor = math::len(vector3_t(sprite[2].x, sprite[2].y, sprite[2].z) - vector3_t(sprite[1].x, sprite[1].y, sprite[1].z));
 
 	sceneScalingFactor = 1.0 / (zfar - znear);

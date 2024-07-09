@@ -8,6 +8,7 @@ using System.Drawing;
 
 using Logger = Lucid.Core.Logger;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
+using Lucid.Orbit;
 
 namespace omp
 {
@@ -279,7 +280,9 @@ namespace omp
 
                 planner.orbitalMechainics.Detach(planner.cameraFrame);
                 planner.orbitalMechainics.Attach(parentFrame, planner.cameraFrame);
-                planner.cameraFrame.RelativePosition = new Lucid.Math.Vector3(42164000.0f, 0, 0);
+
+                float distance = (float)(2.0 * (parentFrame as OrbitalBody).PhysicalProps.Radius);
+                planner.cameraFrame.RelativePosition = new Lucid.Math.Vector3(distance, distance, 0);
 
                 Logger.Log("INFO", "camera attached to frame: " + parentFrame.Name);
             }

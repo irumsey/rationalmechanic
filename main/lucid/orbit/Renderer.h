@@ -116,12 +116,13 @@ private:
 		LUCID_GAL::Vector4    parameters;
 	};
 
-	struct CalloutInstance
+	struct IconInstance
 	{
-		uint32_t                  id;
-		LUCID_GAL::Vector2  position;
-		LUCID_GAL::Vector4 dimension;
-		LUCID_GAL::Color       color;
+		uint32_t                 id;
+		LUCID_GAL::Vector3 position;
+		LUCID_GAL::Vector4 texcoord;
+		LUCID_GAL::Vector2    scale;
+		LUCID_GAL::Color      color;
 	};
 
 	int32_t _width = 0;
@@ -141,10 +142,10 @@ private:
 	std::unique_ptr<LUCID_GAL::VertexBuffer> _starInstances;
 	std::unique_ptr<LUCID_GIGL::Mesh> _starMesh;
 
-	std::shared_ptr<LUCID_GIGL::Mesh> _orbitMesh;
-
 	LUCID_GIGL::Batched _sceneBatch;
-	LUCID_GIGL::Batched _orbitBatch;
+
+	// std::shared_ptr<LUCID_GIGL::Mesh> _orbitMesh;
+	// LUCID_GIGL::Batched _orbitBatch;
 
 	std::unique_ptr<LUCID_GAL::RenderTarget2D> _colorTarget;
 	std::unique_ptr<LUCID_GAL::RenderTarget2D> _glowTarget;

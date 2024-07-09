@@ -671,6 +671,8 @@ def bootFrameOrbitalBody(dst, frame):
 	bootUnsigned(dst, len(model))
 	for mesh in model:
 		bootString(dst, mesh)			
+	
+	bootString(dst, properties['render']['icon'])
 	bootColor(dst, properties['render']['color'])
 	bootVector4(dst, properties['render']['parameters'])
 

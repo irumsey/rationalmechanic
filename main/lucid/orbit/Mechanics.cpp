@@ -224,8 +224,10 @@ void Mechanics::update(scalar_t delta)
 {
 	LUCID_VALIDATE(nullptr != _root, "attempt to use uninitialized system");
 
+	/// test {
 	_dayNumber[0] = _dayNumber[1];
-	_dayNumber[1] = _dayNumber[1] + delta;
+	_dayNumber[1] = _dayNumber[1] + 0.001 * delta;
+	/// } test
 
 	_simulator.simulate(_root, _dayNumber[1], delta);
 }

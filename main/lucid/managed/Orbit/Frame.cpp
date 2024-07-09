@@ -128,7 +128,6 @@ namespace Orbit {
 		LUCID_VALIDATE(_internal != _internal->centerFrame, "attempt to move root frame");
 
 		_internal->relativePosition[1] = LUCID_ORBIT::cast(value->ref);
-		_internal->relativePosition[0] = LUCID_ORBIT::cast(value->ref);
 	}
 
 	Math::Vector3 ^Frame::AbsolutePosition::get()

@@ -4,6 +4,8 @@
 #include <lucid/core/Types.h>
 #include <lucid/core/Reader.h>
 #include <lucid/gal/Types.h>
+#include <lucid/gigl/Resources.h>
+#include <lucid/gigl/Mesh.h>
 #include <lucid/gigl/Model.h>
 #include <lucid/orbit/Defines.h>
 #include <lucid/orbit/Types.h>
@@ -46,7 +48,9 @@ struct RenderProperties
 	bool bodyHighlight = false;		//	used only at runtime to toggle highlighting
 	bool orbitHighlight = false;	//	used only at runtime to toggle highlighting 
 
-	std::shared_ptr<gigl::Model> model;
+	std::shared_ptr<LUCID_GIGL::Model> model;
+	std::shared_ptr<LUCID_GIGL::Mesh> icon;
+
 	gal::Color color;
 	gal::Vector4 parameters;
 
@@ -63,7 +67,9 @@ struct RenderProperties
 	{
 		showOrbit = reader.read<bool>();
 
-		model.reset(new gigl::Model(reader));
+		model.reset(new LUCID_GIGL::Model(reader));
+		icon = LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(reader.read<std::string>());
+
 		reader.read(&color, sizeof(gal::Color));
 		reader.read(&parameters, sizeof(gal::Vector4));
 	}

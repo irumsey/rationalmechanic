@@ -3,7 +3,7 @@ float4x4 viewProjMatrix;
 
 struct InputVertex
 {
-	float3     vertex : LOCATION0;
+	float2     vertex : LOCATION0;
 	uint1          id : LOCATION1;
 	float3      focus : LOCATION2;
 	float       scale : LOCATION3;
