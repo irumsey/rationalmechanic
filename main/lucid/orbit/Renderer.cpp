@@ -137,7 +137,6 @@ void Renderer::evaluate(OrbitalBody *body)
 		_sceneBatch.addInstance(renderProperties.icon, iconInstance);
 	}
 
-#if false
 	if (!renderProperties.showOrbit)
 		return;
 
@@ -157,12 +156,11 @@ void Renderer::evaluate(OrbitalBody *body)
 	MeshInstance orbitInstance;
 	orbitInstance.id = (SELECT_ORBIT << SELECT_SHIFT) | uint32_t(SELECT_MASK & body->id);
 	orbitInstance.position = centerPosition;
-	orbitInstance.scale = adaptiveScale(10.0);
+	orbitInstance.scale = 3;
 	orbitInstance.rotation = rotation;
 	orbitInstance.color = renderProperties.orbitHighlight ? LUCID_GAL::Color(1.f, 1.f, 1.f, 1.f) : LUCID_GAL::Color(0, 0, 1, 1);
 	orbitInstance.parameters = LUCID_GAL::Vector4(hu, e, 0.f, constants::two_pi<float32_t>);
 	_orbitBatch.addInstance(_orbitMesh, orbitInstance);
-#endif
 }
 	  
 void Renderer::evaluate(DynamicBody *body)
@@ -208,7 +206,7 @@ void Renderer::initialize(std::string const &path)
 	_starInstances->unlock();
 
 	_sceneBatch.initialize();
-	// _orbitBatch.initialize();
+	_orbitBatch.initialize();
 
 	/// test {
 	///	need a data driven method for registering these... 
@@ -218,9 +216,9 @@ void Renderer::initialize(std::string const &path)
 	_sceneBatch.createBatch<IconInstance, NullSort  <IconInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(  "content/iconDefault.mesh"), BATCH_MAXIMUM);
 	_sceneBatch.createBatch<IconInstance, NullSort  <IconInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>("content/iconSatellite.mesh"), BATCH_MAXIMUM);
 	/// } test
-		 
-	// _orbitMesh = LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>("content/orbit.mesh");
-	// _orbitBatch.createBatch<MeshInstance, Back2Front<MeshInstance> >(_orbitMesh, BATCH_MAXIMUM);
+
+	_orbitMesh = LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>("content/orbit.mesh");
+	_orbitBatch.createBatch<MeshInstance, NullSort<MeshInstance> >(_orbitMesh, BATCH_MAXIMUM);
 
 	_selectTarget.reset(LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UINT_R32, _width, _height));
 	_selectReader.reset(LUCID_GAL::TargetReader2D::create(_selectTarget.get(), _width, _height));
@@ -257,7 +255,9 @@ void Renderer::shutdown()
 	_starInstances.reset();
 	_starMesh.reset();
 
-	// _orbitBatch.shutdown();
+	_orbitBatch.shutdown();
+	_orbitMesh.reset();
+
 	_sceneBatch.shutdown();
 
 	_selectReader.reset();
@@ -319,7 +319,7 @@ void Renderer::render(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t time,
 	_renderContext["invViewProjMatrix"] = LUCID_MATH::inverse(viewProjMatrix);
 
 	_sceneBatch.clear();
-	// _orbitBatch.clear();
+	_orbitBatch.clear();
 
 	batch(rootFrame);
 
@@ -398,7 +398,7 @@ void Renderer::renderScene()
 
 void Renderer::renderOrbits()
 {
-	/// TBD: implement...
+	_orbitBatch.render(_renderContext);
 }
 
 void Renderer::copy(LUCID_GAL::RenderTarget2D *dst, LUCID_GAL::RenderTarget2D *src)

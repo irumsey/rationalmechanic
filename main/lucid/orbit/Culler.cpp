@@ -9,8 +9,8 @@ LUCID_ORBIT_BEGIN
 
 Culler::Culler()
 {
-	// set the SSB (solar system barycenter) to visible
-	_visibility[0] = STATE_VISIBLE;
+	// make sure SSB is not pruned (otherwise the scene will not render)
+	_visibility[0] = STATE_IMPERCEPTIBLE;
 }
 
 Culler::~Culler()
@@ -50,10 +50,9 @@ void Culler::cull(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t const &in
 	cull(rootFrame);
 
 	znear = LUCID_MATH::min(znear, zfar * LUCID_MATH::cos(fov));
-
-	_projMatrix = LUCID_MATH::perspective(fov, aspect, znear, zfar);
-
+	
 	_viewMatrix = LUCID_MATH::look(vector3_t(0, 0, 0), LUCID_MATH::normalize(focusPosition - cameraPosition), vector3_t(0, 0, 1));
+	_projMatrix = LUCID_MATH::perspective(fov, aspect, znear, zfar);
 	_viewProjMatrix = _projMatrix * _viewMatrix;
 	_invViewProjMatrix = LUCID_MATH::inverse(_viewProjMatrix);
 		

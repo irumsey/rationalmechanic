@@ -144,8 +144,8 @@ private:
 
 	LUCID_GIGL::Batched _sceneBatch;
 
-	// std::shared_ptr<LUCID_GIGL::Mesh> _orbitMesh;
-	// LUCID_GIGL::Batched _orbitBatch;
+	std::shared_ptr<LUCID_GIGL::Mesh> _orbitMesh;
+	LUCID_GIGL::Batched _orbitBatch;
 
 	std::unique_ptr<LUCID_GAL::RenderTarget2D> _colorTarget;
 	std::unique_ptr<LUCID_GAL::RenderTarget2D> _glowTarget;

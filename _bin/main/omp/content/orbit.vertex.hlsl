@@ -1,35 +1,43 @@
 #include "utility.header.hlsl"
 #include "orbit.header.hlsl"
 
-float exclude(float x, float a, float b)
-{
-	if ((x < a) || (b < x))
-		return x;
-
-	if ((b - x) > (x - a))
-		return a;
-
-	return b;
-}
-
 OutputVertex main(InputVertex input)
 {
 	OutputVertex output = (OutputVertex)0;
 
 	float hu = input.parameters.x;
 	float ecc = input.parameters.y;
-	
 	float2 domain = input.parameters.zw;
-	float theta = (domain.y - domain.x) * input.vertex.x + domain.x;
+
+	float theta0 = (domain.y - domain.x) * input.vertex.x + domain.x;
+	float theta1 = (domain.y - domain.x) * input.vertex.y + domain.x;
 
 	float4x4 worldMatrix = matrixFromQuaternion(input.rotation, input.focus);
-	float4 worldPosition = mul(worldMatrix, float4(computeConicPoint(hu, ecc, theta), 0, 1));
 
-	float3 normal = normalize(worldPosition.xyz - input.focus);
+	float4 worldPosition0 = mul(worldMatrix, float4(computeConicPoint(hu, ecc, theta0), 0, 1));
+	float4 worldPosition1 = mul(worldMatrix, float4(computeConicPoint(hu, ecc, theta1), 0, 1));
 
-	worldPosition.xyz = worldPosition.xyz + input.scale * input.vertex.y * normal;
+	float4 ppsPosition0 = mul(viewProjMatrix, worldPosition0);
+	float4 ppsPosition1 = mul(viewProjMatrix, worldPosition1);
 
-	output.ppsPosition = mul(viewProjMatrix, worldPosition);
+	float4 screenPosition = ppsPosition0;
+	if (!clipped(screenPosition))
+	{
+		ppsPosition0 = ppsPosition0 / ppsPosition0.w;
+		ppsPosition1 = ppsPosition1 / ppsPosition1.w;
+
+		float2 tangent = ppsPosition1.xy - ppsPosition0.xy;
+		float T = length(tangent);
+		tangent = (T > 0) ? tangent / T : float2(0, 1);
+
+		float2 normal = input.vertex.z * float2(-tangent.y, tangent.x);
+		float2 width = input.scale * texelSize;
+
+		screenPosition.xy = width * normal + ppsPosition0.xy;
+		screenPosition.zw = float2(min(ppsPosition0.z, 0.99), 1);
+	}
+
+	output.ppsPosition = screenPosition;
 	output.         id = input.id;
 	output.      color = input.color;
 	 
