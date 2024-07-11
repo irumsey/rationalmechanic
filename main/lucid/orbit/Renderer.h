@@ -145,7 +145,7 @@ private:
 	LUCID_GIGL::Batched _sceneBatch;
 
 	std::shared_ptr<LUCID_GIGL::Mesh> _orbitMesh;
-	LUCID_GIGL::Batched _orbitBatch;
+	LUCID_GIGL::Batched _overlayBatch;
 
 	std::unique_ptr<LUCID_GAL::RenderTarget2D> _colorTarget;
 	std::unique_ptr<LUCID_GAL::RenderTarget2D> _glowTarget;
@@ -174,21 +174,19 @@ private:
 
 	void batch(Frame *frame);
 
-	void render();
+	void renderScene(bool useFXAA);
 
 	void renderStarfield();
 
-	void renderScene();
-
-	void renderOrbits();
+	void renderOverlay();
 
 	void copy(LUCID_GAL::RenderTarget2D *dst, LUCID_GAL::RenderTarget2D *src);
 
 	void blur();
 
-	void post();
+	void scenePost();
 
-	void fxaaPost();
+	void fxaaScenePost();
 
 	void resize();
 

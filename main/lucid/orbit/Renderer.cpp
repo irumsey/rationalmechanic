@@ -134,7 +134,7 @@ void Renderer::evaluate(OrbitalBody *body)
 		iconInstance.scale = LUCID_GAL::Vector2(24, 24);
 		iconInstance.texcoord = LUCID_GAL::Vector4(0, 0, 1, 1);
 		iconInstance.color = LUCID_GAL::Color(1, 1, 1, 1);
-		_sceneBatch.addInstance(renderProperties.icon, iconInstance);
+		_overlayBatch.addInstance(renderProperties.icon, iconInstance);
 	}
 
 	if (!renderProperties.showOrbit)
@@ -160,7 +160,7 @@ void Renderer::evaluate(OrbitalBody *body)
 	orbitInstance.rotation = rotation;
 	orbitInstance.color = renderProperties.orbitHighlight ? LUCID_GAL::Color(1.f, 1.f, 1.f, 1.f) : LUCID_GAL::Color(0, 0, 1, 1);
 	orbitInstance.parameters = LUCID_GAL::Vector4(hu, e, 0.f, constants::two_pi<float32_t>);
-	_orbitBatch.addInstance(_orbitMesh, orbitInstance);
+	_overlayBatch.addInstance(_orbitMesh, orbitInstance);
 }
 	  
 void Renderer::evaluate(DynamicBody *body)
@@ -206,19 +206,20 @@ void Renderer::initialize(std::string const &path)
 	_starInstances->unlock();
 
 	_sceneBatch.initialize();
-	_orbitBatch.initialize();
+	_overlayBatch.initialize();
 
 	/// test {
 	///	need a data driven method for registering these... 
 	/// ...just read the ephemeris stupid!!!
 	_sceneBatch.createBatch<MeshInstance, Back2Front<MeshInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(   "content/atmosphere.mesh"), BATCH_MAXIMUM);
 	_sceneBatch.createBatch<MeshInstance, Front2Back<MeshInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(   "content/hemisphere.mesh"), BATCH_MAXIMUM);
-	_sceneBatch.createBatch<IconInstance, NullSort  <IconInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(  "content/iconDefault.mesh"), BATCH_MAXIMUM);
-	_sceneBatch.createBatch<IconInstance, NullSort  <IconInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>("content/iconSatellite.mesh"), BATCH_MAXIMUM);
-	/// } test
+	
+	_overlayBatch.createBatch<IconInstance, NullSort  <IconInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(  "content/iconDefault.mesh"), BATCH_MAXIMUM);
+	_overlayBatch.createBatch<IconInstance, NullSort  <IconInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>("content/iconSatellite.mesh"), BATCH_MAXIMUM);
 
 	_orbitMesh = LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>("content/orbit.mesh");
-	_orbitBatch.createBatch<MeshInstance, NullSort<MeshInstance> >(_orbitMesh, BATCH_MAXIMUM);
+	_overlayBatch.createBatch<MeshInstance, NullSort<MeshInstance> >(_orbitMesh, BATCH_MAXIMUM);
+	/// } test
 
 	_selectTarget.reset(LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UINT_R32, _width, _height));
 	_selectReader.reset(LUCID_GAL::TargetReader2D::create(_selectTarget.get(), _width, _height));
@@ -255,10 +256,10 @@ void Renderer::shutdown()
 	_starInstances.reset();
 	_starMesh.reset();
 
-	_orbitBatch.shutdown();
-	_orbitMesh.reset();
-
+	_overlayBatch.shutdown();
 	_sceneBatch.shutdown();
+
+	_orbitMesh.reset();
 
 	_selectReader.reset();
 	_selectTarget.reset();
@@ -319,23 +320,12 @@ void Renderer::render(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t time,
 	_renderContext["invViewProjMatrix"] = LUCID_MATH::inverse(viewProjMatrix);
 
 	_sceneBatch.clear();
-	_orbitBatch.clear();
+	_overlayBatch.clear();
 
 	batch(rootFrame);
 
-	render();
-
-	copy  (_blurTarget[0].get(), _glowTarget.get());
-	blur  ();
-	copy  (_glowTarget.get(), _blurTarget[0].get());
-
-	galPipeline().restoreBackBuffer(true, false, false);
-	galPipeline().updateTargets();
-
-	if (useFXAA)
-		fxaaPost();
-	else
-		post();
+	renderScene(useFXAA);
+	renderOverlay();
 }
 
 uint32_t Renderer::hit(int32_t x, int32_t y) const
@@ -364,7 +354,7 @@ void Renderer::batch(Frame *frame)
 		batch(child);
 }
 
-void Renderer::render()
+void Renderer::renderScene(bool useFXAA)
 {
 	galPipeline().setRenderTarget(0, _colorTarget.get());
 	galPipeline().setRenderTarget(1, _glowTarget.get());
@@ -375,11 +365,22 @@ void Renderer::render()
 	_clear->render(_renderContext);
 
 	renderStarfield();
-	renderScene();
-	renderOrbits();
+	_sceneBatch.render(_renderContext);
 
 	galPipeline().restoreBackBuffer(true, false, false);
 	galPipeline().updateTargets();
+
+	copy(_blurTarget[0].get(), _glowTarget.get());
+	blur();
+	copy(_glowTarget.get(), _blurTarget[0].get());
+
+	galPipeline().restoreBackBuffer(true, false, false);
+	galPipeline().updateTargets();
+
+	if (useFXAA)
+		fxaaScenePost();
+	else
+		scenePost();
 }
 
 void Renderer::renderStarfield()
@@ -391,14 +392,14 @@ void Renderer::renderStarfield()
 	_starMesh->renderInstanced(_renderContext, int32_t(_starCount));
 }
 
-void Renderer::renderScene()
+void Renderer::renderOverlay()
 {
-	_sceneBatch.render(_renderContext);
-}
+	galPipeline().setRenderTarget(2, _selectTarget.get());
 
-void Renderer::renderOrbits()
-{
-	_orbitBatch.render(_renderContext);
+	_overlayBatch.render(_renderContext);
+
+	galPipeline().restoreBackBuffer(true, false, false);
+	galPipeline().updateTargets();
 }
 
 void Renderer::copy(LUCID_GAL::RenderTarget2D *dst, LUCID_GAL::RenderTarget2D *src)
@@ -435,14 +436,14 @@ void Renderer::blur()
 	_blur->render(_renderContext);
 }
 
-void Renderer::post()
+void Renderer::scenePost()
 {
 	_post->material()->program()->set(_postParameters.colorTarget, _colorTarget.get());
 	_post->material()->program()->set(_postParameters. glowTarget, _glowTarget. get());
 	_post->render(_renderContext);
 }
 
-void Renderer::fxaaPost()
+void Renderer::fxaaScenePost()
 {
 	_fxaa->material()->program()->set(_fxaaParameters.colorTarget, _colorTarget.get());
 	_fxaa->material()->program()->set(_fxaaParameters.glowTarget, _glowTarget.get());

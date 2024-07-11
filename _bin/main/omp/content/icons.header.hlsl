@@ -12,7 +12,7 @@ struct InputVertex
 	float2      scale : LOCATION4;
 	float4      color : LOCATION5;
 };
-
+   
 struct OutputVertex
 {
 	float4     ppsPosition : SV_POSITION;
@@ -26,6 +26,5 @@ typedef OutputVertex InputPixel;
 struct OutputPixel
 {
 	float4 color : SV_TARGET0;
-	float4  glow : SV_TARGET1;
 	uint1     id : SV_TARGET2;
 };
