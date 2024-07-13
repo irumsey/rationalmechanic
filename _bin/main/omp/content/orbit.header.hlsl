@@ -24,6 +24,7 @@ typedef OutputVertex InputPixel;
 struct OutputPixel
 {
 	float4 color : SV_TARGET0;
+	float4  glow : SV_TARGET1;
 	uint1     id : SV_TARGET2;
 };
 
@@ -33,7 +34,7 @@ bool clipped(float4 position)
 		return true;
 	if ((position.y < -position.w) || (position.w < position.y))
 		return true;
-	if (position.z < 0)
+	if (position.z < 0.001)
 		return true;
 	return false;
 }

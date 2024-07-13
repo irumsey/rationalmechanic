@@ -7,7 +7,7 @@ OutputVertex main(InputVertex input)
 
 	float4 ppsPosition = mul(viewProjMatrix, float4(input.position, 1));
 	ppsPosition = ppsPosition / ppsPosition.w;
-	ppsPosition.z = min(ppsPosition.z, 0.99);
+	ppsPosition.z = min(ppsPosition.z, 0.999);
 
 	ppsPosition.xy = ppsPosition.xy + input.vertex * input.scale / screenDimensions;
 

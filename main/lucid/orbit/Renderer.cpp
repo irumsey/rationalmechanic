@@ -17,6 +17,8 @@
 #include <lucid/math/Algorithm.h>
 #include <algorithm>
 
+#include <lucid/gigl/Font.h>
+
 LUCID_ANONYMOUS_BEGIN
 
 inline LUCID_GAL::Pipeline &galPipeline()
@@ -325,7 +327,6 @@ void Renderer::render(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t time,
 	batch(rootFrame);
 
 	renderScene(useFXAA);
-	renderOverlay();
 }
 
 uint32_t Renderer::hit(int32_t x, int32_t y) const
@@ -366,11 +367,14 @@ void Renderer::renderScene(bool useFXAA)
 
 	renderStarfield();
 	_sceneBatch.render(_renderContext);
+	_overlayBatch.render(_renderContext);
 
 	galPipeline().restoreBackBuffer(true, false, false);
 	galPipeline().updateTargets();
 
 	copy(_blurTarget[0].get(), _glowTarget.get());
+	blur();
+	blur();
 	blur();
 	copy(_glowTarget.get(), _blurTarget[0].get());
 
@@ -390,16 +394,6 @@ void Renderer::renderStarfield()
 		
 	galPipeline().setVertexStream(1, _starInstances.get());
 	_starMesh->renderInstanced(_renderContext, int32_t(_starCount));
-}
-
-void Renderer::renderOverlay()
-{
-	galPipeline().setRenderTarget(2, _selectTarget.get());
-
-	_overlayBatch.render(_renderContext);
-
-	galPipeline().restoreBackBuffer(true, false, false);
-	galPipeline().updateTargets();
 }
 
 void Renderer::copy(LUCID_GAL::RenderTarget2D *dst, LUCID_GAL::RenderTarget2D *src)

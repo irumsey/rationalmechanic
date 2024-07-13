@@ -34,7 +34,7 @@ OutputVertex main(InputVertex input)
 		float2 width = input.scale * texelSize;
 
 		screenPosition.xy = width * normal + ppsPosition0.xy;
-		screenPosition.zw = float2(min(ppsPosition0.z, 0.99), 1);
+		screenPosition.zw = float2(min(ppsPosition0.z, 0.999), 1);
 	}
 
 	output.ppsPosition = screenPosition;

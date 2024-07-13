@@ -13,6 +13,7 @@
     <ClInclude Include="Image.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="Defines.h" />
+    <ClInclude Include="Font.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Primitive.cpp" />
@@ -25,5 +26,6 @@
     <ClCompile Include="Batched.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Image.cpp" />
+    <ClCompile Include="Font.cpp" />
   </ItemGroup>
 </Project>

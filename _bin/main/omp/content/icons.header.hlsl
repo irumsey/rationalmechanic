@@ -26,5 +26,6 @@ typedef OutputVertex InputPixel;
 struct OutputPixel
 {
 	float4 color : SV_TARGET0;
+	float4  glow : SV_TARGET1;
 	uint1     id : SV_TARGET2;
 };

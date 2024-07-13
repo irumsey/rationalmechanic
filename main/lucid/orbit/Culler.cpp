@@ -50,7 +50,7 @@ void Culler::cull(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t const &in
 	cull(rootFrame);
 
 	znear = LUCID_MATH::min(znear, zfar * LUCID_MATH::cos(fov));
-	
+
 	_viewMatrix = LUCID_MATH::look(vector3_t(0, 0, 0), LUCID_MATH::normalize(focusPosition - cameraPosition), vector3_t(0, 0, 1));
 	_projMatrix = LUCID_MATH::perspective(fov, aspect, znear, zfar);
 	_viewProjMatrix = _projMatrix * _viewMatrix;

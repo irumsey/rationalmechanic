@@ -9,6 +9,7 @@
 #include <lucid/gal/Types.h>
 #include <lucid/gigl/Defines.h>
 #include <lucid/gigl/Context.h>
+#include <lucid/gigl/Font.h>
 #include <lucid/gigl/Batched.h>
 #include <lucid/orbit/Defines.h>
 #include <lucid/orbit/Types.h>
@@ -177,8 +178,6 @@ private:
 	void renderScene(bool useFXAA);
 
 	void renderStarfield();
-
-	void renderOverlay();
 
 	void copy(LUCID_GAL::RenderTarget2D *dst, LUCID_GAL::RenderTarget2D *src);
 

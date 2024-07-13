@@ -550,6 +550,27 @@ def bootMeshFromFile(srcPath, dstPath):
 	bootMesh(open(dstPath, 'wb'), json.load(open(srcPath)))
 
 #
+#	bootstrap Font
+#	
+def bootFont(dst, src):
+	bootString(dst, src['name'])
+	bootFloat(dst, src['default spacing'])
+	bootString(dst, src['mesh'])
+	glyphs = src['glyphs']
+	bootInteger(dst, len(glyphs))
+	for glyph in glyphs:
+		bootByte(dst, glyph['code'].encode()[0])
+		bootVector2(dst, glyph['texcoord'])
+		bootVector2(dst, glyph['texsize'])
+		bootColor(dst, glyph['channel'])
+	spacing = src['spacing']
+	bootInteger(dst, len(spacing))
+	# TBD: implement...
+		
+def bootFontFromFile(srcPath, dstPath):
+	bootFont(open(dstPath, 'wb'), json.load(open(srcPath)))
+
+#
 #	bootstrap render context
 #
 
@@ -729,6 +750,7 @@ bootContent = {
 	  '.format' : bootVertexFormatFromFile,
 	'.geometry' : bootGeometryFromFile,
 	    '.mesh' : bootMeshFromFile,
+		'.font' : bootFontFromFile,
       '.camera' : bootCameraFromFile,
 	 '.context' : bootContextFromFile,
  '.starcatalog' : bootStarCatalogFromFile,
@@ -762,6 +784,7 @@ def main():
 	optionParser.add_option('-f', '--format', action = 'store_const', const = '.format', dest = 'kind')
 	optionParser.add_option('-g', '--geometry', action = 'store_const', const = '.geometry', dest = 'kind')
 	optionParser.add_option('-M', '--mesh', action = 'store_const', const = '.mesh', dest = 'kind')
+	optionParser.add_option('-F', '--font', action = 'store_const', const = '.font', dest = 'kind')
 	optionParser.add_option('-c', '--camera', action = 'store_const', const = '.camera', dest = 'kind')
 	optionParser.add_option('-C', '--context', action = 'store_const', const = '.context', dest = 'kind')
 	optionParser.add_option('-S', '--starcatalog', action = 'store_const', const ='.starcatalog', dest = 'kind')
