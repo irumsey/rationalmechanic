@@ -6,6 +6,9 @@ OutputVertex main(InputVertex input)
 
 	float2 screenPosition = texelSize * (input.position.zw * input.vertex.xy + input.position.xy);
 
+	screenPosition.x = screenPosition.x - 1;
+	screenPosition.y = screenPosition.y - 1;
+
 	output.ppsPosition = float4(screenPosition, 0.1, 1);
 	output.texcoord = input.texcoord.zw * input.vertex.zw + input.texcoord.xy;
 	output.channel = input.channel;

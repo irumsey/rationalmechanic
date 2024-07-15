@@ -17,7 +17,7 @@
 			"BlendMode" :
 			{
 				"ColorWriteMask" : 15,
-				"Enabled" : true,
+				"Enabled" : false,
 				"SrcBlend" : "BLEND_SRC_ALPHA",
 				"SrcBlendAlpha" : "BLEND_SRC_ALPHA",
 				"DstBlend" : "BLEND_INV_SRC_ALPHA",
@@ -27,7 +27,7 @@
 			"DepthStencilMode" :
 			{
 				"DepthEnabled" : true,
-				"DepthWrite" : "DEPTH_WRITE_ENABLED",
+				"DepthWrite" : "DEPTH_WRITE_DISABLED",
 				"DepthFunction" : "COMPARISON_LESS",
 				"StencilEnabled" : false,
 				"StencilFunction" : "COMPARISON_LESS",
@@ -48,6 +48,8 @@
 	"attributes":
 	[
 		{ "name" :      "texelSize",     "query" :                   "texelSize" },
+		{ "name" :          "znear",     "query" :                       "znear" },
+		{ "name" :           "zfar",     "query" :                        "zfar" },
 		{ "name" : "viewProjMatrix",     "query" :              "viewProjMatrix" },
 		{ "name" :    "orbitLookup", "texture2d" : "content/orbitLookup.texture" }
   ]

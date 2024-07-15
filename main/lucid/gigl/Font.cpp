@@ -39,12 +39,10 @@ size_t Font::typeset(Character *buffer, LUCID_GAL::Vector2 const &position, LUCI
 	uint8_t prevCode = 0;
 	float32_t x = position.x;
 
-	for (size_t i = 0; i < text.size(); ++i)
+	size_t const count = text.size();
+	for (size_t i = 0; i < count; ++i)
 	{
-		auto const iter = _glyphs.find(text[i]);
-		LUCID_VALIDATE(iter != _glyphs.end(), "invlaid ascii code for font");
-
-		Glyph const &glyph = iter->second;
+		Glyph const &glyph = lookup(text[i]);
 		Character &character = buffer[i];
 
 		float32_t dx = (0 == i) ? 0.f : size.y * spacing(prevCode, glyph.code);
@@ -58,7 +56,20 @@ size_t Font::typeset(Character *buffer, LUCID_GAL::Vector2 const &position, LUCI
 		prevCode = glyph.code;
 	}
 
-	return text.size();
+	/// for now, just "printing" all characters
+	return count;
+}
+
+void Font::renderInstanced(Context const &context, int32_t count) const
+{
+	LUCID_VALIDATE(_mesh, "use of uninitialized font");
+	_mesh->renderInstanced(context, count);
+}
+
+void Font::drawInstanced(int32_t count) const
+{
+	LUCID_VALIDATE(_mesh, "use of uninitialized font");
+	_mesh->drawInstanced(count);
 }
 
 void Font::initialize(LUCID_CORE::Reader &reader)

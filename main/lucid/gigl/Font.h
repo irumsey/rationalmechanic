@@ -2,9 +2,11 @@
 
 #include <memory>
 #include <string>
+#include <sstream>
 #include <unordered_map>
 #include <lucid/core/Types.h>
 #include <lucid/core/Identity.h>
+#include <lucid/core/Logger.h>
 #include <lucid/gal/Types.h>
 #include <lucid/gigl/Defines.h>
 #include <lucid/gigl/Mesh.h>
@@ -16,6 +18,8 @@ class Reader;
 LUCID_CORE_END
 
 LUCID_GIGL_BEGIN
+
+class RenderContext;
 
 /// Font
 /// 
@@ -61,8 +65,14 @@ public:
 
 	std::string const &name() const;
 
-	// Note: caller ensures buffer is large enough for text
+	/// Note: caller ensures buffer is large enough for the text specified
 	size_t typeset(Character *buffer, LUCID_GAL::Vector2 const &position, LUCID_GAL::Vector2 const &size, std::string const &text, LUCID_GAL::Color const &color);
+
+	///	this assumes the per-instance stream(s) are already set.
+	void renderInstanced(Context const &context, int32_t count) const;
+
+	///	this assumes the per-instance stream(s) are already set.
+	void drawInstanced(int32_t count) const;
 
 	static Font *create(std::string const &path);
 
@@ -94,6 +104,8 @@ private:
 
 	void shutdown();
 
+	Glyph const &lookup(uint8_t code) const;
+
 	float32_t spacing(uint8_t prevCode, uint8_t currCode) const;
 
 };
@@ -106,6 +118,23 @@ inline LUCID_CORE::Identity const &Font::identity() const
 inline std::string const &Font::name() const
 {
 	return _name;
+}
+
+inline Font::Glyph const &Font::lookup(uint8_t code) const
+{
+	// sample texture at (0,0) with size (0,0) and with no channels
+	// specified will result in a blank character on screen...
+	static Glyph const blank = { 0, { 0, 0}, { 0, 0}, { 0, 0, 0, 0 } };
+
+	auto const iter = _glyphs.find(code);
+	if (iter != _glyphs.end())
+		return iter->second;
+
+	std::ostringstream os;
+	os << "invalid glyph code, " << code << ", specified in text using font, " << _name;
+
+	LUCID_CORE::log("WARN", os.str());
+	return blank;
 }
 
 inline float32_t Font::spacing(uint8_t prevCode, uint8_t currCode) const

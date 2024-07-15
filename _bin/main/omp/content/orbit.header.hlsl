@@ -1,6 +1,9 @@
 float2 texelSize;
 float4x4 viewProjMatrix;
 
+float znear;
+float zfar;
+
 struct InputVertex
 {
 	float3     vertex : LOCATION0;
@@ -27,17 +30,6 @@ struct OutputPixel
 	float4  glow : SV_TARGET1;
 	uint1     id : SV_TARGET2;
 };
-
-bool clipped(float4 position)
-{
-	if ((position.x < -position.w) || (position.w < position.x))
-		return true;
-	if ((position.y < -position.w) || (position.w < position.y))
-		return true;
-	if (position.z < 0.001)
-		return true;
-	return false;
-}
 
 float2 computeConicPoint(float hu, float e, float theta)
 {

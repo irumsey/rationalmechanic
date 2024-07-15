@@ -199,11 +199,11 @@ void Renderer::initialize(std::string const &path)
 
 		instance.id = uint32_t((SELECT_STAR << SELECT_SHIFT) | i);
 
-		/// TBD: need a lookup mapping star type to texcoord into spectral texture...
-		instance.parameters.x = 0.01f * (rand() % 100);
+		instance.parameters.x = /* unused */ 0.f;
 		instance.parameters.y = float32_t(entry.right_ascension);
 		instance.parameters.z = float32_t(entry.declination);
-		instance.parameters.w = entry.magnitude;
+		instance.parameters.w = 0.2f * entry.magnitude;
+		instance.       color = entry.color;
 	}
 	_starInstances->unlock();
 
@@ -222,6 +222,9 @@ void Renderer::initialize(std::string const &path)
 	_orbitMesh = LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>("content/orbit.mesh");
 	_overlayBatch.createBatch<MeshInstance, NullSort<MeshInstance> >(_orbitMesh, BATCH_MAXIMUM);
 	/// } test
+
+	_font = LUCID_GIGL::Resources::get<LUCID_GIGL::Font>("content/OCRa.font");
+	_text.reset(LUCID_GAL::VertexBuffer::create(LUCID_GAL::VertexBuffer::USAGE_DYNAMIC, TEXT_LENGTH_MAXIMUM, sizeof(LUCID_GIGL::Font::Character)));
 
 	_selectTarget.reset(LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UINT_R32, _width, _height));
 	_selectReader.reset(LUCID_GAL::TargetReader2D::create(_selectTarget.get(), _width, _height));
@@ -257,6 +260,9 @@ void Renderer::shutdown()
 	_starCount = 0;
 	_starInstances.reset();
 	_starMesh.reset();
+
+	_text.reset();
+	_font.reset();
 
 	_overlayBatch.shutdown();
 	_sceneBatch.shutdown();
@@ -304,6 +310,8 @@ void Renderer::render(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t time,
 	_renderContext["screenWidth"] = LUCID_GAL::Scalar(width);
 	_renderContext["screenHeight"] = LUCID_GAL::Scalar(height);
 	_renderContext["texelSize"] = LUCID_GAL::Vector2(1.f / width, 1.f / height);
+	_renderContext["znear"] = adaptiveScale(_culler.znear);
+	_renderContext["zfar"] = adaptiveScale(_culler.zfar);
 
 	_renderContext["time"] = cast(time);
 	_renderContext["interpolant"] = cast(_interpolant);
@@ -321,12 +329,27 @@ void Renderer::render(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t time,
 	_renderContext["viewProjMatrix"] = viewProjMatrix;
 	_renderContext["invViewProjMatrix"] = LUCID_MATH::inverse(viewProjMatrix);
 
+	/// test {
+	LUCID_GIGL::Font::Character *buffer = (LUCID_GIGL::Font::Character *)(_text->lock());
+
+	std::string str = "Line 0: this is a test";
+	_textCount = _font->typeset(buffer, LUCID_GAL::Vector2(0, 0), LUCID_GAL::Vector2(32, 32), str, LUCID_GAL::Color(1, 1, 0, 1));
+	
+	str = "Line 1: this is a second test";
+	_textCount += _font->typeset(buffer + _textCount, LUCID_GAL::Vector2(0, 48), LUCID_GAL::Vector2(32, 32), str, LUCID_GAL::Color(1, 1, 0, 1));
+
+	str = "Line 2: this is the last test";
+	_textCount += _font->typeset(buffer + _textCount, LUCID_GAL::Vector2(0, 96), LUCID_GAL::Vector2(32, 32), str, LUCID_GAL::Color(1, 1, 0, 1));
+
+	_text->unlock();
+	/// } test
+
 	_sceneBatch.clear();
 	_overlayBatch.clear();
 
 	batch(rootFrame);
 
-	renderScene(useFXAA);
+	render(useFXAA);
 }
 
 uint32_t Renderer::hit(int32_t x, int32_t y) const
@@ -355,7 +378,7 @@ void Renderer::batch(Frame *frame)
 		batch(child);
 }
 
-void Renderer::renderScene(bool useFXAA)
+void Renderer::render(bool useFXAA)
 {
 	galPipeline().setRenderTarget(0, _colorTarget.get());
 	galPipeline().setRenderTarget(1, _glowTarget.get());
@@ -365,9 +388,8 @@ void Renderer::renderScene(bool useFXAA)
 
 	_clear->render(_renderContext);
 
-	renderStarfield();
-	_sceneBatch.render(_renderContext);
-	_overlayBatch.render(_renderContext);
+	renderScene();
+	renderOverlay();
 
 	galPipeline().restoreBackBuffer(true, false, false);
 	galPipeline().updateTargets();
@@ -385,6 +407,25 @@ void Renderer::renderScene(bool useFXAA)
 		fxaaScenePost();
 	else
 		scenePost();
+}
+
+void Renderer::renderScene()
+{
+	renderStarfield();
+	_sceneBatch.render(_renderContext);
+}
+
+void Renderer::renderOverlay()
+{
+	LUCID_GAL::Pipeline &pipeline = LUCID_GAL::Pipeline::instance();
+
+	_overlayBatch.render(_renderContext);
+
+	if (0 == _textCount)
+		return;
+
+	pipeline.setVertexStream(1, _text.get());
+	_font->renderInstanced(_renderContext, _textCount);
 }
 
 void Renderer::renderStarfield()

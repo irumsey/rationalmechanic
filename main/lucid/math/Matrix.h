@@ -641,7 +641,7 @@ inline LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_PURE) perspective(LUCID_SCALAR(T,
 		xscale,      0,                     0,                             0,
              0, yscale,                     0,                             0,
              0,      0, zfar / (znear - zfar), zfar * znear / (znear - zfar),
-             0,      0,                    -1,                             0
+             0,      0,                 T(-1),                             0
 	);
 }
 
@@ -653,23 +653,8 @@ inline LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_PURE) perspective(LUCID_SCALAR(T,
 		T(2) * znear / (right - left),                             0, (left + right) / (right - left),                             0,
 		                            0, T(2) * znear / (top - bottom), (top + bottom) / (top - bottom),                             0,
 		                            0,                             0,           zfar / (znear - zfar), znear * zfar / (znear - zfar),
-		                            0,                             0,                              -1,                             0
+		                            0,                             0,                           T(-1),                             0
 	);
-}
-
-template<typename T, typename S, typename Q>
-inline LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_PURE) uniformDepthPerspective(LUCID_SCALAR(T, S, LUCID_QUANTITY_PURE) const &fov, LUCID_SCALAR(T, S, LUCID_QUANTITY_PURE) const &aspect, LUCID_SCALAR(T, S, Q) const &znear, LUCID_SCALAR(T, S, Q) const &zfar)
-{
-	T const yscale = 1 / tan(LUCID_SCALAR(T, S, Q)(0.5) * fov);
-	T const xscale = yscale / aspect;
-
-	return LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_PURE)
-		(
-			xscale,      0,                  0,                      0,
-			     0, yscale,                  0,                      0,
-			     0,      0, 1 / (znear - zfar), znear / (znear - zfar),
-			     0,      0,					 0,						 1
-		);
 }
 
 ///	look

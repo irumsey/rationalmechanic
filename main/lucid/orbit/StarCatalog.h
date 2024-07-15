@@ -4,6 +4,7 @@
 #include <vector>
 #include <lucid/core/Types.h>
 #include <lucid/core/Noncopyable.h>
+#include <lucid/gal/Types.h>
 #include <lucid/orbit/Defines.h>
 
 LUCID_ORBIT_BEGIN
@@ -24,6 +25,7 @@ public:
 		float64_t right_ascension = 0.0;
 		float64_t declination = 0.0;
 		float32_t magnitude = 0.f;
+		LUCID_GAL::Color color = { 0, 0, 0, 0 };
 	};
 
 	typedef std::vector<Entry> ordinal_vec_t;
@@ -49,7 +51,6 @@ protected:
 	StarCatalog() = default;
 
 private:
-
 	ordinal_vec_t _ordinal;
 
 	LUCID_PREVENT_COPY(StarCatalog);

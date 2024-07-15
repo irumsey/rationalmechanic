@@ -76,7 +76,8 @@ public:
 	uint32_t hit(int32_t x, int32_t y) const;
 
 private:
-	enum { BATCH_MAXIMUM = 250 };
+	enum {       BATCH_MAXIMUM = 1024 };
+	enum { TEXT_LENGTH_MAXIMUM = 4096 };
 
 	struct StarParameters
 	{
@@ -105,6 +106,7 @@ private:
 	{
 		uint32_t id;
 		LUCID_GAL::Vector4 parameters;
+		LUCID_GAL::Color color;
 	};
 
 	struct MeshInstance
@@ -148,6 +150,10 @@ private:
 	std::shared_ptr<LUCID_GIGL::Mesh> _orbitMesh;
 	LUCID_GIGL::Batched _overlayBatch;
 
+	std::shared_ptr<LUCID_GIGL::Font> _font;
+	std::unique_ptr<LUCID_GAL::VertexBuffer> _text;
+	int32_t _textCount = 0;
+
 	std::unique_ptr<LUCID_GAL::RenderTarget2D> _colorTarget;
 	std::unique_ptr<LUCID_GAL::RenderTarget2D> _glowTarget;
 	std::unique_ptr<LUCID_GAL::RenderTarget2D> _blurTarget[2];
@@ -175,7 +181,11 @@ private:
 
 	void batch(Frame *frame);
 
-	void renderScene(bool useFXAA);
+	void render(bool useFXAA);
+
+	void renderScene();
+
+	void renderOverlay();
 
 	void renderStarfield();
 
