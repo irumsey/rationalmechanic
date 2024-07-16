@@ -39,6 +39,7 @@ OutputVertex main(InputVertex input)
 	output.ppsPosition = ppsPosition0;
 	output.         id = input.id;
 	output.      color = input.color;
+	output.      blend = input.vertex.z;
 
 	return output;
 }

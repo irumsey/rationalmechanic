@@ -9,7 +9,10 @@ OutputPixel main(InputPixel input)
 {
 	OutputPixel output = (OutputPixel)0;
 
-	output.color = input.color;
+	// do not move this to the vertex shader, you should know why.
+	float blend = 1 - input.blend * input.blend;
+
+	output.color = float4(input.color.rgb, input.color.a * blend);
 	output.glow = float4(0, 0, 0, 0);
 	output.id = input.id;
 

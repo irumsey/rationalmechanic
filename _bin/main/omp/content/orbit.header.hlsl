@@ -20,6 +20,7 @@ struct OutputVertex
 	float4 ppsPosition : SV_POSITION;
 	uint1           id :   POSITION0;
 	float4       color :      COLOR0;
+	float        blend :   TEXCOORD0;
 };
 
 typedef OutputVertex InputPixel;
