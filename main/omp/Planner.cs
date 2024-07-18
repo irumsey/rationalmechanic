@@ -23,11 +23,18 @@ namespace omp
         private Lucid.Orbit.CameraFrame cameraFrame = null;
         private ListViewItem cameraParentItem = null;
 
+        // test {
+        private bool cameraRotating = false;
+        private System.Drawing.Point cameraDownOrigin;
+        // } test
+
         private bool useFXAA = false;
         public Planner()
         {
             InitializeComponent();
             changeState(Starting.Instance);
+
+            this.MouseWheel += new MouseEventHandler(onMouseWheel);
         }
 
         private void changeState(State next)
@@ -101,14 +108,28 @@ namespace omp
             state.onPaint(this);
         }
 
-        private void onMouseMove(object sender, MouseEventArgs e)
-        {
-            state.onMainViewMouseMove(this, e.Location);
-        }
-
-        private void onMouseClick(object sender, MouseEventArgs e)
+        private void onMainViewMouseClick(object sender, MouseEventArgs e)
         {
             state.onMainViewMouseClick(this, e.Location);
+        }
+
+        private void onMouseWheel(object sender, MouseEventArgs e)
+        {
+            state.onMainViewMouseWheel(this, e);
+        }
+        private void onMainViewMouseDown(object sender, MouseEventArgs e)
+        {
+            state.onMainViewMouseDown(this, e);
+        }
+
+        private void onMainViewMouseRelease(object sender, MouseEventArgs e)
+        {
+            state.onMainViewMouseRelease(this, e);
+        }
+
+        private void onMainViewMouseMove(object sender, MouseEventArgs e)
+        {
+            state.onMainViewMouseMove(this, e.Location);
         }
 
         private void onMainViewResize(object sender, EventArgs e)
@@ -161,6 +182,5 @@ namespace omp
         {
             state.renderMainView(this);
         }
-
     }
 }

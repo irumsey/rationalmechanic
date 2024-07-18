@@ -48,9 +48,6 @@
 	"attributes":
 	[
 		{ "name" :      "texelSize",     "query" :                   "texelSize" },
-		{ "name" :          "znear",     "query" :                       "znear" },
-		{ "name" :           "zfar",     "query" :                        "zfar" },
-		{ "name" : "viewProjMatrix",     "query" :              "viewProjMatrix" },
-		{ "name" :    "orbitLookup", "texture2d" : "content/orbitLookup.texture" }
+		{ "name" : "viewProjMatrix",     "query" :              "viewProjMatrix" }
   ]
 }

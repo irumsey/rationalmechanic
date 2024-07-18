@@ -1,9 +1,6 @@
 float2 texelSize;
 float4x4 viewProjMatrix;
 
-float znear;
-float zfar;
-
 struct InputVertex
 {
 	float3     vertex : LOCATION0;

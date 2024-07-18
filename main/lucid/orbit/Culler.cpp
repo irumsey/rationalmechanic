@@ -38,7 +38,6 @@ void Culler::cull(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t const &in
 	vector3_t focusPosition = LUCID_MATH::lerp(interpolant, cameraFrame->focus->absolutePosition[0], cameraFrame->focus->absolutePosition[1]);
 
 	_projMatrix = LUCID_MATH::perspective(fov, aspect, znear, zfar);
-
 	_viewMatrix = LUCID_MATH::look(cameraPosition, focusPosition, vector3_t(0, 0, 1));
 	_viewProjMatrix = _projMatrix * _viewMatrix;
 	_invViewProjMatrix = LUCID_MATH::inverse(_viewProjMatrix);
@@ -48,6 +47,11 @@ void Culler::cull(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t const &in
 	std::swap(znear, zfar);
 
 	cull(rootFrame);
+
+	// test {
+	zfar = ZFAR_INITIAL;
+	znear = 0.1 * znear;
+	// } test
 
 	znear = LUCID_MATH::min(znear, zfar * LUCID_MATH::cos(fov));
 

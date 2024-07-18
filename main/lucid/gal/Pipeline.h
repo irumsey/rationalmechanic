@@ -6,6 +6,8 @@
 #include <lucid/gal/Defines.h>
 #include <lucid/gal/Types.h>
 
+#define LUCID_GAL_PIPELINE LUCID_GAL::Pipeline::instance()
+
 LUCID_GAL_BEGIN
 
 ///

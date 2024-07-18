@@ -21,11 +21,6 @@
 
 LUCID_ANONYMOUS_BEGIN
 
-inline LUCID_GAL::Pipeline &galPipeline()
-{
-	return LUCID_GAL::Pipeline::instance();
-}
-
 inline LUCID_ORBIT::StarCatalog &theStarCatalog()
 {
 	return LUCID_ORBIT::StarCatalog::instance();
@@ -158,7 +153,7 @@ void Renderer::evaluate(OrbitalBody *body)
 	MeshInstance orbitInstance;
 	orbitInstance.id = (SELECT_ORBIT << SELECT_SHIFT) | uint32_t(SELECT_MASK & body->id);
 	orbitInstance.position = centerPosition;
-	orbitInstance.scale = 3;
+	orbitInstance.scale = 4;
 	orbitInstance.rotation = rotation;
 	orbitInstance.color = renderProperties.orbitHighlight ? LUCID_GAL::Color(1.f, 1.f, 1.f, 1.f) : LUCID_GAL::Color(0, 0, 1, 1);
 	orbitInstance.parameters = LUCID_GAL::Vector4(hu, e, 0.f, constants::two_pi<float32_t>);
@@ -306,12 +301,11 @@ void Renderer::render(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t time,
 	LUCID_GAL::Matrix4x4 viewMatrix = LUCID_MATH::look(LUCID_GAL::Vector3(0, 0, 0), adaptiveScale(_focusPosition - _cameraPosition), LUCID_GAL::Vector3(0, 0, 1));
 	LUCID_GAL::Matrix4x4 projMatrix = LUCID_MATH::perspective(cast(cameraFrame->fov), LUCID_GAL::Scalar(width / height), adaptiveScale(_culler.znear), adaptiveScale(_culler.zfar));
 	LUCID_GAL::Matrix4x4 viewProjMatrix = projMatrix * viewMatrix;
+	LUCID_GAL::Matrix4x4 invViewProjMatrix = LUCID_MATH::inverse(viewProjMatrix);
 
 	_renderContext["screenWidth"] = LUCID_GAL::Scalar(width);
 	_renderContext["screenHeight"] = LUCID_GAL::Scalar(height);
 	_renderContext["texelSize"] = LUCID_GAL::Vector2(1.f / width, 1.f / height);
-	_renderContext["znear"] = adaptiveScale(_culler.znear);
-	_renderContext["zfar"] = adaptiveScale(_culler.zfar);
 
 	_renderContext["time"] = cast(time);
 	_renderContext["interpolant"] = cast(_interpolant);
@@ -327,7 +321,7 @@ void Renderer::render(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t time,
 	_renderContext["projMatrix"] = projMatrix;
 	_renderContext["invProjMatrix"] = LUCID_MATH::inverse(projMatrix);
 	_renderContext["viewProjMatrix"] = viewProjMatrix;
-	_renderContext["invViewProjMatrix"] = LUCID_MATH::inverse(viewProjMatrix);
+	_renderContext["invViewProjMatrix"] = invViewProjMatrix;
 
 	/// test {
 	LUCID_GIGL::Font::Character *buffer = (LUCID_GIGL::Font::Character *)(_text->lock());
@@ -380,19 +374,19 @@ void Renderer::batch(Frame *frame)
 
 void Renderer::render(bool useFXAA)
 {
-	galPipeline().setRenderTarget(0, _colorTarget.get());
-	galPipeline().setRenderTarget(1, _glowTarget.get());
-	galPipeline().setRenderTarget(2, _selectTarget.get());
+	LUCID_GAL_PIPELINE.setRenderTarget(0, _colorTarget.get());
+	LUCID_GAL_PIPELINE.setRenderTarget(1, _glowTarget.get());
+	LUCID_GAL_PIPELINE.setRenderTarget(2, _selectTarget.get());
 
-	galPipeline().updateTargets();
+	LUCID_GAL_PIPELINE.updateTargets();
 
 	_clear->render(_renderContext);
 
 	renderScene();
 	renderOverlay();
 
-	galPipeline().restoreBackBuffer(true, false, false);
-	galPipeline().updateTargets();
+	LUCID_GAL_PIPELINE.restoreBackBuffer(true, false, false);
+	LUCID_GAL_PIPELINE.updateTargets();
 
 	copy(_blurTarget[0].get(), _glowTarget.get());
 	blur();
@@ -400,8 +394,8 @@ void Renderer::render(bool useFXAA)
 	blur();
 	copy(_glowTarget.get(), _blurTarget[0].get());
 
-	galPipeline().restoreBackBuffer(true, false, false);
-	galPipeline().updateTargets();
+	LUCID_GAL_PIPELINE.restoreBackBuffer(true, false, false);
+	LUCID_GAL_PIPELINE.updateTargets();
 
 	if (useFXAA)
 		fxaaScenePost();
@@ -417,14 +411,12 @@ void Renderer::renderScene()
 
 void Renderer::renderOverlay()
 {
-	LUCID_GAL::Pipeline &pipeline = LUCID_GAL::Pipeline::instance();
-
 	_overlayBatch.render(_renderContext);
 
 	if (0 == _textCount)
 		return;
 
-	pipeline.setVertexStream(1, _text.get());
+	LUCID_GAL_PIPELINE.setVertexStream(1, _text.get());
 	_font->renderInstanced(_renderContext, _textCount);
 }
 
@@ -433,16 +425,16 @@ void Renderer::renderStarfield()
 	_starMesh->material()->program()->set(_starParameters.sphereRadius, adaptiveScale(_culler.starFieldRadius));
 	_starMesh->material()->program()->set(_starParameters. spriteScale, adaptiveScale(_culler.starScalingFactor));
 		
-	galPipeline().setVertexStream(1, _starInstances.get());
+	LUCID_GAL_PIPELINE.setVertexStream(1, _starInstances.get());
 	_starMesh->renderInstanced(_renderContext, int32_t(_starCount));
 }
 
 void Renderer::copy(LUCID_GAL::RenderTarget2D *dst, LUCID_GAL::RenderTarget2D *src)
 {
-	galPipeline().setRenderTarget(0, dst);
-	galPipeline().setRenderTarget(1, nullptr);
-	galPipeline().setRenderTarget(2, nullptr);
-	galPipeline().updateTargets();
+	LUCID_GAL_PIPELINE.setRenderTarget(0, dst);
+	LUCID_GAL_PIPELINE.setRenderTarget(1, nullptr);
+	LUCID_GAL_PIPELINE.setRenderTarget(2, nullptr);
+	LUCID_GAL_PIPELINE.updateTargets();
 		
 	_copy->material()->program()->set(_copyParameters.theSource, src);
 	_copy->render(_renderContext);
@@ -456,15 +448,15 @@ void Renderer::blur()
 	LUCID_GAL::Vector2 horizontal = LUCID_GAL::Vector2(1.f / width, 0);
 	LUCID_GAL::Vector2 vertical = LUCID_GAL::Vector2(0, 1.f / height);
 
-	galPipeline().setRenderTarget(0, _blurTarget[1].get());
-	galPipeline().updateTargets();
+	LUCID_GAL_PIPELINE.setRenderTarget(0, _blurTarget[1].get());
+	LUCID_GAL_PIPELINE.updateTargets();
 
 	_blur->material()->program()->set(_blurParameters.theSource, _blurTarget[0].get());
 	_blur->material()->program()->set(_blurParameters.texelOffset, horizontal);
 	_blur->render(_renderContext);
 
-	galPipeline().setRenderTarget(0, _blurTarget[0].get());
-	galPipeline().updateTargets();
+	LUCID_GAL_PIPELINE.setRenderTarget(0, _blurTarget[0].get());
+	LUCID_GAL_PIPELINE.updateTargets();
 
 	_blur->material()->program()->set(_blurParameters.theSource, _blurTarget[1].get());
 	_blur->material()->program()->set(_blurParameters.texelOffset, vertical);

@@ -5,9 +5,6 @@
 		{ "name" :     "screenHeight",     "float" : 0 },
 		{ "name" :        "texelSize",   "vector2" : [0, 0] },
 
-		{ "name" :            "znear",     "float" : 0 },
-		{ "name" :             "zfar",     "float" : 0 },
-
 		{ "name" :             "time",     "float" : 0 },
 		{ "name" :      "interpolant",     "float" : 0 },
 

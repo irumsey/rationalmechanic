@@ -79,7 +79,7 @@ private:
 	};
 
 	scalar_t const ZNEAR_INITIAL = 10.0;
-	scalar_t const  ZFAR_INITIAL = 39.23547229976602 * constants::meters_per_AU<float64_t>;
+	scalar_t const  ZFAR_INITIAL = 50 * constants::meters_per_AU<float64_t>;
 
 	scalar_t _interpolant;
 
