@@ -19,6 +19,10 @@
 
 #include <lucid/gigl/Font.h>
 
+// give this a try, see if i like it...
+#define GET_MATERIAL_PARAMETER(mesh, name) mesh->material()->program()->lookup( #name )
+#define SET_MATERIAL_PARAMETER(mesh, param, value) mesh->material()->program()->set(param, value)
+
 LUCID_ANONYMOUS_BEGIN
 
 inline LUCID_ORBIT::StarCatalog &theStarCatalog()
@@ -131,7 +135,7 @@ void Renderer::evaluate(OrbitalBody *body)
 		iconInstance.scale = LUCID_GAL::Vector2(24, 24);
 		iconInstance.texcoord = LUCID_GAL::Vector4(0, 0, 1, 1);
 		iconInstance.color = LUCID_GAL::Color(1, 1, 1, 1);
-		_overlayBatch.addInstance(renderProperties.icon, iconInstance);
+		_sceneBatch.addInstance(renderProperties.icon, iconInstance);
 	}
 
 	if (!renderProperties.showOrbit)
@@ -157,7 +161,7 @@ void Renderer::evaluate(OrbitalBody *body)
 	orbitInstance.rotation = rotation;
 	orbitInstance.color = renderProperties.orbitHighlight ? LUCID_GAL::Color(1.f, 1.f, 1.f, 1.f) : LUCID_GAL::Color(0, 0, 1, 1);
 	orbitInstance.parameters = LUCID_GAL::Vector4(hu, e, 0.f, constants::two_pi<float32_t>);
-	_overlayBatch.addInstance(_orbitMesh, orbitInstance);
+	_orbitBatch.addInstance(_orbitMesh, orbitInstance);
 }
 	  
 void Renderer::evaluate(DynamicBody *body)
@@ -178,9 +182,11 @@ void Renderer::initialize(std::string const &path)
 
 	_renderContext = LUCID_GIGL::Context(path);
 
-	LUCID_GAL::System &galSystem = LUCID_GAL::System::instance();
-	_width = galSystem.width();
-	_height = galSystem.height();
+	_width = LUCID_GAL_SYSTEM.width();
+	_height = LUCID_GAL_SYSTEM.height();
+
+	_screenSize = LUCID_GAL::Vector2(float32_t(_width), float32_t(_height));
+	_texelSize = LUCID_GAL::Vector2(1.f / _screenSize.x, 1.f / _screenSize.y);
 
 	_starCount = theStarCatalog().count();
 	_starMesh.reset(LUCID_GIGL::Mesh::create("content/star.mesh"));
@@ -203,19 +209,18 @@ void Renderer::initialize(std::string const &path)
 	_starInstances->unlock();
 
 	_sceneBatch.initialize();
-	_overlayBatch.initialize();
+	_orbitBatch.initialize();
 
 	/// test {
 	///	need a data driven method for registering these... 
 	/// ...just read the ephemeris stupid!!!
 	_sceneBatch.createBatch<MeshInstance, Back2Front<MeshInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(   "content/atmosphere.mesh"), BATCH_MAXIMUM);
 	_sceneBatch.createBatch<MeshInstance, Front2Back<MeshInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(   "content/hemisphere.mesh"), BATCH_MAXIMUM);
-	
-	_overlayBatch.createBatch<IconInstance, NullSort  <IconInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(  "content/iconDefault.mesh"), BATCH_MAXIMUM);
-	_overlayBatch.createBatch<IconInstance, NullSort  <IconInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>("content/iconSatellite.mesh"), BATCH_MAXIMUM);
+	_sceneBatch.createBatch<IconInstance, NullSort  <IconInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(  "content/iconDefault.mesh"), BATCH_MAXIMUM);
+	_sceneBatch.createBatch<IconInstance, NullSort  <IconInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>("content/iconSatellite.mesh"), BATCH_MAXIMUM);
 
 	_orbitMesh = LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>("content/orbit.mesh");
-	_overlayBatch.createBatch<MeshInstance, NullSort<MeshInstance> >(_orbitMesh, BATCH_MAXIMUM);
+	_orbitBatch.createBatch<MeshInstance, NullSort<MeshInstance> >(_orbitMesh, BATCH_MAXIMUM);
 	/// } test
 
 	_font = LUCID_GIGL::Resources::get<LUCID_GIGL::Font>("content/OCRa.font");
@@ -235,19 +240,15 @@ void Renderer::initialize(std::string const &path)
 	_post .reset(LUCID_GIGL::Mesh::create("content/post.mesh"));
 	_fxaa .reset(LUCID_GIGL::Mesh::create("content/fxaa.mesh"));
 
-	_starParameters.sphereRadius = _starMesh->material()->program()->lookup("sphereRadius");
-	_starParameters. spriteScale = _starMesh->material()->program()->lookup( "spriteScale");
-
-	_copyParameters.  theSource = _copy->material()->program()->lookup(  "theSource");
-
-	_blurParameters.texelOffset = _blur->material()->program()->lookup("texelOffset");
-	_blurParameters.  theSource = _blur->material()->program()->lookup(  "theSource");
-
-	_postParameters.colorTarget = _post->material()->program()->lookup("colorTarget");
-	_postParameters. glowTarget = _post->material()->program()->lookup( "glowTarget");
-
-	_fxaaParameters.colorTarget = _fxaa->material()->program()->lookup("colorTarget");
-	_fxaaParameters. glowTarget = _fxaa->material()->program()->lookup( "glowTarget");
+	_starParameters.sphereRadius = GET_MATERIAL_PARAMETER(_starMesh, sphereRadius);
+	_starParameters. spriteScale = GET_MATERIAL_PARAMETER(_starMesh, spriteScale);  
+	_copyParameters.   theSource = GET_MATERIAL_PARAMETER(    _copy,    theSource);
+	_blurParameters. texelOffset = GET_MATERIAL_PARAMETER(    _blur,  texelOffset);
+	_blurParameters.   theSource = GET_MATERIAL_PARAMETER(    _blur,    theSource);
+	_postParameters. colorTarget = GET_MATERIAL_PARAMETER(    _post,  colorTarget);
+	_postParameters.  glowTarget = GET_MATERIAL_PARAMETER(    _post,   glowTarget);
+	_fxaaParameters. colorTarget = GET_MATERIAL_PARAMETER(    _fxaa,  colorTarget);
+	_fxaaParameters.  glowTarget = GET_MATERIAL_PARAMETER(    _fxaa,   glowTarget);
 }
 
 void Renderer::shutdown()
@@ -259,7 +260,7 @@ void Renderer::shutdown()
 	_text.reset();
 	_font.reset();
 
-	_overlayBatch.shutdown();
+	_orbitBatch.shutdown();
 	_sceneBatch.shutdown();
 
 	_orbitMesh.reset();
@@ -289,57 +290,31 @@ void Renderer::render(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t time,
 
 	_culler.cull(rootFrame, cameraFrame, interpolant);
 
-	float32_t width = float32_t(_width);
-	float32_t height = float32_t(_height);
-
 	Frame *focusFrame = cameraFrame->focus;
 	_interpolant = interpolant;
 
+	_fov = cast(cameraFrame->fov);
 	_cameraPosition = LUCID_MATH::lerp(interpolant, cameraFrame->absolutePosition[0], cameraFrame->absolutePosition[1]);
 	_focusPosition = LUCID_MATH::lerp(interpolant, focusFrame->absolutePosition[0], focusFrame->absolutePosition[1]);
 
-	LUCID_GAL::Matrix4x4 viewMatrix = LUCID_MATH::look(LUCID_GAL::Vector3(0, 0, 0), adaptiveScale(_focusPosition - _cameraPosition), LUCID_GAL::Vector3(0, 0, 1));
-	LUCID_GAL::Matrix4x4 projMatrix = LUCID_MATH::perspective(cast(cameraFrame->fov), LUCID_GAL::Scalar(width / height), adaptiveScale(_culler.znear), adaptiveScale(_culler.zfar));
-	LUCID_GAL::Matrix4x4 viewProjMatrix = projMatrix * viewMatrix;
-	LUCID_GAL::Matrix4x4 invViewProjMatrix = LUCID_MATH::inverse(viewProjMatrix);
-
-	_renderContext["screenWidth"] = LUCID_GAL::Scalar(width);
-	_renderContext["screenHeight"] = LUCID_GAL::Scalar(height);
-	_renderContext["texelSize"] = LUCID_GAL::Vector2(1.f / width, 1.f / height);
+	_renderContext["screenSize"] = _screenSize;
+	_renderContext["texelSize"] = _texelSize;
 
 	_renderContext["time"] = cast(time);
 	_renderContext["interpolant"] = cast(_interpolant);
 		
 	_renderContext["lightPosition"] = adaptiveScale(vector3_t(0, 0, 0) - _cameraPosition);
 
+	LUCID_GAL::Matrix4x4 viewMatrix = LUCID_MATH::look(LUCID_GAL::Vector3(0, 0, 0), adaptiveScale(_focusPosition - _cameraPosition), LUCID_GAL::Vector3(0, 0, 1));
 	_renderContext["viewPosition"] = LUCID_GAL::Vector3(0, 0, 0);
 	_renderContext["viewForward"] = LUCID_MATH::extractViewForward(viewMatrix);
 	_renderContext["viewRight"] = LUCID_MATH::extractViewRight(viewMatrix);
 	_renderContext["viewUp"] = LUCID_MATH::extractViewUp(viewMatrix);
 	_renderContext["viewMatrix"] = viewMatrix;
 	_renderContext["invViewMatrix"] = LUCID_MATH::inverse(viewMatrix);
-	_renderContext["projMatrix"] = projMatrix;
-	_renderContext["invProjMatrix"] = LUCID_MATH::inverse(projMatrix);
-	_renderContext["viewProjMatrix"] = viewProjMatrix;
-	_renderContext["invViewProjMatrix"] = invViewProjMatrix;
-
-	/// test {
-	LUCID_GIGL::Font::Character *buffer = (LUCID_GIGL::Font::Character *)(_text->lock());
-
-	std::string str = "Line 0: this is a test";
-	_textCount = _font->typeset(buffer, LUCID_GAL::Vector2(0, 0), LUCID_GAL::Vector2(32, 32), str, LUCID_GAL::Color(1, 1, 0, 1));
-	
-	str = "Line 1: this is a second test";
-	_textCount += _font->typeset(buffer + _textCount, LUCID_GAL::Vector2(0, 48), LUCID_GAL::Vector2(32, 32), str, LUCID_GAL::Color(1, 1, 0, 1));
-
-	str = "Line 2: this is the last test";
-	_textCount += _font->typeset(buffer + _textCount, LUCID_GAL::Vector2(0, 96), LUCID_GAL::Vector2(32, 32), str, LUCID_GAL::Color(1, 1, 0, 1));
-
-	_text->unlock();
-	/// } test
 
 	_sceneBatch.clear();
-	_overlayBatch.clear();
+	_orbitBatch.clear();
 
 	batch(rootFrame);
 
@@ -372,7 +347,7 @@ void Renderer::batch(Frame *frame)
 		batch(child);
 }
 
-void Renderer::render(bool useFXAA)
+void Renderer::preRender()
 {
 	LUCID_GAL_PIPELINE.setRenderTarget(0, _colorTarget.get());
 	LUCID_GAL_PIPELINE.setRenderTarget(1, _glowTarget.get());
@@ -381,15 +356,14 @@ void Renderer::render(bool useFXAA)
 	LUCID_GAL_PIPELINE.updateTargets();
 
 	_clear->render(_renderContext);
+}
 
-	renderScene();
-	renderOverlay();
-
+void Renderer::postRender(bool useFXAA)
+{
 	LUCID_GAL_PIPELINE.restoreBackBuffer(true, false, false);
 	LUCID_GAL_PIPELINE.updateTargets();
 
 	copy(_blurTarget[0].get(), _glowTarget.get());
-	blur();
 	blur();
 	blur();
 	copy(_glowTarget.get(), _blurTarget[0].get());
@@ -398,20 +372,87 @@ void Renderer::render(bool useFXAA)
 	LUCID_GAL_PIPELINE.updateTargets();
 
 	if (useFXAA)
-		fxaaScenePost();
+	{
+		SET_MATERIAL_PARAMETER(_fxaa, _fxaaParameters.colorTarget, _colorTarget.get());
+		SET_MATERIAL_PARAMETER(_fxaa, _fxaaParameters.glowTarget, _glowTarget.get());
+		_fxaa->render(_renderContext);
+	}
 	else
-		scenePost();
+	{
+		SET_MATERIAL_PARAMETER(_post, _fxaaParameters.colorTarget, _colorTarget.get());
+		SET_MATERIAL_PARAMETER(_post, _fxaaParameters.glowTarget, _glowTarget.get());
+		_post->render(_renderContext);
+	}
+}
+
+void Renderer::render(bool useFXAA)
+{
+	preRender();
+
+	renderBackground();
+	renderScene();
+	renderForeground();
+
+	postRender(useFXAA);
+}
+
+void Renderer::renderBackground()
+{
+	LUCID_GAL::Matrix4x4 const &viewMatrix = _renderContext["viewMatrix"].as<LUCID_GAL::Matrix4x4>();
+
+	/// for the stars, simply need to render them into the background (no depth test or write)
+	/// therefore, the near and far planes do not matter.
+	LUCID_GAL::Matrix4x4 projMatrix = LUCID_MATH::perspective(LUCID_GAL::Scalar(_fov), LUCID_GAL::Scalar(_aspect), LUCID_GAL::Scalar(10.f), LUCID_GAL::Scalar(100.f));
+	_renderContext["projMatrix"] = projMatrix;
+	_renderContext["invProjMatrix"] = LUCID_MATH::inverse(projMatrix);
+	_renderContext["viewProjMatrix"] = projMatrix * viewMatrix;
+	_renderContext["invViewProjMatrix"] = LUCID_MATH::inverse(projMatrix * viewMatrix);
+
+	SET_MATERIAL_PARAMETER(_starMesh, _starParameters.sphereRadius, 99.99f);
+	SET_MATERIAL_PARAMETER(_starMesh, _starParameters.spriteScale, 0.3f);
+
+	LUCID_GAL_PIPELINE.setVertexStream(1, _starInstances.get());
+	_starMesh->renderInstanced(_renderContext, int32_t(_starCount));
+
+	projMatrix = LUCID_MATH::perspective(LUCID_GAL::Scalar(_fov), LUCID_GAL::Scalar(_aspect), adaptiveScale(_culler.zfar), adaptiveScale(_culler.ZFAR_INITIAL));
+	_renderContext["projMatrix"] = projMatrix;
+	_renderContext["invProjMatrix"] = LUCID_MATH::inverse(projMatrix);
+	_renderContext["viewProjMatrix"] = projMatrix * viewMatrix;
+	_renderContext["invViewProjMatrix"] = LUCID_MATH::inverse(projMatrix * viewMatrix);
+
+	/// TBD: render other background items...
+
+	/// clear the depth buffer
+	LUCID_GAL_PIPELINE.clear(false, true, true);
 }
 
 void Renderer::renderScene()
 {
-	renderStarfield();
+	LUCID_GAL::Matrix4x4 const &viewMatrix = _renderContext["viewMatrix"].as<LUCID_GAL::Matrix4x4>();
+
+	LUCID_GAL::Matrix4x4 projMatrix = LUCID_MATH::perspective(LUCID_GAL::Scalar(_fov), LUCID_GAL::Scalar(_aspect), adaptiveScale(_culler.znear), adaptiveScale(_culler.zfar));
+	_renderContext["projMatrix"] = projMatrix;
+	_renderContext["invProjMatrix"] = LUCID_MATH::inverse(projMatrix);
+	_renderContext["viewProjMatrix"] = projMatrix * viewMatrix;
+	_renderContext["invViewProjMatrix"] = LUCID_MATH::inverse(projMatrix * viewMatrix);
+
 	_sceneBatch.render(_renderContext);
+	_orbitBatch.render(_renderContext);
+
+	LUCID_GAL_PIPELINE.clear(false, true, true);
 }
 
-void Renderer::renderOverlay()
+void Renderer::renderForeground()
 {
-	_overlayBatch.render(_renderContext);
+	LUCID_GAL::Matrix4x4 const &viewMatrix = _renderContext["viewMatrix"].as<LUCID_GAL::Matrix4x4>();
+
+	LUCID_GAL::Matrix4x4 projMatrix = LUCID_MATH::perspective(LUCID_GAL::Scalar(_fov), LUCID_GAL::Scalar(_aspect), adaptiveScale(_culler.ZNEAR_INITIAL), adaptiveScale(_culler.znear));
+	_renderContext["projMatrix"] = projMatrix;
+	_renderContext["invProjMatrix"] = LUCID_MATH::inverse(projMatrix);
+	_renderContext["viewProjMatrix"] = projMatrix * viewMatrix;
+	_renderContext["invViewProjMatrix"] = LUCID_MATH::inverse(projMatrix * viewMatrix);
+
+	/// TBD: render other foreground items...
 
 	if (0 == _textCount)
 		return;
@@ -420,71 +461,48 @@ void Renderer::renderOverlay()
 	_font->renderInstanced(_renderContext, _textCount);
 }
 
-void Renderer::renderStarfield()
-{
-	_starMesh->material()->program()->set(_starParameters.sphereRadius, adaptiveScale(_culler.starFieldRadius));
-	_starMesh->material()->program()->set(_starParameters. spriteScale, adaptiveScale(_culler.starScalingFactor));
-		
-	LUCID_GAL_PIPELINE.setVertexStream(1, _starInstances.get());
-	_starMesh->renderInstanced(_renderContext, int32_t(_starCount));
-}
-
 void Renderer::copy(LUCID_GAL::RenderTarget2D *dst, LUCID_GAL::RenderTarget2D *src)
 {
 	LUCID_GAL_PIPELINE.setRenderTarget(0, dst);
 	LUCID_GAL_PIPELINE.setRenderTarget(1, nullptr);
 	LUCID_GAL_PIPELINE.setRenderTarget(2, nullptr);
 	LUCID_GAL_PIPELINE.updateTargets();
-		
-	_copy->material()->program()->set(_copyParameters.theSource, src);
+	
+	SET_MATERIAL_PARAMETER(_copy, _copyParameters.theSource, src);
 	_copy->render(_renderContext);
 }
 
 void Renderer::blur()
 {
-	float32_t width = float32_t(_width);
-	float32_t height = float32_t(_height);
-
-	LUCID_GAL::Vector2 horizontal = LUCID_GAL::Vector2(1.f / width, 0);
-	LUCID_GAL::Vector2 vertical = LUCID_GAL::Vector2(0, 1.f / height);
+	LUCID_GAL::Vector2 horizontal = LUCID_GAL::Vector2(_texelSize.x,          0.f);
+	LUCID_GAL::Vector2   vertical = LUCID_GAL::Vector2(         0.f, _texelSize.y);
 
 	LUCID_GAL_PIPELINE.setRenderTarget(0, _blurTarget[1].get());
 	LUCID_GAL_PIPELINE.updateTargets();
 
-	_blur->material()->program()->set(_blurParameters.theSource, _blurTarget[0].get());
-	_blur->material()->program()->set(_blurParameters.texelOffset, horizontal);
+	SET_MATERIAL_PARAMETER(_blur, _blurParameters.theSource, _blurTarget[0].get());
+	SET_MATERIAL_PARAMETER(_blur, _blurParameters.texelOffset, horizontal);
 	_blur->render(_renderContext);
 
 	LUCID_GAL_PIPELINE.setRenderTarget(0, _blurTarget[0].get());
 	LUCID_GAL_PIPELINE.updateTargets();
 
-	_blur->material()->program()->set(_blurParameters.theSource, _blurTarget[1].get());
-	_blur->material()->program()->set(_blurParameters.texelOffset, vertical);
+	SET_MATERIAL_PARAMETER(_blur, _blurParameters.theSource, _blurTarget[1].get());
+	SET_MATERIAL_PARAMETER(_blur, _blurParameters.texelOffset, vertical);
 	_blur->render(_renderContext);
-}
-
-void Renderer::scenePost()
-{
-	_post->material()->program()->set(_postParameters.colorTarget, _colorTarget.get());
-	_post->material()->program()->set(_postParameters. glowTarget, _glowTarget. get());
-	_post->render(_renderContext);
-}
-
-void Renderer::fxaaScenePost()
-{
-	_fxaa->material()->program()->set(_fxaaParameters.colorTarget, _colorTarget.get());
-	_fxaa->material()->program()->set(_fxaaParameters.glowTarget, _glowTarget.get());
-	_fxaa->render(_renderContext);
 }
 
 void Renderer::resize()
 {
-	LUCID_GAL::System &galSystem = LUCID_GAL::System::instance();
-	if ((_width == galSystem.width()) && (_height == galSystem.height()))
+	if ((_width == LUCID_GAL_SYSTEM.width()) && (_height == LUCID_GAL_SYSTEM.height()))
 		return;
 
-	_width = galSystem.width();
-	_height = galSystem.height();
+	_width = LUCID_GAL_SYSTEM.width();
+	_height = LUCID_GAL_SYSTEM.height();
+	_aspect = LUCID_GAL_SYSTEM.aspect();
+
+	_screenSize = LUCID_GAL::Vector2(float32_t(_width), float32_t(_height));
+	_texelSize = LUCID_GAL::Vector2(1.f / _screenSize.x, 1.f / _screenSize.y);
 
 	_selectTarget.reset(LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UINT_R32, _width, _height));
 	_selectReader.reset(LUCID_GAL::TargetReader2D::create(_selectTarget.get(), _width, _height));

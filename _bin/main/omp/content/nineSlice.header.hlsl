@@ -1,5 +1,4 @@
-float1 screenWidth;
-float1 screenHeight;
+float2 texelSize;
 
 struct InputVertex
 {

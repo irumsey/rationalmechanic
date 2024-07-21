@@ -190,6 +190,15 @@ namespace Math {
 
 		///
 		///
+		/// 
+		
+		static Matrix3x3 ^matrixFromQuaternion(Quaternion ^rhs)
+		{
+			return gcnew Matrix3x3(LUCID_MATH::matrixFromQuaternion(quaternion_t(rhs->ref)));
+		}
+
+		///
+		///
 		///
 
 		static float trace(Matrix4x4 ^rhs)

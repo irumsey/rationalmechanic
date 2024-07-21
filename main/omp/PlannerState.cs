@@ -212,12 +212,13 @@ namespace omp
             public override void onMainViewMouseWheel(Planner planner, MouseEventArgs e)
             {
                 // test {
-                Lucid.Math.Scalar scale = new Lucid.Math.Scalar((e.Delta < 0) ? 1e8f : -1e8f);
+                Lucid.Math.Scalar scale = new Lucid.Math.Scalar((e.Delta < 0) ? 1e7f : -1e7f);
                 Lucid.Math.Vector3 delta = scale * Lucid.Math.Util.normalize(planner.cameraFrame.RelativePosition);
 
                 planner.cameraFrame.RelativePosition = planner.cameraFrame.RelativePosition + delta;
                 // } test
             }
+
             public override void onMainViewMouseDown(Planner planner, MouseEventArgs e)
             {
                 // test {
@@ -236,20 +237,32 @@ namespace omp
             public override void onMainViewMouseMove(Planner planner, Point point)
             {
                 // test {
-                if (!planner.cameraRotating)
+                if (planner.cameraRotating)
+                {
+                    Point origin = planner.cameraDownOrigin;
+                    double theta = 0.01f * (origin.X - point.X);
+                    double phi = 0.01f * (point.Y - origin.Y);
+                    planner.cameraDownOrigin = point;
+
+                    float c = (float)(System.Math.Cos(theta));
+                    float s = (float)(System.Math.Sin(theta));
+
+                    Lucid.Math.Quaternion qz = new Lucid.Math.Quaternion(0, 0, s, 0.5f * c);
+                    Lucid.Math.Matrix3x3 Rz = Lucid.Math.Util.matrixFromQuaternion(qz);
+
+                    c = (float)(System.Math.Cos(phi));
+                    s = (float)(System.Math.Sin(phi));
+
+                    Lucid.Math.Vector3 viewRight = planner.cameraFrame.xaxis;
+                    Lucid.Math.Quaternion qx = new Lucid.Math.Quaternion(s * viewRight.x, s * viewRight.y, s * viewRight.z, 0.5f * c);
+                    Lucid.Math.Matrix3x3 Rx = Lucid.Math.Util.matrixFromQuaternion(qx);
+                    
+                    planner.cameraFrame.RelativePosition = Rx * Rz * planner.cameraFrame.RelativePosition;
+
                     return;
-
-                Point origin = planner.cameraDownOrigin;
-                Lucid.Math.Scalar theta = new Lucid.Math.Scalar(0.01f * (origin.X - point.X));
-                Lucid.Math.Scalar phi = new Lucid.Math.Scalar(0.01f * (origin.Y - point.Y));
-                planner.cameraDownOrigin = point;
-
-                Lucid.Math.Matrix3x3 Rz = Lucid.Math.Util.rotateAboutZ(theta);
-                Lucid.Math.Matrix3x3 Rx = Lucid.Math.Util.rotateAboutX(phi);
-
-                planner.cameraFrame.RelativePosition = Rx * Rz * planner.cameraFrame.RelativePosition;
+                }
                 // } test
-#if false
+
                 Lucid.Orbit.Selection selection = planner.orbitalMechainics.Hit(point.X, point.Y);
 
                 if (Lucid.Orbit.SelectionType.TYPE_NONE == selection.Type)
@@ -296,7 +309,6 @@ namespace omp
                     planner.statusLabel.Text = "Other";
                     return;
                 }
-#endif
             }
 
             public override void onFrameListClicked(Planner planner, MouseEventArgs e)

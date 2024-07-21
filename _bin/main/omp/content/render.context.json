@@ -1,8 +1,7 @@
 {
 	"primitives" :
 	[
-		{ "name" :      "screenWidth",     "float" : 0 },
-		{ "name" :     "screenHeight",     "float" : 0 },
+		{ "name" :       "screenSize",   "vector2" : [0, 0] },
 		{ "name" :        "texelSize",   "vector2" : [0, 0] },
 
 		{ "name" :             "time",     "float" : 0 },

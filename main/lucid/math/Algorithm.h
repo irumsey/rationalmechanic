@@ -131,8 +131,8 @@ template<typename T> inline T atan2(T y, T x)
 ///	quaternion to matrix
 ///
 ///
-template<typename T, typename S, typename Q>
-inline LUCID_MATRIX(T, 3, 3, S, Q) matrixFromQuaternion(LUCID_QUATERNION(T) const &q) 
+template<typename T>
+inline LUCID_MATRIX(T, 3, 3, LUCID_UNITS::system::none, LUCID_UNITS::quantity::pure) matrixFromQuaternion(LUCID_QUATERNION(T) const &q) 
 {
 	T xx = q.x * q.x;
 	T xy = q.x * q.y;
@@ -144,11 +144,10 @@ inline LUCID_MATRIX(T, 3, 3, S, Q) matrixFromQuaternion(LUCID_QUATERNION(T) cons
 	T zz = q.z * q.z;
 	T zw = q.z * q.w;
 
-	return LUCID_MATRIX(T, 3, 3, S, Q)(
-		T(1) - T(2) * ( yy + zz ),        T(2) * ( xy - zw ),        T(2) * ( xz + yw ), T(0),
-			    T(2) * ( xy + zw ), T(1) - T(2) * ( xx + zz ),        T(2) * ( yz - xw ), T(0),
-			    T(2) * ( xz - yw ),        T(2) * ( yz + xw ), T(1) - T(2) * ( xx + yy ), T(0),
-			                    T(0),                      T(0),                      T(0), T(1)
+	return LUCID_MATRIX(T, 3, 3, LUCID_UNITS::system::none, LUCID_UNITS::quantity::pure)(
+		T(1) - T(2) * ( yy + zz ),        T(2) * ( xy - zw ),        T(2) * ( xz + yw ),
+			    T(2) * ( xy + zw ), T(1) - T(2) * ( xx + zz ),        T(2) * ( yz - xw ),
+			    T(2) * ( xz - yw ),        T(2) * ( yz + xw ), T(1) - T(2) * ( xx + yy )
 	);
 }
 

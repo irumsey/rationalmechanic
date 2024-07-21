@@ -332,7 +332,7 @@ void Pipeline::createDepthBuffer(int32_t width, int32_t height, int32_t samples)
 	D3D11_TEXTURE2D_DESC descDepth;
 	::memset(&descDepth, 0, sizeof(D3D11_TEXTURE2D_DESC));
 
-	descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	descDepth.Format = DXGI_FORMAT_D32_FLOAT;
 	descDepth.Width = width;
 	descDepth.Height = height;
 	descDepth.MipLevels = 1;

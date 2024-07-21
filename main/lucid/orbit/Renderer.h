@@ -13,6 +13,7 @@
 #include <lucid/gigl/Batched.h>
 #include <lucid/orbit/Defines.h>
 #include <lucid/orbit/Types.h>
+#include <lucid/orbit/Utility.h>
 #include <lucid/orbit/Algorithm.h>
 #include <lucid/orbit/Culler.h>
 
@@ -128,9 +129,13 @@ private:
 		LUCID_GAL::Color      color;
 	};
 
+	float32_t _fov = 0.25f * constants::pi<float32_t>;
 	int32_t _width = 0;
 	int32_t _height = 0;
-
+	float32_t _aspect = 1.f;
+	LUCID_GAL::Vector2 _screenSize;
+	LUCID_GAL::Vector2 _texelSize;
+	
 	scalar_t _interpolant = 0.0;
 
 	vector3_t _cameraPosition;
@@ -148,7 +153,7 @@ private:
 	LUCID_GIGL::Batched _sceneBatch;
 
 	std::shared_ptr<LUCID_GIGL::Mesh> _orbitMesh;
-	LUCID_GIGL::Batched _overlayBatch;
+	LUCID_GIGL::Batched _orbitBatch;
 
 	std::shared_ptr<LUCID_GIGL::Font> _font;
 	std::unique_ptr<LUCID_GAL::VertexBuffer> _text;
@@ -175,27 +180,27 @@ private:
 	PostParameters _fxaaParameters;
 	std::unique_ptr<LUCID_GIGL::Mesh> _fxaa;
 
-	LUCID_GAL::Scalar adaptiveScale(scalar_t const &value);
+	LUCID_GAL::Scalar adaptiveScale(scalar_t const &value) const;
 
-	LUCID_GAL::Vector3 adaptiveScale(vector3_t const &value);
+	LUCID_GAL::Vector3 adaptiveScale(vector3_t const &value) const;
 
 	void batch(Frame *frame);
 
+	void preRender();
+
+	void postRender(bool useFXAA);
+
 	void render(bool useFXAA);
+
+	void renderBackground();
 
 	void renderScene();
 
-	void renderOverlay();
-
-	void renderStarfield();
+	void renderForeground();
 
 	void copy(LUCID_GAL::RenderTarget2D *dst, LUCID_GAL::RenderTarget2D *src);
 
 	void blur();
-
-	void scenePost();
-
-	void fxaaScenePost();
 
 	void resize();
 
@@ -203,13 +208,12 @@ private:
 	LUCID_PREVENT_ASSIGNMENT(Renderer);
 };
 
-inline LUCID_GAL::Scalar Renderer::adaptiveScale(scalar_t const &value)
+inline LUCID_GAL::Scalar Renderer::adaptiveScale(scalar_t const &value) const
 {
-	scalar_t result = _culler.sceneScalingFactor * value;
-	return LUCID_GAL::Scalar(float32_t(result.value));
+	return cast(_culler.sceneScalingFactor * value);
 }
 
-inline LUCID_GAL::Vector3 Renderer::adaptiveScale(vector3_t const &value)
+inline LUCID_GAL::Vector3 Renderer::adaptiveScale(vector3_t const &value) const
 {
 	return LUCID_GAL::Vector3(adaptiveScale(value.x), adaptiveScale(value.y), adaptiveScale(value.z));
 }

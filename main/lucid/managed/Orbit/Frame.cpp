@@ -245,6 +245,33 @@ namespace Orbit {
 	{
 	}
 
+	Math::Vector3 ^CameraFrame::xaxis::get()
+	{
+		LUCID_ORBIT::vector3_t y = LUCID_MATH::normalize(_internal->focus->absolutePosition[1] - _internal->absolutePosition[1]);
+		LUCID_ORBIT::vector3_t z(0, 0, 1);
+		LUCID_ORBIT::vector3_t x = LUCID_MATH::cross(y, z);
+
+		return gcnew Math::Vector3(float32_t(x.x), float32_t(x.y), float32_t(x.z));
+	}
+
+	Math::Vector3 ^CameraFrame::yaxis::get()
+	{
+		LUCID_ORBIT::vector3_t y = LUCID_MATH::normalize(_internal->focus->absolutePosition[1] - _internal->absolutePosition[1]);
+
+		return gcnew Math::Vector3(float32_t(y.x), float32_t(y.y), float32_t(y.z));
+	}
+
+	Math::Vector3 ^CameraFrame::zaxis::get()
+	{
+		LUCID_ORBIT::vector3_t y = LUCID_MATH::normalize(_internal->focus->absolutePosition[1] - _internal->absolutePosition[1]);
+		LUCID_ORBIT::vector3_t z(0, 0, 1);
+		LUCID_ORBIT::vector3_t x = LUCID_MATH::cross(y, z);
+
+		z = LUCID_MATH::cross(x, y);
+
+		return gcnew Math::Vector3(float32_t(z.x), float32_t(z.y), float32_t(z.z));
+	}
+
 	Frame ^CameraFrame::Focus::get()
 	{
 		return Wrap(_internal->focus);

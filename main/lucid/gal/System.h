@@ -4,6 +4,8 @@
 #include <lucid/core/Types.h>
 #include <lucid/gal/Defines.h>
 
+#define LUCID_GAL_SYSTEM LUCID_GAL::System::instance()
+
 LUCID_GAL_BEGIN
 
 ///	System

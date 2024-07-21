@@ -46,8 +46,7 @@
 
 	"attributes":
 	[
-		{ "name":  "screenWidth",     "query":             "screenWidth" },
-		{ "name": "screenHeight",     "query":            "screenHeight" },
+		{ "name":    "texelSize",     "query":               "texelSize" },
 		{ "name":   "theTexture", "texture2d": "content/callout.texture" }
 	]
 }

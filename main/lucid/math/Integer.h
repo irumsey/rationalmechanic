@@ -533,3 +533,4 @@ template<size_t N> inline NUMBER(N) operator>>(NUMBER(N) const &lhs, uint16_t rh
 
 #undef NUMBER
 #pragma pop_macro("NUMBER")
+

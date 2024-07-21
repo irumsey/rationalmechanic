@@ -163,6 +163,15 @@ namespace Orbit {
 
 		!CameraFrame();
 
+		// the xaxis of the camera frame in world coordinates: view right
+		property Math::Vector3 ^xaxis { Math::Vector3 ^get(); }
+
+		// the yaxis of the camera frame in world coordinates: view forward
+		property Math::Vector3 ^yaxis { Math::Vector3 ^get(); }
+
+		// the zaxis of the camera frame in world coordinates: view up
+		property Math::Vector3 ^zaxis { Math::Vector3 ^get(); }
+
 		property Frame ^Focus { Frame ^get(); void set(Frame ^value); }
 
 		property LUCID_ORBIT::CameraFrame &ref { LUCID_ORBIT::CameraFrame &get() { return *_internal; } }

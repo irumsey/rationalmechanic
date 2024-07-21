@@ -21,11 +21,9 @@ void Culler::cull(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t const &in
 {
 	LUCID_PROFILE_SCOPE("Culler::cull()");
 
-	LUCID_GAL::System const &galSystem = LUCID_GAL::System::instance();
-
-	scalar_t screenWidth = scalar_t(galSystem.width());
-	scalar_t screenHeight = scalar_t(galSystem.height());
-	scalar_t const aspect = scalar_t(galSystem.aspect());
+	scalar_t screenWidth = scalar_t(LUCID_GAL_SYSTEM.width());
+	scalar_t screenHeight = scalar_t(LUCID_GAL_SYSTEM.height());
+	scalar_t const aspect = scalar_t(LUCID_GAL_SYSTEM.aspect());
 
 	scalar_t const fov = cameraFrame->fov;
 
@@ -48,32 +46,7 @@ void Culler::cull(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t const &in
 
 	cull(rootFrame);
 
-	// test {
-	zfar = ZFAR_INITIAL;
-	znear = 0.1 * znear;
-	// } test
-
 	znear = LUCID_MATH::min(znear, zfar * LUCID_MATH::cos(fov));
-
-	_viewMatrix = LUCID_MATH::look(vector3_t(0, 0, 0), LUCID_MATH::normalize(focusPosition - cameraPosition), vector3_t(0, 0, 1));
-	_projMatrix = LUCID_MATH::perspective(fov, aspect, znear, zfar);
-	_viewProjMatrix = _projMatrix * _viewMatrix;
-	_invViewProjMatrix = LUCID_MATH::inverse(_viewProjMatrix);
-		
-	vector4_t sprite[3] = {
-		vector4_t(               0.0,                 0.0, 0.9, 1.0),
-		vector4_t(-1.0 / screenWidth, -1.0 / screenHeight, 0.9, 1.0),
-		vector4_t( 1.0 / screenWidth,  1.0 / screenHeight, 0.9, 1.0),
-	};
-		
-	for (size_t i = 0; i < 3; ++i)
-	{
-		sprite[i] = _invViewProjMatrix * sprite[i];
-		sprite[i] = sprite[i] / scalar_t(sprite[i].w);
-	}
-
-	starFieldRadius = LUCID_MATH::len(vector3_t(sprite[0].x, sprite[0].y, sprite[0].z));
-	starScalingFactor = LUCID_MATH::len(vector3_t(sprite[2].x, sprite[2].y, sprite[2].z) - vector3_t(sprite[1].x, sprite[1].y, sprite[1].z));
 
 	sceneScalingFactor = 1.0 / (zfar - znear);
 }

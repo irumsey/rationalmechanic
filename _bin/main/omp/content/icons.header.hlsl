@@ -1,5 +1,4 @@
-float1 screenWidth;
-float1 screenHeight;
+float2 texelSize;
 
 float4x4 viewProjMatrix;
 

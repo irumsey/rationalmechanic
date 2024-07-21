@@ -47,11 +47,8 @@
 
 	"attributes":
 	[
-		{ "name":    "screenWidth",     "query":           "screenWidth" },
-		{ "name":   "screenHeight",     "query":          "screenHeight" },
-
-		{ "name": "viewProjMatrix",     "query":        "viewProjMatrix" },
-
+		{ "name":      "texelSize",     "query":                     "texelSize" },
+		{ "name": "viewProjMatrix",     "query":                "viewProjMatrix" },
 		{ "name":   "iconsTexture", "texture2d": "content/iconSatellite.texture" }
 	]
 }

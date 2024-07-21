@@ -29,12 +29,17 @@ public:
 		STATE_VISIBLE,			// frame is visible
 	};
 
-	scalar_t znear;
-	scalar_t zfar;
+	// test {
+	// for now, making these public until the use case is finalized.
+	// the Culler and Renderer 
+	scalar_t const ZNEAR_INITIAL = 100.0;
+	scalar_t const  ZFAR_INITIAL = 50 * constants::meters_per_AU<float64_t>;
+
+	scalar_t znear;	//	near plane for visible objects
+	scalar_t zfar;	//	far plane for visible objects
 
 	scalar_t sceneScalingFactor;
-	scalar_t starFieldRadius;
-	scalar_t starScalingFactor;
+	// } test
 
 	Culler();
 
@@ -77,9 +82,6 @@ private:
 		Visibility &operator =(Visibility const &) = default;
 
 	};
-
-	scalar_t const ZNEAR_INITIAL = 10.0;
-	scalar_t const  ZFAR_INITIAL = 50 * constants::meters_per_AU<float64_t>;
 
 	scalar_t _interpolant;
 
