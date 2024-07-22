@@ -13,7 +13,6 @@
 #include <lucid/gal/VertexBuffer.h>
 #include <lucid/gal/Program.h>
 #include <lucid/gal/System.h>
-#include <lucid/math/Scalar.h>
 #include <lucid/math/Algorithm.h>
 #include <algorithm>
 
@@ -105,9 +104,6 @@ void Renderer::evaluate(OrbitalBody *body)
 {
 	LUCID_PROFILE_SCOPE("Renderer::evaluate(OrbitalBody)");
 
-	///	TBD: data drive line width and color
-	///	TBD: data drive domain of orbit
-
 	PhysicalProperties const &physicalProperties = body->physicalProperties;
 	RenderProperties const &renderProperties = body->renderProperties;
 	Elements const *elements = body->elements;
@@ -138,30 +134,7 @@ void Renderer::evaluate(OrbitalBody *body)
 		_sceneBatch.addInstance(renderProperties.icon, iconInstance);
 	}
 
-	if (!renderProperties.showOrbit)
-		return;
-
-	Frame const *centerFrame = body->centerFrame;
-	LUCID_GAL::Vector3 centerPosition = adaptiveScale(LUCID_MATH::lerp(_interpolant, centerFrame->absolutePosition[0], centerFrame->absolutePosition[1]) - _cameraPosition);
-
-	LUCID_GAL::Scalar  a = adaptiveScale(LUCID_MATH::lerp(_interpolant, elements[0].A, elements[1].A));
-	LUCID_GAL::Scalar  e = cast(LUCID_MATH::lerp(_interpolant, elements[0].EC, elements[1].EC));
-	LUCID_GAL::Scalar hu = a * (1.f - e * e);
-
-	LUCID_GAL::Quaternion rotation = LUCID_MATH::slerp(
-		cast(_interpolant).value,
-		LUCID_MATH::quaternionFromMatrix(cast(rotationFromElements(elements[0]))),
-		LUCID_MATH::quaternionFromMatrix(cast(rotationFromElements(elements[1])))
-	);
-
-	MeshInstance orbitInstance;
-	orbitInstance.id = (SELECT_ORBIT << SELECT_SHIFT) | uint32_t(SELECT_MASK & body->id);
-	orbitInstance.position = centerPosition;
-	orbitInstance.scale = 4;
-	orbitInstance.rotation = rotation;
-	orbitInstance.color = renderProperties.orbitHighlight ? LUCID_GAL::Color(1.f, 1.f, 1.f, 1.f) : LUCID_GAL::Color(0, 0, 1, 1);
-	orbitInstance.parameters = LUCID_GAL::Vector4(hu, e, 0.f, constants::two_pi<float32_t>);
-	_orbitBatch.addInstance(_orbitMesh, orbitInstance);
+	batchOrbit(body);
 }
 	  
 void Renderer::evaluate(DynamicBody *body)
@@ -347,6 +320,38 @@ void Renderer::batch(Frame *frame)
 		batch(child);
 }
 
+void Renderer::batchOrbit(OrbitalBody *body)
+{
+	PhysicalProperties const &physicalProperties = body->physicalProperties;
+	RenderProperties const &renderProperties = body->renderProperties;
+	Elements const *elements = body->elements;
+
+	if (!renderProperties.showOrbit)
+		return;
+
+	Frame const *centerFrame = body->centerFrame;
+	LUCID_GAL::Vector3 centerPosition = adaptiveScale(LUCID_MATH::lerp(_interpolant, centerFrame->absolutePosition[0], centerFrame->absolutePosition[1]) - _cameraPosition);
+
+	float32_t   a = adaptiveScale(LUCID_MATH::lerp(_interpolant, elements[0].A, elements[1].A));
+	float32_t   e = cast(LUCID_MATH::lerp(_interpolant, elements[0].EC, elements[1].EC));
+	float32_t  hu = a * (1.f - e * e);
+
+	LUCID_GAL::Quaternion rotation = LUCID_MATH::slerp(
+		cast(_interpolant),
+		LUCID_MATH::quaternionFromMatrix(cast(rotationFromElements(elements[0]))),
+		LUCID_MATH::quaternionFromMatrix(cast(rotationFromElements(elements[1])))
+	);
+
+	MeshInstance orbitInstance;
+	orbitInstance.id = (SELECT_ORBIT << SELECT_SHIFT) | uint32_t(SELECT_MASK & body->id);
+	orbitInstance.position = centerPosition;
+	orbitInstance.scale = 4;
+	orbitInstance.rotation = rotation;
+	orbitInstance.color = renderProperties.orbitHighlight ? LUCID_GAL::Color(1.f, 1.f, 1.f, 1.f) : LUCID_GAL::Color(0, 0, 1, 1);
+	orbitInstance.parameters = LUCID_GAL::Vector4(hu, e, 0.f, constants::two_pi<float32_t>);
+	_orbitBatch.addInstance(_orbitMesh, orbitInstance);
+}
+
 void Renderer::preRender()
 {
 	LUCID_GAL_PIPELINE.setRenderTarget(0, _colorTarget.get());
@@ -402,7 +407,7 @@ void Renderer::renderBackground()
 
 	/// for the stars, simply need to render them into the background (no depth test or write)
 	/// therefore, the near and far planes do not matter.
-	LUCID_GAL::Matrix4x4 projMatrix = LUCID_MATH::perspective(LUCID_GAL::Scalar(_fov), LUCID_GAL::Scalar(_aspect), LUCID_GAL::Scalar(10.f), LUCID_GAL::Scalar(100.f));
+	LUCID_GAL::Matrix4x4 projMatrix = LUCID_MATH::perspective(float32_t (_fov), float32_t (_aspect), float32_t (10.f), float32_t (100.f));
 	_renderContext["projMatrix"] = projMatrix;
 	_renderContext["invProjMatrix"] = LUCID_MATH::inverse(projMatrix);
 	_renderContext["viewProjMatrix"] = projMatrix * viewMatrix;
@@ -414,7 +419,7 @@ void Renderer::renderBackground()
 	LUCID_GAL_PIPELINE.setVertexStream(1, _starInstances.get());
 	_starMesh->renderInstanced(_renderContext, int32_t(_starCount));
 
-	projMatrix = LUCID_MATH::perspective(LUCID_GAL::Scalar(_fov), LUCID_GAL::Scalar(_aspect), adaptiveScale(_culler.zfar), adaptiveScale(_culler.ZFAR_INITIAL));
+	projMatrix = LUCID_MATH::perspective(float32_t (_fov), float32_t (_aspect), adaptiveScale(_culler.zfar), adaptiveScale(_culler.ZFAR_INITIAL));
 	_renderContext["projMatrix"] = projMatrix;
 	_renderContext["invProjMatrix"] = LUCID_MATH::inverse(projMatrix);
 	_renderContext["viewProjMatrix"] = projMatrix * viewMatrix;
@@ -430,7 +435,7 @@ void Renderer::renderScene()
 {
 	LUCID_GAL::Matrix4x4 const &viewMatrix = _renderContext["viewMatrix"].as<LUCID_GAL::Matrix4x4>();
 
-	LUCID_GAL::Matrix4x4 projMatrix = LUCID_MATH::perspective(LUCID_GAL::Scalar(_fov), LUCID_GAL::Scalar(_aspect), adaptiveScale(_culler.znear), adaptiveScale(_culler.zfar));
+	LUCID_GAL::Matrix4x4 projMatrix = LUCID_MATH::perspective(float32_t (_fov), float32_t (_aspect), adaptiveScale(_culler.znear), adaptiveScale(_culler.zfar));
 	_renderContext["projMatrix"] = projMatrix;
 	_renderContext["invProjMatrix"] = LUCID_MATH::inverse(projMatrix);
 	_renderContext["viewProjMatrix"] = projMatrix * viewMatrix;
@@ -446,7 +451,7 @@ void Renderer::renderForeground()
 {
 	LUCID_GAL::Matrix4x4 const &viewMatrix = _renderContext["viewMatrix"].as<LUCID_GAL::Matrix4x4>();
 
-	LUCID_GAL::Matrix4x4 projMatrix = LUCID_MATH::perspective(LUCID_GAL::Scalar(_fov), LUCID_GAL::Scalar(_aspect), adaptiveScale(_culler.ZNEAR_INITIAL), adaptiveScale(_culler.znear));
+	LUCID_GAL::Matrix4x4 projMatrix = LUCID_MATH::perspective(float32_t (_fov), float32_t (_aspect), adaptiveScale(_culler.ZNEAR_INITIAL), adaptiveScale(_culler.znear));
 	_renderContext["projMatrix"] = projMatrix;
 	_renderContext["invProjMatrix"] = LUCID_MATH::inverse(projMatrix);
 	_renderContext["viewProjMatrix"] = projMatrix * viewMatrix;

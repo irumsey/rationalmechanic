@@ -1,8 +1,6 @@
 #pragma once
 
-#include <lucid/units/System.h>
 #include <lucid/math/Defines.h>
-#include <lucid/math/Scalar.h>
 #include <lucid/math/Vector.h>
 
 LUCID_MATH_BEGIN
@@ -76,8 +74,7 @@ LUCID_MATH_BEGIN
 ///	conjugate
 ///
 ///	returns the conjugate of the supplied quaternion
-template<typename T>
-inline Quaternion<T> conjugate(Quaternion<T> const &rhs)
+template<typename T> inline Quaternion<T> conjugate(Quaternion<T> const &rhs)
 {
 	return Quaternion<T>(-rhs.x, -rhs.y, -rhs.z, rhs.w);
 }
@@ -85,8 +82,7 @@ inline Quaternion<T> conjugate(Quaternion<T> const &rhs)
 ///	dot
 ///
 ///	dot product
-template<typename T>
-inline T dot(Quaternion<T> const &lhs, Quaternion<T> const &rhs)
+template<typename T> inline T dot(Quaternion<T> const &lhs, Quaternion<T> const &rhs)
 {
 	return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z + lhs.w * rhs.w;
 }
@@ -94,8 +90,7 @@ inline T dot(Quaternion<T> const &lhs, Quaternion<T> const &rhs)
 ///	lsq
 ///
 ///	length squared
-template<typename T>
-inline T lsq(Quaternion<T> const &rhs)
+template<typename T> inline T lsq(Quaternion<T> const &rhs)
 {
 	return dot(rhs, rhs);
 }
@@ -103,8 +98,7 @@ inline T lsq(Quaternion<T> const &rhs)
 ///	len
 ///
 ///	length
-template<typename T>
-inline T len(Quaternion<T> const &rhs)
+template<typename T> inline T len(Quaternion<T> const &rhs)
 {
 	return sqrt(lsq(rhs));
 }
@@ -112,8 +106,7 @@ inline T len(Quaternion<T> const &rhs)
 ///	normalize
 ///
 ///	return normalized quaternion
-template<typename T>
-inline Quaternion<T> normalize(Quaternion<T> const &rhs)
+template<typename T> inline Quaternion<T> normalize(Quaternion<T> const &rhs)
 {
 	return rhs / len(rhs);
 }
@@ -121,11 +114,10 @@ inline Quaternion<T> normalize(Quaternion<T> const &rhs)
 ///	rotateUsingAxis
 ///
 ///
-template<typename T, typename S, typename Q>
-inline Quaternion<T> rotateUsingAxis(LUCID_VECTOR(T, 3, S, Q) const &axis, LUCID_SCALAR(T, S, LUCID_QUANTITY_PURE) const &theta)
+template<typename T> inline Quaternion<T> rotateUsingAxis(LUCID_VECTOR(T, 3) const &axis, T const &theta)
 {
 	T hTheta = T(0.5) * theta;
-	LUCID_VECTOR(T, 3, S, LUCID_QUANTITY_PURE) n = normalize(axis) * sin(hTheta);
+	LUCID_VECTOR(T, 3) n = normalize(axis) * sin(hTheta);
 
 	return Quaternion<T>(n.x, n.y, n.z, cos(hTheta));
 }
@@ -133,22 +125,20 @@ inline Quaternion<T> rotateUsingAxis(LUCID_VECTOR(T, 3, S, Q) const &axis, LUCID
 ///	transform direction
 ///
 ///
-template<typename T, typename S, typename Q>
-inline LUCID_VECTOR(T, 3, S, Q) transformDirection(Quaternion<T> const q, LUCID_VECTOR(T, 3, S, Q) const &r)
+template<typename T> inline LUCID_VECTOR(T, 3) transformDirection(Quaternion<T> const q, LUCID_VECTOR(T, 3) const &r)
 {
 	Quaternion<T> u = q * Quaternion<T>(r.x, r.y, r.z, T(0)) * conjugate(q);
 
-	return LUCID_VECTOR(T, 3, S, Q)(u.x, u.y, u.z);
+	return LUCID_VECTOR(T, 3)(u.x, u.y, u.z);
 }
 
 ///	slerp
 ///
 ///	spherical interpolation.
-template<typename T>
-inline Quaternion<T> slerp(T t, Quaternion<T> const &q1, Quaternion<T> const &q2)
+template<typename T> inline LUCID_QUATERNION(T) slerp(T t, LUCID_QUATERNION(T) const &q1, LUCID_QUATERNION(T) const &q2)
 {
 	T dp = dot(q1, q2);
-	Quaternion<T> q3 = q2;
+	LUCID_QUATERNION(T) q3 = q2;
 
 	if (dp < T(0))
 	{
@@ -170,8 +160,7 @@ inline Quaternion<T> slerp(T t, Quaternion<T> const &q1, Quaternion<T> const &q2
 ///	slerpNoInvert
 ///
 ///
-template<typename T>
-inline Quaternion<T> slerpNoInvert(T t, Quaternion<T> const &q1, Quaternion<T> const &q2)
+template<typename T> inline LUCID_QUATERNION(T) slerpNoInvert(T t, LUCID_QUATERNION(T) const &q1, LUCID_QUATERNION(T) const &q2)
 {
 	T dp = dot(q1, q2);
 
@@ -189,15 +178,13 @@ inline Quaternion<T> slerpNoInvert(T t, Quaternion<T> const &q1, Quaternion<T> c
 ///	exp
 ///
 ///	returns the exp value of the specified quaternion.
-template<typename T>
-inline Quaternion<T> exp(Quaternion<T> const &rhs)
+template<typename T> inline LUCID_QUATERNION(T) exp(LUCID_QUATERNION(T) const &rhs)
 {
 	T a = sqrt(rhs.x * rhs.x + rhs.y * rhs.y + rhs.z * rhs.z);
-	T sina = sin(a);
-	T cosa = cos(a);
+	LUCID_QUATERNION(T) result(0, 0, 0, cos(a));
 
-	Quaternion<T> result(0, 0, 0, cosa);
-	if (a > T(0))
+	T sina = sin(a);
+	if (sina > T(0))
 	{
 		T coeff = sina / a;
 
@@ -212,13 +199,12 @@ inline Quaternion<T> exp(Quaternion<T> const &rhs)
 ///	log
 ///
 ///	returns the log of the specified quaternion.
-template<typename T>
-inline Quaternion<T> log(Quaternion<T> const &rhs)
+template<typename T> inline LUCID_QUATERNION(T) log(LUCID_QUATERNION(T) const &rhs)
 {
 	T a = acos(rhs.w);
-	T sina = sin(a);
+	LUCID_QUATERNION(T) result(0, 0, 0, 0);
 
-	Quaternion<T> result(0, 0, 0, 0);
+	T sina = sin(a);
 	if (sina > T(0))
 	{
 		T coeff = a / sina;
@@ -234,11 +220,10 @@ inline Quaternion<T> log(Quaternion<T> const &rhs)
 ///	squad
 ///
 ///	spherical spline interpolation.  s1 and s2 are computed using computeControl(...) below.
-template<typename T>
-inline Quaternion<T> squad(T t, Quaternion<T> const &q1, Quaternion<T> const &q2, Quaternion<T> const &s1, Quaternion<T> const &s2)
+template<typename T> inline LUCID_QUATERNION(T) squad(T const &t, LUCID_QUATERNION(T) const &q1, LUCID_QUATERNION(T) const &q2, LUCID_QUATERNION(T) const &s1, LUCID_QUATERNION(T) const &s2)
 {
-	Quaternion<T> c = slerpNoInvert(t, q1, q2);
-	Quaternion<T> d = slerpNoInvert(t, s1, s2);
+	LUCID_QUATERNION(T) c = slerpNoInvert(t, q1, q2);
+	LUCID_QUATERNION(T) d = slerpNoInvert(t, s1, s2);
 
 	return slerpNoInvert(T(2) * t * (T(1) - t), c, d);
 }
@@ -246,10 +231,9 @@ inline Quaternion<T> squad(T t, Quaternion<T> const &q1, Quaternion<T> const &q2
 ///	compute control
 ///
 ///	used to compute spline control values given: previous (q1), current (q2), and next (q3) values.
-template<typename T>
-inline Quaternion<T> computeControl(Quaternion<T> const &q1, Quaternion<T> const &q2, Quaternion<T> const &q3)
+template<typename T> inline LUCID_QUATERNION(T) computeControl(LUCID_QUATERNION(T) const &q1, LUCID_QUATERNION(T) const &q2, LUCID_QUATERNION(T) const &q3)
 {
-	Quaternion<T> q(-q2.x, -q2.y, -q2.z, q2.w);
+	LUCID_QUATERNION(T) q(-q2.x, -q2.y, -q2.z, q2.w);
 
 	return q2 * exp(T(-0.25) * (log(q * q1) + log(q * q3)));
 }

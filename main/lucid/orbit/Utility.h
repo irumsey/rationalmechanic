@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cmath>
-#include <lucid/math/Scalar.h>
+#include <lucid/math/Algorithm.h>
 #include <lucid/math/Vector.h>
 #include <lucid/math/Matrix.h>
 #include <lucid/gal/Types.h>
@@ -16,25 +16,15 @@ LUCID_ORBIT_BEGIN
 ///
 ///
 
-inline LUCID_GAL::Scalar cast(scalar_t rhs)
+inline float32_t cast(scalar_t rhs)
 {
-	return LUCID_GAL::Scalar(float32_t(rhs.value));
+	return float32_t(rhs);
 }
 
-inline scalar_t cast(LUCID_GAL::Scalar rhs)
+inline scalar_t cast(float32_t rhs)
 {
-	return scalar_t(float64_t(rhs.value));
+	return scalar_t (rhs);
 }
-
-//	inline LUCID_GAL::Scalar scale(scalar_t const &rhs)
-//	{
-//		return cast(constants::RUs_per_meter<float64_t> * rhs);
-//	}
-
-//	inline scalar_t inv_scale(LUCID_GAL::Scalar const &rhs)
-//	{
-//		return cast(constants::meters_per_RU<float32_t> * rhs);
-//	}
 
 inline LUCID_GAL::Vector3 cast(vector3_t const &rhs)
 {
@@ -43,18 +33,8 @@ inline LUCID_GAL::Vector3 cast(vector3_t const &rhs)
 
 inline vector3_t cast(LUCID_GAL::Vector3 const &rhs)
 {
-	return vector3_t(float64_t(rhs.x), float64_t(rhs.y), float64_t(rhs.z));
+	return vector3_t(scalar_t(rhs.x), scalar_t(rhs.y), scalar_t(rhs.z));
 }
-
-//	inline LUCID_GAL::Vector3 scale(vector3_t const &rhs)
-//	{
-//		return cast(constants::RUs_per_meter<float64_t> * rhs);
-//	}
-
-//	inline vector3_t inv_scale(LUCID_GAL::Vector3 const &rhs)
-//	{
-//		return cast(constants::meters_per_RU<float32_t> * rhs);
-//	}
 
 inline LUCID_GAL::Matrix3x3 cast(matrix3x3_t const &rhs)
 {
@@ -100,9 +80,9 @@ inline matrix3x3_t rotationFromElements(Elements const &elements)
 ///
 inline void kinematicsFromElements(vector3_t &position, vector3_t &velocity, PhysicalProperties const &centerProperties, Elements const &targetElements, scalar_t jdn)
 {
-	scalar_t const twopi = constants::two_pi<float64_t>;
-	scalar_t const tolsq = constants::tolsq<float64_t>;
-	scalar_t const    dt = constants::seconds_per_day<float64_t> * (jdn - targetElements.JDN);
+	scalar_t const twopi = constants::two_pi<scalar_t>;
+	scalar_t const tolsq = constants::tolsq<scalar_t>;
+	scalar_t const    dt = constants::seconds_per_day<scalar_t> * (jdn - targetElements.JDN);
 	scalar_t const    GM = centerProperties.GM;
 	scalar_t const     e = targetElements.EC;
 	scalar_t const     a = targetElements.A;

@@ -212,7 +212,7 @@ namespace omp
             public override void onMainViewMouseWheel(Planner planner, MouseEventArgs e)
             {
                 // test {
-                Lucid.Math.Scalar scale = new Lucid.Math.Scalar((e.Delta < 0) ? 1e7f : -1e7f);
+                float scale = (e.Delta < 0) ? 1e7f : -1e7f;
                 Lucid.Math.Vector3 delta = scale * Lucid.Math.Util.normalize(planner.cameraFrame.RelativePosition);
 
                 planner.cameraFrame.RelativePosition = planner.cameraFrame.RelativePosition + delta;

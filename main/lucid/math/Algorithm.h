@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <lucid/math/Defines.h>
-#include <lucid/math/Scalar.h>
 #include <lucid/math/Vector.h>
 #include <lucid/math/Matrix.h>
 #include <lucid/math/Quaternion.h>
@@ -16,6 +15,15 @@
 #endif
 
 LUCID_MATH_BEGIN
+
+///
+/// 
+/// 
+
+template<typename T> inline T abs(T const &x)
+{
+	return T(std::abs(x));
+}
 
 /// min / max
 ///
@@ -69,7 +77,7 @@ template<typename T> inline T exclude(T const &x, T const &a, T const &b)
 
 template<typename T> inline T pow(T x, T e)
 {
-	return std::pow(x, e);
+	return T(std::pow(x, e));
 }
 
 ///
@@ -78,7 +86,7 @@ template<typename T> inline T pow(T x, T e)
 
 template<typename T> inline T sqrt(T x)
 {
-	return std::sqrt(x);
+	return T(std::sqrt(x));
 }
 
 ///
@@ -87,12 +95,12 @@ template<typename T> inline T sqrt(T x)
 
 template<typename T> inline T cos(T theta)
 {
-	return std::cos(theta);
+	return T(std::cos(theta));
 }
 
 template<typename T> inline T acos(T x)
 {
-	return std::acos(x);
+	return T(std::acos(x));
 }
 
 ///
@@ -101,12 +109,12 @@ template<typename T> inline T acos(T x)
 
 template<typename T> inline T sin(T theta)
 {
-	return std::sin(theta);
+	return T(std::sin(theta));
 }
 
 template<typename T> inline T asin(T x)
 {
-	return std::asin(x);
+	return T(std::asin(x));
 }
 
 ///
@@ -115,24 +123,23 @@ template<typename T> inline T asin(T x)
 
 template<typename T> inline T tan(T theta)
 {
-	return std::tan(theta);
+	return T(std::tan(theta));
 }
 
 template<typename T> inline T atan(T x)
 {
-	return std::atan(x);
+	return T(std::atan(x));
 }
 
 template<typename T> inline T atan2(T y, T x)
 {
-	return std::atan2(y, x);
+	return T(std::atan2(y, x));
 }
 
 ///	quaternion to matrix
 ///
 ///
-template<typename T>
-inline LUCID_MATRIX(T, 3, 3, LUCID_UNITS::system::none, LUCID_UNITS::quantity::pure) matrixFromQuaternion(LUCID_QUATERNION(T) const &q) 
+template<typename T> inline LUCID_MATRIX(T, 3, 3) matrixFromQuaternion(LUCID_QUATERNION(T) const &q) 
 {
 	T xx = q.x * q.x;
 	T xy = q.x * q.y;
@@ -144,18 +151,17 @@ inline LUCID_MATRIX(T, 3, 3, LUCID_UNITS::system::none, LUCID_UNITS::quantity::p
 	T zz = q.z * q.z;
 	T zw = q.z * q.w;
 
-	return LUCID_MATRIX(T, 3, 3, LUCID_UNITS::system::none, LUCID_UNITS::quantity::pure)(
+	return LUCID_MATRIX(T, 3, 3)(
 		T(1) - T(2) * ( yy + zz ),        T(2) * ( xy - zw ),        T(2) * ( xz + yw ),
-			    T(2) * ( xy + zw ), T(1) - T(2) * ( xx + zz ),        T(2) * ( yz - xw ),
-			    T(2) * ( xz - yw ),        T(2) * ( yz + xw ), T(1) - T(2) * ( xx + yy )
+			   T(2) * ( xy + zw ), T(1) - T(2) * ( xx + zz ),        T(2) * ( yz - xw ),
+			   T(2) * ( xz - yw ),        T(2) * ( yz + xw ), T(1) - T(2) * ( xx + yy )
 	);
 }
 
 ///	matrix to quaternion
 ///
 ///
-template<typename T, typename S, typename Q>
-inline LUCID_QUATERNION(T) quaternionFromMatrix(LUCID_MATRIX(T, 3, 3, S, Q) const &R)
+template<typename T> inline LUCID_QUATERNION(T) quaternionFromMatrix(LUCID_MATRIX(T, 3, 3) const &R)
 {
 	LUCID_QUATERNION(T) q;
 
@@ -172,8 +178,7 @@ inline LUCID_QUATERNION(T) quaternionFromMatrix(LUCID_MATRIX(T, 3, 3, S, Q) cons
 ///	intersects
 ///
 ///	Sphere intersects AABB
-template<typename T, typename S, typename Q>
-inline bool intersects(LUCID_SPHERE(T, S, Q) const &sphere, LUCID_BOX(T, S, Q) const &aabb)
+template<typename T> inline bool intersects(LUCID_SPHERE(T) const &sphere, LUCID_BOX(T) const &aabb)
 {
 	T RR = sphere.radius * sphere.radius;
 
@@ -212,11 +217,10 @@ inline bool intersects(LUCID_SPHERE(T, S, Q) const &sphere, LUCID_BOX(T, S, Q) c
 ///	intersects
 ///
 ///	Frustum intersects AABB
-template<typename T, typename S, typename Q>
-inline bool intersects(LUCID_FRUSTUM(T, S, Q) const &frustum, LUCID_BOX(T, S, Q) const &aabb)
+template<typename T> inline bool intersects(LUCID_FRUSTUM(T) const &frustum, LUCID_BOX(T) const &aabb)
 {
 	int const ELEMENT_COUNT = 3;
-	int const CORNER_COUNT = Frustum<T, S, Q>::CORNER_COUNT;
+	int const CORNER_COUNT = Frustum<T>::CORNER_COUNT;
 
 	for (int i = 0; i < ELEMENT_COUNT; ++i)
 	{
@@ -235,21 +239,21 @@ inline bool intersects(LUCID_FRUSTUM(T, S, Q) const &frustum, LUCID_BOX(T, S, Q)
 		}
 	}
 
-	LUCID_VECTOR(T, 3, S, Q) const boxCorners[] =
+	LUCID_VECTOR(T, 3) const boxCorners[] =
 	{
-		LUCID_VECTOR(T, 3, S, Q)(aabb.min.x, aabb.min.y, aabb.min.z),
-		LUCID_VECTOR(T, 3, S, Q)(aabb.min.x, aabb.min.y, aabb.max.z),
-		LUCID_VECTOR(T, 3, S, Q)(aabb.min.x, aabb.max.y, aabb.min.z),
-		LUCID_VECTOR(T, 3, S, Q)(aabb.min.x, aabb.max.y, aabb.max.z),
-		LUCID_VECTOR(T, 3, S, Q)(aabb.max.x, aabb.min.y, aabb.min.z),
-		LUCID_VECTOR(T, 3, S, Q)(aabb.max.x, aabb.min.y, aabb.max.z),
-		LUCID_VECTOR(T, 3, S, Q)(aabb.max.x, aabb.max.y, aabb.min.z),
-		LUCID_VECTOR(T, 3, S, Q)(aabb.max.x, aabb.max.y, aabb.max.z),
+		LUCID_VECTOR(T, 3)(aabb.min.x, aabb.min.y, aabb.min.z),
+		LUCID_VECTOR(T, 3)(aabb.min.x, aabb.min.y, aabb.max.z),
+		LUCID_VECTOR(T, 3)(aabb.min.x, aabb.max.y, aabb.min.z),
+		LUCID_VECTOR(T, 3)(aabb.min.x, aabb.max.y, aabb.max.z),
+		LUCID_VECTOR(T, 3)(aabb.max.x, aabb.min.y, aabb.min.z),
+		LUCID_VECTOR(T, 3)(aabb.max.x, aabb.min.y, aabb.max.z),
+		LUCID_VECTOR(T, 3)(aabb.max.x, aabb.max.y, aabb.min.z),
+		LUCID_VECTOR(T, 3)(aabb.max.x, aabb.max.y, aabb.max.z),
 	};
 
-	for (int i = 0; i < Frustum<T, S, Q>::PLANE_COUNT; ++i)
+	for (int i = 0; i < Frustum<T>::PLANE_COUNT; ++i)
 	{
-		LUCID_PLANE(T, 3, S, Q) const &plane = frustum.planes[i];
+		LUCID_PLANE(T, 3) const &plane = frustum.planes[i];
 
 		int behind = 0;
 		for (int j = 0; j < CORNER_COUNT; ++j)
@@ -271,8 +275,7 @@ inline bool intersects(LUCID_FRUSTUM(T, S, Q) const &frustum, LUCID_BOX(T, S, Q)
 ///	project
 ///
 ///	project a specified number of 3D points onto an axis and return a min/max range.
-template<typename T, typename S, typename Q>
-inline std::pair<T, T> project(LUCID_VECTOR(T, 3, S, Q) const *vertices, size_t vertexCount, LUCID_VECTOR(T, 3, S, Q) const &axis)
+template<typename T> inline std::pair<T, T> project(LUCID_VECTOR(T, 3) const *vertices, size_t vertexCount, LUCID_VECTOR(T, 3) const &axis)
 {
 	std::pair<T, T> result(0, 0);
 
@@ -281,7 +284,7 @@ inline std::pair<T, T> project(LUCID_VECTOR(T, 3, S, Q) const *vertices, size_t 
 
 	for (int32_t i = 1; i < vertexCount; ++i)
 	{
-		LUCID_SCALAR(T, S, Q) D = dot(vertices[i], axis);
+		T D = dot(vertices[i], axis);
 
 		result.first = std::min(result.first, D);
 		result.second = std::max(result.second, D);
@@ -293,17 +296,16 @@ inline std::pair<T, T> project(LUCID_VECTOR(T, 3, S, Q) const *vertices, size_t 
 ///	intersect
 ///
 ///	3D AABB intersects 3D triangle
-template<typename T, typename S, typename Q>
-inline bool intersect(LUCID_BOX(T, S, Q) const &box, LUCID_VECTOR(T, 3, S, Q) const &v_i, LUCID_VECTOR(T, 3, S, Q) const &v_j, LUCID_VECTOR(T, 3, S, Q) const &v_k)
+template<typename T> inline bool intersect(LUCID_BOX(T) const &box, LUCID_VECTOR(T, 3) const &v_i, LUCID_VECTOR(T, 3) const &v_j, LUCID_VECTOR(T, 3) const &v_k)
 {
-	LUCID_VECTOR(T, 3, S, Q) const boxNormals[] =
+	LUCID_VECTOR(T, 3) const boxNormals[] =
 	{
-		LUCID_VECTOR(T, 3, S, Q)(1, 0, 0),
-		LUCID_VECTOR(T, 3, S, Q)(0, 1, 0),
-		LUCID_VECTOR(T, 3, S, Q)(0, 0, 1),
+		LUCID_VECTOR(T, 3)(1, 0, 0),
+		LUCID_VECTOR(T, 3)(0, 1, 0),
+		LUCID_VECTOR(T, 3)(0, 0, 1),
 	};
 
-	LUCID_VECTOR(T, 3, S, Q) const faceVertices[] = { v_i, v_j, v_k, };
+	LUCID_VECTOR(T, 3) const faceVertices[] = { v_i, v_j, v_k, };
 
 	for (size_t i = 0; i < 3; ++i)
 	{
@@ -314,21 +316,21 @@ inline bool intersect(LUCID_BOX(T, S, Q) const &box, LUCID_VECTOR(T, 3, S, Q) co
 		}
 	}
 
-	LUCID_VECTOR(T, 3, S, Q) const boxVertices[] =
+	LUCID_VECTOR(T, 3) const boxVertices[] =
 	{
-		LUCID_VECTOR(T, 3, S, Q)(box.min.x, box.min.y, box.min.z),
-		LUCID_VECTOR(T, 3, S, Q)(box.min.x, box.min.y, box.max.z),
-		LUCID_VECTOR(T, 3, S, Q)(box.min.x, box.max.y, box.min.z),
-		LUCID_VECTOR(T, 3, S, Q)(box.min.x, box.max.y, box.max.z),
-		LUCID_VECTOR(T, 3, S, Q)(box.max.x, box.min.y, box.min.z),
-		LUCID_VECTOR(T, 3, S, Q)(box.max.x, box.min.y, box.max.z),
-		LUCID_VECTOR(T, 3, S, Q)(box.max.x, box.max.y, box.min.z),
-		LUCID_VECTOR(T, 3, S, Q)(box.max.x, box.max.y, box.max.z),
+		LUCID_VECTOR(T, 3)(box.min.x, box.min.y, box.min.z),
+		LUCID_VECTOR(T, 3)(box.min.x, box.min.y, box.max.z),
+		LUCID_VECTOR(T, 3)(box.min.x, box.max.y, box.min.z),
+		LUCID_VECTOR(T, 3)(box.min.x, box.max.y, box.max.z),
+		LUCID_VECTOR(T, 3)(box.max.x, box.min.y, box.min.z),
+		LUCID_VECTOR(T, 3)(box.max.x, box.min.y, box.max.z),
+		LUCID_VECTOR(T, 3)(box.max.x, box.max.y, box.min.z),
+		LUCID_VECTOR(T, 3)(box.max.x, box.max.y, box.max.z),
 	};
 
 	{
-		LUCID_VECTOR(T, 3, S, Q) const faceNormal = normalize(cross(v_j - v_i, v_k - v_i));
-		LUCID_SCALAR(T, S, Q) D = dot(faceNormal, v_i);
+		LUCID_VECTOR(T, 3) const faceNormal = normalize(cross(v_j - v_i, v_k - v_i));
+		T D = dot(faceNormal, v_i);
 
 		std::pair<T, T> range = project(boxVertices, 8, faceNormal);
 		if ((range.second < D) || (D < range.first))
@@ -337,13 +339,13 @@ inline bool intersect(LUCID_BOX(T, S, Q) const &box, LUCID_VECTOR(T, 3, S, Q) co
 		}
 	}
 
-	LUCID_VECTOR(T, 3, S, Q) const faceEdges[] = { v_j - v_i, v_k - v_j, v_i - v_k, };
+	LUCID_VECTOR(T, 3) const faceEdges[] = { v_j - v_i, v_k - v_j, v_i - v_k, };
 
 	for (size_t i = 0; i < 3; ++i)
 	{
 		for (size_t j = 0; j < 3; ++j)
 		{
-			LUCID_VECTOR(T, 3, S, Q) axis = cross(faceEdges[i], boxNormals[j]);
+			LUCID_VECTOR(T, 3) axis = cross(faceEdges[i], boxNormals[j]);
 
 			std::pair<T, T> boxRange = project(boxVertices, 8, axis);
 			std::pair<T, T> faceRange = project(faceVertices, 3, axis);
@@ -360,26 +362,25 @@ inline bool intersect(LUCID_BOX(T, S, Q) const &box, LUCID_VECTOR(T, 3, S, Q) co
 ///	contains
 ///
 ///	3D Frustum contains 3D AABB
-template<typename T, typename S, typename Q>
-inline bool contains(LUCID_FRUSTUM(T, S, Q) const &frustum, LUCID_BOX(T, S, Q) const &aabb)
+template<typename T> inline bool contains(LUCID_FRUSTUM(T) const &frustum, LUCID_BOX(T) const &aabb)
 {
 	int const CORNER_COUNT = 8;
 
-	LUCID_VECTOR(T, 3, S, Q) const corners[] =
+	LUCID_VECTOR(T, 3) const corners[] =
 	{
-		LUCID_VECTOR(T, 3, S, Q)(aabb.min.x, aabb.min.y, aabb.min.z),
-		LUCID_VECTOR(T, 3, S, Q)(aabb.min.x, aabb.min.y, aabb.max.z),
-		LUCID_VECTOR(T, 3, S, Q)(aabb.min.x, aabb.max.y, aabb.min.z),
-		LUCID_VECTOR(T, 3, S, Q)(aabb.min.x, aabb.max.y, aabb.max.z),
-		LUCID_VECTOR(T, 3, S, Q)(aabb.max.x, aabb.min.y, aabb.min.z),
-		LUCID_VECTOR(T, 3, S, Q)(aabb.max.x, aabb.min.y, aabb.max.z),
-		LUCID_VECTOR(T, 3, S, Q)(aabb.max.x, aabb.max.y, aabb.min.z),
-		LUCID_VECTOR(T, 3, S, Q)(aabb.max.x, aabb.max.y, aabb.max.z),
+		LUCID_VECTOR(T, 3)(aabb.min.x, aabb.min.y, aabb.min.z),
+		LUCID_VECTOR(T, 3)(aabb.min.x, aabb.min.y, aabb.max.z),
+		LUCID_VECTOR(T, 3)(aabb.min.x, aabb.max.y, aabb.min.z),
+		LUCID_VECTOR(T, 3)(aabb.min.x, aabb.max.y, aabb.max.z),
+		LUCID_VECTOR(T, 3)(aabb.max.x, aabb.min.y, aabb.min.z),
+		LUCID_VECTOR(T, 3)(aabb.max.x, aabb.min.y, aabb.max.z),
+		LUCID_VECTOR(T, 3)(aabb.max.x, aabb.max.y, aabb.min.z),
+		LUCID_VECTOR(T, 3)(aabb.max.x, aabb.max.y, aabb.max.z),
 	};
 
-	for (size_t i = 0; i < LUCID_FRUSTUM(T, S, Q)::PLANE_COUNT; ++i)
+	for (size_t i = 0; i < LUCID_FRUSTUM(T)::PLANE_COUNT; ++i)
 	{
-		LUCID_PLANE(T, 3, S, Q) const &plane = frustum.planes[i];
+		LUCID_PLANE(T, 3) const &plane = frustum.planes[i];
 
 		for (size_t j = 0; j < CORNER_COUNT; ++j)
 		{
@@ -394,25 +395,24 @@ inline bool contains(LUCID_FRUSTUM(T, S, Q) const &frustum, LUCID_BOX(T, S, Q) c
 ///	areaProjected
 ///
 ///
-template<typename T, typename S, typename Q>
-inline LUCID_SCALAR(T, S, Q) areaProjected(LUCID_MATRIX(T, 4, 4, S, Q) const &viewProjMatrix, LUCID_SCALAR(T, S, Q) const &znear, LUCID_BOX(T, S, Q) const &aabb)
+template<typename T> inline T areaProjected(LUCID_MATRIX(T, 4, 4) const &viewProjMatrix, T const &znear, LUCID_BOX(T) const &aabb)
 {
 	size_t const CORNER_COUNT = 8;
 
-	LUCID_VECTOR(T, 4, S, Q) const corners[] =
+	LUCID_VECTOR(T, 4) const corners[] =
 	{
-		LUCID_VECTOR(T, 4, S, Q)(aabb.min.x, aabb.min.y, aabb.min.z, T(1)),
-		LUCID_VECTOR(T, 4, S, Q)(aabb.min.x, aabb.min.y, aabb.max.z, T(1)),
-		LUCID_VECTOR(T, 4, S, Q)(aabb.min.x, aabb.max.y, aabb.min.z, T(1)),
-		LUCID_VECTOR(T, 4, S, Q)(aabb.min.x, aabb.max.y, aabb.max.z, T(1)),
-		LUCID_VECTOR(T, 4, S, Q)(aabb.max.x, aabb.min.y, aabb.min.z, T(1)),
-		LUCID_VECTOR(T, 4, S, Q)(aabb.max.x, aabb.min.y, aabb.max.z, T(1)),
-		LUCID_VECTOR(T, 4, S, Q)(aabb.max.x, aabb.max.y, aabb.min.z, T(1)),
-		LUCID_VECTOR(T, 4, S, Q)(aabb.max.x, aabb.max.y, aabb.max.z, T(1)),
+		LUCID_VECTOR(T, 4)(aabb.min.x, aabb.min.y, aabb.min.z, T(1)),
+		LUCID_VECTOR(T, 4)(aabb.min.x, aabb.min.y, aabb.max.z, T(1)),
+		LUCID_VECTOR(T, 4)(aabb.min.x, aabb.max.y, aabb.min.z, T(1)),
+		LUCID_VECTOR(T, 4)(aabb.min.x, aabb.max.y, aabb.max.z, T(1)),
+		LUCID_VECTOR(T, 4)(aabb.max.x, aabb.min.y, aabb.min.z, T(1)),
+		LUCID_VECTOR(T, 4)(aabb.max.x, aabb.min.y, aabb.max.z, T(1)),
+		LUCID_VECTOR(T, 4)(aabb.max.x, aabb.max.y, aabb.min.z, T(1)),
+		LUCID_VECTOR(T, 4)(aabb.max.x, aabb.max.y, aabb.max.z, T(1)),
 	};
 
-	LUCID_VECTOR(T, 4, S, Q) projected = viewProjMatrix * corners[0];
-	projected = projected / exclude(LUCID_SCALAR(T, S, Q)(projected.w), -znear, znear);
+	LUCID_VECTOR(T, 4) projected = viewProjMatrix * corners[0];
+	projected = projected / exclude(T(projected.w), -znear, znear);
 
 	T xmin = projected.x;
 	T ymin = projected.y;
@@ -423,7 +423,7 @@ inline LUCID_SCALAR(T, S, Q) areaProjected(LUCID_MATRIX(T, 4, 4, S, Q) const &vi
 	for (size_t i = 1; i < CORNER_COUNT; ++i)
 	{
 		projected = viewProjMatrix * corners[i];
-		projected = projected / exclude(LUCID_SCALAR(T, S, Q)(projected.w), -znear, znear);
+		projected = projected / exclude(T(projected.w), -znear, znear);
 
 		xmin = std::min(xmin, projected.x);
 		ymin = std::min(ymin, projected.y);

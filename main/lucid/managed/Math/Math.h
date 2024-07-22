@@ -173,19 +173,19 @@ namespace Math {
 			return gcnew Matrix3x3(LUCID_MATH::inverse(rhs->ref));
 		}
 
-		static Matrix3x3 ^rotateAboutX(Scalar ^theta)
+		static Matrix3x3 ^rotateAboutX(float32_t theta)
 		{
-			return gcnew Matrix3x3(LUCID_MATH::rotateAboutX(theta->ref));
+			return gcnew Matrix3x3(LUCID_MATH::rotateAboutX(theta));
 		}
 
-		static Matrix3x3 ^rotateAboutY(Scalar ^theta)
+		static Matrix3x3 ^rotateAboutY(float32_t theta)
 		{
-			return gcnew Matrix3x3(LUCID_MATH::rotateAboutY(theta->ref));
+			return gcnew Matrix3x3(LUCID_MATH::rotateAboutY(theta));
 		}
 
-		static Matrix3x3 ^rotateAboutZ(Scalar ^theta)
+		static Matrix3x3 ^rotateAboutZ(float32_t theta)
 		{
-			return gcnew Matrix3x3(LUCID_MATH::rotateAboutZ(theta->ref));
+			return gcnew Matrix3x3(LUCID_MATH::rotateAboutZ(theta));
 		}
 
 		///
@@ -221,14 +221,14 @@ namespace Math {
 			return gcnew Matrix4x4(LUCID_MATH::inverse(rhs->ref));
 		}
 
-		static Matrix4x4 ^orthographic(Scalar ^width, Scalar ^height, Scalar ^znear, Scalar ^zfar)
+		static Matrix4x4 ^orthographic(float32_t width, float32_t height, float32_t znear, float32_t zfar)
 		{
-			return gcnew Matrix4x4(LUCID_MATH::orthographic(width->ref, height->ref, znear->ref, zfar->ref));
+			return gcnew Matrix4x4(LUCID_MATH::orthographic(width, height, znear, zfar));
 		}
 
-		static Matrix4x4 ^perspective(Scalar ^fov, Scalar ^aspect, Scalar ^znear, Scalar ^zfar)
+		static Matrix4x4 ^perspective(float32_t fov, float32_t aspect, float32_t znear, float32_t zfar)
 		{
-			return gcnew Matrix4x4(LUCID_MATH::perspective(fov->ref, aspect->ref, znear->ref, zfar->ref));
+			return gcnew Matrix4x4(LUCID_MATH::perspective(fov, aspect, znear, zfar));
 		}
 
 		static Matrix4x4 ^look(Vector3 ^position, Vector3 ^target, Vector3 ^up)
@@ -240,9 +240,9 @@ namespace Math {
 		///
 		///
 
-		static Scalar ^areaProjected(Matrix4x4 ^viewProjMatrix, Scalar ^znear, AABB ^aabb)
+		static float32_t areaProjected(Matrix4x4 ^viewProjMatrix, float32_t znear, AABB ^aabb)
 		{
-			return gcnew Scalar(LUCID_MATH::areaProjected(viewProjMatrix->ref, znear->ref, aabb->ref));
+			return LUCID_MATH::areaProjected(viewProjMatrix->ref, znear, aabb->ref);
 		}
 
 		///

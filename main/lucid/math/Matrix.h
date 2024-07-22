@@ -2,16 +2,14 @@
 
 #include <cassert>
 #include <lucid/math/Defines.h>
-#include <lucid/math/Scalar.h>
 #include <lucid/math/Vector.h>
 
 LUCID_MATH_BEGIN
 
-///	Matrix<T, ROWS, COLS, U>
+///	Matrix<T, ROWS, COLS>
 ///
 ///	general matrix template
-template<typename T, size_t ROWS, size_t COLS, typename U>
-struct Matrix
+template<typename T, size_t ROWS, size_t COLS> struct Matrix
 {
 	enum { COUNT = ROWS * COLS };
 
@@ -34,12 +32,11 @@ struct Matrix
 	}
 };
 
-///	Matrix<T, 2, 2, U>
+///	Matrix<T, 2, 2>
 ///
 ///	2x2 specialization of Matrix<>
 ///	providing named members.
-template<typename T, typename U>
-struct Matrix<T, 2, 2, U>
+template<typename T> struct Matrix<T, 2, 2>
 {
 	enum { COUNT = 4 };
 
@@ -84,12 +81,11 @@ struct Matrix<T, 2, 2, U>
 	}
 };
 
-///	Matrix<T, 3, 3, U>
+///	Matrix<T, 3, 3>
 ///
 ///	3x3 specialization of Matrix<>
 ///	providing named members.
-template<typename T, typename U>
-struct Matrix<T, 3, 3, U>
+template<typename T> struct Matrix<T, 3, 3>
 {
 	enum { COUNT = 9 };
 
@@ -138,12 +134,11 @@ struct Matrix<T, 3, 3, U>
 	}
 };
 
-///	Matrix<T, 4, 4, U>
+///	Matrix<T, 4, 4>
 ///
 ///	4x4 specialization of Matrix<>
 ///	providing named members.
-template<typename T, typename U>
-struct Matrix<T, 4, 4, U>
+template<typename T> struct Matrix<T, 4, 4>
 {
 	enum { COUNT = 16 };
 
@@ -201,10 +196,9 @@ LUCID_MATH_END
 ///
 ///
 ///
-template<typename T, size_t ROWS, size_t COLS, typename S, typename Q>
-inline LUCID_MATRIX(T, ROWS, COLS, S, Q) operator-(LUCID_MATRIX(T, ROWS, COLS, S, Q) const &rhs)
+template<typename T, size_t ROWS, size_t COLS> inline LUCID_MATRIX(T, ROWS, COLS) operator-(LUCID_MATRIX(T, ROWS, COLS) const &rhs)
 {
-	LUCID_MATRIX(T, ROWS, COLS, S, Q) result;
+	LUCID_MATRIX(T, ROWS, COLS) result;
 
 	result.elements[0] = -rhs.elements[0];
 	for (size_t i = 1; i < result.COUNT; ++i)
@@ -216,10 +210,9 @@ inline LUCID_MATRIX(T, ROWS, COLS, S, Q) operator-(LUCID_MATRIX(T, ROWS, COLS, S
 ///
 ///
 ///
-template<typename T, size_t ROWS, size_t COLS, typename S, typename Q>
-inline LUCID_MATRIX(T, ROWS, COLS, S, Q) operator+(LUCID_MATRIX(T, ROWS, COLS, S, Q) const &lhs, LUCID_MATRIX(T, ROWS, COLS, S, Q) const &rhs)
+template<typename T, size_t ROWS, size_t COLS> inline LUCID_MATRIX(T, ROWS, COLS) operator+(LUCID_MATRIX(T, ROWS, COLS) const &lhs, LUCID_MATRIX(T, ROWS, COLS) const &rhs)
 {
-	LUCID_MATRIX(T, ROWS, COLS, S, Q) result;
+	LUCID_MATRIX(T, ROWS, COLS) result;
 
 	result.elements[0] = lhs.elements[0] + rhs.elements[0];
 	for (size_t i = 1; i < result.COUNT; ++i)
@@ -231,10 +224,9 @@ inline LUCID_MATRIX(T, ROWS, COLS, S, Q) operator+(LUCID_MATRIX(T, ROWS, COLS, S
 ///
 ///
 ///
-template<typename T, size_t ROWS, size_t COLS, typename S, typename Q>
-inline LUCID_MATRIX(T, ROWS, COLS, S, Q) operator-(LUCID_MATRIX(T, ROWS, COLS, S, Q) const &lhs, LUCID_MATRIX(T, ROWS, COLS, S, Q) const &rhs)
+template<typename T, size_t ROWS, size_t COLS> inline LUCID_MATRIX(T, ROWS, COLS) operator-(LUCID_MATRIX(T, ROWS, COLS) const &lhs, LUCID_MATRIX(T, ROWS, COLS) const &rhs)
 {
-	LUCID_MATRIX(T, ROWS, COLS, S, Q) result;
+	LUCID_MATRIX(T, ROWS, COLS) result;
 
 	result.elements[0] = lhs.elements[0] - rhs.elements[0];
 	for (size_t i = 1; i < result.COUNT; ++i)
@@ -246,10 +238,9 @@ inline LUCID_MATRIX(T, ROWS, COLS, S, Q) operator-(LUCID_MATRIX(T, ROWS, COLS, S
 ///
 ///
 ///
-template<typename T, size_t ROWS, size_t COLS, typename S, typename LQ, typename RQ>
-inline LUCID_MATRIX(T, ROWS, COLS, S, LUCID_QUANTITY_ADD(LQ, RQ)) operator*(LUCID_MATRIX(T, ROWS, COLS, S, LQ) const &lhs, LUCID_SCALAR(T, S, RQ) const &rhs)
+template<typename T, size_t ROWS, size_t COLS> inline LUCID_MATRIX(T, ROWS, COLS) operator*(LUCID_MATRIX(T, ROWS, COLS) const &lhs, T const &rhs)
 {
-	LUCID_MATRIX(T, ROWS, COLS, S, LUCID_QUANTITY_ADD(LQ, RQ)) result;
+	LUCID_MATRIX(T, ROWS, COLS) result;
 
 	result.elements[0] = lhs.elements[0] * rhs;
 	for (size_t i = 1; i < result.COUNT; ++i)
@@ -261,10 +252,9 @@ inline LUCID_MATRIX(T, ROWS, COLS, S, LUCID_QUANTITY_ADD(LQ, RQ)) operator*(LUCI
 ///
 ///
 ///
-template<typename T, size_t ROWS, size_t COLS, typename S, typename LQ, typename RQ>
-inline LUCID_MATRIX(T, ROWS, COLS, S, LUCID_QUANTITY_ADD(LQ, RQ)) operator*(LUCID_SCALAR(T, S, LQ) const &lhs, LUCID_MATRIX(T, ROWS, COLS, S, RQ) const &rhs)
+template<typename T, size_t ROWS, size_t COLS> inline LUCID_MATRIX(T, ROWS, COLS) operator*(T const &lhs, LUCID_MATRIX(T, ROWS, COLS) const &rhs)
 {
-	LUCID_MATRIX(T, ROWS, COLS, S, LUCID_QUANTITY_ADD(LQ, RQ)) result;
+	LUCID_MATRIX(T, ROWS, COLS) result;
 
 	result.elements[0] = lhs * rhs.elements[0];
 	for (size_t i = 1; i < result.COUNT; ++i)
@@ -276,10 +266,9 @@ inline LUCID_MATRIX(T, ROWS, COLS, S, LUCID_QUANTITY_ADD(LQ, RQ)) operator*(LUCI
 ///
 ///
 ///
-template<typename T, size_t ROWS, size_t COLS, typename S, typename LQ, typename RQ>
-inline LUCID_MATRIX(T, ROWS, COLS, S, LUCID_QUANTITY_SUB(LQ, RQ)) operator/(LUCID_MATRIX(T, ROWS, COLS, S, LQ) const &lhs, LUCID_SCALAR(T, S, RQ) const &rhs)
+template<typename T, size_t ROWS, size_t COLS> inline LUCID_MATRIX(T, ROWS, COLS) operator/(LUCID_MATRIX(T, ROWS, COLS) const &lhs, T const &rhs)
 {
-	LUCID_MATRIX(T, ROWS, COLS, S, LUCID_QUANTITY_SUB(LQ, RQ)) result;
+	LUCID_MATRIX(T, ROWS, COLS) result;
 
 	T const coeff = T(1) / rhs;
 
@@ -293,10 +282,9 @@ inline LUCID_MATRIX(T, ROWS, COLS, S, LUCID_QUANTITY_SUB(LQ, RQ)) operator/(LUCI
 ///
 ///
 ///	row vector times matrix: p = q * R
-template<typename T, size_t ROWS, size_t COLS, typename S, typename LQ, typename RQ>
-inline LUCID_VECTOR(T, COLS, S, LUCID_QUANTITY_ADD(LQ, RQ)) operator*(LUCID_VECTOR(T, ROWS, S, LQ) const &lhs, LUCID_MATRIX(T, ROWS, COLS, S, RQ) const &rhs)
+template<typename T, size_t ROWS, size_t COLS> inline LUCID_VECTOR(T, COLS) operator*(LUCID_VECTOR(T, ROWS) const &lhs, LUCID_MATRIX(T, ROWS, COLS) const &rhs)
 {
-	LUCID_VECTOR(T, COLS, S, LUCID_QUANTITY_ADD(LQ, RQ)) result;
+	LUCID_VECTOR(T, COLS) result;
 
 	for (size_t col = 0; col < COLS; ++col)
 	{
@@ -313,10 +301,9 @@ inline LUCID_VECTOR(T, COLS, S, LUCID_QUANTITY_ADD(LQ, RQ)) operator*(LUCID_VECT
 ///
 ///
 ///	matrix times column vector: p = R * q
-template<typename T, size_t ROWS, size_t COLS, typename S, typename LQ, typename RQ>
-inline LUCID_VECTOR(T, ROWS, S, LUCID_QUANTITY_ADD(LQ, RQ)) operator*(LUCID_MATRIX(T, ROWS, COLS, S, LQ) const &lhs, LUCID_VECTOR(T, COLS, S, RQ) const &rhs)
+template<typename T, size_t ROWS, size_t COLS> inline LUCID_VECTOR(T, ROWS) operator*(LUCID_MATRIX(T, ROWS, COLS) const &lhs, LUCID_VECTOR(T, COLS) const &rhs)
 {
-	LUCID_VECTOR(T, ROWS, S, LUCID_QUANTITY_ADD(LQ, RQ)) result;
+	LUCID_VECTOR(T, ROWS) result;
 
 	for (size_t row = 0; row < ROWS; ++row)
 	{
@@ -333,10 +320,9 @@ inline LUCID_VECTOR(T, ROWS, S, LUCID_QUANTITY_ADD(LQ, RQ)) operator*(LUCID_MATR
 ///
 ///
 ///
-template<typename T, size_t ROWS, size_t INNER, size_t COLS, typename S, typename LQ, typename RQ>
-inline LUCID_MATRIX(T, ROWS, COLS, S, LUCID_QUANTITY_ADD(LQ, RQ)) operator*(LUCID_MATRIX(T, ROWS, INNER, S, LQ) const &lhs, LUCID_MATRIX(T, INNER, COLS, S, RQ) const &rhs)
+template<typename T, size_t ROWS, size_t INNER, size_t COLS> inline LUCID_MATRIX(T, ROWS, COLS) operator*(LUCID_MATRIX(T, ROWS, INNER) const &lhs, LUCID_MATRIX(T, INNER, COLS) const &rhs)
 {
-	LUCID_MATRIX(T, ROWS, COLS, S, LUCID_QUANTITY_ADD(LQ, RQ)) result;
+	LUCID_MATRIX(T, ROWS, COLS) result;
 
 	for (size_t row = 0; row < ROWS; ++row)
 	{
@@ -358,10 +344,9 @@ LUCID_MATH_BEGIN
 ///	trace
 ///
 ///	compute the trace of a square matrix
-template<typename T, size_t DIM, typename S, typename Q>
-inline LUCID_SCALAR(T, S, Q) trace(LUCID_MATRIX(T, DIM, DIM, S, Q) const &rhs)
+template<typename T, size_t DIM> inline T trace(LUCID_MATRIX(T, DIM, DIM) const &rhs)
 {
-	LUCID_SCALAR(T, S, Q) result = rhs[0][0];
+	T result = rhs[0][0];
 
 	for (size_t i = 1; i < DIM; ++i)
 		result = result + rhs[i][i];
@@ -372,10 +357,9 @@ inline LUCID_SCALAR(T, S, Q) trace(LUCID_MATRIX(T, DIM, DIM, S, Q) const &rhs)
 ///	transpose
 ///
 ///	compute the transpose of a matrix
-template<typename T, size_t ROWS, size_t COLS, typename S, typename Q>
-inline LUCID_MATRIX(T, COLS, ROWS, S, Q) transpose(LUCID_MATRIX(T, ROWS, COLS, S, Q) const &rhs)
+template<typename T, size_t ROWS, size_t COLS> inline LUCID_MATRIX(T, COLS, ROWS) transpose(LUCID_MATRIX(T, ROWS, COLS) const &rhs)
 {
-	LUCID_MATRIX(T, COLS, ROWS, S, Q) result;
+	LUCID_MATRIX(T, COLS, ROWS) result;
 
 	for (size_t col = 0; col < COLS; ++col)
 		for (size_t row = 0; row < ROWS; ++row)
@@ -388,14 +372,12 @@ inline LUCID_MATRIX(T, COLS, ROWS, S, Q) transpose(LUCID_MATRIX(T, ROWS, COLS, S
 ///
 ///	compute the determinate of a 2x2, 3x3, or 4x4 matrix
 
-template<typename T, typename S, typename Q>
-inline LUCID_SCALAR(T, S, LUCID_QUANTITY_ADD(Q, Q)) determinate(LUCID_MATRIX(T, 2, 2, S, Q) const &rhs)
+template<typename T> inline T determinate(LUCID_MATRIX(T, 2, 2) const &rhs)
 {
-	return LUCID_SCALAR(T, S, LUCID_QUANTITY_ADD(Q, Q))(rhs.xx * rhs.yy - rhs.yx * rhs.xy);
+	return (rhs.xx * rhs.yy - rhs.yx * rhs.xy);
 }
 
-template<typename T, typename S, typename Q>
-inline LUCID_SCALAR(T, S, LUCID_QUANTITY_ADD(Q, LUCID_QUANTITY_ADD(Q, Q))) determinate(LUCID_MATRIX(T, 3, 3, S, Q) const &rhs)
+template<typename T> inline T determinate(LUCID_MATRIX(T, 3, 3) const &rhs)
 {
 	return
 		rhs.xx * (rhs.yy * rhs.zz - rhs.zy * rhs.yz) +
@@ -403,8 +385,7 @@ inline LUCID_SCALAR(T, S, LUCID_QUANTITY_ADD(Q, LUCID_QUANTITY_ADD(Q, Q))) deter
 		rhs.xz * (rhs.yx * rhs.zy - rhs.zx * rhs.yy);
 }
 
-template<typename T, typename S, typename Q>
-inline LUCID_SCALAR(T, S, LUCID_QUANTITY_ADD(Q, LUCID_QUANTITY_ADD(Q, LUCID_QUANTITY_ADD(Q, Q)))) determinate(LUCID_MATRIX(T, 4, 4, S, Q) const &rhs)
+template<typename T> inline T determinate(LUCID_MATRIX(T, 4, 4) const &rhs)
 {
 	return
 		rhs.xw * rhs.yz * rhs.zy * rhs.wx - rhs.xz * rhs.yw * rhs.zy * rhs.wx - rhs.xw * rhs.yy * rhs.zz * rhs.wx + rhs.xy * rhs.yw * rhs.zz * rhs.wx +
@@ -419,10 +400,9 @@ inline LUCID_SCALAR(T, S, LUCID_QUANTITY_ADD(Q, LUCID_QUANTITY_ADD(Q, LUCID_QUAN
 ///
 ///	compute the inverse of a 2x2, 3x3, or 4x4 matrix
 
-template<typename T, typename S, typename Q>
-inline LUCID_MATRIX(T, 2, 2, S, LUCID_QUANTITY_NEG(Q)) inverse(LUCID_MATRIX(T, 2, 2, S, Q) const &rhs)
+template<typename T> inline LUCID_MATRIX(T, 2, 2) inverse(LUCID_MATRIX(T, 2, 2) const &rhs)
 {
-	LUCID_MATRIX(T, 2, 2, S, LUCID_QUANTITY_NEG(Q)) lval;
+	LUCID_MATRIX(T, 2, 2) lval;
 
 	T const coeff = T(1) / determinate(rhs);
 
@@ -435,10 +415,9 @@ inline LUCID_MATRIX(T, 2, 2, S, LUCID_QUANTITY_NEG(Q)) inverse(LUCID_MATRIX(T, 2
 	return lval;
 }
 
-template<typename T, typename S, typename Q>
-inline LUCID_MATRIX(T, 3, 3, S, LUCID_QUANTITY_NEG(Q)) inverse(LUCID_MATRIX(T, 3, 3, S, Q) const &rhs)
+template<typename T> inline LUCID_MATRIX(T, 3, 3) inverse(LUCID_MATRIX(T, 3, 3) const &rhs)
 {
-	LUCID_MATRIX(T, 3, 3, S, LUCID_QUANTITY_NEG(Q)) lval;
+	LUCID_MATRIX(T, 3, 3) lval;
 
 	T const coeff = T(1) / determinate(rhs);
 
@@ -457,10 +436,9 @@ inline LUCID_MATRIX(T, 3, 3, S, LUCID_QUANTITY_NEG(Q)) inverse(LUCID_MATRIX(T, 3
 	return lval;
 }
 
-template<typename T, typename S, typename Q>
-inline LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_NEG(Q)) inverse(LUCID_MATRIX(T, 4, 4, S, Q) const &rhs)
+template<typename T> inline LUCID_MATRIX(T, 4, 4) inverse(LUCID_MATRIX(T, 4, 4) const &rhs)
 {
-	LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_NEG(Q)) lval;
+	LUCID_MATRIX(T, 4, 4) lval;
 
 	T const coeff = T(1) / determinate(rhs);
 
@@ -492,10 +470,9 @@ inline LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_NEG(Q)) inverse(LUCID_MATRIX(T, 4
 ///	compute a rotation matrix about the x axis
 ///
 ///	note: counter clockwise rotation assuming column vector, p = R * q
-template<typename T, typename S, typename Q>
-inline LUCID_MATRIX(T, 3, 3, S, LUCID_QUANTITY_PURE) rotateAboutX(LUCID_SCALAR(T, S, Q) const &theta)
+template<typename T> inline LUCID_MATRIX(T, 3, 3) rotateAboutX(T const &theta)
 {
-	LUCID_MATRIX(T, 3, 3, S, LUCID_QUANTITY_PURE) lval;
+	LUCID_MATRIX(T, 3, 3) lval;
 
 	T c = cos(theta);
 	T s = sin(theta);
@@ -520,10 +497,9 @@ inline LUCID_MATRIX(T, 3, 3, S, LUCID_QUANTITY_PURE) rotateAboutX(LUCID_SCALAR(T
 ///	compute a rotation matrix about the y axis
 ///
 ///	note: counter clockwise rotation assuming column vector, p = R * q
-template<typename T, typename S, typename Q>
-inline LUCID_MATRIX(T, 3, 3, S, LUCID_QUANTITY_PURE) rotateAboutY(LUCID_SCALAR(T, S, Q) const &theta)
+template<typename T> inline LUCID_MATRIX(T, 3, 3) rotateAboutY(T const &theta)
 {
-	LUCID_MATRIX(T, 3, 3, S, LUCID_QUANTITY_PURE) lval;
+	LUCID_MATRIX(T, 3, 3) lval;
 
 	T c = cos(theta);
 	T s = sin(theta);
@@ -548,10 +524,9 @@ inline LUCID_MATRIX(T, 3, 3, S, LUCID_QUANTITY_PURE) rotateAboutY(LUCID_SCALAR(T
 ///	compute a rotation matrix about the z axis
 ///
 ///	note: counter clockwise rotation assuming column vector, p = R * q
-template<typename T, typename S, typename Q>
-inline LUCID_MATRIX(T, 3, 3, S, LUCID_QUANTITY_PURE) rotateAboutZ(LUCID_SCALAR(T, S, Q) const &theta)
+template<typename T> inline LUCID_MATRIX(T, 3, 3) rotateAboutZ(T const &theta)
 {
-	LUCID_MATRIX(T, 3, 3, S, LUCID_QUANTITY_PURE) lval;
+	LUCID_MATRIX(T, 3, 3) lval;
 
 	T c = cos(theta);
 	T s = sin(theta);
@@ -574,14 +549,13 @@ inline LUCID_MATRIX(T, 3, 3, S, LUCID_QUANTITY_PURE) rotateAboutZ(LUCID_SCALAR(T
 ///	rotateUsingDirection (and an up vector)
 ///
 ///
-template<typename T, typename S, typename Q>
-inline LUCID_MATRIX(T, 3, 3, S, LUCID_QUANTITY_PURE) rotateUsingDirection(LUCID_VECTOR(T, 3, S, Q) const &direction, LUCID_VECTOR(T, 3, S, Q) const &up)
+template<typename T> inline LUCID_MATRIX(T, 3, 3) rotateUsingDirection(LUCID_VECTOR(T, 3) const &direction, LUCID_VECTOR(T, 3) const &up)
 {
-	LUCID_VECTOR(T, 3, S, LUCID_QUANTITY_PURE) xaxis = normalize(direction);
-	LUCID_VECTOR(T, 3, S, LUCID_QUANTITY_PURE) yaxis = normalize(cross(up, xaxis));
-	LUCID_VECTOR(T, 3, S, LUCID_QUANTITY_PURE) zaxis = cross(xaxis, yaxis);
+	LUCID_VECTOR(T, 3) xaxis = normalize(direction);
+	LUCID_VECTOR(T, 3) yaxis = normalize(cross(up, xaxis));
+	LUCID_VECTOR(T, 3) zaxis = cross(xaxis, yaxis);
 
-	return LUCID_MATRIX(T, 3, 3, S, LUCID_QUANTITY_PURE)
+	return LUCID_MATRIX(T, 3, 3)
 	(
 		xaxis.x, xaxis.y, xaxis.z,
 		yaxis.x, yaxis.y, yaxis.z,
@@ -595,15 +569,14 @@ inline LUCID_MATRIX(T, 3, 3, S, LUCID_QUANTITY_PURE) rotateUsingDirection(LUCID_
 ///
 ///	note: assumes column vector, p = P * q
 
-template<typename T, typename S, typename Q>
-inline LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_PURE) orthographic(LUCID_SCALAR(T, S, Q) const &width, LUCID_SCALAR(T, S, Q) const &height, LUCID_SCALAR(T, S, Q) const &znear, LUCID_SCALAR(T, S, Q) const &zfar)
+template<typename T> inline LUCID_MATRIX(T, 4, 4) orthographic(T const &width, T const &height, T const &znear, T const &zfar)
 {
 	T const w = width;
 	T const h = height;
 	T const z = znear;
 	T const depth = znear - zfar;
 
-	return LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_PURE)
+	return LUCID_MATRIX(T, 4, 4)
 	(
 		T(2) / w,        0,            0,         0,
 		       0, T(2) / h,            0,         0,
@@ -612,10 +585,9 @@ inline LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_PURE) orthographic(LUCID_SCALAR(T
 	);
 }
 
-template<typename T, typename S, typename Q>
-inline LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_PURE) orthographic(LUCID_SCALAR(T, S, Q) const &left, LUCID_SCALAR(T, S, Q) const &right, LUCID_SCALAR(T, S, Q) const &bottom, LUCID_SCALAR(T, S, Q) const &top, LUCID_SCALAR(T, S, Q) const &znear, LUCID_SCALAR(T, S, Q) const &zfar)
+template<typename T> inline LUCID_MATRIX(T, 4, 4) orthographic(T const &left, T const &right, T const &bottom, T const &top, T const &znear, T const &zfar)
 {
-	return LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_PURE)
+	return LUCID_MATRIX(T, 4, 4)
 	(
 		T(2) / (right - left),                     0,                     0, (left + right) / (left - right),
 	                        0, T(2) / (top - bottom),                     0, (top + bottom) / (bottom - top),
@@ -630,13 +602,12 @@ inline LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_PURE) orthographic(LUCID_SCALAR(T
 ///
 ///	note: assumes column vector, p = P * q
 
-template<typename T, typename S, typename Q>
-inline LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_PURE) perspective(LUCID_SCALAR(T, S, LUCID_QUANTITY_PURE) const &fov, LUCID_SCALAR(T, S, LUCID_QUANTITY_PURE) const &aspect, LUCID_SCALAR(T, S, Q) const &znear, LUCID_SCALAR(T, S, Q) const &zfar)
+template<typename T> inline LUCID_MATRIX(T, 4, 4) perspective(T const &fov, T const &aspect, T const &znear, T const &zfar)
 {
-	T const yscale = T(1) / tan(LUCID_SCALAR(T, S, Q)(0.5) * fov);
+	T const yscale = T(1) / tan(T(0.5) * fov);
 	T const xscale = yscale / aspect;
 
-	return LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_PURE)
+	return LUCID_MATRIX(T, 4, 4)
 	(
 		xscale,      0,                     0,                             0,
              0, yscale,                     0,                             0,
@@ -645,10 +616,9 @@ inline LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_PURE) perspective(LUCID_SCALAR(T,
 	);
 }
 
-template<typename T, typename S, typename Q>
-inline LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_PURE) perspective(LUCID_SCALAR(T, S, Q) const &left, LUCID_SCALAR(T, S, Q) const &right, LUCID_SCALAR(T, S, Q) const &bottom, LUCID_SCALAR(T, S, Q) const &top, LUCID_SCALAR(T, S, Q) const &znear, LUCID_SCALAR(T, S, Q) const &zfar)
+template<typename T> inline LUCID_MATRIX(T, 4, 4) perspective(T const &left, T const &right, T const &bottom, T const &top, T const &znear, T const &zfar)
 {
-	return LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_PURE)
+	return LUCID_MATRIX(T, 4, 4)
 	(
 		T(2) * znear / (right - left),                             0, (left + right) / (right - left),                             0,
 		                            0, T(2) * znear / (top - bottom), (top + bottom) / (top - bottom),                             0,
@@ -662,14 +632,13 @@ inline LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_PURE) perspective(LUCID_SCALAR(T,
 ///	compute a "look at" transformation matrix
 ///
 ///	note: assumes column vector, p = V * q
-template<typename T, typename S, typename Q>
-inline LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_PURE) look(LUCID_VECTOR(T, 3, S, Q) const &eye, LUCID_VECTOR(T, 3, S, Q) const &focus, LUCID_VECTOR(T, 3, S, Q) const &up)
+template<typename T> inline LUCID_MATRIX(T, 4, 4) look(LUCID_VECTOR(T, 3) const &eye, LUCID_VECTOR(T, 3) const &focus, LUCID_VECTOR(T, 3) const &up)
 {
-	LUCID_VECTOR(T, 3, S, LUCID_QUANTITY_PURE) const zaxis = normalize(eye - focus);
-	LUCID_VECTOR(T, 3, S, LUCID_QUANTITY_PURE) const xaxis = normalize(cross(up, zaxis));
-	LUCID_VECTOR(T, 3, S, LUCID_QUANTITY_PURE) const yaxis = cross(zaxis, xaxis);
+	LUCID_VECTOR(T, 3) const zaxis = normalize(eye - focus);
+	LUCID_VECTOR(T, 3) const xaxis = normalize(cross(up, zaxis));
+	LUCID_VECTOR(T, 3) const yaxis = cross(zaxis, xaxis);
 
-	return LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_PURE)
+	return LUCID_MATRIX(T, 4, 4)
 	(
 		xaxis.x, xaxis.y, xaxis.z, -dot(xaxis, eye),
 		yaxis.x, yaxis.y, yaxis.z, -dot(yaxis, eye),
@@ -678,32 +647,28 @@ inline LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_PURE) look(LUCID_VECTOR(T, 3, S, 
 	);
 }
 
-template<typename T, typename S, typename Q>
-inline LUCID_VECTOR(T, 3, S, LUCID_QUANTITY_PURE) extractViewForward(LUCID_MATRIX(T, 4, 4, S, Q) const &viewMatrix)
+template<typename T> inline LUCID_VECTOR(T, 3) extractViewForward(LUCID_MATRIX(T, 4, 4) const &viewMatrix)
 {
-	return LUCID_VECTOR(T, 3, S, LUCID_QUANTITY_PURE)(-viewMatrix.zx, -viewMatrix.zy, -viewMatrix.zz);
+	return LUCID_VECTOR(T, 3)(-viewMatrix.zx, -viewMatrix.zy, -viewMatrix.zz);
 }
 
-template<typename T, typename S, typename Q>
-inline LUCID_VECTOR(T, 3, S, LUCID_QUANTITY_PURE) extractViewRight(LUCID_MATRIX(T, 4, 4, S, Q) const &viewMatrix)
+template<typename T> inline LUCID_VECTOR(T, 3) extractViewRight(LUCID_MATRIX(T, 4, 4) const &viewMatrix)
 {
-	return LUCID_VECTOR(T, 3, S, LUCID_QUANTITY_PURE)(viewMatrix.xx, viewMatrix.xy, viewMatrix.xz);
+	return LUCID_VECTOR(T, 3)(viewMatrix.xx, viewMatrix.xy, viewMatrix.xz);
 }
 
-template<typename T, typename S, typename Q>
-inline LUCID_VECTOR(T, 3, S, LUCID_QUANTITY_PURE) extractViewUp(LUCID_MATRIX(T, 4, 4, S, Q) const &viewMatrix)
+template<typename T> inline LUCID_VECTOR(T, 3) extractViewUp(LUCID_MATRIX(T, 4, 4) const &viewMatrix)
 {
-	return LUCID_VECTOR(T, 3, S, LUCID_QUANTITY_PURE)(viewMatrix.yx, viewMatrix.yy, viewMatrix.yz);
+	return LUCID_VECTOR(T, 3)(viewMatrix.yx, viewMatrix.yy, viewMatrix.yz);
 }
 
 ///
 ///
 ///
-template<typename T, typename S, typename Q>
-inline LUCID_VECTOR(T, 3, S, Q) transform(LUCID_MATRIX(T, 4, 4, S, LUCID_QUANTITY_PURE) const &lhs, LUCID_VECTOR(T, 3, S, Q) const &rhs)
+template<typename T> inline LUCID_VECTOR(T, 3) transform(LUCID_MATRIX(T, 4, 4) const &lhs, LUCID_VECTOR(T, 3) const &rhs)
 {
-	LUCID_VECTOR(T, 4, S, Q) result = lhs * LUCID_VECTOR(T, 4, S, Q)(rhs.x, rhs.y, rhs.z, T(1));
-	return LUCID_VECTOR(T, 3, S, Q)(result.x, result.y, result.z) / LUCID_SCALAR(T, S, Q)(result.w);
+	LUCID_VECTOR(T, 4) result = lhs * LUCID_VECTOR(T, 4)(rhs.x, rhs.y, rhs.z, T(1));
+	return LUCID_VECTOR(T, 3)(result.x, result.y, result.z) / T(result.w);
 }
 
 LUCID_MATH_END

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <lucid/math/Defines.h>
-#include <lucid/math/Scalar.h>
 #include <lucid/math/Vector.h>
 
 LUCID_MATH_BEGIN
@@ -9,15 +8,15 @@ LUCID_MATH_BEGIN
 ///
 ///
 ///
-template<typename T, size_t DIM, typename U>
+template<typename T, size_t DIM>
 struct Sphere
 {
-	Vector<T, DIM, U> center;
-	Scalar<T, U> radius;
+	Vector<T, DIM> center;
+	T radius;
 
 	Sphere() = default;
 
-	Sphere(Vector<T, DIM, U> const &center, Scalar<T, U> const &radius)
+	Sphere(Vector<T, DIM> const &center, T const &radius)
 		: center(center)
 		, radius(radius)
 	{

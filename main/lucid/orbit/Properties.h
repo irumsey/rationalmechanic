@@ -17,9 +17,9 @@ LUCID_ORBIT_BEGIN
 ///
 struct PhysicalProperties
 {
-	scalar_t GM;
-	scalar_t mass;
-	scalar_t radius;
+	scalar_t GM = 0.f;
+	scalar_t mass = 0.f;
+	scalar_t radius = 0.f;
 
 	PhysicalProperties() = default;
 

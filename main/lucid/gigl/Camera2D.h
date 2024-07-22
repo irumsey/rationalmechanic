@@ -25,69 +25,69 @@ public:
 
 	virtual ~Camera2D();
 
-	void initOrthographic(Scalar const &width, Scalar const &height, Scalar const &znear, Scalar const &zfar);
+	void initOrthographic(float32_t width, float32_t height, float32_t znear, float32_t zfar);
 
-	void initOrthographic(Scalar const &left, Scalar const &right, Scalar const &bottom, Scalar const &top, Scalar const &znear, Scalar const &zfar);
+	void initOrthographic(float32_t left, float32_t right, float32_t bottom, float32_t top, float32_t znear, float32_t zfar);
 
-	void initPerspective(Scalar const &fov, Scalar const &aspect, Scalar const &znear, Scalar const &zfar);
+	void initPerspective(float32_t fov, float32_t aspect, float32_t znear, float32_t zfar);
 
-	void initPerspective(Scalar const &left, Scalar const &right, Scalar const &bottom, Scalar const &top, Scalar const &znear, Scalar const &zfar);
+	void initPerspective(float32_t left, float32_t right, float32_t bottom, float32_t top, float32_t znear, float32_t zfar);
 
-	void look(Vector3 const &eye, Vector3 const &target, Vector3 const &up);
+	void look(LUCID_GAL::Vector3 const &eye, LUCID_GAL::Vector3 const &target, LUCID_GAL::Vector3 const &up);
 
-	Vector3 getPosition() const;
+	LUCID_GAL::Vector3 getPosition() const;
 
-	Vector3 getForward() const;
+	LUCID_GAL::Vector3 getForward() const;
 
-	Vector3 getRight() const;
+	LUCID_GAL::Vector3 getRight() const;
 
-	Vector3 getUp() const;
+	LUCID_GAL::Vector3 getUp() const;
 
-	Matrix4x4 const &getViewMatrix() const;
+	LUCID_GAL::Matrix4x4 const &getViewMatrix() const;
 
-	Matrix4x4 const &getProjMatrix() const;
+	LUCID_GAL::Matrix4x4 const &getProjMatrix() const;
 
-	Matrix4x4 const &getViewProjMatrix() const;
+	LUCID_GAL::Matrix4x4 const &getViewProjMatrix() const;
 
 private:
-	Vector3 _position;
-	Matrix4x4 _viewMatrix;
-	Matrix4x4 _projMatrix;
-	Matrix4x4 _viewProjMatrix;
+	LUCID_GAL::Vector3 _position;
+	LUCID_GAL::Matrix4x4 _viewMatrix;
+	LUCID_GAL::Matrix4x4 _projMatrix;
+	LUCID_GAL::Matrix4x4 _viewProjMatrix;
 
 };
 
-inline Vector3 Camera2D::getPosition() const
+inline LUCID_GAL::Vector3 Camera2D::getPosition() const
 {
 	return _position;
 }
 
-inline Vector3 Camera2D::getForward() const
+inline LUCID_GAL::Vector3 Camera2D::getForward() const
 {
 	return LUCID_MATH::extractViewForward(_viewMatrix);
 }
 
-inline Vector3 Camera2D::getRight() const
+inline LUCID_GAL::Vector3 Camera2D::getRight() const
 {
 	return LUCID_MATH::extractViewRight(_viewMatrix);
 }
 
-inline Vector3 Camera2D::getUp() const
+inline LUCID_GAL::Vector3 Camera2D::getUp() const
 {
 	return LUCID_MATH::extractViewUp(_viewMatrix);
 }
 
-inline Matrix4x4 const &Camera2D::getViewMatrix() const
+inline LUCID_GAL::Matrix4x4 const &Camera2D::getViewMatrix() const
 {
 	return _viewMatrix;
 }
 
-inline Matrix4x4 const &Camera2D::getProjMatrix() const
+inline LUCID_GAL::Matrix4x4 const &Camera2D::getProjMatrix() const
 {
 	return _projMatrix;
 }
 
-inline Matrix4x4 const &Camera2D::getViewProjMatrix() const
+inline LUCID_GAL::Matrix4x4 const &Camera2D::getViewProjMatrix() const
 {
 	return _viewProjMatrix;
 }

@@ -49,9 +49,9 @@ Camera2D::Camera2D(LUCID_CORE::Reader &reader)
 		initOrthographic(width, height, znear, zfar);
 	}
 
-	Vector3 position = read<Vector3>(reader);
-	Vector3 target = read<Vector3>(reader);
-	Vector3 up = read<Vector3>(reader);
+	LUCID_GAL::Vector3 position = read<LUCID_GAL::Vector3>(reader);
+	LUCID_GAL::Vector3 target = read<LUCID_GAL::Vector3>(reader);
+	LUCID_GAL::Vector3 up = read<LUCID_GAL::Vector3>(reader);
 
 	look(position, target, up);
 }
@@ -60,31 +60,31 @@ Camera2D::~Camera2D()
 {
 }
 
-void Camera2D::initOrthographic(Scalar const &width, Scalar const &height, Scalar const &znear, Scalar const &zfar)
+void Camera2D::initOrthographic(float32_t width, float32_t height, float32_t znear, float32_t zfar)
 {
 	_projMatrix = LUCID_MATH::orthographic(width, height, znear, zfar);
 	_viewProjMatrix = _projMatrix * _viewMatrix;
 }
 
-void Camera2D::initOrthographic(Scalar const &left, Scalar const &right, Scalar const &bottom, Scalar const &top, Scalar const &znear, Scalar const &zfar)
+void Camera2D::initOrthographic(float32_t left, float32_t right, float32_t bottom, float32_t top, float32_t znear, float32_t zfar)
 {
 	_projMatrix = LUCID_MATH::orthographic(left, right, bottom, top, znear, zfar);
 	_viewProjMatrix = _projMatrix * _viewMatrix;
 }
 
-void Camera2D::initPerspective(Scalar const &fov, Scalar const &aspect, Scalar const &znear, Scalar const &zfar)
+void Camera2D::initPerspective(float32_t fov, float32_t aspect, float32_t znear, float32_t zfar)
 {
 	_projMatrix = LUCID_MATH::perspective(fov, aspect, znear, zfar);
 	_viewProjMatrix = _projMatrix * _viewMatrix;
 }
 
-void Camera2D::initPerspective(Scalar const &left, Scalar const &right, Scalar const &bottom, Scalar const &top, Scalar const &znear, Scalar const &zfar)
+void Camera2D::initPerspective(float32_t left, float32_t right, float32_t bottom, float32_t top, float32_t znear, float32_t zfar)
 {
 	_projMatrix = LUCID_MATH::perspective(left, right, bottom, top, znear, zfar);
 	_viewProjMatrix = _projMatrix * _viewMatrix;
 }
 
-void Camera2D::look(Vector3 const &eye, Vector3 const &target, Vector3 const &up)
+void Camera2D::look(LUCID_GAL::Vector3 const &eye, LUCID_GAL::Vector3 const &target, LUCID_GAL::Vector3 const &up)
 {
 	_position = eye;
 

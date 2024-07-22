@@ -105,16 +105,16 @@ private:
 
 	struct StarInstance
 	{
-		uint32_t id;
+		uint32_t                   id = 0;
 		LUCID_GAL::Vector4 parameters;
-		LUCID_GAL::Color color;
+		LUCID_GAL::Color        color;
 	};
 
 	struct MeshInstance
 	{
-		uint32_t                      id;
+		uint32_t                      id = 0;
 		LUCID_GAL::Vector3      position;
-		float32_t                  scale;
+		float32_t                  scale = 0.f;
 		LUCID_GAL::Quaternion   rotation;
 		LUCID_GAL::Color           color;
 		LUCID_GAL::Vector4    parameters;
@@ -122,7 +122,7 @@ private:
 
 	struct IconInstance
 	{
-		uint32_t                 id;
+		uint32_t                 id = 0;
 		LUCID_GAL::Vector3 position;
 		LUCID_GAL::Vector4 texcoord;
 		LUCID_GAL::Vector2    scale;
@@ -180,11 +180,13 @@ private:
 	PostParameters _fxaaParameters;
 	std::unique_ptr<LUCID_GIGL::Mesh> _fxaa;
 
-	LUCID_GAL::Scalar adaptiveScale(scalar_t const &value) const;
+	float32_t adaptiveScale(scalar_t const &value) const;
 
 	LUCID_GAL::Vector3 adaptiveScale(vector3_t const &value) const;
 
 	void batch(Frame *frame);
+
+	void batchOrbit(OrbitalBody *body);
 
 	void preRender();
 
@@ -208,7 +210,7 @@ private:
 	LUCID_PREVENT_ASSIGNMENT(Renderer);
 };
 
-inline LUCID_GAL::Scalar Renderer::adaptiveScale(scalar_t const &value) const
+inline float32_t Renderer::adaptiveScale(scalar_t const &value) const
 {
 	return cast(_culler.sceneScalingFactor * value);
 }
