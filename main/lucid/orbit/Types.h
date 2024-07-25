@@ -4,6 +4,7 @@
 #include <lucid/math/Defines.h>
 #include <lucid/math/Vector.h>
 #include <lucid/math/Matrix.h>
+#include <lucid/math/Quaternion.h>
 #include <lucid/math/AABB.h>
 #include <lucid/math/Frustum.h>
 #include <lucid/orbit/Defines.h>
@@ -28,6 +29,8 @@ typedef LUCID_MATH::Vector<float64_t, 4>  vector4_t;
 
 typedef LUCID_MATH::Matrix<float64_t, 3, 3> matrix3x3_t;
 typedef LUCID_MATH::Matrix<float64_t, 4, 4> matrix4x4_t;
+
+typedef LUCID_MATH::Quaternion<float64_t> quaternion_t;
 
 typedef LUCID_MATH::AABB<float64_t, 3> aabb3_t;
 

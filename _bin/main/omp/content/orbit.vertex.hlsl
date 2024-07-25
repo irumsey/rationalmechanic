@@ -8,7 +8,7 @@ OutputVertex main(InputVertex input)
 	float hu = input.parameters.x;
 	float ecc = input.parameters.y;
 	float2 domain = input.parameters.zw;
-	 
+	
 	float4x4 worldMatrix = matrixFromQuaternion(input.rotation, input.focus);
 
 	float theta0 = (domain.y - domain.x) * input.vertex.x + domain.x;

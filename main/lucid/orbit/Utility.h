@@ -55,6 +55,11 @@ inline LUCID_GAL::Matrix4x4 cast(matrix4x4_t const &rhs)
 	);
 }
 
+inline LUCID_GAL::Quaternion cast(quaternion_t const &rhs)
+{
+	return LUCID_GAL::Quaternion(float32_t(rhs.x), float32_t(rhs.y), float32_t(rhs.z), float32_t(rhs.w));
+}
+
 ///
 /// 
 /// 

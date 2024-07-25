@@ -18,7 +18,7 @@
 
 #include <lucid/gigl/Font.h>
 
-// give this a try, see if i like it...
+// give these macros a try, see if i like them...
 #define GET_MATERIAL_PARAMETER(mesh, name) mesh->material()->program()->lookup( #name )
 #define SET_MATERIAL_PARAMETER(mesh, param, value) mesh->material()->program()->set(param, value)
 
@@ -96,7 +96,6 @@ Renderer::~Renderer()
 void Renderer::evaluate(DynamicPoint *point)
 {
 	LUCID_PROFILE_SCOPE("Renderer::evaluate(DynamicPoint)");
-
 	///	TBD: implement
 }
 
@@ -322,33 +321,41 @@ void Renderer::batch(Frame *frame)
 
 void Renderer::batchOrbit(OrbitalBody *body)
 {
-	PhysicalProperties const &physicalProperties = body->physicalProperties;
 	RenderProperties const &renderProperties = body->renderProperties;
-	Elements const *elements = body->elements;
-
 	if (!renderProperties.showOrbit)
 		return;
 
+	PhysicalProperties const &physicalProperties = body->physicalProperties;
+	Elements const *elements = body->elements;
+
 	Frame const *centerFrame = body->centerFrame;
-	LUCID_GAL::Vector3 centerPosition = adaptiveScale(LUCID_MATH::lerp(_interpolant, centerFrame->absolutePosition[0], centerFrame->absolutePosition[1]) - _cameraPosition);
+	vector3_t centerPosition = LUCID_MATH::lerp(_interpolant, centerFrame->absolutePosition[0], centerFrame->absolutePosition[1]);
 
-	float32_t   a = adaptiveScale(LUCID_MATH::lerp(_interpolant, elements[0].A, elements[1].A));
-	float32_t   e = cast(LUCID_MATH::lerp(_interpolant, elements[0].EC, elements[1].EC));
-	float32_t  hu = a * (1.f - e * e);
+	quaternion_t q0 = LUCID_MATH::quaternionFromMatrix(rotationFromElements(elements[0]));
+	quaternion_t q1 = LUCID_MATH::quaternionFromMatrix(rotationFromElements(elements[1]));
+	quaternion_t  q = LUCID_MATH::slerp(_interpolant, q0, q1);
 
-	LUCID_GAL::Quaternion rotation = LUCID_MATH::slerp(
-		cast(_interpolant),
-		LUCID_MATH::quaternionFromMatrix(cast(rotationFromElements(elements[0]))),
-		LUCID_MATH::quaternionFromMatrix(cast(rotationFromElements(elements[1])))
-	);
+	/// test {
+#if true
+	matrix3x3_t invWorldMatrix = LUCID_MATH::inverse(LUCID_MATH::matrixFromQuaternion(q));
+	vector3_t localCameraPosition = invWorldMatrix * (_cameraPosition - centerPosition);
+	scalar_t theta = LUCID_MATH::atan2(localCameraPosition.y, localCameraPosition.x);
+	theta = (theta >= 0) ? theta : constants::two_pi<float64_t> + theta;
+	scalar_t iterOrigin = theta / constants::two_pi<float64_t>;
+#endif
+	/// } test
+
+	float32_t  a = adaptiveScale(LUCID_MATH::lerp(_interpolant, elements[0].A, elements[1].A));
+	float32_t  e = cast(LUCID_MATH::lerp(_interpolant, elements[0].EC, elements[1].EC));
+	float32_t hu = a * (1.f - e * e);
 
 	MeshInstance orbitInstance;
 	orbitInstance.id = (SELECT_ORBIT << SELECT_SHIFT) | uint32_t(SELECT_MASK & body->id);
-	orbitInstance.position = centerPosition;
+	orbitInstance.position = adaptiveScale(centerPosition - _cameraPosition);
 	orbitInstance.scale = 4;
-	orbitInstance.rotation = rotation;
+	orbitInstance.rotation = cast(q);
 	orbitInstance.color = renderProperties.orbitHighlight ? LUCID_GAL::Color(1.f, 1.f, 1.f, 1.f) : LUCID_GAL::Color(0, 0, 1, 1);
-	orbitInstance.parameters = LUCID_GAL::Vector4(hu, e, 0.f, constants::two_pi<float32_t>);
+	orbitInstance.parameters = LUCID_GAL::Vector4(hu, e, /* from */ 0, /* to */ constants::two_pi<float32_t>);
 	_orbitBatch.addInstance(_orbitMesh, orbitInstance);
 }
 
