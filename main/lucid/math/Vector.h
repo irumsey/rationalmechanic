@@ -84,12 +84,22 @@ template<typename T> struct Vector<T, 3>
 	{
 	}
 
+	Vector(Vector<T, 2> const &r, T const &z)
+		: x(r.x), y(r.y), z(z)
+	{
+	}
+
 	Vector(T const &x, T const &y, T const &z)
 		: x(x), y(y), z(z)
 	{
 	}
 
 	~Vector() = default;
+
+	Vector<T, 2> xy() const
+	{
+		return Vector<T, 2>(x, y);
+	}
 
 	T &operator[](size_t i)
 	{
@@ -121,18 +131,27 @@ template<typename T> struct Vector<T, 4>
 	{
 	}
 
+	Vector(Vector<T, 3> const &r, T const &w)
+		: x(r.x), y(r.y), z(r.z), w(w)
+	{
+	}
+
 	Vector(T const &x, T const &y, T const &z, T const &w)
 		: x(x), y(y), z(z), w(w)
 	{
 	}
 
-	Vector(Vector<T, 3> const &v, T const &w)
-		: x(v.x), y(v.y), z(v.z)
-		, w(w)
+	~Vector() = default;
+
+	Vector<T, 2> xy() const
 	{
+		return Vector<T, 2>(x, y);
 	}
 
-	~Vector() = default;
+	Vector<T, 3> xyz() const
+	{
+		return Vector<T, 3>(x, y, z);
+	}
 
 	T &operator[](size_t i)
 	{

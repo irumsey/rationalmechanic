@@ -278,6 +278,7 @@ void Renderer::render(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t time,
 	_renderContext["lightPosition"] = adaptiveScale(vector3_t(0, 0, 0) - _cameraPosition);
 
 	LUCID_GAL::Matrix4x4 viewMatrix = LUCID_MATH::look(LUCID_GAL::Vector3(0, 0, 0), adaptiveScale(_focusPosition - _cameraPosition), LUCID_GAL::Vector3(0, 0, 1));
+
 	_renderContext["viewPosition"] = LUCID_GAL::Vector3(0, 0, 0);
 	_renderContext["viewForward"] = LUCID_MATH::extractViewForward(viewMatrix);
 	_renderContext["viewRight"] = LUCID_MATH::extractViewRight(viewMatrix);
@@ -334,16 +335,6 @@ void Renderer::batchOrbit(OrbitalBody *body)
 	quaternion_t q0 = LUCID_MATH::quaternionFromMatrix(rotationFromElements(elements[0]));
 	quaternion_t q1 = LUCID_MATH::quaternionFromMatrix(rotationFromElements(elements[1]));
 	quaternion_t  q = LUCID_MATH::slerp(_interpolant, q0, q1);
-
-	/// test {
-#if true
-	matrix3x3_t invWorldMatrix = LUCID_MATH::inverse(LUCID_MATH::matrixFromQuaternion(q));
-	vector3_t localCameraPosition = invWorldMatrix * (_cameraPosition - centerPosition);
-	scalar_t theta = LUCID_MATH::atan2(localCameraPosition.y, localCameraPosition.x);
-	theta = (theta >= 0) ? theta : constants::two_pi<float64_t> + theta;
-	scalar_t iterOrigin = theta / constants::two_pi<float64_t>;
-#endif
-	/// } test
 
 	float32_t  a = adaptiveScale(LUCID_MATH::lerp(_interpolant, elements[0].A, elements[1].A));
 	float32_t  e = cast(LUCID_MATH::lerp(_interpolant, elements[0].EC, elements[1].EC));
@@ -426,7 +417,13 @@ void Renderer::renderBackground()
 	LUCID_GAL_PIPELINE.setVertexStream(1, _starInstances.get());
 	_starMesh->renderInstanced(_renderContext, int32_t(_starCount));
 
-	projMatrix = LUCID_MATH::perspective(float32_t (_fov), float32_t (_aspect), adaptiveScale(_culler.zfar), adaptiveScale(_culler.ZFAR_INITIAL));
+	float32_t znear = adaptiveScale(_culler.zfar);
+	float32_t zfar = adaptiveScale(_culler.ZFAR_INITIAL);
+
+	projMatrix = LUCID_MATH::perspective(float32_t (_fov), float32_t (_aspect), znear, zfar);
+
+	_renderContext["znear"] = znear;
+	_renderContext["zfar"] = zfar;
 	_renderContext["projMatrix"] = projMatrix;
 	_renderContext["invProjMatrix"] = LUCID_MATH::inverse(projMatrix);
 	_renderContext["viewProjMatrix"] = projMatrix * viewMatrix;
@@ -442,7 +439,14 @@ void Renderer::renderScene()
 {
 	LUCID_GAL::Matrix4x4 const &viewMatrix = _renderContext["viewMatrix"].as<LUCID_GAL::Matrix4x4>();
 
-	LUCID_GAL::Matrix4x4 projMatrix = LUCID_MATH::perspective(float32_t (_fov), float32_t (_aspect), adaptiveScale(_culler.znear), adaptiveScale(_culler.zfar));
+	float32_t znear = adaptiveScale(_culler.znear);
+	float32_t zfar = adaptiveScale(_culler.zfar);
+
+	LUCID_GAL::Matrix4x4 projMatrix = LUCID_MATH::perspective(float32_t(_fov), float32_t(_aspect), znear, zfar);
+
+	_renderContext["znear"] = znear;
+	_renderContext["zfar"] = zfar;
+
 	_renderContext["projMatrix"] = projMatrix;
 	_renderContext["invProjMatrix"] = LUCID_MATH::inverse(projMatrix);
 	_renderContext["viewProjMatrix"] = projMatrix * viewMatrix;
@@ -458,7 +462,14 @@ void Renderer::renderForeground()
 {
 	LUCID_GAL::Matrix4x4 const &viewMatrix = _renderContext["viewMatrix"].as<LUCID_GAL::Matrix4x4>();
 
-	LUCID_GAL::Matrix4x4 projMatrix = LUCID_MATH::perspective(float32_t (_fov), float32_t (_aspect), adaptiveScale(_culler.ZNEAR_INITIAL), adaptiveScale(_culler.znear));
+	float32_t znear = adaptiveScale(_culler.ZNEAR_INITIAL);
+	float32_t zfar = adaptiveScale(_culler.znear);
+
+	LUCID_GAL::Matrix4x4 projMatrix = LUCID_MATH::perspective(float32_t(_fov), float32_t(_aspect), znear, zfar);
+
+	_renderContext["znear"] = znear;
+	_renderContext["zfar"] = zfar;
+
 	_renderContext["projMatrix"] = projMatrix;
 	_renderContext["invProjMatrix"] = LUCID_MATH::inverse(projMatrix);
 	_renderContext["viewProjMatrix"] = projMatrix * viewMatrix;

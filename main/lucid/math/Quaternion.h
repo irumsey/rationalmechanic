@@ -13,7 +13,10 @@ template<typename T> struct Quaternion
 	T x, y, z;
 	T w;
 
-	Quaternion() = default;
+	Quaternion()
+		: x(1), y(0), z(0), w(1)
+	{
+	}
 
 	Quaternion(T const &x, T const &y, T const &z, T const &w)
 		: x(x), y(y), z(z)

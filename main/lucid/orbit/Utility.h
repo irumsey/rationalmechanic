@@ -26,6 +26,11 @@ inline scalar_t cast(float32_t rhs)
 	return scalar_t (rhs);
 }
 
+inline LUCID_GAL::Vector2 cast(vector2_t const &rhs)
+{
+	return LUCID_GAL::Vector2(float32_t(rhs.x), float32_t(rhs.y));
+}
+
 inline LUCID_GAL::Vector3 cast(vector3_t const &rhs)
 {
 	return LUCID_GAL::Vector3(float32_t(rhs.x), float32_t(rhs.y), float32_t(rhs.z));
@@ -67,7 +72,7 @@ inline vector2_t computeConicPoint(scalar_t hu, scalar_t e, scalar_t theta)
 {
 	scalar_t c = LUCID_MATH::cos(theta);
 	scalar_t s = LUCID_MATH::sin(theta);
-	scalar_t r = hu / (scalar_t(1.0) + e * c);
+	scalar_t r = hu / (1.0 + e * c);
 
 	return r * vector2_t(c, s);
 }

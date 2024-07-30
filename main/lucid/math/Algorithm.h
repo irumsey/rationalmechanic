@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <lucid/core/Numbers.h>
 #include <lucid/math/Defines.h>
 #include <lucid/math/Vector.h>
 #include <lucid/math/Matrix.h>
@@ -15,6 +16,15 @@
 #endif
 
 LUCID_MATH_BEGIN
+
+///
+/// 
+/// 
+
+template<typename T> inline T sign(T const &x)
+{
+	return (x < 0) ? T(-1) : T(1);
+}
 
 ///
 /// 
@@ -173,6 +183,18 @@ template<typename T> inline LUCID_QUATERNION(T) quaternionFromMatrix(LUCID_MATRI
 	q.z = coeff * (R.yx - R.xy);
 
 	return q;
+}
+
+///	intersects
+///
+///	Segment intersects Plane
+/// 0 <= t <= 1 segment intersects plane (point = (p1 - p0) * t + p0)
+template<typename T> inline T intersects(LUCID_PLANE(T, 3) const &plane, LUCID_VECTOR(T, 3) const &p0, LUCID_VECTOR(T, 3) const &p1)
+{
+	T D = LUCID_MATH::dot(p1 - p0, plane.n);
+	if ((D * D) > LUCID_CORE_NUMBERS::tolsq<T>)
+		return (plane.d - LUCID_MATH::dot(plane.n, p0)) / D;
+	return LUCID_CORE_NUMBERS::inf<T>;
 }
 
 ///	intersects

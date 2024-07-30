@@ -47,7 +47,7 @@ void Culler::cull(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t const &in
 	cull(rootFrame);
 
 	znear = LUCID_MATH::min(znear, zfar * LUCID_MATH::cos(fov));
-
+	
 	sceneScalingFactor = 1.0 / (zfar - znear);
 }
 
