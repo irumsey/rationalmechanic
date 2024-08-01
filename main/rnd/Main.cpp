@@ -2,6 +2,7 @@
 ///	Includes...
 ///
 #include <windows.h>
+#include <windowsx.h>
 
 #include <lucid/gal/Pipeline.h>
 #include <lucid/gal/System.h>
@@ -13,10 +14,6 @@
 #include <sstream>
 #include "Utility.h"
 #include "Session.h"
-
-namespace core = ::lucid::core;
-namespace  gal = ::lucid:: gal;
-namespace math = ::lucid::math;
 
 ///
 ///	Constants...
@@ -55,14 +52,42 @@ void onRender()
 {
 	LUCID_PROFILE_BEGIN("Render");
 
-	lucid::gal::Pipeline &pipeline = lucid::gal::Pipeline::instance();
-
-	pipeline.beginScene();
-	pipeline.clear(true, true, true, gal::Color(0, 0, 0, 1), 1.f);
+	LUCID_GAL_PIPELINE.beginScene();
+	LUCID_GAL_PIPELINE.clear(true, true, true, LUCID_GAL::Color(0, 0, 0, 1), 1.f);
 
 	session.render(wallTime, frameInterpolant);
 
-	pipeline.endScene();
+	LUCID_GAL_PIPELINE.endScene();
+
+	LUCID_PROFILE_END();
+}
+
+///
+/// 
+/// 
+void onMouseMiddleButton(bool btnDown, point2d_t const &point)
+{
+	LUCID_PROFILE_BEGIN("Middle Mouse Button");
+
+	session.onMouseMiddleButton(btnDown, point);
+
+	LUCID_PROFILE_END();
+}
+
+void onMouseWheel(int32_t delta)
+{
+	LUCID_PROFILE_BEGIN("Mouse Wheel");
+
+	session.onMouseWheel(delta);
+
+	LUCID_PROFILE_END();
+}
+
+void onMouseMove(point2d_t const &point)
+{
+	LUCID_PROFILE_BEGIN("Mouse Move");
+
+	session.onMouseMove(point);
 
 	LUCID_PROFILE_END();
 }
@@ -93,6 +118,22 @@ LRESULT WINAPI onMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		}
 		break;
 
+	case WM_MBUTTONDOWN:
+		::onMouseMiddleButton(true, point2d_t(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)));
+		break;
+
+	case WM_MBUTTONUP:
+		::onMouseMiddleButton(false, point2d_t(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)));
+		break;
+
+	case WM_MOUSEWHEEL:
+		::onMouseWheel(GET_WHEEL_DELTA_WPARAM(wParam));
+		break;
+
+	case WM_MOUSEMOVE:
+		::onMouseMove(point2d_t(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)));
+		break;
+
 	case WM_INPUT:
 		break;
 
@@ -113,10 +154,9 @@ INT WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR cmdln, _In_ IN
 	///
 	///
 	///
-	core::Logger &coreLogger = core::Logger::instance();
-	gal::System &galSystem = gal::System::instance();
+	LUCID_CORE::Logger &coreLogger = LUCID_CORE::Logger::instance();
 
-	core::FileLog coreFileLog("results.log");
+	LUCID_CORE::FileLog coreFileLog("results.log");
 	coreLogger.addListener(&coreFileLog);
 
 	INT exitCode = 0;
@@ -162,13 +202,13 @@ INT WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR cmdln, _In_ IN
 		RECT rect;
 		::GetClientRect(hWindow, &rect);
 
-		galSystem.initialize(true, rect.right - rect.left, rect.bottom - rect.top, 1, hWindow);
+		LUCID_GAL_SYSTEM.initialize(true, rect.right - rect.left, rect.bottom - rect.top, 1, hWindow);
 		::ShowWindow(hWindow, SW_SHOW);
 
 		///
 		///	Get a clock and initialize the time(s)...
 		///
-		std::auto_ptr<core::Clock> wallClock(core::Clock::create());
+		std::auto_ptr<LUCID_CORE::Clock> wallClock(LUCID_CORE::Clock::create());
 
 		simTime = 0.f;
 
@@ -220,7 +260,7 @@ INT WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR cmdln, _In_ IN
 
 		::dumpProfileData("profile.log");
 	}
-	catch (core::Error const &error)
+	catch (LUCID_CORE::Error const &error)
 	{
 		log("ERR", error.what());
 		exitCode = 1;
@@ -232,7 +272,7 @@ INT WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR cmdln, _In_ IN
 	}
 
 	///	Shutdown...
-	galSystem.shutdown();
+	LUCID_GAL_SYSTEM.shutdown();
 
 	///	Stop watching
 	coreLogger.removeListener(&coreFileLog);

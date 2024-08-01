@@ -375,3 +375,13 @@ ModelManifest.xml
 /_bin/main/omp/content/fonts.pixel.cso
 /_bin/main/omp/content/fonts.vertex.cso
 /_bin/main/omp/content/OCRa.font
+/_bin/main/rnd/content/hemisphere.geometry
+/_bin/main/rnd/content/hemisphere.material
+/_bin/main/rnd/content/hemisphere.mesh
+/_bin/main/rnd/content/hemisphere.pixel.cso
+/_bin/main/rnd/content/hemisphere.vertex.cso
+/_bin/main/rnd/content/orbit.geometry
+/_bin/main/rnd/content/orbit.material
+/_bin/main/rnd/content/orbit.mesh
+/_bin/main/rnd/content/orbit.pixel.cso
+/_bin/main/rnd/content/orbit.vertex.cso

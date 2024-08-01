@@ -85,6 +85,8 @@ private:
 
 	scalar_t _interpolant;
 
+	vector3_t _cameraPosition;
+
 	matrix4x4_t _projMatrix;
 	matrix4x4_t _viewMatrix;
 	matrix4x4_t _viewProjMatrix;

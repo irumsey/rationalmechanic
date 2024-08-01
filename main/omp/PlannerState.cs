@@ -340,8 +340,8 @@ namespace omp
                 planner.orbitalMechainics.Detach(planner.cameraFrame);
                 planner.orbitalMechainics.Attach(parentFrame, planner.cameraFrame);
 
-                float distance = (float)(3.0 * (parentFrame as OrbitalBody).PhysicalProps.Radius);
-                planner.cameraFrame.RelativePosition = new Lucid.Math.Vector3(distance, distance, 2.0f * distance);
+                float distance = (float)((parentFrame as OrbitalBody).PhysicalProps.Radius);
+                planner.cameraFrame.RelativePosition = new Lucid.Math.Vector3(distance, distance, 10.0f * distance);
 
                 Logger.Log("INFO", "camera attached to frame: " + parentFrame.Name);
             }

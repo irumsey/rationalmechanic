@@ -21,34 +21,32 @@ void Culler::cull(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t const &in
 {
 	LUCID_PROFILE_SCOPE("Culler::cull()");
 
-	scalar_t screenWidth = scalar_t(LUCID_GAL_SYSTEM.width());
-	scalar_t screenHeight = scalar_t(LUCID_GAL_SYSTEM.height());
-	scalar_t const aspect = scalar_t(LUCID_GAL_SYSTEM.aspect());
-
 	scalar_t const fov = cameraFrame->fov;
+	scalar_t const aspect = scalar_t(LUCID_GAL_SYSTEM.aspect());
 
 	_interpolant = interpolant;
 
 	znear = ZNEAR_INITIAL;
 	zfar = ZFAR_INITIAL;
 
-	vector3_t cameraPosition = LUCID_MATH::lerp(interpolant, cameraFrame->absolutePosition[0], cameraFrame->absolutePosition[1]);
+	_cameraPosition = LUCID_MATH::lerp(interpolant, cameraFrame->absolutePosition[0], cameraFrame->absolutePosition[1]);
 	vector3_t focusPosition = LUCID_MATH::lerp(interpolant, cameraFrame->focus->absolutePosition[0], cameraFrame->focus->absolutePosition[1]);
 
 	_projMatrix = LUCID_MATH::perspective(fov, aspect, znear, zfar);
-	_viewMatrix = LUCID_MATH::look(cameraPosition, focusPosition, vector3_t(0, 0, 1));
+	_viewMatrix = LUCID_MATH::look(vector3_t(0, 0, 0), (focusPosition - _cameraPosition), vector3_t(0, 0, 1));
 	_viewProjMatrix = _projMatrix * _viewMatrix;
 	_invViewProjMatrix = LUCID_MATH::inverse(_viewProjMatrix);
 
 	_frustum = LUCID_MATH::makeFrustum3(_invViewProjMatrix);
 
 	std::swap(znear, zfar);
-
 	cull(rootFrame);
-
 	znear = LUCID_MATH::min(znear, zfar * LUCID_MATH::cos(fov));
-	
-	sceneScalingFactor = 1.0 / (zfar - znear);
+
+	znear = 100.0;
+	zfar = constants::meters_per_AU<scalar_t>;
+
+	sceneScalingFactor = 1e-6;
 }
 
 void Culler::evaluate(DynamicPoint *point)
@@ -63,8 +61,8 @@ void Culler::evaluate(OrbitalBody *body)
 	static scalar_t const hysteresis[2] = { 0.0001, 0.0003, };
 
 	aabb3_t aabbTotal = aabb3_t(
-		LUCID_MATH::lerp(_interpolant, body->aabbTotal[0].min, body->aabbTotal[1].min),
-		LUCID_MATH::lerp(_interpolant, body->aabbTotal[0].max, body->aabbTotal[1].max)
+		LUCID_MATH::lerp(_interpolant, body->aabbTotal[0].min, body->aabbTotal[1].min) - _cameraPosition,
+		LUCID_MATH::lerp(_interpolant, body->aabbTotal[0].max, body->aabbTotal[1].max) - _cameraPosition
 	);
 
 	if (!LUCID_MATH::intersects(_frustum, aabbTotal))
@@ -74,8 +72,8 @@ void Culler::evaluate(OrbitalBody *body)
 	}
 
 	aabb3_t aabbBody = aabb3_t(
-		LUCID_MATH::lerp(_interpolant, body->aabbSelf[0].min, body->aabbSelf[1].min),
-		LUCID_MATH::lerp(_interpolant, body->aabbSelf[0].max, body->aabbSelf[1].max)
+		LUCID_MATH::lerp(_interpolant, body->aabbSelf[0].min, body->aabbSelf[1].min) - _cameraPosition,
+		LUCID_MATH::lerp(_interpolant, body->aabbSelf[0].max, body->aabbSelf[1].max) - _cameraPosition
 	);
 
 	if (!LUCID_MATH::intersects(_frustum, aabbBody))

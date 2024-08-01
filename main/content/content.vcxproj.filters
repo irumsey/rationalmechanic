@@ -48,18 +48,6 @@
     <FxCompile Include="..\..\_bin\main\omp\content\star.vertex.hlsl">
       <Filter>omp</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\_bin\main\rnd\content\sprite.pixel.hlsl">
-      <Filter>rnd</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\_bin\main\rnd\content\sprite.vertex.hlsl">
-      <Filter>rnd</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\_bin\main\rnd\content\beam.pixel.hlsl">
-      <Filter>rnd</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\_bin\main\rnd\content\beam.vertex.hlsl">
-      <Filter>rnd</Filter>
-    </FxCompile>
     <FxCompile Include="..\..\_bin\main\omp\content\sprite.vertex.hlsl">
       <Filter>omp</Filter>
     </FxCompile>
@@ -90,14 +78,20 @@
     <FxCompile Include="..\..\_bin\main\omp\content\fonts.vertex.hlsl">
       <Filter>omp</Filter>
     </FxCompile>
+    <FxCompile Include="..\..\_bin\main\rnd\content\hemisphere.vertex.hlsl">
+      <Filter>rnd</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\rnd\content\hemisphere.pixel.hlsl">
+      <Filter>rnd</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\rnd\content\orbit.vertex.hlsl">
+      <Filter>rnd</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\rnd\content\orbit.pixel.hlsl">
+      <Filter>rnd</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\_bin\main\rnd\content\beam.header.hlsl">
-      <Filter>rnd</Filter>
-    </None>
-    <None Include="..\..\_bin\main\rnd\content\sprite.header.hlsl">
-      <Filter>rnd</Filter>
-    </None>
     <None Include="..\..\_bin\main\omp\content\atmosphere.header.hlsl">
       <Filter>omp</Filter>
     </None>
@@ -127,6 +121,15 @@
     </None>
     <None Include="..\..\_bin\main\omp\content\fonts.header.hlsl">
       <Filter>omp</Filter>
+    </None>
+    <None Include="..\..\_bin\main\rnd\content\hemisphere.header.hlsl">
+      <Filter>rnd</Filter>
+    </None>
+    <None Include="..\..\_bin\main\rnd\content\orbit.header.hlsl">
+      <Filter>rnd</Filter>
+    </None>
+    <None Include="..\..\_bin\main\rnd\content\utility.header.hlsl">
+      <Filter>rnd</Filter>
     </None>
   </ItemGroup>
 </Project>

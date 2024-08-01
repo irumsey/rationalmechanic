@@ -392,9 +392,9 @@ void Renderer::render(bool useFXAA)
 {
 	preRender();
 
-	renderBackground();
+//	renderBackground();
 	renderScene();
-	renderForeground();
+//	renderForeground();
 
 	postRender(useFXAA);
 }
@@ -405,7 +405,9 @@ void Renderer::renderBackground()
 
 	/// for the stars, simply need to render them into the background (no depth test or write)
 	/// therefore, the near and far planes do not matter.
-	LUCID_GAL::Matrix4x4 projMatrix = LUCID_MATH::perspective(float32_t (_fov), float32_t (_aspect), float32_t (10.f), float32_t (100.f));
+
+	LUCID_GAL::Matrix4x4 projMatrix = LUCID_MATH::perspective(float32_t(_fov), float32_t(_aspect), float32_t(10.f), float32_t(100.f));
+
 	_renderContext["projMatrix"] = projMatrix;
 	_renderContext["invProjMatrix"] = LUCID_MATH::inverse(projMatrix);
 	_renderContext["viewProjMatrix"] = projMatrix * viewMatrix;
@@ -439,8 +441,8 @@ void Renderer::renderScene()
 {
 	LUCID_GAL::Matrix4x4 const &viewMatrix = _renderContext["viewMatrix"].as<LUCID_GAL::Matrix4x4>();
 
-	float32_t znear = adaptiveScale(_culler.znear);
-	float32_t zfar = adaptiveScale(_culler.zfar);
+	float32_t znear = cast(_culler.znear);
+	float32_t zfar = cast(_culler.zfar);
 
 	LUCID_GAL::Matrix4x4 projMatrix = LUCID_MATH::perspective(float32_t(_fov), float32_t(_aspect), znear, zfar);
 
@@ -455,6 +457,7 @@ void Renderer::renderScene()
 	_sceneBatch.render(_renderContext);
 	_orbitBatch.render(_renderContext);
 
+	/// clear the depth buffer
 	LUCID_GAL_PIPELINE.clear(false, true, true);
 }
 
