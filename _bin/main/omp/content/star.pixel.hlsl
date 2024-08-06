@@ -10,9 +10,9 @@ OutputPixel main(InputPixel input)
 
 	float  alpha = shapeTexture.Sample(theSampler, input.texcoord).a;
 
-	output.color = float4(input.color.rgb, alpha);
-	output.glow = float4(0, 0, 0, 0);
-	output.select = input.id;
+	output.color = float4(0.5 * input.color.rgb, alpha);
+	output. glow = float4(input.color.rgb, alpha);
+	output.   id = input.id;
 
 	return output;
 }

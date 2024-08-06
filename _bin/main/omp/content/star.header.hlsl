@@ -27,7 +27,7 @@ struct OutputPixel
 {
 	float4  color : SV_TARGET0;
 	float4   glow : SV_TARGET1;
-	uint   select : SV_TARGET2;
+	uint       id : SV_TARGET2;
 };
 
 float3 computeRelativeDirection(float ra, float dec)

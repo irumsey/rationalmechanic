@@ -192,6 +192,11 @@ namespace Math {
 		///
 		/// 
 		
+		static Quaternion^ rotateUsingAxis(Vector3^ axis, float32_t theta)
+		{
+			return gcnew Quaternion(LUCID_MATH::rotateUsingAxis(axis->ref, theta));
+		}
+
 		static Matrix3x3 ^matrixFromQuaternion(Quaternion ^rhs)
 		{
 			return gcnew Matrix3x3(LUCID_MATH::matrixFromQuaternion(quaternion_t(rhs->ref)));

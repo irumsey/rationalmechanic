@@ -54,9 +54,10 @@ private:
 	bool _initialized = false; // no state classes (yet)
 
 	bool _rotating = false;
-	point2d_t _blah;
+	point2d_t _cursorLocation;
 
 	LUCID_GAL::Vector3 _viewPosition;
+	LUCID_GAL::Vector3 _viewFocus;
 
 	LUCID_GIGL::Context _context;
 

@@ -240,21 +240,17 @@ namespace omp
                 if (planner.cameraRotating)
                 {
                     Point origin = planner.cameraDownOrigin;
-                    double theta = 0.01f * (origin.X - point.X);
-                    double phi = 0.01f * (point.Y - origin.Y);
+                    float theta = 0.01f * (origin.X - point.X);
+                    float phi = 0.01f * (point.Y - origin.Y);
                     planner.cameraDownOrigin = point;
 
-                    float c = (float)(System.Math.Cos(theta));
-                    float s = (float)(System.Math.Sin(theta));
+                    Lucid.Math.Vector3 viewUp = planner.cameraFrame.zaxis;
+                    Lucid.Math.Vector3 viewRight = planner.cameraFrame.xaxis;
 
-                    Lucid.Math.Quaternion qz = new Lucid.Math.Quaternion(0, 0, s, 0.5f * c);
+                    Lucid.Math.Quaternion qz = Lucid.Math.Util.rotateUsingAxis(viewUp, theta);
                     Lucid.Math.Matrix3x3 Rz = Lucid.Math.Util.matrixFromQuaternion(qz);
 
-                    c = (float)(System.Math.Cos(phi));
-                    s = (float)(System.Math.Sin(phi));
-
-                    Lucid.Math.Vector3 viewRight = planner.cameraFrame.xaxis;
-                    Lucid.Math.Quaternion qx = new Lucid.Math.Quaternion(s * viewRight.x, s * viewRight.y, s * viewRight.z, 0.5f * c);
+                    Lucid.Math.Quaternion qx = Lucid.Math.Util.rotateUsingAxis(viewRight, phi);
                     Lucid.Math.Matrix3x3 Rx = Lucid.Math.Util.matrixFromQuaternion(qx);
                     
                     planner.cameraFrame.RelativePosition = Rx * Rz * planner.cameraFrame.RelativePosition;

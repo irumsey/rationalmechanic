@@ -30,15 +30,9 @@ public:
 	};
 
 	// test {
-	// for now, making these public until the use case is finalized.
-	// the Culler and Renderer 
-	scalar_t const ZNEAR_INITIAL = 100.0;
-	scalar_t const  ZFAR_INITIAL = 50 * constants::meters_per_AU<float64_t>;
-
-	scalar_t znear;	//	near plane for visible objects
-	scalar_t zfar;	//	far plane for visible objects
-
-	scalar_t sceneScalingFactor;
+	scalar_t znear = 0;
+	scalar_t zfar = 0;
+	scalar_t sceneScaleFactor = 0;
 	// } test
 
 	Culler();
@@ -83,7 +77,10 @@ private:
 
 	};
 
-	scalar_t _interpolant;
+	scalar_t const ZNEAR_INITIAL = 100.0;
+	scalar_t const  ZFAR_INITIAL = 50 * constants::meters_per_AU<float64_t>;
+
+	scalar_t _interpolant = 0;
 
 	vector3_t _cameraPosition;
 

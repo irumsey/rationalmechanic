@@ -277,14 +277,7 @@ void Renderer::render(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t time,
 		
 	_renderContext["lightPosition"] = adaptiveScale(vector3_t(0, 0, 0) - _cameraPosition);
 
-	LUCID_GAL::Matrix4x4 viewMatrix = LUCID_MATH::look(LUCID_GAL::Vector3(0, 0, 0), adaptiveScale(_focusPosition - _cameraPosition), LUCID_GAL::Vector3(0, 0, 1));
-
-	_renderContext["viewPosition"] = LUCID_GAL::Vector3(0, 0, 0);
-	_renderContext["viewForward"] = LUCID_MATH::extractViewForward(viewMatrix);
-	_renderContext["viewRight"] = LUCID_MATH::extractViewRight(viewMatrix);
-	_renderContext["viewUp"] = LUCID_MATH::extractViewUp(viewMatrix);
-	_renderContext["viewMatrix"] = viewMatrix;
-	_renderContext["invViewMatrix"] = LUCID_MATH::inverse(viewMatrix);
+	setViewMatrix(LUCID_GAL::Vector3(0, 0, 0), adaptiveScale(_focusPosition - _cameraPosition), LUCID_GAL::Vector3(0, 0, 1));
 
 	_sceneBatch.clear();
 	_orbitBatch.clear();
@@ -330,19 +323,21 @@ void Renderer::batchOrbit(OrbitalBody *body)
 	Elements const *elements = body->elements;
 
 	Frame const *centerFrame = body->centerFrame;
-	vector3_t centerPosition = LUCID_MATH::lerp(_interpolant, centerFrame->absolutePosition[0], centerFrame->absolutePosition[1]);
+	vector3_t centerPosition = LUCID_MATH::lerp(_interpolant, centerFrame->absolutePosition[0], centerFrame->absolutePosition[1]) - _cameraPosition;
+	scalar_t centerDistance = LUCID_MATH::len(centerPosition);
+	scalar_t d1 = 100.0;
 
 	quaternion_t q0 = LUCID_MATH::quaternionFromMatrix(rotationFromElements(elements[0]));
 	quaternion_t q1 = LUCID_MATH::quaternionFromMatrix(rotationFromElements(elements[1]));
 	quaternion_t  q = LUCID_MATH::slerp(_interpolant, q0, q1);
 
-	float32_t  a = adaptiveScale(LUCID_MATH::lerp(_interpolant, elements[0].A, elements[1].A));
+	float32_t  a = cast(d1 * LUCID_MATH::lerp(_interpolant, elements[0].A, elements[1].A) / centerDistance);
 	float32_t  e = cast(LUCID_MATH::lerp(_interpolant, elements[0].EC, elements[1].EC));
 	float32_t hu = a * (1.f - e * e);
 
 	MeshInstance orbitInstance;
 	orbitInstance.id = (SELECT_ORBIT << SELECT_SHIFT) | uint32_t(SELECT_MASK & body->id);
-	orbitInstance.position = adaptiveScale(centerPosition - _cameraPosition);
+	orbitInstance.position = cast(d1 * centerPosition / centerDistance);
 	orbitInstance.scale = 4;
 	orbitInstance.rotation = cast(q);
 	orbitInstance.color = renderProperties.orbitHighlight ? LUCID_GAL::Color(1.f, 1.f, 1.f, 1.f) : LUCID_GAL::Color(0, 0, 1, 1);
@@ -369,6 +364,7 @@ void Renderer::postRender(bool useFXAA)
 	copy(_blurTarget[0].get(), _glowTarget.get());
 	blur();
 	blur();
+	blur();
 	copy(_glowTarget.get(), _blurTarget[0].get());
 
 	LUCID_GAL_PIPELINE.restoreBackBuffer(true, false, false);
@@ -392,93 +388,36 @@ void Renderer::render(bool useFXAA)
 {
 	preRender();
 
-//	renderBackground();
+	renderBackground();
 	renderScene();
-//	renderForeground();
+	renderForeground();
 
 	postRender(useFXAA);
 }
 
 void Renderer::renderBackground()
 {
-	LUCID_GAL::Matrix4x4 const &viewMatrix = _renderContext["viewMatrix"].as<LUCID_GAL::Matrix4x4>();
-
-	/// for the stars, simply need to render them into the background (no depth test or write)
-	/// therefore, the near and far planes do not matter.
-
-	LUCID_GAL::Matrix4x4 projMatrix = LUCID_MATH::perspective(float32_t(_fov), float32_t(_aspect), float32_t(10.f), float32_t(100.f));
-
-	_renderContext["projMatrix"] = projMatrix;
-	_renderContext["invProjMatrix"] = LUCID_MATH::inverse(projMatrix);
-	_renderContext["viewProjMatrix"] = projMatrix * viewMatrix;
-	_renderContext["invViewProjMatrix"] = LUCID_MATH::inverse(projMatrix * viewMatrix);
+	setProjMatrix(10.f, 100.f);
 
 	SET_MATERIAL_PARAMETER(_starMesh, _starParameters.sphereRadius, 99.99f);
-	SET_MATERIAL_PARAMETER(_starMesh, _starParameters.spriteScale, 0.3f);
+	SET_MATERIAL_PARAMETER(_starMesh, _starParameters.spriteScale, 0.15f);
 
 	LUCID_GAL_PIPELINE.setVertexStream(1, _starInstances.get());
 	_starMesh->renderInstanced(_renderContext, int32_t(_starCount));
-
-	float32_t znear = adaptiveScale(_culler.zfar);
-	float32_t zfar = adaptiveScale(_culler.ZFAR_INITIAL);
-
-	projMatrix = LUCID_MATH::perspective(float32_t (_fov), float32_t (_aspect), znear, zfar);
-
-	_renderContext["znear"] = znear;
-	_renderContext["zfar"] = zfar;
-	_renderContext["projMatrix"] = projMatrix;
-	_renderContext["invProjMatrix"] = LUCID_MATH::inverse(projMatrix);
-	_renderContext["viewProjMatrix"] = projMatrix * viewMatrix;
-	_renderContext["invViewProjMatrix"] = LUCID_MATH::inverse(projMatrix * viewMatrix);
-
-	/// TBD: render other background items...
-
-	/// clear the depth buffer
-	LUCID_GAL_PIPELINE.clear(false, true, true);
 }
 
 void Renderer::renderScene()
 {
-	LUCID_GAL::Matrix4x4 const &viewMatrix = _renderContext["viewMatrix"].as<LUCID_GAL::Matrix4x4>();
-
-	float32_t znear = cast(_culler.znear);
-	float32_t zfar = cast(_culler.zfar);
-
-	LUCID_GAL::Matrix4x4 projMatrix = LUCID_MATH::perspective(float32_t(_fov), float32_t(_aspect), znear, zfar);
-
-	_renderContext["znear"] = znear;
-	_renderContext["zfar"] = zfar;
-
-	_renderContext["projMatrix"] = projMatrix;
-	_renderContext["invProjMatrix"] = LUCID_MATH::inverse(projMatrix);
-	_renderContext["viewProjMatrix"] = projMatrix * viewMatrix;
-	_renderContext["invViewProjMatrix"] = LUCID_MATH::inverse(projMatrix * viewMatrix);
+	setProjMatrix(adaptiveScale(_culler.znear), adaptiveScale(_culler.zfar));
 
 	_sceneBatch.render(_renderContext);
-	_orbitBatch.render(_renderContext);
-
-	/// clear the depth buffer
-	LUCID_GAL_PIPELINE.clear(false, true, true);
 }
 
 void Renderer::renderForeground()
 {
-	LUCID_GAL::Matrix4x4 const &viewMatrix = _renderContext["viewMatrix"].as<LUCID_GAL::Matrix4x4>();
+	setProjMatrix(10.f, 1000.f);
 
-	float32_t znear = adaptiveScale(_culler.ZNEAR_INITIAL);
-	float32_t zfar = adaptiveScale(_culler.znear);
-
-	LUCID_GAL::Matrix4x4 projMatrix = LUCID_MATH::perspective(float32_t(_fov), float32_t(_aspect), znear, zfar);
-
-	_renderContext["znear"] = znear;
-	_renderContext["zfar"] = zfar;
-
-	_renderContext["projMatrix"] = projMatrix;
-	_renderContext["invProjMatrix"] = LUCID_MATH::inverse(projMatrix);
-	_renderContext["viewProjMatrix"] = projMatrix * viewMatrix;
-	_renderContext["invViewProjMatrix"] = LUCID_MATH::inverse(projMatrix * viewMatrix);
-
-	/// TBD: render other foreground items...
+	_orbitBatch.render(_renderContext);
 
 	if (0 == _textCount)
 		return;
