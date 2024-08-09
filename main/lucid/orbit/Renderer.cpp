@@ -107,26 +107,24 @@ void Renderer::evaluate(OrbitalBody *body)
 	RenderProperties const &renderProperties = body->renderProperties;
 	Elements const *elements = body->elements;
 
-	LUCID_GAL::Vector3 bodyPosition = adaptiveScale(LUCID_MATH::lerp(_interpolant, body->absolutePosition[0], body->absolutePosition[1]) - _cameraPosition);
+	float32_t distance = 0.5f * (_zfar - _znear);
 
-	Culler::STATE cullState = _culler[body->id];
-	if (Culler::STATE_VISIBLE == cullState)
+	Culler::Visibility const& viz = _culler[body->id];
+	if (Culler::Visibility::STATE_VISIBLE == viz.state)
 	{
 		MeshInstance bodyInstance;
 		bodyInstance.id = (SELECT_FRAME << SELECT_SHIFT) | uint32_t(SELECT_MASK & body->id);
-		bodyInstance.position = bodyPosition;
-		bodyInstance.scale = adaptiveScale(physicalProperties.radius);
+		bodyInstance.position = distance * cast(viz.position / viz.distance);
+		bodyInstance.scale = distance * cast(viz.scaleFactor);
 		bodyInstance.rotation = LUCID_GAL::Quaternion(0, 0, 0, 1);
 		bodyInstance.color = renderProperties.color;
 		bodyInstance.parameters = renderProperties.parameters;
 		_sceneBatch.addInstance(renderProperties.model, bodyInstance);
-	}
-
-	if (Culler::STATE_IMPERCEPTIBLE == cullState)
+	} else if (Culler::Visibility::STATE_IMPERCEPTIBLE == viz.state)
 	{
 		IconInstance iconInstance;
 		iconInstance.id = (SELECT_FRAME << SELECT_SHIFT) | uint32_t(SELECT_MASK & body->id);
-		iconInstance.position = bodyPosition;
+		iconInstance.position = distance * cast(viz.position / viz.distance);
 		iconInstance.scale = LUCID_GAL::Vector2(24, 24);
 		iconInstance.texcoord = LUCID_GAL::Vector4(0, 0, 1, 1);
 		iconInstance.color = LUCID_GAL::Color(1, 1, 1, 1);
@@ -187,7 +185,9 @@ void Renderer::initialize(std::string const &path)
 	///	need a data driven method for registering these... 
 	/// ...just read the ephemeris stupid!!!
 	_sceneBatch.createBatch<MeshInstance, Back2Front<MeshInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(   "content/atmosphere.mesh"), BATCH_MAXIMUM);
-	_sceneBatch.createBatch<MeshInstance, Front2Back<MeshInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(   "content/hemisphere.mesh"), BATCH_MAXIMUM);
+	_sceneBatch.createBatch<MeshInstance, Front2Back<MeshInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(       "content/cuboid.mesh"), BATCH_MAXIMUM);
+	_sceneBatch.createBatch<MeshInstance, Front2Back<MeshInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(       "content/sphere.mesh"), BATCH_MAXIMUM);
+	_sceneBatch.createBatch<MeshInstance, Front2Back<MeshInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(        "content/earth.mesh"), BATCH_MAXIMUM);
 	_sceneBatch.createBatch<IconInstance, NullSort  <IconInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(  "content/iconDefault.mesh"), BATCH_MAXIMUM);
 	_sceneBatch.createBatch<IconInstance, NullSort  <IconInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>("content/iconSatellite.mesh"), BATCH_MAXIMUM);
 
@@ -275,16 +275,32 @@ void Renderer::render(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t time,
 	_renderContext["time"] = cast(time);
 	_renderContext["interpolant"] = cast(_interpolant);
 		
-	_renderContext["lightPosition"] = adaptiveScale(vector3_t(0, 0, 0) - _cameraPosition);
+	_renderContext["lightPosition"] = cast(vector3_t(0, 0, 0) - _cameraPosition);
 
-	setViewMatrix(LUCID_GAL::Vector3(0, 0, 0), adaptiveScale(_focusPosition - _cameraPosition), LUCID_GAL::Vector3(0, 0, 1));
+	LUCID_GAL::Matrix4x4 viewMatrix = LUCID_MATH::look(LUCID_GAL::Vector3(0, 0, 0), cast(_focusPosition - _cameraPosition), LUCID_GAL::Vector3(0, 0, 1));
+	LUCID_GAL::Matrix4x4 projMatrix = LUCID_MATH::perspective(_fov, _aspect, _znear, _zfar);
+	LUCID_GAL::Matrix4x4 viewProjMatrix = projMatrix * viewMatrix;
+
+	_renderContext["viewPosition"] = LUCID_GAL::Vector3(0, 0, 0);
+	_renderContext["viewForward"] = LUCID_MATH::extractViewForward(viewMatrix);
+	_renderContext["viewRight"] = LUCID_MATH::extractViewRight(viewMatrix);
+	_renderContext["viewUp"] = LUCID_MATH::extractViewUp(viewMatrix);
+	_renderContext["viewMatrix"] = viewMatrix;
+	_renderContext["invViewMatrix"] = LUCID_MATH::inverse(viewMatrix);
+
+	_renderContext["projMatrix"] = projMatrix;
+	_renderContext["invProjMatrix"] = LUCID_MATH::inverse(projMatrix);
+	_renderContext["viewProjMatrix"] = viewProjMatrix;
+	_renderContext["invViewProjMatrix"] = LUCID_MATH::inverse(viewProjMatrix);
 
 	_sceneBatch.clear();
 	_orbitBatch.clear();
 
 	batch(rootFrame);
 
-	render(useFXAA);
+	preRender();
+	render();
+	postRender(useFXAA);
 }
 
 uint32_t Renderer::hit(int32_t x, int32_t y) const
@@ -303,10 +319,11 @@ void Renderer::batch(Frame *frame)
 	if (nullptr == frame)
 		return;
 
-	if (Culler::STATE_PRUNED == _culler[frame->id])
+	Culler::Visibility const &viz = _culler[frame->id];
+	if (Culler::Visibility::STATE_PRUNED == viz.state)
 		return;
 
-	if (Culler::STATE_CULLED != _culler[frame->id])
+	if (Culler::Visibility::STATE_CULLED != viz.state)
 		frame->apply(this);
 
 	for (Frame *child = frame->firstChild; nullptr != child; child = child->nextSibling)
@@ -315,6 +332,7 @@ void Renderer::batch(Frame *frame)
 
 void Renderer::batchOrbit(OrbitalBody *body)
 {
+#if false
 	RenderProperties const &renderProperties = body->renderProperties;
 	if (!renderProperties.showOrbit)
 		return;
@@ -343,6 +361,7 @@ void Renderer::batchOrbit(OrbitalBody *body)
 	orbitInstance.color = renderProperties.orbitHighlight ? LUCID_GAL::Color(1.f, 1.f, 1.f, 1.f) : LUCID_GAL::Color(0, 0, 1, 1);
 	orbitInstance.parameters = LUCID_GAL::Vector4(hu, e, /* from */ 0, /* to */ constants::two_pi<float32_t>);
 	_orbitBatch.addInstance(_orbitMesh, orbitInstance);
+#endif
 }
 
 void Renderer::preRender()
@@ -354,6 +373,24 @@ void Renderer::preRender()
 	LUCID_GAL_PIPELINE.updateTargets();
 
 	_clear->render(_renderContext);
+}
+
+void Renderer::render()
+{
+	SET_MATERIAL_PARAMETER(_starMesh, _starParameters.sphereRadius, 0.999f * _zfar);
+	SET_MATERIAL_PARAMETER(_starMesh, _starParameters.spriteScale, 1.2f);
+
+	LUCID_GAL_PIPELINE.setVertexStream(1, _starInstances.get());
+	_starMesh->renderInstanced(_renderContext, int32_t(_starCount));
+
+	_sceneBatch.render(_renderContext);
+	_orbitBatch.render(_renderContext);
+
+	if (0 == _textCount)
+		return;
+
+	LUCID_GAL_PIPELINE.setVertexStream(1, _text.get());
+	_font->renderInstanced(_renderContext, _textCount);
 }
 
 void Renderer::postRender(bool useFXAA)
@@ -382,48 +419,6 @@ void Renderer::postRender(bool useFXAA)
 		SET_MATERIAL_PARAMETER(_post, _fxaaParameters.glowTarget, _glowTarget.get());
 		_post->render(_renderContext);
 	}
-}
-
-void Renderer::render(bool useFXAA)
-{
-	preRender();
-
-	renderBackground();
-	renderScene();
-	renderForeground();
-
-	postRender(useFXAA);
-}
-
-void Renderer::renderBackground()
-{
-	setProjMatrix(10.f, 100.f);
-
-	SET_MATERIAL_PARAMETER(_starMesh, _starParameters.sphereRadius, 99.99f);
-	SET_MATERIAL_PARAMETER(_starMesh, _starParameters.spriteScale, 0.15f);
-
-	LUCID_GAL_PIPELINE.setVertexStream(1, _starInstances.get());
-	_starMesh->renderInstanced(_renderContext, int32_t(_starCount));
-}
-
-void Renderer::renderScene()
-{
-	setProjMatrix(adaptiveScale(_culler.znear), adaptiveScale(_culler.zfar));
-
-	_sceneBatch.render(_renderContext);
-}
-
-void Renderer::renderForeground()
-{
-	setProjMatrix(10.f, 1000.f);
-
-	_orbitBatch.render(_renderContext);
-
-	if (0 == _textCount)
-		return;
-
-	LUCID_GAL_PIPELINE.setVertexStream(1, _text.get());
-	_font->renderInstanced(_renderContext, _textCount);
 }
 
 void Renderer::copy(LUCID_GAL::RenderTarget2D *dst, LUCID_GAL::RenderTarget2D *src)

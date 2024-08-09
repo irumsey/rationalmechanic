@@ -3,6 +3,19 @@
 	{
 		"Samplers" :
 		[
+			{
+				"name": "theSampler",
+				"Filter": "FILTER_MIN_MAG_MIP_LINEAR",
+				"AddressU": "ADDRESS_WRAP",
+				"AddressV": "ADDRESS_WRAP",
+				"AddressW": "ADDRESS_WRAP",
+				"lodMipBias": 0,
+				"MaxAnisotropy": 0,
+				"Compare": "COMPARISON_ALWAYS",
+				"BorderColor": [ 0, 0, 0, 1 ],
+				"MinLOD": 0,
+				"MaxLOD": 0
+			}
 		],
 
 		"RenderStates" :
@@ -41,15 +54,16 @@
 
 		},
 
-		"VertexShader" : { "Path" : "content/hemisphere.vertex.cso" },
-		"PixelShader" : { "Path" : "content/hemisphere.pixel.cso" }
+		"VertexShader" : { "Path" : "content/sphere.vertex.cso" },
+		"PixelShader" : { "Path" : "content/sphere.pixel.cso" }
 	},
 
 	"attributes":
 	[
-		{ "name":  "lightPosition",     "query":              "lightPosition" },
-		{ "name":   "viewPosition",     "query":               "viewPosition" },
-		{ "name":         "viewUp",     "query":                     "viewUp" },
-		{ "name": "viewProjMatrix",     "query":             "viewProjMatrix" }
+		{ "name":  "lightPosition",     "query":           "lightPosition" },
+		{ "name":   "viewPosition",     "query":            "viewPosition" },
+		{ "name": "viewProjMatrix",     "query":          "viewProjMatrix" },
+		{ "name": "diffuseTexture", "texture2d":   "content/white.texture" },
+		{ "name": "normalsTexture", "texture2d": "content/normalz.texture" }
 	]
 }

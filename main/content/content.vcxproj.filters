@@ -27,9 +27,6 @@
     <FxCompile Include="..\..\_bin\main\omp\content\copy.pixel.hlsl">
       <Filter>omp</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\_bin\main\omp\content\hemisphere.pixel.hlsl">
-      <Filter>omp</Filter>
-    </FxCompile>
     <FxCompile Include="..\..\_bin\main\omp\content\orbit.pixel.hlsl">
       <Filter>omp</Filter>
     </FxCompile>
@@ -52,9 +49,6 @@
       <Filter>omp</Filter>
     </FxCompile>
     <FxCompile Include="..\..\_bin\main\omp\content\sprite.pixel.hlsl">
-      <Filter>omp</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\_bin\main\omp\content\hemisphere.vertex.hlsl">
       <Filter>omp</Filter>
     </FxCompile>
     <FxCompile Include="..\..\_bin\main\omp\content\nineSlice.vertex.hlsl">
@@ -90,6 +84,18 @@
     <FxCompile Include="..\..\_bin\main\rnd\content\orbit.pixel.hlsl">
       <Filter>rnd</Filter>
     </FxCompile>
+    <FxCompile Include="..\..\_bin\main\omp\content\sphere.pixel.hlsl">
+      <Filter>omp</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\omp\content\sphere.vertex.hlsl">
+      <Filter>omp</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\omp\content\cuboid.pixel.hlsl">
+      <Filter>omp</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\omp\content\cuboid.vertex.hlsl">
+      <Filter>omp</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\_bin\main\omp\content\atmosphere.header.hlsl">
@@ -110,9 +116,6 @@
     <None Include="..\..\_bin\main\omp\content\sprite.header.hlsl">
       <Filter>omp</Filter>
     </None>
-    <None Include="..\..\_bin\main\omp\content\hemisphere.header.hlsl">
-      <Filter>omp</Filter>
-    </None>
     <None Include="..\..\_bin\main\omp\content\nineSlice.header.hlsl">
       <Filter>omp</Filter>
     </None>
@@ -130,6 +133,12 @@
     </None>
     <None Include="..\..\_bin\main\rnd\content\utility.header.hlsl">
       <Filter>rnd</Filter>
+    </None>
+    <None Include="..\..\_bin\main\omp\content\sphere.header.hlsl">
+      <Filter>omp</Filter>
+    </None>
+    <None Include="..\..\_bin\main\omp\content\cuboid.header.hlsl">
+      <Filter>omp</Filter>
     </None>
   </ItemGroup>
 </Project>

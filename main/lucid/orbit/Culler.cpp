@@ -10,7 +10,7 @@ LUCID_ORBIT_BEGIN
 Culler::Culler()
 {
 	// make sure SSB is not pruned (otherwise the scene will not render)
-	_visibility[0] = STATE_IMPERCEPTIBLE;
+	_visibility[0].state = Visibility::STATE_CULLED;
 }
 
 Culler::~Culler()
@@ -29,19 +29,12 @@ void Culler::cull(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t const &in
 	_cameraPosition = LUCID_MATH::lerp(interpolant, cameraFrame->absolutePosition[0], cameraFrame->absolutePosition[1]);
 	vector3_t focusPosition = LUCID_MATH::lerp(interpolant, cameraFrame->focus->absolutePosition[0], cameraFrame->focus->absolutePosition[1]);
 
-	_projMatrix = LUCID_MATH::perspective(fov, aspect, ZNEAR_INITIAL, ZFAR_INITIAL);
-	_viewMatrix = LUCID_MATH::look(vector3_t(0, 0, 0), (focusPosition - _cameraPosition), vector3_t(0, 0, 1));
-	_viewProjMatrix = _projMatrix * _viewMatrix;
-	_invViewProjMatrix = LUCID_MATH::inverse(_viewProjMatrix);
+	matrix4x4_t projMatrix = LUCID_MATH::perspective(fov, aspect, ZNEAR, ZFAR);
+	matrix4x4_t viewMatrix = LUCID_MATH::look(vector3_t(0, 0, 0), (focusPosition - _cameraPosition), vector3_t(0, 0, 1));
 
-	_frustum = LUCID_MATH::makeFrustum3(_invViewProjMatrix);
-
-	znear = ZFAR_INITIAL;
-	zfar = ZNEAR_INITIAL;
+	_frustum = LUCID_MATH::makeFrustum3(LUCID_MATH::inverse(projMatrix * viewMatrix));
 
 	cull(rootFrame);
-
-	sceneScaleFactor = 1.0 / (zfar - znear);
 }
 
 void Culler::evaluate(DynamicPoint *point)
@@ -53,7 +46,9 @@ void Culler::evaluate(OrbitalBody *body)
 {
 	LUCID_PROFILE_SCOPE("Culler::evaluate(OrbitalBody *)");
 
-	static scalar_t const hysteresis[2] = { 0.1, 0.3, };
+	static scalar_t const hysteresis[2] = { 0.01, 0.03, };
+
+	Visibility &viz = _visibility[body->id];
 
 	aabb3_t aabbTotal = aabb3_t(
 		LUCID_MATH::lerp(_interpolant, body->aabbTotal[0].min, body->aabbTotal[1].min) - _cameraPosition,
@@ -62,7 +57,7 @@ void Culler::evaluate(OrbitalBody *body)
 
 	if (!LUCID_MATH::intersects(_frustum, aabbTotal))
 	{
-		_visibility[body->id] = STATE_PRUNED;
+		viz.state = Visibility::STATE_PRUNED;
 		return;
 	}
 
@@ -73,47 +68,24 @@ void Culler::evaluate(OrbitalBody *body)
 
 	if (!LUCID_MATH::intersects(_frustum, aabbBody))
 	{
-		_visibility[body->id] = STATE_CULLED;
+		viz.state = Visibility::STATE_CULLED;
 		return;
 	}
 
 	PhysicalProperties const& physicalProperties = body->physicalProperties;
 
-	vector3_t bodyPosition = LUCID_MATH::lerp(_interpolant, body->absolutePosition[0], body->absolutePosition[1]) - _cameraPosition;
-	scalar_t bodyDistance = LUCID_MATH::len(bodyPosition);
-	scalar_t radius = ZNEAR_INITIAL * physicalProperties.radius / bodyDistance;
+	viz.position = LUCID_MATH::lerp(_interpolant, body->absolutePosition[0], body->absolutePosition[1]) - _cameraPosition;
+	viz.distance = LUCID_MATH::len(viz.position);
+	viz.scaleFactor = physicalProperties.radius / viz.distance;
 
-	if (radius <= hysteresis[0])
-		_visibility[body->id] = STATE_IMPERCEPTIBLE;
-	else if ((hysteresis[0] < radius) && (radius <= hysteresis[1]) && (STATE_VISIBLE != frameState(body->id)))
-		_visibility[body->id] = STATE_IMPERCEPTIBLE;
+	scalar_t projRadius = ZNEAR * viz.scaleFactor;
+
+	if (projRadius <= hysteresis[0])
+		_visibility[body->id].state = Visibility::STATE_IMPERCEPTIBLE;
+	else if ((hysteresis[0] < projRadius) && (projRadius <= hysteresis[1]) && (Visibility::STATE_VISIBLE != viz.state))
+		_visibility[body->id].state = Visibility::STATE_IMPERCEPTIBLE;
 	else
-		_visibility[body->id] = STATE_VISIBLE;
-
-	if (STATE_VISIBLE != frameState(body->id))
-		return;
-
-	vector3_t const corners[] =
-	{
-		vector3_t(aabbBody.min.x, aabbBody.min.y, aabbBody.min.z),
-		vector3_t(aabbBody.min.x, aabbBody.min.y, aabbBody.max.z),
-		vector3_t(aabbBody.min.x, aabbBody.max.y, aabbBody.min.z),
-		vector3_t(aabbBody.min.x, aabbBody.max.y, aabbBody.max.z),
-		vector3_t(aabbBody.max.x, aabbBody.min.y, aabbBody.min.z),
-		vector3_t(aabbBody.max.x, aabbBody.min.y, aabbBody.max.z),
-		vector3_t(aabbBody.max.x, aabbBody.max.y, aabbBody.min.z),
-		vector3_t(aabbBody.max.x, aabbBody.max.y, aabbBody.max.z),
-	};
-
-	for (size_t i = 0; i < 8; ++i)
-	{
-		scalar_t depth = LUCID_MATH::dot(_frustum.planes[frustum_t::PLANE_NEAR], corners[i]);
-		if (depth > 0.0)
-		{
-			znear = LUCID_MATH::min(depth, znear);
-			zfar = LUCID_MATH::max(depth, zfar);
-		}
-	}
+		_visibility[body->id].state = Visibility::STATE_VISIBLE;
 }
 
 void Culler::evaluate(DynamicBody *body)
@@ -134,7 +106,7 @@ void Culler::cull(Frame *frame)
 
 	frame->apply(this);
 
-	if (STATE_PRUNED == frameState(frame->id))
+	if (Visibility::STATE_PRUNED == _visibility[frame->id].state)
 		return;
 
 	for (Frame *child = frame->firstChild; nullptr != child; child = child->nextSibling)

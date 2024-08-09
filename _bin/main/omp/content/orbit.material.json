@@ -48,8 +48,6 @@
 	"attributes":
 	[
 		{ "name" :  "texelSize",     "query" :  "texelSize" },
-		{ "name" :      "znear",     "query" :      "znear" },
-		{ "name" :       "zfar",     "query" :       "zfar" },
 		{ "name" : "viewMatrix",     "query" : "viewMatrix" },
 		{ "name" : "projMatrix",     "query" : "projMatrix" }
   ]

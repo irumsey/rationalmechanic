@@ -385,3 +385,12 @@ ModelManifest.xml
 /_bin/main/rnd/content/orbit.mesh
 /_bin/main/rnd/content/orbit.pixel.cso
 /_bin/main/rnd/content/orbit.vertex.cso
+/_bin/main/omp/content/sphere.geometry
+/_bin/main/omp/content/sphere.pixel.cso
+/_bin/main/omp/content/sphere.vertex.cso
+/_bin/main/omp/content/cuboid.mesh
+/_bin/main/omp/content/cuboid.pixel.cso
+/_bin/main/omp/content/cuboid.vertex.cso
+/_bin/main/omp/content/earthSpecular.jpg
+/_bin/main/omp/content/sphere.material
+/_bin/main/omp/content/sphere.mesh

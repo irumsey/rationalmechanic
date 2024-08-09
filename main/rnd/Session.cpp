@@ -88,8 +88,11 @@ void Session::initialize()
 {
 	shutdown();
 
-	_viewPosition = LUCID_GAL::Vector3( 0, 0, 0);
-	_viewFocus = LUCID_GAL::Vector3(10, 0, 0);
+	LUCID_GAL::Quaternion q = LUCID_MATH::rotateUsingAxis(LUCID_GAL::Vector3(1, 0, 0), 0.7f);
+	LUCID_GAL::Vector3 r = q * LUCID_GAL::Vector4(0, 1, 0, 0) * LUCID_MATH::conjugate(q);
+
+	_viewPosition = orbitPositions[9] + computeConicPosition(elements[9], 0.f);
+	_viewFocus = orbitPositions[9] + computeConicPosition(elements[9], 0.01f);
 
 	_context = LUCID_GIGL::Context("content/render.context");
 
@@ -98,23 +101,6 @@ void Session::initialize()
 
 	_orbit = LUCID_GIGL::Mesh::create("content/orbit.mesh");
 	_orbitInstances = LUCID_GAL::VertexBuffer::create(LUCID_GAL::VertexBuffer::USAGE_DYNAMIC, INSTANCE_MAXIMUM, sizeof(Instance));
-
-	// test {
-	float32_t zmin = 30.f;
-	float32_t zmax = 50.f;
-
-	LUCID_GAL::Matrix4x4 projMatrix = LUCID_MATH::perspective(0.787f, 1.5f, 10.f, 100.f);
-	LUCID_GAL::Matrix4x4 depthMatrix = LUCID_GAL::Matrix4x4(
-		1.f, 0.f,  0.f,  0.f,
-		0.f, 1.f,  0.f,  0.f,
-		0.f, 0.f, 0.5f * (zmax - zmin), 0.5f * (zmax + zmin),
-		0.f, 0.f,  0.f,  1.f
-	);
-	LUCID_GAL::Vector4 p = projMatrix * LUCID_GAL::Vector4(0, 0, -30.f, 1);
-	LUCID_GAL::Vector4 ps = p / p.w;
-	LUCID_GAL::Vector4 q = depthMatrix * p;
-	LUCID_GAL::Vector4 qs = q / q.w;
-	// } test
 
 	_initialized = true;
 }
@@ -207,7 +193,8 @@ void Session::update(float64_t t, float64_t dt)
 	_context["viewProjMatrix"] = viewProjMatrix;
 	_context["invViewProjMatrix"] = LUCID_MATH::inverse(viewProjMatrix);
 
-#if true
+#if false
+
 	Instance* instances = (Instance*)(_hemisphereInstances->lock());
 	float32_t distance = znear;
 	{
@@ -228,7 +215,7 @@ void Session::update(float64_t t, float64_t dt)
 
 #endif
 
-#if false
+#if true
 	Instance *instances = (Instance*)(_orbitInstances->lock());
 	for (size_t i = 0; i < 10; ++i)
 	{
@@ -246,7 +233,7 @@ void Session::update(float64_t t, float64_t dt)
 		LUCID_GAL::Matrix3x3 R1 = LUCID_MATH::rotateAboutX(LUCID_CORE_NUMBERS::pi<float32_t> *elements[i].in / 180.f);
 		LUCID_GAL::Matrix3x3 R2 = LUCID_MATH::rotateAboutZ(LUCID_CORE_NUMBERS::pi<float32_t> *elements[i]. w / 180.f);
 
-		instance.id = i;
+		instance.id = uint32_t(i);
 		instance.position = d1 * r / d0;
 		instance.rotation = LUCID_MATH::quaternionFromMatrix(R0 * R1 * R2);
 		instance.scale = 4;
@@ -265,10 +252,12 @@ void Session::render(float64_t t, float32_t interpolant)
 	_context["time"] = float32_t(t);
 	_context["interpolant"] = float32_t(interpolant);
 
+#if false
 	LUCID_GAL_PIPELINE.setVertexStream(1, _hemisphereInstances);
 	_hemisphere->renderInstanced(_context, 1);
+#endif
 
-#if false
+#if true
 	LUCID_GAL_PIPELINE.setVertexStream(1, _orbitInstances);
 	_orbit->renderInstanced(_context, 10);
 #endif

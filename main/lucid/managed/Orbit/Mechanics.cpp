@@ -77,12 +77,30 @@ namespace Orbit {
 
 	void Mechanics::Update()
 	{
-		_internal->update();
+		try
+		{
+			_internal->update();
+		}
+		catch (LUCID_CORE::Error const &error)
+		{
+			LUCID_CORE::log("ERR", error.what());
+			Shutdown();
+			throw;
+		}
 	}
 
 	void Mechanics::Render(CameraFrame ^cameraFrame, bool useFXAA)
 	{
-		_internal->render(cameraFrame->ptr, useFXAA);
+		try
+		{
+			_internal->render(cameraFrame->ptr, useFXAA);
+		}
+		catch (LUCID_CORE::Error const &error)
+		{
+			LUCID_CORE::log("ERR", error.what());
+			Shutdown();
+			throw;
+		}
 	}
 
 	Selection ^Mechanics::Hit(int x, int y)

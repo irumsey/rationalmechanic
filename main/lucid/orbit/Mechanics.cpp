@@ -202,6 +202,9 @@ void Mechanics::render(CameraFrame *cameraFrame, bool useFXAA)
 	LUCID_VALIDATE(nullptr != _root, "attempt to use uninitialized system");
 	LUCID_VALIDATE(nullptr != cameraFrame, "attempt to render using invalid camera frame");
 
+	// here, pass in the wall time not the sim time.  wall time is simply for rendering effects
+	// which are not part of the simulation (ie particle effects, etc).  the frame interpolant
+	// is for rendering the correct position of simulated entities.
 	_renderer.render(_root, cameraFrame, _wallTime, _frameInterpolant, useFXAA);
 }
 
@@ -226,7 +229,7 @@ void Mechanics::update(scalar_t delta)
 
 	/// test {
 	_dayNumber[0] = _dayNumber[1];
-	_dayNumber[1] = _dayNumber[1] + 0.005 * delta;
+	_dayNumber[1] = _dayNumber[1] + 0.0005 * delta;
 	/// } test
 
 	_simulator.simulate(_root, _dayNumber[1], delta);

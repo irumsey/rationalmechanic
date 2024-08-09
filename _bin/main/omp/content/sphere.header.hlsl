@@ -1,6 +1,5 @@
 float3    lightPosition;
 float3     viewPosition;
-float3           viewUp;
 float4x4 viewProjMatrix;
 
 struct InputVertex
@@ -18,9 +17,9 @@ struct InputVertex
 struct OutputVertex
 {
 	float4     ppsPosition : SV_POSITION;
+	float2        texcoord : TEXCOORD0;
 	float3  lightDirection : POSITION0;
 	uint1               id : POSITION1;
-	float3          normal : POSITION2;
 	float4         diffuse : COLOR0;
 };
 

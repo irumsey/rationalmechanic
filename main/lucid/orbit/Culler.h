@@ -22,18 +22,24 @@ class CameraFrame;
 class Culler : public Algorithm
 {
 public:
-	enum STATE {
-		STATE_PRUNED = 0,		// whole branch not in view volume
-		STATE_CULLED,			// just the parent frame not in view volume
-		STATE_IMPERCEPTIBLE,	// too small to render
-		STATE_VISIBLE,			// frame is visible
-	};
+	///	Visibility
+	/// 
+	/// 
+	struct Visibility
+	{
+		enum STATE {
+			STATE_PRUNED = 0,		// whole branch, this frame and children, not in view volume
+			STATE_CULLED,			// just this, the parent frame, not in view volume
+			STATE_IMPERCEPTIBLE,	// too small to render
+			STATE_VISIBLE,			// frame is visible
+		};
 
-	// test {
-	scalar_t znear = 0;
-	scalar_t zfar = 0;
-	scalar_t sceneScaleFactor = 0;
-	// } test
+		STATE           state = STATE_PRUNED;
+
+		vector3_t    position;		// position relative to camera
+		scalar_t     distance = 0;	// distance from camera
+		scalar_t  scaleFactor = 0;	// ratio of object radius and distance
+	};
 
 	Culler();
 
@@ -41,9 +47,9 @@ public:
 
 	void cull(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t const &interpolant);
 
-	STATE operator[](size_t id);
+	Visibility const &operator[](size_t id);
 
-	STATE frameState(size_t id);
+	Visibility const &frameState(size_t id);
 
 	virtual void evaluate(DynamicPoint *point) override;
 
@@ -54,41 +60,12 @@ public:
 	virtual void evaluate(CameraFrame *camera) override;
 
 private:
-	///	Visibility
-	/// 
-	///	Needed to provide a default visibility state when looking up
-	/// an id using an unordered_map<>
-	struct Visibility
-	{
-		STATE state = STATE_PRUNED;
-
-		Visibility() = default;
-
-		Visibility(Visibility const &) = default;
-
-		Visibility(STATE state)
-			: state(state)
-		{
-		}
-
-		~Visibility() = default;
-
-		Visibility &operator =(Visibility const &) = default;
-
-	};
-
-	scalar_t const ZNEAR_INITIAL = 100.0;
-	scalar_t const  ZFAR_INITIAL = 50 * constants::meters_per_AU<float64_t>;
+	scalar_t const ZNEAR = 10.0;
+	scalar_t const  ZFAR = 50.0 * constants::meters_per_AU<scalar_t>;
 
 	scalar_t _interpolant = 0;
 
 	vector3_t _cameraPosition;
-
-	matrix4x4_t _projMatrix;
-	matrix4x4_t _viewMatrix;
-	matrix4x4_t _viewProjMatrix;
-	matrix4x4_t _invViewProjMatrix;
-
 	frustum_t _frustum;
 
 	std::unordered_map<size_t, Visibility> _visibility;
@@ -97,14 +74,14 @@ private:
 
 };
 
-inline Culler::STATE Culler::operator[](size_t id)
+inline Culler::Visibility const &Culler::operator[](size_t id)
 {
 	return frameState(id);
 }
 
-inline Culler::STATE Culler::frameState(size_t id)
+inline Culler::Visibility const &Culler::frameState(size_t id)
 {
-	return _visibility[id].state;
+	return _visibility[id];
 }
 
 LUCID_ORBIT_END

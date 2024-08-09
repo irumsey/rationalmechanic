@@ -130,6 +130,8 @@ private:
 	};
 
 	float32_t _fov = 0.25f * constants::pi<float32_t>;
+	float32_t _znear = 10.f;
+	float32_t _zfar = 1000.f;
 	int32_t _width = 0;
 	int32_t _height = 0;
 	float32_t _aspect = 1.f;
@@ -180,29 +182,15 @@ private:
 	PostParameters _fxaaParameters;
 	std::unique_ptr<LUCID_GIGL::Mesh> _fxaa;
 
-	float32_t adaptiveScale(scalar_t const &value) const;
-
-	LUCID_GAL::Vector3 adaptiveScale(vector3_t const &value) const;
-
-	void setViewMatrix(LUCID_GAL::Vector3 const &position, LUCID_GAL::Vector3 const &focus, LUCID_GAL::Vector3 const &up);
-
-	void setProjMatrix(float32_t znear, float32_t zfar);
-
 	void batch(Frame *frame);
 
 	void batchOrbit(OrbitalBody *body);
 
 	void preRender();
 
+	void render();
+
 	void postRender(bool useFXAA);
-
-	void render(bool useFXAA);
-
-	void renderBackground();
-
-	void renderScene();
-
-	void renderForeground();
 
 	void copy(LUCID_GAL::RenderTarget2D *dst, LUCID_GAL::RenderTarget2D *src);
 
@@ -213,42 +201,5 @@ private:
 	LUCID_PREVENT_COPY(Renderer);
 	LUCID_PREVENT_ASSIGNMENT(Renderer);
 };
-
-inline float32_t Renderer::adaptiveScale(scalar_t const &value) const
-{
-	return cast(_culler.sceneScaleFactor * value);
-}
-
-inline LUCID_GAL::Vector3 Renderer::adaptiveScale(vector3_t const &value) const
-{
-	return LUCID_GAL::Vector3(adaptiveScale(value.x), adaptiveScale(value.y), adaptiveScale(value.z));
-}
-
-inline void Renderer::setViewMatrix(LUCID_GAL::Vector3 const& position, LUCID_GAL::Vector3 const& focus, LUCID_GAL::Vector3 const& up)
-{
-	LUCID_GAL::Matrix4x4 viewMatrix = LUCID_MATH::look(position, focus, up);
-
-	_renderContext["viewPosition"] = position;
-	_renderContext["viewForward"] = LUCID_MATH::extractViewForward(viewMatrix);
-	_renderContext["viewRight"] = LUCID_MATH::extractViewRight(viewMatrix);
-	_renderContext["viewUp"] = LUCID_MATH::extractViewUp(viewMatrix);
-	_renderContext["viewMatrix"] = viewMatrix;
-	_renderContext["invViewMatrix"] = LUCID_MATH::inverse(viewMatrix);
-}
-
-inline void Renderer::setProjMatrix(float32_t znear, float32_t zfar)
-{
-	LUCID_GAL::Matrix4x4 const &viewMatrix = _renderContext["viewMatrix"].as<LUCID_GAL::Matrix4x4>();
-	LUCID_GAL::Matrix4x4 projMatrix = LUCID_MATH::perspective(_fov, _aspect, znear, zfar);
-	LUCID_GAL::Matrix4x4 viewProjMatrix = projMatrix * viewMatrix;
-
-	_renderContext["znear"] = znear;
-	_renderContext["zfar"] = zfar;
-
-	_renderContext["projMatrix"] = projMatrix;
-	_renderContext["invProjMatrix"] = LUCID_MATH::inverse(projMatrix);
-	_renderContext["viewProjMatrix"] = viewProjMatrix;
-	_renderContext["invViewProjMatrix"] = LUCID_MATH::inverse(viewProjMatrix);
-}
 
 LUCID_ORBIT_END

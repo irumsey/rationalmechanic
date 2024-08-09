@@ -57,7 +57,7 @@
         },
         "render": {
           "orbit": false,
-          "model": [ "content/hemisphere.mesh" ],
+          "model": [ "content/sphere.mesh" ],
           "icon": "content/iconDefault.mesh",
           "color": [ 1, 1, 0, 1 ],
           "parameters": [ 0, 0, 0, 0 ]
@@ -84,7 +84,7 @@
         },
         "render": {
           "orbit": true,
-          "model": [ "content/hemisphere.mesh" ],
+          "model": [ "content/sphere.mesh" ],
           "icon": "content/iconDefault.mesh",
           "color": [ 0.7, 0.7, 0.7, 0 ],
           "parameters": [ 0, 0, 0, 0 ]
@@ -111,7 +111,7 @@
         },
         "render": {
           "orbit": true,
-          "model": [ "content/hemisphere.mesh" ],
+          "model": [ "content/sphere.mesh" ],
           "icon": "content/iconDefault.mesh",
           "color": [ 0.9, 0.7, 0.7, 0 ],
           "parameters": [ 0, 0, 0, 0 ]
@@ -138,7 +138,7 @@
         },
         "render": {
           "orbit": true,
-          "model": [ "content/hemisphere.mesh" ],
+          "model": [ "content/earth.mesh" ],
           "icon": "content/iconDefault.mesh",
           "color": [ 0.2, 0.2, 1, 0 ],
           "parameters": [ 0, 0, 0, 0 ]
@@ -166,7 +166,7 @@
         },
         "render": {
           "orbit": true,
-          "model": [ "content/hemisphere.mesh" ],
+          "model": [ "content/sphere.mesh" ],
           "icon": "content/iconDefault.mesh",
           "color": [ 0.7, 0.7, 0.7, 0 ],
           "parameters": [ 0, 0, 0, 0 ]
@@ -193,7 +193,7 @@
         },
         "render": {
           "orbit": true,
-          "model": [ "content/hemisphere.mesh" ],
+          "model": [ "content/sphere.mesh" ],
           "icon": "content/iconDefault.mesh",
           "color": [ 1.0, 0.3, 0.3, 0 ],
           "parameters": [ 0, 0, 0, 0 ]
@@ -220,7 +220,7 @@
         },
         "render": {
           "orbit": true,
-          "model": [ "content/hemisphere.mesh" ],
+          "model": [ "content/sphere.mesh" ],
           "icon": "content/iconDefault.mesh",
           "color": [ 1.0, 0.7, 0.7, 0 ],
           "parameters": [ 0, 0, 0, 0 ]
@@ -247,7 +247,7 @@
         },
         "render": {
           "orbit": true,
-          "model": [ "content/hemisphere.mesh" ],
+          "model": [ "content/sphere.mesh" ],
           "icon": "content/iconDefault.mesh",
           "color": [ 0.7, 0.7, 0.7, 0 ],
           "parameters": [ 0, 0, 0, 0 ]
@@ -273,7 +273,7 @@
         },
         "render": {
           "orbit": true,
-          "model": [ "content/hemisphere.mesh" ],
+          "model": [ "content/sphere.mesh" ],
           "icon": "content/iconDefault.mesh",
           "color": [ 0.7, 0.7, 1.0, 0 ],
           "parameters": [ 0, 0, 0, 0 ]
@@ -300,7 +300,7 @@
         },
         "render": {
           "orbit": true,
-          "model": [ "content/hemisphere.mesh" ],
+          "model": [ "content/sphere.mesh" ],
           "icon": "content/iconDefault.mesh",
           "color": [ 0.7, 0.7, 1.0, 0 ],
           "parameters": [ 0, 0, 0, 0 ]
@@ -325,7 +325,7 @@
         },
         "render": {
           "orbit": true,
-          "model": [ "content/hemisphere.mesh" ],
+          "model": [ "content/sphere.mesh" ],
           "icon": "content/iconDefault.mesh",
           "color": [ 0.7, 0.7, 1.0, 0 ],
           "parameters": [ 0, 0, 0, 0 ]
@@ -353,14 +353,14 @@
         },
         "render": {
           "orbit": true,
-          "model": [ "content/hemisphere.mesh" ],
+          "model": [ "content/cuboid.mesh" ],
           "icon": "content/iconSatellite.mesh",
           "color": [ 1.0, 1.0, 1.0, 0 ],
           "parameters": [ 0, 0, 0, 0 ]
         }
       },
       "elements": [
-        [ 2451910.500000000, 4.391514638784747E-04, 0.00004508, 7.165486830353993E+01, 2.081926637561404E+02, 8.331827557593593E+01, 2451910.504135824274, 5640.39363945, 3.366723222142067E+02, 3.366523847839357E+02, 0.0000451, 0.00004512, 14.9900236125 ]
+        [ 2451910.500000000, 4.391514638784747E-04, 0.00004508, 7.165486830353993E+01, 2.081926637561404E+02, 8.331827557593593E+01, 2451910.504135824274, 5640.39363945, 3.366723222142067E+02, 3.366523847839357E+02, 0.0000451, 0.00004512, 0.06451612903225806451612903225806 ]
       ]
     },
 
@@ -378,7 +378,7 @@
         },
         "render": {
           "orbit": true,
-          "model": [ "content/hemisphere.mesh" ],
+          "model": [ "content/cuboid.mesh" ],
           "icon": "content/iconSatellite.mesh",
           "color": [ 1.0, 1.0, 1.0, 0 ],
           "parameters": [ 0, 0, 0, 0 ]
@@ -406,7 +406,7 @@
         },
         "render": {
           "orbit": true,
-          "model": [ "content/hemisphere.mesh" ],
+          "model": [ "content/cuboid.mesh" ],
           "icon": "content/iconSatellite.mesh",
           "color": [ 1.0, 1.0, 1.0, 0 ],
           "parameters": [ 0, 0, 0, 0 ]

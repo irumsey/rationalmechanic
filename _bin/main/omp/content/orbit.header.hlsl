@@ -1,8 +1,5 @@
 float2 texelSize;
 
-float znear;
-float zfar;
-
 float4x4 viewMatrix;
 float4x4 projMatrix;
 

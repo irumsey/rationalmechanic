@@ -9,9 +9,6 @@
 
 		{ "name":     "lightPosition",   "vector3" : [ 0, 0, 0 ] },
                                                
-		{ "name" :            "znear",     "float" : 0 },
-		{ "name" :             "zfar",     "float" : 0 },
-
 		{ "name":       "viewForward",   "vector3" : [ 0, 0, 0 ] },
 		{ "name":         "viewRight",   "vector3" : [ 0, 0, 0 ] },
 		{ "name":            "viewUp",   "vector3" : [ 0, 0, 0 ] },
