@@ -694,7 +694,8 @@ def bootFrameOrbitalBody(dst, frame):
 		bootString(dst, mesh)			
 	
 	bootString(dst, properties['render']['icon'])
-	bootColor(dst, properties['render']['color'])
+	bootColor(dst, properties['render']['diffuse'])
+	bootColor(dst, properties['render']['ambient'])
 	bootVector4(dst, properties['render']['parameters'])
 
 	elements = frame['elements']

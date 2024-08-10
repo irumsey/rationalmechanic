@@ -8,11 +8,11 @@
 			{ "format" : "FORMAT_FLOAT3", "type" :   "TYPE_VERTEX", "location" : 0, "stream" : 0, "offset" :  0 },
 
       { "format" :  "FORMAT_UINT1", "type" : "TYPE_INSTANCE", "location" : 1, "stream" : 1, "offset" :  0 }, 
-			{ "format" : "FORMAT_FLOAT3", "type" : "TYPE_INSTANCE", "location" : 2, "stream" : 1, "offset" :  1 },
-			{ "format" : "FORMAT_FLOAT1", "type" : "TYPE_INSTANCE", "location" : 3, "stream" : 1, "offset" :  4 },
-			{ "format" : "FORMAT_FLOAT4", "type" : "TYPE_INSTANCE", "location" : 4, "stream" : 1, "offset" :  5 },
-			{ "format" : "FORMAT_FLOAT4", "type" : "TYPE_INSTANCE", "location" : 5, "stream" : 1, "offset" :  9 },
-			{ "format" : "FORMAT_FLOAT4", "type" : "TYPE_INSTANCE", "location" : 6, "stream" : 1, "offset" : 13 }
+			{ "format" : "FORMAT_FLOAT4", "type" : "TYPE_INSTANCE", "location" : 2, "stream" : 1, "offset" :  1 },
+			{ "format" : "FORMAT_FLOAT4", "type" : "TYPE_INSTANCE", "location" : 3, "stream" : 1, "offset" :  5 },
+			{ "format" : "FORMAT_FLOAT4", "type" : "TYPE_INSTANCE", "location" : 4, "stream" : 1, "offset" :  9 },
+			{ "format" : "FORMAT_FLOAT4", "type" : "TYPE_INSTANCE", "location" : 5, "stream" : 1, "offset" : 13 },
+			{ "format" : "FORMAT_FLOAT4", "type" : "TYPE_INSTANCE", "location" : 6, "stream" : 1, "offset" : 17 }
 		]
 	},
 

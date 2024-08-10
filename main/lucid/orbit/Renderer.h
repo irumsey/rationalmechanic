@@ -110,13 +110,17 @@ private:
 		LUCID_GAL::Color        color;
 	};
 
+#	pragma pack(push)
+#	pragma pack(1)
+
 	struct MeshInstance
 	{
 		uint32_t                      id = 0;
-		LUCID_GAL::Vector3      position;
-		float32_t                  scale = 0.f;
+		LUCID_GAL::Vector3      position;	//	position and scale are "packed" into
+		float32_t                  scale;	//	an hlsl float4 type
 		LUCID_GAL::Quaternion   rotation;
-		LUCID_GAL::Color           color;
+		LUCID_GAL::Color         diffuse;
+		LUCID_GAL::Color	     ambient;
 		LUCID_GAL::Vector4    parameters;
 	};
 
@@ -128,6 +132,8 @@ private:
 		LUCID_GAL::Vector2    scale;
 		LUCID_GAL::Color      color;
 	};
+
+#	pragma pack(pop)
 
 	float32_t _fov = 0.25f * constants::pi<float32_t>;
 	float32_t _znear = 10.f;

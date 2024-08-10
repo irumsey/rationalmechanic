@@ -7,10 +7,10 @@ struct InputVertex
 {
 	float3     vertex : LOCATION0;
 	uint1          id : LOCATION1;
-	float3      focus : LOCATION2;
-	float       scale : LOCATION3;
-	float4   rotation : LOCATION4;
-	float4      color : LOCATION5;
+	float4      focus : LOCATION2;	// focus.w is scale
+	float4   rotation : LOCATION3;
+	float4    diffuse : LOCATION4;
+	float4    ambient : LOCATION5;
 	float4 parameters : LOCATION6;
 };
 

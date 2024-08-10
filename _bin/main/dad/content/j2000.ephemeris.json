@@ -57,9 +57,10 @@
         },
         "render": {
           "orbit": false,
-          "model": [ "content/hemisphere.mesh" ],
-          "icon" : "content/iconDefault.mesh",
-          "color": [ 1, 1, 0, 1 ],
+          "model": [ "content/sphere.mesh" ],
+          "icon": "content/iconDefault.mesh",
+          "diffuse": [ 1, 1, 0, 1 ],
+          "ambient": [ 1, 1, 0, 0 ],
           "parameters": [ 0, 0, 0, 0 ]
         }
       },
@@ -84,9 +85,10 @@
         },
         "render": {
           "orbit": true,
-          "model": [ "content/hemisphere.mesh" ],
+          "model": [ "content/sphere.mesh" ],
           "icon": "content/iconDefault.mesh",
-          "color": [ 0.7, 0.7, 0.7, 0 ],
+          "diffuse": [ 0.7, 0.7, 0.7, 1 ],
+          "ambient": [ 0.1, 0.1, 0.1, 0 ],
           "parameters": [ 0, 0, 0, 0 ]
         }
       },
@@ -111,9 +113,10 @@
         },
         "render": {
           "orbit": true,
-          "model": [ "content/hemisphere.mesh" ],
+          "model": [ "content/sphere.mesh" ],
           "icon": "content/iconDefault.mesh",
-          "color": [ 0.9, 0.7, 0.7, 0 ],
+          "diffuse": [ 0.7, 0.7, 0.7, 1 ],
+          "ambient": [ 0.1, 0.1, 0.1, 0 ],
           "parameters": [ 0, 0, 0, 0 ]
         }
       },
@@ -138,9 +141,10 @@
         },
         "render": {
           "orbit": true,
-          "model": [ "content/hemisphere.mesh" ],
+          "model": [ "content/earth.mesh" ],
           "icon": "content/iconDefault.mesh",
-          "color": [ 0.2, 0.2, 1, 0 ],
+          "diffuse": [ 1.0, 1.0, 1.0, 1 ],
+          "ambient": [ 0.1, 0.1, 0.1, 0 ],
           "parameters": [ 0, 0, 0, 0 ]
         }
       },
@@ -166,9 +170,10 @@
         },
         "render": {
           "orbit": true,
-          "model": [ "content/hemisphere.mesh" ],
+          "model": [ "content/sphere.mesh" ],
           "icon": "content/iconDefault.mesh",
-          "color": [ 0.7, 0.7, 0.7, 0 ],
+          "diffuse": [ 0.7, 0.7, 0.7, 1 ],
+          "ambient": [ 0.1, 0.1, 0.1, 0 ],
           "parameters": [ 0, 0, 0, 0 ]
         }
       },
@@ -193,9 +198,10 @@
         },
         "render": {
           "orbit": true,
-          "model": [ "content/hemisphere.mesh" ],
+          "model": [ "content/sphere.mesh" ],
           "icon": "content/iconDefault.mesh",
-          "color": [ 1.0, 0.3, 0.3, 0 ],
+          "diffuse": [ 1.0, 1.0, 1.0, 1 ],
+          "ambient": [ 0.1, 0.1, 0.1, 0 ],
           "parameters": [ 0, 0, 0, 0 ]
         }
       },
@@ -220,9 +226,10 @@
         },
         "render": {
           "orbit": true,
-          "model": [ "content/hemisphere.mesh" ],
+          "model": [ "content/sphere.mesh" ],
           "icon": "content/iconDefault.mesh",
-          "color": [ 1.0, 0.7, 0.7, 0 ],
+          "diffuse": [ 0.7, 0.7, 0.7, 1 ],
+          "ambient": [ 0.1, 0.1, 0.1, 0 ],
           "parameters": [ 0, 0, 0, 0 ]
         }
       },
@@ -247,9 +254,10 @@
         },
         "render": {
           "orbit": true,
-          "model": [ "content/hemisphere.mesh" ],
+          "model": [ "content/sphere.mesh" ],
           "icon": "content/iconDefault.mesh",
-          "color": [ 0.7, 0.7, 0.7, 0 ],
+          "diffuse": [ 0.7, 0.7, 0.7, 1 ],
+          "ambient": [ 0.1, 0.1, 0.1, 0 ],
           "parameters": [ 0, 0, 0, 0 ]
         }
       },
@@ -273,9 +281,10 @@
         },
         "render": {
           "orbit": true,
-          "model": [ "content/hemisphere.mesh" ],
+          "model": [ "content/sphere.mesh" ],
           "icon": "content/iconDefault.mesh",
-          "color": [ 0.7, 0.7, 1.0, 0 ],
+          "diffuse": [ 0.7, 0.7, 0.7, 1 ],
+          "ambient": [ 0.1, 0.1, 0.1, 0 ],
           "parameters": [ 0, 0, 0, 0 ]
         }
       },
@@ -300,9 +309,10 @@
         },
         "render": {
           "orbit": true,
-          "model": [ "content/hemisphere.mesh" ],
+          "model": [ "content/sphere.mesh" ],
           "icon": "content/iconDefault.mesh",
-          "color": [ 0.7, 0.7, 1.0, 0 ],
+          "diffuse": [ 0.7, 0.7, 0.7, 1 ],
+          "ambient": [ 0.1, 0.1, 0.1, 0 ],
           "parameters": [ 0, 0, 0, 0 ]
         }
       },
@@ -325,9 +335,10 @@
         },
         "render": {
           "orbit": true,
-          "model": [ "content/hemisphere.mesh" ],
-          "icon": "content/iconDefault.mesh" ,
-          "color": [ 0.7, 0.7, 1.0, 0 ],
+          "model": [ "content/sphere.mesh" ],
+          "icon": "content/iconDefault.mesh",
+          "diffuse": [ 0.7, 0.7, 0.7, 1 ],
+          "ambient": [ 0.1, 0.1, 0.1, 0 ],
           "parameters": [ 0, 0, 0, 0 ]
         }
       },
@@ -337,9 +348,11 @@
       ]
     },
 
+
+
     {
       "type": "ORBITAL_BODY",
-      "hid": 1998067,
+      "hid": 10001,
       "target": "ISS",
       "description": "International Space Station",
       "center": "Earth",
@@ -351,14 +364,72 @@
         },
         "render": {
           "orbit": true,
-          "model": [ "content/hemisphere.mesh" ],
+          "model": [ "content/cuboid.mesh" ],
           "icon": "content/iconSatellite.mesh",
-          "color": [ 1.0, 1.0, 1.0, 0 ],
+          "diffuse": [ 0.7, 0.7, 0.7, 1 ],
+          "ambient": [ 0.1, 0.1, 0.1, 0 ],
           "parameters": [ 0, 0, 0, 0 ]
         }
       },
       "elements": [
-        [ 2451910.500000000, 4.391514638784747E-04, 0.00004508, 7.165486830353993E+01, 2.081926637561404E+02, 8.331827557593593E+01, 2451910.504135824274, 5640.39363945, 3.366723222142067E+02, 3.366523847839357E+02, 0.0000451, 0.00004512, 14.9900236125 ]
+        [ 2451910.500000000, 4.391514638784747E-04, 0.00004508, 7.165486830353993E+01, 2.081926637561404E+02, 8.331827557593593E+01, 2451910.504135824274, 5640.39363945, 3.366723222142067E+02, 3.366523847839357E+02, 0.0000451, 0.00004512, 0.06451612903225806451612903225806 ]
+      ]
+    },
+
+    {
+      "type": "ORBITAL_BODY",
+      "hid": 10002,
+      "target": "HST",
+      "description": "Hubble Space Telescope",
+      "center": "Earth",
+      "properties": {
+        "physical": {
+          "GM": 4.0350323562548007e+05,
+          "mass": 4.19725e05,
+          "radius": 100
+        },
+        "render": {
+          "orbit": true,
+          "model": [ "content/cuboid.mesh" ],
+          "icon": "content/iconSatellite.mesh",
+          "diffuse": [ 0.7, 0.7, 0.7, 1 ],
+          "ambient": [ 0.1, 0.1, 0.1, 0 ],
+          "parameters": [ 0, 0, 0, 0 ]
+        }
+      },
+      "elements": [
+        [ 2455197.500000000, 4.061905132585129E-04, 4.640308099465533E-05, 4.179337508989182E+01, 2.224533556468857E+02, 2.855509154236648E+02,  2455197.493888605386, 5.400478636833163E+03, 3.300445694372797E+01, 3.302982155038121E+01, 4.642193714513076E-05, 4.644079329560619E-05, 6.666075809367587E-02 ],
+        [ 2455562.500000000, 1.404775301673875E-03, 4.635268659755128E-05, 1.324612485497906E+01, 8.106801595871977E+01, 3.980342856830903E+01,  2455562.504441353492, 5.401184371156609E+03, 3.360114317873984E+02, 3.359458813981523E+02, 4.641789330762557E-05, 4.648310001769985E-05, 6.665204800681700E-02 ],
+        [ 2455927.500000000, 1.484598823376122E-03, 4.632777002100125E-05, 5.134079882655163E+01, 1.700194570713631E+02, 8.000637897326929E+01,  2455927.498085060157, 5.404894223377381E+03, 1.035004788725814E+01, 1.038066825524904E+01, 4.639665043364363E-05, 4.646553084628601E-05, 6.660629886944304E-02 ],
+        [ 2456293.500000000, 4.085670288166271E-04, 4.637196376387220E-05, 2.993383590139660E+01, 2.447983757684773E+02, 2.446811656015392E+02,  2456293.495844471734, 5.405896138744508E+03, 2.246435378776158E+01, 2.248225192073256E+01, 4.639091756322507E-05, 4.640987136257795E-05, 6.659395422339877E-02 ]
+    ]
+    },
+
+    {
+      "type": "ORBITAL_BODY",
+      "hid": 10003,
+      "target": "JWST",
+      "description": "Jame's Webb Space Telescope",
+      "center": "Sun",
+      "properties": {
+        "physical": {
+          "GM": 2.9591220828411951E-04,
+          "mass": 4.19725e05,
+          "radius": 100
+        },
+        "render": {
+          "orbit": true,
+          "model": [ "content/cuboid.mesh" ],
+          "icon": "content/iconSatellite.mesh",
+          "diffuse": [ 0.7, 0.7, 0.7, 1 ],
+          "ambient": [ 0.1, 0.1, 0.1, 0 ],
+          "parameters": [ 0, 0, 0, 0 ]
+        }
+      },
+      "elements": [
+        [ 2459945.500000000, 3.095797912254501E-02, 9.942760487280028E-01, 1.811301071325110E-01, 2.028280211421374E+02, 2.586215414013889E+02, 2459946.953962773085, 9.483257040622310E-01, 3.586211697294734E+02, 3.585323769488184E+02, 1.026040179173756E+00, 1.057804309619510E+00, 3.796164107520343E+02 ],
+        [ 2460126.500000000, 3.362255365629066E-03, 1.021304341463837E+00, 1.678447385263850E-01, 1.981738895325066E+01, 1.006001160440586E+02, 2459960.145535497926, 9.501174684485167E-01, 1.580562826776456E+02, 1.581997030639653E+02, 1.024749812017721E+00, 1.028195282571605E+00, 3.789005169938174E+02 ],
+        [ 2460310.500000000, 3.086626445971698E-02, 9.942589359758198E-01, 1.668446916625704E-01, 1.893832161366267E+02, 2.735232823596174E+02, 2460313.709286854137, 9.484848250438110E-01, 3.569560401198391E+02, 3.567607037567201E+02, 1.025925421347065E+00, 1.057591906718310E+00, 3.795527250352913E+02 ]
       ]
     }
 

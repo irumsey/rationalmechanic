@@ -51,7 +51,9 @@ struct RenderProperties
 	std::shared_ptr<LUCID_GIGL::Model> model;
 	std::shared_ptr<LUCID_GIGL::Mesh> icon;
 
-	LUCID_GAL::Color color;
+	LUCID_GAL::Color diffuse;
+	LUCID_GAL::Color ambient;
+
 	LUCID_GAL::Vector4 parameters;
 
 	RenderProperties() = default;
@@ -70,7 +72,9 @@ struct RenderProperties
 		model.reset(new LUCID_GIGL::Model(reader));
 		icon = LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(reader.read<std::string>());
 
-		reader.read(&color, sizeof(LUCID_GAL::Color));
+		reader.read(&diffuse, sizeof(LUCID_GAL::Color));
+		reader.read(&ambient, sizeof(LUCID_GAL::Color));
+
 		reader.read(&parameters, sizeof(LUCID_GAL::Vector4));
 	}
 };

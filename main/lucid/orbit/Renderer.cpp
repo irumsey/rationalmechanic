@@ -117,7 +117,8 @@ void Renderer::evaluate(OrbitalBody *body)
 		bodyInstance.position = distance * cast(viz.position / viz.distance);
 		bodyInstance.scale = distance * cast(viz.scaleFactor);
 		bodyInstance.rotation = LUCID_GAL::Quaternion(0, 0, 0, 1);
-		bodyInstance.color = renderProperties.color;
+		bodyInstance.diffuse = renderProperties.diffuse;
+		bodyInstance.ambient = renderProperties.ambient;
 		bodyInstance.parameters = renderProperties.parameters;
 		_sceneBatch.addInstance(renderProperties.model, bodyInstance);
 	} else if (Culler::Visibility::STATE_IMPERCEPTIBLE == viz.state)
@@ -187,7 +188,7 @@ void Renderer::initialize(std::string const &path)
 	_sceneBatch.createBatch<MeshInstance, Back2Front<MeshInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(   "content/atmosphere.mesh"), BATCH_MAXIMUM);
 	_sceneBatch.createBatch<MeshInstance, Front2Back<MeshInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(       "content/cuboid.mesh"), BATCH_MAXIMUM);
 	_sceneBatch.createBatch<MeshInstance, Front2Back<MeshInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(       "content/sphere.mesh"), BATCH_MAXIMUM);
-	_sceneBatch.createBatch<MeshInstance, Front2Back<MeshInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(        "content/earth.mesh"), BATCH_MAXIMUM);
+	_sceneBatch.createBatch<MeshInstance, Front2Back<MeshInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(        "content/_399/earth.mesh"), BATCH_MAXIMUM);
 	_sceneBatch.createBatch<IconInstance, NullSort  <IconInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(  "content/iconDefault.mesh"), BATCH_MAXIMUM);
 	_sceneBatch.createBatch<IconInstance, NullSort  <IconInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>("content/iconSatellite.mesh"), BATCH_MAXIMUM);
 

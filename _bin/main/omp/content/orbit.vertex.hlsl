@@ -11,7 +11,10 @@ OutputVertex main(InputVertex input)
 	float  theta0 = (domain.y - domain.x) * input.vertex.x + domain.x;
 	float  theta1 = (domain.y - domain.x) * input.vertex.y + domain.x;
 
-	float4x4 worldMatrix = matrixFromQuaternion(input.rotation, input.focus);
+	float3 position = input.focus.xyz;
+	float scale = input.focus.w;
+
+	float4x4 worldMatrix = matrixFromQuaternion(input.rotation, position);
 
 	float4 worldPosition0 = mul(worldMatrix, float4(computeConicPoint(hu, ecc, theta0), 0, 1));
 	float4 csPosition0 = mul(viewMatrix, worldPosition0);
@@ -31,13 +34,13 @@ OutputVertex main(InputVertex input)
 	float2 tangent = normalize(psPosition1.xy - psPosition0.xy);
 	float2 normal = float2(-tangent.y, tangent.x);
 
-	float2 width = input.vertex.z * input.scale * texelSize;
+	float2 width = input.vertex.z * scale * texelSize;
 
 	psPosition0.xy = (width * normal + psPosition0.xy) * psPosition0.w;
 
 	output.ppsPosition = psPosition0;
 	output.id = input.id;
-	output.color = input.color;
+	output.color = input.diffuse;
 	output.blend = input.vertex.z;
 
 	return output;
