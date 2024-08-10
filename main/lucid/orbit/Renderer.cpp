@@ -188,7 +188,10 @@ void Renderer::initialize(std::string const &path)
 	_sceneBatch.createBatch<MeshInstance, Back2Front<MeshInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(   "content/atmosphere.mesh"), BATCH_MAXIMUM);
 	_sceneBatch.createBatch<MeshInstance, Front2Back<MeshInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(       "content/cuboid.mesh"), BATCH_MAXIMUM);
 	_sceneBatch.createBatch<MeshInstance, Front2Back<MeshInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(       "content/sphere.mesh"), BATCH_MAXIMUM);
-	_sceneBatch.createBatch<MeshInstance, Front2Back<MeshInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(        "content/_399/earth.mesh"), BATCH_MAXIMUM);
+	_sceneBatch.createBatch<MeshInstance, Front2Back<MeshInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(     "content/_010/sun.mesh"), BATCH_MAXIMUM);
+	_sceneBatch.createBatch<MeshInstance, Front2Back<MeshInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(   "content/_399/earth.mesh"), BATCH_MAXIMUM);
+	_sceneBatch.createBatch<MeshInstance, Front2Back<MeshInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(    "content/_301/moon.mesh"), BATCH_MAXIMUM);
+	_sceneBatch.createBatch<MeshInstance, Front2Back<MeshInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(    "content/_499/mars.mesh"), BATCH_MAXIMUM);
 	_sceneBatch.createBatch<IconInstance, NullSort  <IconInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(  "content/iconDefault.mesh"), BATCH_MAXIMUM);
 	_sceneBatch.createBatch<IconInstance, NullSort  <IconInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>("content/iconSatellite.mesh"), BATCH_MAXIMUM);
 

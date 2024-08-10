@@ -396,3 +396,10 @@ ModelManifest.xml
 /_bin/main/omp/content/sphere.mesh
 /_bin/main/omp/content/_399/earth.material
 /_bin/main/omp/content/_399/earth.mesh
+/_bin/main/omp/content/_301/moon.material
+/_bin/main/omp/content/_301/moon.mesh
+/_bin/main/omp/content/_499/mars.material
+/_bin/main/omp/content/_499/mars.mesh
+/_bin/main/omp/content/_010/sun.material
+/_bin/main/omp/content/_010/sun.mesh
+/_bin/main/omp/content/_010/sun.pixel.cso

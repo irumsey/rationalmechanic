@@ -23,7 +23,7 @@
 			"RasterMode" :
 			{
 				"Fill" : "FILL_SOLID",
-				"Cull" : "CULL_NONE",
+				"Cull" : "CULL_FRONT",
 				"Multisample": false
 			},
 

@@ -10,6 +10,9 @@
     <Filter Include="rnd">
       <UniqueIdentifier>{8c4711bd-ee11-4bd1-ad08-7d327a6dd0cc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="omp\_010">
+      <UniqueIdentifier>{ea29483d-b667-4e67-b501-a6a397066cde}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\_bin\main\omp\content\atmosphere.pixel.hlsl">
@@ -95,6 +98,9 @@
     </FxCompile>
     <FxCompile Include="..\..\_bin\main\omp\content\cuboid.vertex.hlsl">
       <Filter>omp</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\omp\content\_010\sun.pixel.hlsl">
+      <Filter>omp\_010</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

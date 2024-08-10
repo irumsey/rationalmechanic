@@ -57,10 +57,10 @@
         },
         "render": {
           "orbit": false,
-          "model": [ "content/sphere.mesh" ],
+          "model": [ "content/_010/sun.mesh" ],
           "icon": "content/iconDefault.mesh",
           "diffuse": [ 1, 1, 0, 1 ],
-          "ambient": [ 1, 1, 0, 0 ],
+          "ambient": [ 1, 1, 0, 1 ],
           "parameters": [ 0, 0, 0, 0 ]
         }
       },
@@ -170,9 +170,9 @@
         },
         "render": {
           "orbit": true,
-          "model": [ "content/sphere.mesh" ],
+          "model": [ "content/_301/moon.mesh" ],
           "icon": "content/iconDefault.mesh",
-          "diffuse": [ 0.7, 0.7, 0.7, 1 ],
+          "diffuse": [ 1.0, 1.0, 1.0, 1 ],
           "ambient": [ 0.1, 0.1, 0.1, 0 ],
           "parameters": [ 0, 0, 0, 0 ]
         }
@@ -198,7 +198,7 @@
         },
         "render": {
           "orbit": true,
-          "model": [ "content/sphere.mesh" ],
+          "model": [ "content/_499/mars.mesh" ],
           "icon": "content/iconDefault.mesh",
           "diffuse": [ 1.0, 1.0, 1.0, 1 ],
           "ambient": [ 0.1, 0.1, 0.1, 0 ],
