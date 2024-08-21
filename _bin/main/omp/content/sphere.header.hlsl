@@ -5,13 +5,14 @@ float4x4 viewProjMatrix;
 struct InputVertex
 {
 	float3     vertex : LOCATION0;
-	float2   texcoord : LOCATION1;
-	uint1          id : LOCATION2;
-	float4   position : LOCATION3;	// position.w is scale
-	float4   rotation : LOCATION4;
-	float4    diffuse : LOCATION5;
-	float4    ambient : LOCATION6;
-	float4 parameters : LOCATION7;
+	float3    tangent : LOCATION1;
+	float2   texcoord : LOCATION2;
+	uint1          id : LOCATION3;
+	float4   position : LOCATION4;	// position.w is scale
+	float4   rotation : LOCATION5;
+	float4    diffuse : LOCATION6;
+	float4    ambient : LOCATION7;
+	float4 parameters : LOCATION8;
 };
 
 struct OutputVertex

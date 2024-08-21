@@ -41,6 +41,9 @@ void Simulator::evaluate(OrbitalBody *body)
 	body->elements[0] = body->elements[1];
 	theEphemeris().lookup(body->elements[1], body->id, _dayNumber);
 
+	RotationalElements rotationalElements;
+	theEphemeris().lookup(rotationalElements, body->id, _dayNumber);
+
 	PhysicalProperties centerProperties;
 	theEphemeris().lookup(centerProperties, center->id);
 
@@ -50,6 +53,9 @@ void Simulator::evaluate(OrbitalBody *body)
 
 	body->absolutePosition[0] = body->absolutePosition[1];
 	body->absolutePosition[1] = body->relativePosition[1] + center->absolutePosition[1];
+
+	body->absoluteRotation[0] = body->absoluteRotation[1];
+	rotationFromElements(body->absoluteRotation[1], rotationalElements, _dayNumber);
 
 	PhysicalProperties const &bodyProperties = body->physicalProperties;
 	scalar_t radius = bodyProperties.radius;

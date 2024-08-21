@@ -5,7 +5,7 @@
 		[
 			{
 				"name": "theSampler",
-				"Filter": "FILTER_ANISOTROPIC",
+				"Filter": "FILTER_MIN_MAG_MIP_LINEAR",
 				"AddressU": "ADDRESS_WRAP",
 				"AddressV": "ADDRESS_WRAP",
 				"AddressW": "ADDRESS_WRAP",

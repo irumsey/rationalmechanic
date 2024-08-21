@@ -151,6 +151,17 @@ bool Ephemeris::lookup(Elements &elements, size_t target, scalar_t jdn) const
 	return true;
 }
 
+bool Ephemeris::lookup(RotationalElements &elements, size_t target, scalar_t jdn) const
+{
+	/// test {
+	elements.A = vector3_t(0.3987, 0.0, 0.9171);
+	elements.theta = 0.0;
+	elements.w = constants::seconds_per_day<scalar_t> * 7.2921159e-5;
+	/// } test
+
+	return true;
+}
+
 Ephemeris &Ephemeris::instance()
 {
 	static Ephemeris theInstance;

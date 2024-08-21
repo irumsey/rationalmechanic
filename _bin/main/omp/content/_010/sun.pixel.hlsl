@@ -13,10 +13,10 @@ OutputPixel main(InputPixel input)
 
 	float4 diffuseTexel = diffuseTexture.Sample(theSampler, input.texcoord);
 
-	float noise0 = noiseTexture.Sample(theSampler, 1.1 * input.texcoord - time * float2(0.033,  0.003)).r;
+	float noise0 = noiseTexture.Sample(theSampler, 2.3 * input.texcoord - time * float2(0.033,  0.003)).r;
 	float noise1 = noiseTexture.Sample(theSampler, 1.7 * input.texcoord - time * float2(0.011, -0.001)).g;
-	float noise2 = noiseTexture.Sample(theSampler, 2.1 * input.texcoord + time * float2(0.007,  0.001)).b;
-	float noise3 = noiseTexture.Sample(theSampler, 3.3 * input.texcoord + time * float2(0.005, -0.003)).a;
+	float noise2 = noiseTexture.Sample(theSampler, 2.3 * input.texcoord + time * float2(0.033,  0.001)).b;
+	float noise3 = noiseTexture.Sample(theSampler, 1.7 * input.texcoord + time * float2(0.011, -0.003)).a;
 
 	float modulation = clamp(0.5 * (noise2 + noise1 + noise0), 0.3, 1);
 	float additive = 0.333 * (noise3 + noise2 + noise1);

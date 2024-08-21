@@ -75,6 +75,7 @@ void Culler::evaluate(OrbitalBody *body)
 	PhysicalProperties const& physicalProperties = body->physicalProperties;
 
 	viz.position = LUCID_MATH::lerp(_interpolant, body->absolutePosition[0], body->absolutePosition[1]) - _cameraPosition;
+	viz.rotation = LUCID_MATH::slerp(_interpolant, body->absoluteRotation[0], body->absoluteRotation[1]);
 	viz.distance = LUCID_MATH::len(viz.position);
 	viz.scaleFactor = physicalProperties.radius / viz.distance;
 

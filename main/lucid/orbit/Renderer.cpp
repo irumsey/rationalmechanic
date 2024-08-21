@@ -116,7 +116,7 @@ void Renderer::evaluate(OrbitalBody *body)
 		bodyInstance.id = (SELECT_FRAME << SELECT_SHIFT) | uint32_t(SELECT_MASK & body->id);
 		bodyInstance.position = distance * cast(viz.position / viz.distance);
 		bodyInstance.scale = distance * cast(viz.scaleFactor);
-		bodyInstance.rotation = LUCID_GAL::Quaternion(0, 0, 0, 1);
+		bodyInstance.rotation = cast(viz.rotation);
 		bodyInstance.diffuse = renderProperties.diffuse;
 		bodyInstance.ambient = renderProperties.ambient;
 		bodyInstance.parameters = renderProperties.parameters;
@@ -419,8 +419,8 @@ void Renderer::postRender(bool useFXAA)
 	}
 	else
 	{
-		SET_MATERIAL_PARAMETER(_post, _fxaaParameters.colorTarget, _colorTarget.get());
-		SET_MATERIAL_PARAMETER(_post, _fxaaParameters.glowTarget, _glowTarget.get());
+		SET_MATERIAL_PARAMETER(_post, _postParameters.colorTarget, _colorTarget.get());
+		SET_MATERIAL_PARAMETER(_post, _postParameters.glowTarget, _glowTarget.get());
 		_post->render(_renderContext);
 	}
 }

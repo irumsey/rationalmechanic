@@ -5,7 +5,7 @@
 
 LUCID_ORBIT_BEGIN
 
-///	Orbital elements
+///	Orbital Elements
 ///
 ///
 struct Elements
@@ -23,6 +23,24 @@ struct Elements
 	scalar_t   A = 0.0;	/// Semi-major axis
 	scalar_t  AD = 0.0;	/// Apoapsis distance
 	scalar_t  PR = 0.0;	/// Sidereal orbit period
+};
+
+///	RotationalElements
+///
+/// Note: just starting the process of representing
+/// the rotation of objects.  for now, just going to
+/// represent angular position and velocity at a given
+/// moment of time. 
+/// In the future, i imagine adding a generalized 
+/// moment of inertia matrix into physical properties
+/// and extending this for more generalized simulations.
+/// (esp. for dynamic bodies)
+struct RotationalElements
+{
+	scalar_t	JDN = 0.0;	/// Julian day number
+	vector3_t     A;		///	Axis of rotation
+	scalar_t  theta = 0.0;	/// Angular position (radians)
+	scalar_t      w = 0.0;	///	Angular velocity (radians / day)
 };
 
 LUCID_ORBIT_END

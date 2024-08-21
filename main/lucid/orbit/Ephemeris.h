@@ -12,6 +12,7 @@ LUCID_ORBIT_BEGIN
 struct PhysicalProperties;
 struct RenderProperties;
 struct Elements;
+struct RotationalElements;
 
 ///	Ephemeris
 ///
@@ -74,6 +75,10 @@ public:
 	bool lookup(Elements &elements, std::string const &target, scalar_t jdn) const;
 			 
 	bool lookup(Elements &elements, size_t target, scalar_t jdn) const;
+
+	bool lookup(RotationalElements &elements, std::string const &target, scalar_t jdn) const;
+
+	bool lookup(RotationalElements &elements, size_t target, scalar_t jdn) const;
 
 	static Ephemeris &instance();
 
@@ -154,6 +159,15 @@ inline bool Ephemeris::lookup(RenderProperties &properties, std::string const &t
 }
 
 inline bool Ephemeris::lookup(Elements &elements, std::string const &target, scalar_t jdn) const
+{
+	size_t id = lookup(target);
+	if (-1 == id)
+		return false;
+
+	return lookup(elements, id, jdn);
+}
+
+inline bool Ephemeris::lookup(RotationalElements &elements, std::string const &target, scalar_t jdn) const
 {
 	size_t id = lookup(target);
 	if (-1 == id)

@@ -48,6 +48,7 @@ public:
 	vector3_t relativeVelocity[2];
 
 	vector3_t absolutePosition[2];
+	quaternion_t absoluteRotation[2];
 
 	aabb3_t   aabbSelf[2];
 	aabb3_t   aabbTotal[2];

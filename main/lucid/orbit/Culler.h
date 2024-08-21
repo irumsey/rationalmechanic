@@ -37,6 +37,7 @@ public:
 		STATE           state = STATE_PRUNED;
 
 		vector3_t    position;		// position relative to camera
+		quaternion_t rotation;		// absolute rotation
 		scalar_t     distance = 0;	// distance from camera
 		scalar_t  scaleFactor = 0;	// ratio of object radius and distance
 	};
