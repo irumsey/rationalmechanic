@@ -85,9 +85,14 @@ template<typename T> inline T exclude(T const &x, T const &a, T const &b)
 ///	power "wrapper"
 ///
 
-template<typename T> inline T pow(T x, T e)
+template<typename T> inline T pow(T x, T y)
 {
-	return T(std::pow(x, e));
+	return T(std::pow(x, y));
+}
+
+template<typename T> inline T exp(T x)
+{
+	return T(std::exp(x));
 }
 
 ///

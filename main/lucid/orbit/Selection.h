@@ -2,7 +2,6 @@
 
 #include <lucid/core/Types.h>
 #include <lucid/orbit/Defines.h>
-#include <lucid/orbit/Renderer.h>
 
 LUCID_ORBIT_BEGIN
 
@@ -13,18 +12,24 @@ struct Selection
 {
 	/// TYPE
 	/// 
-	/// Selection type which mirrors the codes used by
-	/// the renderer.
+	/// 
 	enum TYPE
 	{
-		TYPE_NONE	 = 0,
-		TYPE_STAR	 = Renderer::SELECT_STAR,
-		TYPE_FRAME	 = Renderer::SELECT_FRAME,
-		TYPE_ORBIT	 = Renderer::SELECT_ORBIT,
-		TYPE_CAMERA	 = Renderer::SELECT_CAMERA,
-		TYPE_CALLOUT = Renderer::SELECT_CALLOUT,
-		TYPE_OTHER	 = Renderer::SELECT_OTHER,
+		TYPE_NONE	 = 0x00,
+		TYPE_STAR	 = 0x01,
+		TYPE_FRAME	 = 0x02,
+		TYPE_ORBIT	 = 0x03,
+		TYPE_CAMERA	 = 0x04,
+		TYPE_CALLOUT = 0x05,
+		TYPE_OTHER	 = 0x0f,
 	};
+
+	/// SHIFT and MASK
+	///
+	/// Used by the renderer to render type and identification data
+	/// into the selection render target.
+	enum { SELECT_SHIFT = 28 };
+	enum { SELECT_MASK  = 0x0fffffff};
 
 	TYPE type = TYPE_NONE;
 	uint32_t token = 0;		// selection type specific: id, index, etc

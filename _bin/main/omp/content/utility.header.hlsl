@@ -104,13 +104,15 @@ RaySphereIntersection intersects(Ray ray, Sphere sphere)
 	float dsq = b * b - 4 * a * c;
 	if (dsq < 0) return result;
 
-	result.intersects = true;
-
 	float d = sqrt(dsq);
 	float coeff = 0.5 / a;
 
 	result.t[0] = coeff * (-b - d);
 	result.t[1] = coeff * (-b + d);
+
+	if ((result.t[0] < 0) || (result.t[1] < 0)) return result;
+
+	result.intersects = true;
 
 	result.position[0] = result.t[0] * ray.direction + ray.origin;
 	result.position[1] = result.t[1] * ray.direction + ray.origin;

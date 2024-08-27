@@ -60,8 +60,7 @@
 
 	"attributes":
 	[
-		{ "name":  "lightPosition",     "query":           "lightPosition" },
-		{ "name":   "viewPosition",     "query":            "viewPosition" },
+		{ "name": "lightDirection",     "query":          "lightDirection" },
 		{ "name": "viewProjMatrix",     "query":          "viewProjMatrix" },
 		{ "name": "diffuseTexture", "texture2d":   "content/white.texture" },
 		{ "name": "normalsTexture", "texture2d": "content/normalz.texture" }

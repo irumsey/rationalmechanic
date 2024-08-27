@@ -1,29 +1,27 @@
+#include "utility.header.hlsl"
 #include "atmosphere.header.hlsl"
 
 OutputVertex main(InputVertex input)
 {
 	OutputVertex output = (OutputVertex)0;
 
-	float3 position = input.position.xyz;
-	float scale = input.position.w;
-	float3 vertex = 1.05 * scale * input.vertex;
+	float3 normal = input.vertex;
+	float3 planetCenter = input.position.xyz;
+	float lightDistance = input.parameters.x;
+	float thickness = input.parameters.y;
+	float radii[2] = { input.position.w, thickness * input.position.w };
 
-	float3 e1 = normalize(viewPosition - position);
-	float3 e0 = normalize(cross(e1, viewUp));
-	float3 e2 = normalize(cross(e0, e1));
+	float3 lightPosition = lightDirection * lightDistance;
 
-	position = e0 * vertex.x + e2 * vertex.y + e1 * vertex.z + position;
+	float3x3 worldMatrix = rotationFromQuaterion(input.rotation);
+	float3 worldPosition = mul(worldMatrix, radii[1] * normal) + planetCenter;
+	
+	output.ppsPosition = mul(viewProjMatrix, float4(worldPosition, 1));
+	output.planetCenter = planetCenter;
+	output.radii = float2(radii[0], radii[1]);
+	output.normal = mul(worldMatrix, normal);
+	output.viewDirection = -normalize(worldPosition);
+	output.lightDirection = normalize(lightPosition - worldPosition);
 
-	float3x3 R = float3x3(e0, e2, e1);
-
-	output.clipSpace = mul(viewProjMatrix, float4(position, 1));
-	output.ppsPosition = output.clipSpace;
-	output.center = input.position.xyz;
-	output.radii = float2( scale, 1.05 * scale);
-	output.lightDirection = mul(R, normalize(lightPosition - position));
-	output.diffuse = input.diffuse;
-	output.ambient = input.ambient;
-	output.texcoord = input.texcoord;
-
-	return output; 
+	return output;
 }

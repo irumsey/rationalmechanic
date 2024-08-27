@@ -40,6 +40,8 @@ template<bool DEFAULT> struct Flag
 	{
 	}
 
+	~Flag() = default;
+
 	operator bool () const
 	{
 		return value;
@@ -50,6 +52,32 @@ template<bool DEFAULT> struct Flag
 		value = rhs;
 		return *this;
 	}
+};
+
+///	Enumeration
+///
+///	a simple class in the same vein as Flag<> above for
+/// an enumeration which will default to a known value.
+template<typename E, E DEFAULT> struct Enumeration
+{
+	E value = DEFAULT;
+
+	Enumeration() = default;
+
+	Enumeration(E value)
+		: value(value)
+	{
+	}
+
+	~Enumeration() = default;
+
+	operator E () const
+	{
+		return value;
+	}
+
+	Enumeration &operator=(Enumeration const &) = default;
+
 };
 
 LUCID_CORE_END

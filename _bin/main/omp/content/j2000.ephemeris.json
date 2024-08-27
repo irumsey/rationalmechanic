@@ -141,11 +141,11 @@
         },
         "render": {
           "orbit": true,
-          "model": [ "content/_399/earth.mesh" ],
+          "model": [ "content/_399/earth.mesh", "content/atmosphere.mesh" ],
           "icon": "content/iconDefault.mesh",
-          "diffuse": [ 1.0, 1.0, 1.0, 1 ],
+          "diffuse": [ 1.0, 1.0, 1.0, 0.33 ],
           "ambient": [ 0.1, 0.1, 0.1, 0 ],
-          "parameters": [ 0, 0, 0, 0 ]
+          "parameters": [ 0, 1.015, 0, 0 ]
         }
       },
       "elements": [
@@ -172,7 +172,7 @@
           "orbit": true,
           "model": [ "content/_301/moon.mesh" ],
           "icon": "content/iconDefault.mesh",
-          "diffuse": [ 1.0, 1.0, 1.0, 1 ],
+          "diffuse": [ 1.0, 1.0, 1.0, 0.33 ],
           "ambient": [ 0.1, 0.1, 0.1, 0 ],
           "parameters": [ 0, 0, 0, 0 ]
         }
@@ -198,11 +198,11 @@
         },
         "render": {
           "orbit": true,
-          "model": [ "content/_499/mars.mesh" ],
+          "model": [ "content/_499/mars.mesh", "content/atmosphere.mesh" ],
           "icon": "content/iconDefault.mesh",
-          "diffuse": [ 1.0, 1.0, 1.0, 1 ],
+          "diffuse": [ 1.0, 1.0, 1.0, 0.1 ],
           "ambient": [ 0.1, 0.1, 0.1, 0 ],
-          "parameters": [ 0, 0, 0, 0 ]
+          "parameters": [ 0, 1.015, 0, 0 ]
         }
       },
       "elements": [

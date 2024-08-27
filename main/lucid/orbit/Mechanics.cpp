@@ -211,16 +211,7 @@ void Mechanics::render(CameraFrame *cameraFrame, bool useFXAA)
 Selection Mechanics::hit(int32_t x, int32_t y) const
 {
 	LUCID_VALIDATE(nullptr != _root, "attempt to use uninitialized system");
-
-	Selection selection;
-	uint32_t code = _renderer.hit(x, y);
-	if (0 == code)
-		return selection;
-
-	selection.type = (Selection::TYPE)((0xf0000000 & code) >> Renderer::SELECT_SHIFT);
-	selection.token = (Renderer::SELECT_MASK & code);
-
-	return selection;
+	return _renderer.hit(x, y);
 }
 
 void Mechanics::update(scalar_t delta)

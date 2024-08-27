@@ -1,31 +1,27 @@
-float3       lightPosition;
-float3        viewPosition;
-float3              viewUp;
+float3      lightDirection;	// unit direction from view position to light position
 float4x4    viewProjMatrix;
-float4x4 invViewProjMatrix;
 
 struct InputVertex
 {
 	float3     vertex : LOCATION0;
-	float2   texcoord : LOCATION1;
-	uint1          id : LOCATION2;
-	float4   position : LOCATION3;	// position.w is scale
-	float4   rotation : LOCATION4;
-	float4    diffuse : LOCATION5;
-	float4    ambient : LOCATION6;
-	float4 parameters : LOCATION7;
+	float3    tangent : LOCATION1;
+	float2   texcoord : LOCATION2;
+	uint1          id : LOCATION3;
+	float4   position : LOCATION4;	// ( position(3), planet radius )
+	float4   rotation : LOCATION5;
+	float4    diffuse : LOCATION6;
+	float4    ambient : LOCATION7;
+	float4 parameters : LOCATION8;	// ( scaleFactor, thickness, x, x )
 };
 
 struct OutputVertex
 {
 	float4     ppsPosition : SV_POSITION;
-	float4       clipSpace : POSITION0;
-	float2           radii : POSITION1;
-	float3          center : POSITION2;
-	float3  lightDirection : POSITION3;
-	float4         diffuse : COLOR0;
-	float4         ambient : COLOR1;
-	float2        texcoord : TEXCOORD0;
+	float3    planetCenter : POSITION0;
+	float2           radii : POSITION1;	// ( radius of planet, radius of atmosphere )
+	float3          normal : POSITION2;
+	float3   viewDirection : POSITION3;	// from vertex position to view position (0, 0, 0)
+	float3  lightDirection : POSITION4;	// from vertex position to light position
 };
 
 typedef OutputVertex InputPixel;
@@ -36,7 +32,17 @@ struct OutputPixel
 	float4  glow : SV_TARGET1;
 };
 
-float phase(float cos_theta)
+float rayleighScatter(float cosTheta)
 {
- 	return 0.5 * ((1 + cos_theta * cos_theta) * pow(0.75 / (1.25 - 0.5 * cos_theta), 1.5));
+	return 0.75 * (1 + cosTheta * cosTheta);
+}
+
+float rayleighScatter(float3 viewDirection, float3 lightDirection)
+{
+	return rayleighScatter(dot(viewDirection, lightDirection));
+}
+
+float phase(float cosTheta)
+{
+ 	return 0.5 * ((1 + cosTheta * cosTheta) * pow(0.75 / (1.25 - 0.5 * cosTheta), 1.5));
 }

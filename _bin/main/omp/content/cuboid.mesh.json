@@ -49,8 +49,7 @@
 
 		"attributes":
 		[
-			{ "name":  "lightPosition", "query":      "lightPosition" },											     
-			{ "name":   "viewPosition", "query":       "viewPosition" },
+			{ "name": "lightDirection", "query":     "lightDirection" },											     
 			{ "name": "viewProjMatrix", "query":     "viewProjMatrix" }
 		]
 	},

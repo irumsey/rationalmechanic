@@ -9,8 +9,6 @@ LUCID_ORBIT_BEGIN
 
 Culler::Culler()
 {
-	// make sure SSB is not pruned (otherwise the scene will not render)
-	_visibility[0].state = Visibility::STATE_CULLED;
 }
 
 Culler::~Culler()
@@ -42,73 +40,65 @@ void Culler::evaluate(DynamicPoint *point)
 	LUCID_PROFILE_SCOPE("Culler::evaluate(DynamicPoint *)");
 }
 
+/// hysteresis in this context simply means the projected radius has to go below
+/// h0 to become imperceptible and above h1 to become visible.  between the two
+/// values (h0 and h1) the visiblity state does not change.
 void Culler::evaluate(OrbitalBody *body)
 {
 	LUCID_PROFILE_SCOPE("Culler::evaluate(OrbitalBody *)");
 
-	static scalar_t const hysteresis[2] = { 0.01, 0.03, };
+	PhysicalProperties const &physicalProperties = body->physicalProperties;
 
-	Visibility &viz = _visibility[body->id];
+	vector3_t position = LUCID_MATH::lerp(_interpolant, body->absolutePosition[0], body->absolutePosition[1]) - _cameraPosition;
+	scalar_t distance = LUCID_MATH::len(position);
+	scalar_t scaleFactor = physicalProperties.radius / distance;
 
-	aabb3_t aabbTotal = aabb3_t(
-		LUCID_MATH::lerp(_interpolant, body->aabbTotal[0].min, body->aabbTotal[1].min) - _cameraPosition,
-		LUCID_MATH::lerp(_interpolant, body->aabbTotal[0].max, body->aabbTotal[1].max) - _cameraPosition
-	);
+	// preserve the visible state or force to imperceptible if previously culled or pruned. 
+	body->cullState = (Frame::CULL_STATE_VISIBLE == body->cullState)
+		? Frame::CULL_STATE_VISIBLE
+		: Frame::CULL_STATE_IMPERCEPTIBLE;
 
-	if (!LUCID_MATH::intersects(_frustum, aabbTotal))
-	{
-		viz.state = Visibility::STATE_PRUNED;
-		return;
-	}
-
-	aabb3_t aabbBody = aabb3_t(
-		LUCID_MATH::lerp(_interpolant, body->aabbSelf[0].min, body->aabbSelf[1].min) - _cameraPosition,
-		LUCID_MATH::lerp(_interpolant, body->aabbSelf[0].max, body->aabbSelf[1].max) - _cameraPosition
-	);
-
-	if (!LUCID_MATH::intersects(_frustum, aabbBody))
-	{
-		viz.state = Visibility::STATE_CULLED;
-		return;
-	}
-
-	PhysicalProperties const& physicalProperties = body->physicalProperties;
-
-	viz.position = LUCID_MATH::lerp(_interpolant, body->absolutePosition[0], body->absolutePosition[1]) - _cameraPosition;
-	viz.rotation = LUCID_MATH::slerp(_interpolant, body->absoluteRotation[0], body->absoluteRotation[1]);
-	viz.distance = LUCID_MATH::len(viz.position);
-	viz.scaleFactor = physicalProperties.radius / viz.distance;
-
-	scalar_t projRadius = ZNEAR * viz.scaleFactor;
-
+	scalar_t projRadius = ZNEAR * scaleFactor;
 	if (projRadius <= hysteresis[0])
-		_visibility[body->id].state = Visibility::STATE_IMPERCEPTIBLE;
-	else if ((hysteresis[0] < projRadius) && (projRadius <= hysteresis[1]) && (Visibility::STATE_VISIBLE != viz.state))
-		_visibility[body->id].state = Visibility::STATE_IMPERCEPTIBLE;
-	else
-		_visibility[body->id].state = Visibility::STATE_VISIBLE;
+		body->cullState = Frame::CULL_STATE_IMPERCEPTIBLE;
+	else if (hysteresis[1] < projRadius)
+		body->cullState = Frame::CULL_STATE_VISIBLE;
 }
 
 void Culler::evaluate(DynamicBody *body)
 {
 	LUCID_PROFILE_SCOPE("Culler::evaluate(DynamicBody *)");
-
 }
 
 void Culler::evaluate(CameraFrame *camera)
 {
 	LUCID_PROFILE_SCOPE("Culler::evaluate(CameraFrame *)");
-
 }
 
 void Culler::cull(Frame *frame)
 {
 	LUCID_PROFILE_SCOPE("Culler::cull(Frame *)");
 
-	frame->apply(this);
+	aabb3_t aabbTotal = aabb3_t(
+		LUCID_MATH::lerp(_interpolant, frame->aabbTotal[0].min, frame->aabbTotal[1].min) - _cameraPosition,
+		LUCID_MATH::lerp(_interpolant, frame->aabbTotal[0].max, frame->aabbTotal[1].max) - _cameraPosition
+	);
 
-	if (Visibility::STATE_PRUNED == _visibility[frame->id].state)
+	if (!LUCID_MATH::intersects(_frustum, aabbTotal))
+	{
+		frame->cullState = Frame::CULL_STATE_PRUNED;
 		return;
+	}
+
+	aabb3_t aabbSelf = aabb3_t(
+		LUCID_MATH::lerp(_interpolant, frame->aabbSelf[0].min, frame->aabbSelf[1].min) - _cameraPosition,
+		LUCID_MATH::lerp(_interpolant, frame->aabbSelf[0].max, frame->aabbSelf[1].max) - _cameraPosition
+	);
+
+	if (LUCID_MATH::intersects(_frustum, aabbSelf))
+		frame->apply(this);
+	else
+		frame->cullState = Frame::CULL_STATE_CULLED;
 
 	for (Frame *child = frame->firstChild; nullptr != child; child = child->nextSibling)
 		cull(child);

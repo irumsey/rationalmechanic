@@ -11,7 +11,7 @@ LUCID_MATH_BEGIN
 template<typename T, size_t DIM> struct Plane
 {
 	LUCID_VECTOR(T, DIM) n;
-	T d;
+	T d = T();
 
 	Plane() = default;
 

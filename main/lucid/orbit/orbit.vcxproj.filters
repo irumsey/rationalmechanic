@@ -17,6 +17,7 @@
     <ClInclude Include="Callout.h" />
     <ClInclude Include="Culler.h" />
     <ClInclude Include="Defines.h" />
+    <ClInclude Include="Compositor.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Frame.cpp" />
@@ -27,5 +28,6 @@
     <ClCompile Include="Mechanics.cpp" />
     <ClCompile Include="Callout.cpp" />
     <ClCompile Include="Culler.cpp" />
+    <ClCompile Include="Compositor.cpp" />
   </ItemGroup>
 </Project>

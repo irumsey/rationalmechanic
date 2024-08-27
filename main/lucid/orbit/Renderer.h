@@ -14,8 +14,9 @@
 #include <lucid/orbit/Defines.h>
 #include <lucid/orbit/Types.h>
 #include <lucid/orbit/Utility.h>
-#include <lucid/orbit/Algorithm.h>
+#include <lucid/orbit/Selection.h>
 #include <lucid/orbit/Culler.h>
+#include <lucid/orbit/Compositor.h>
 
 LUCID_GAL_BEGIN
 
@@ -34,39 +35,15 @@ LUCID_GIGL_END
 
 LUCID_ORBIT_BEGIN
 
+///	Renderer
 ///
 ///
-///
-class Renderer : public Algorithm
+class Renderer
 {
 public:
-	///	SELECT
-	/// 
-	///	Codes used to render into the render target.
-	/// Used for "pixel perfect" selection.
-	enum SELECT
-	{
-		SELECT_STAR		= 0x01,
-		SELECT_FRAME	= 0x02,
-		SELECT_ORBIT	= 0x03,
-		SELECT_CAMERA	= 0x04,
-		SELECT_CALLOUT  = 0x05,
-		SELECT_OTHER	= 0x0f,
-	};
-	enum { SELECT_SHIFT = 28 };
-	enum { SELECT_MASK  = 0x0fffffff};
-
 	Renderer();
 
 	virtual ~Renderer();
-
-	virtual void evaluate(DynamicPoint *point) override;
-
-	virtual void evaluate(OrbitalBody *body) override;
-
-	virtual void evaluate(DynamicBody *body) override;
-
-	virtual void evaluate(CameraFrame *camera) override;
 
 	void initialize(std::string const &path);
 
@@ -74,7 +51,7 @@ public:
 
 	void render(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t time, scalar_t interpolant, bool useFXAA = false);
 
-	uint32_t hit(int32_t x, int32_t y) const;
+	Selection hit(int32_t x, int32_t y) const;
 
 private:
 	enum {       BATCH_MAXIMUM = 1024 };
@@ -103,25 +80,14 @@ private:
 		LUCID_GAL::Parameter const *glowTarget = nullptr;
 	};
 
+#	pragma pack(push)
+#	pragma pack(1)
+
 	struct StarInstance
 	{
 		uint32_t                   id = 0;
 		LUCID_GAL::Vector4 parameters;
 		LUCID_GAL::Color        color;
-	};
-
-#	pragma pack(push)
-#	pragma pack(1)
-
-	struct MeshInstance
-	{
-		uint32_t                      id = 0;
-		LUCID_GAL::Vector3      position;	//	position and scale are "packed" into
-		float32_t                  scale;	//	an hlsl float4 type
-		LUCID_GAL::Quaternion   rotation;
-		LUCID_GAL::Color         diffuse;
-		LUCID_GAL::Color	     ambient;
-		LUCID_GAL::Vector4    parameters;
 	};
 
 	struct IconInstance
@@ -135,9 +101,13 @@ private:
 
 #	pragma pack(pop)
 
-	float32_t _fov = 0.25f * constants::pi<float32_t>;
+	///	test {
+	/// magic numbers
 	float32_t _znear = 10.f;
 	float32_t _zfar = 1000.f;
+	float32_t _zmid = 0.5f * (_znear + _zfar);
+	/// } test
+
 	int32_t _width = 0;
 	int32_t _height = 0;
 	float32_t _aspect = 1.f;
@@ -150,18 +120,21 @@ private:
 	vector3_t _focusPosition;
 
 	Culler _culler;
+	Compositor _compositor;
 
 	LUCID_GIGL::Context _renderContext;
 
 	size_t _starCount = 0;
 	StarParameters _starParameters;
-	std::unique_ptr<LUCID_GAL::VertexBuffer> _starInstances;
 	std::unique_ptr<LUCID_GIGL::Mesh> _starMesh;
+	std::unique_ptr<LUCID_GAL::VertexBuffer> _starInstances;
 
-	LUCID_GIGL::Batched _sceneBatch;
+	LUCID_GIGL::Batched _iconBatch;
 
+#if false
 	std::shared_ptr<LUCID_GIGL::Mesh> _orbitMesh;
 	LUCID_GIGL::Batched _orbitBatch;
+#endif
 
 	std::shared_ptr<LUCID_GIGL::Font> _font;
 	std::unique_ptr<LUCID_GAL::VertexBuffer> _text;
@@ -187,10 +160,6 @@ private:
 
 	PostParameters _fxaaParameters;
 	std::unique_ptr<LUCID_GIGL::Mesh> _fxaa;
-
-	void batch(Frame *frame);
-
-	void batchOrbit(OrbitalBody *body);
 
 	void preRender();
 

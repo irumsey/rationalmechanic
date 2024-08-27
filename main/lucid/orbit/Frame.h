@@ -35,10 +35,23 @@ class Algorithm;
 class Frame
 {
 public:
-	Frame *centerFrame = nullptr;
+	/// 
+	/// 
+	/// 
+	enum CULL_STATE
+	{
+		CULL_STATE_PRUNED = 0,		// whole branch, this frame and children, not in view volume
+		CULL_STATE_CULLED,			// just this, the parent frame, not in view volume
+		CULL_STATE_IMPERCEPTIBLE,	// too small to render
+		CULL_STATE_VISIBLE,			// frame is visible
+	};
+
+	Frame *centerFrame = nullptr;	// parent frame
 
 	Frame *firstChild = nullptr;
 	Frame *nextSibling = nullptr;
+
+	CULL_STATE cullState = CULL_STATE_PRUNED;
 
 	size_t id = 0;
 	std::string name;
@@ -50,8 +63,8 @@ public:
 	vector3_t absolutePosition[2];
 	quaternion_t absoluteRotation[2];
 
-	aabb3_t   aabbSelf[2];
-	aabb3_t   aabbTotal[2];
+	aabb3_t aabbSelf[2];
+	aabb3_t aabbTotal[2];
 
 	virtual ~Frame();
 

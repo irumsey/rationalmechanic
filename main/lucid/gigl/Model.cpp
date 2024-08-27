@@ -15,6 +15,36 @@ Model::~Model()
 	shutdown();
 }
 
+void Model::render(Context const &context) const
+{
+	for (size_t i = 0; i < _meshes.size(); ++i)
+		_meshes[i]->render(context);
+}
+
+void Model::renderInstanced(Context const &context, LUCID_GAL::VertexBuffer *instanceStream, int32_t start, int32_t count) const
+{
+	for (size_t i = 0; i < _meshes.size(); ++i)
+	{
+		LUCID_GAL_PIPELINE.setVertexStream(1, instanceStream, start);
+		_meshes[i]->renderInstanced(context, count);
+	}
+}
+
+void Model::draw() const
+{
+	for (size_t i = 0; i < _meshes.size(); ++i)
+		_meshes[i]->draw();
+}
+
+void Model::drawInstanced(LUCID_GAL::VertexBuffer *instanceStream, int32_t start, int32_t count) const
+{
+	for (size_t i = 0; i < _meshes.size(); ++i)
+	{
+		LUCID_GAL_PIPELINE.setVertexStream(1, instanceStream, start);
+		_meshes[i]->drawInstanced(count);
+	}
+}
+
 void Model::initialize(LUCID_CORE::Reader &reader)
 {
 	shutdown();
@@ -23,11 +53,7 @@ void Model::initialize(LUCID_CORE::Reader &reader)
 	_meshes.resize(count);
 
 	for (int32_t i = 0; i < count; ++i)
-	{
-		std::string path = reader.read<std::string>();
-
-		_meshes[i] = Resources::get<Mesh>(path);
-	}
+		_meshes[i] = Resources::get<Mesh>(reader.read<std::string>());
 }
 
 void Model::shutdown()

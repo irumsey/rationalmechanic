@@ -3,8 +3,6 @@
 
 LUCID_GIGL_BEGIN
 
-size_t Batched::TypeID::counter = 0;
-
 Batched::Batched()
 {
 }
@@ -40,12 +38,7 @@ void Batched::render(Context const &context)
 void Batched::clear()
 {
 	for (auto iter = _batches.begin(); iter != _batches.end(); ++iter)
-	{
-		Key const &key = iter->first;
-		BatchBase *batch = iter->second;
-
-		batch->clear();
-	}
+		iter->second->clear();
 }
 
 LUCID_GIGL_END

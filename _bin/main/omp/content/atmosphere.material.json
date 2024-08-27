@@ -10,7 +10,7 @@
 			"RasterMode" :
 			{
 				"Fill" : "FILL_SOLID",
-				"Cull" : "CULL_NONE",
+				"Cull" : "CULL_FRONT",
 				"Multisample": false
 			},
 
@@ -47,13 +47,9 @@
 
 	"attributes":
 	[
-		{ "name":     "lightPosition",     "query":                   "lightPosition" },
-		{ "name":      "viewPosition",     "query":                    "viewPosition" },
-		{ "name":            "viewUp",     "query":                          "viewUp" },
+		{ "name":    "lightDirection",     "query":                  "lightDirection" },
 		{ "name":    "viewProjMatrix",     "query":                  "viewProjMatrix" },
-		{ "name": "invViewProjMatrix",     "query":               "invViewProjMatrix" },
-		{ "name":    "scatterTexture", "texture2d":      "content/scattering.texture" },
-		{ "name":    "normalsTexture", "texture2d":     "content/diskNormals.texture" }
+		{ "name":    "scatterTexture", "texture2d":      "content/scattering.texture" }
 	]
 
 }

@@ -36,10 +36,6 @@ inline LUCID_ORBIT::Ephemeris &theEphemeris()
 
 template<typename T> struct NullSort
 {
-	NullSort(LUCID_GAL::Vector3 const & /* dummy */)
-	{
-	}
-
 	bool operator()(T const &, T const &) const
 	{
 		return false;
@@ -48,31 +44,9 @@ template<typename T> struct NullSort
 
 template<typename T> struct Back2Front
 {
-	LUCID_GAL::Vector3 viewPosition;
-
-	Back2Front(LUCID_GAL::Vector3 const &viewPosition)
-		: viewPosition(viewPosition)
-	{
-	}
-
 	bool operator()(T const &lhs, T const &rhs) const
 	{
-		return LUCID_MATH::lsq(lhs.position - viewPosition) > LUCID_MATH::lsq(rhs.position - viewPosition);
-	}
-};
-
-template<typename T> struct Front2Back
-{
-	LUCID_GAL::Vector3 viewPosition;
-
-	Front2Back(LUCID_GAL::Vector3 const &viewPosition)
-		: viewPosition(viewPosition)
-	{
-	}
-
-	bool operator()(T const &lhs, T const &rhs) const
-	{
-		return LUCID_MATH::lsq(lhs.position - viewPosition) < LUCID_MATH::lsq(rhs.position - viewPosition);
+		return lhs.distance > rhs.distance;
 	}
 };
 
@@ -93,60 +67,6 @@ Renderer::~Renderer()
 	shutdown();
 }
 
-void Renderer::evaluate(DynamicPoint *point)
-{
-	LUCID_PROFILE_SCOPE("Renderer::evaluate(DynamicPoint)");
-	///	TBD: implement
-}
-
-void Renderer::evaluate(OrbitalBody *body)
-{
-	LUCID_PROFILE_SCOPE("Renderer::evaluate(OrbitalBody)");
-
-	PhysicalProperties const &physicalProperties = body->physicalProperties;
-	RenderProperties const &renderProperties = body->renderProperties;
-	Elements const *elements = body->elements;
-
-	float32_t distance = 0.5f * (_zfar - _znear);
-
-	Culler::Visibility const& viz = _culler[body->id];
-	if (Culler::Visibility::STATE_VISIBLE == viz.state)
-	{
-		MeshInstance bodyInstance;
-		bodyInstance.id = (SELECT_FRAME << SELECT_SHIFT) | uint32_t(SELECT_MASK & body->id);
-		bodyInstance.position = distance * cast(viz.position / viz.distance);
-		bodyInstance.scale = distance * cast(viz.scaleFactor);
-		bodyInstance.rotation = cast(viz.rotation);
-		bodyInstance.diffuse = renderProperties.diffuse;
-		bodyInstance.ambient = renderProperties.ambient;
-		bodyInstance.parameters = renderProperties.parameters;
-		_sceneBatch.addInstance(renderProperties.model, bodyInstance);
-	} else if (Culler::Visibility::STATE_IMPERCEPTIBLE == viz.state)
-	{
-		IconInstance iconInstance;
-		iconInstance.id = (SELECT_FRAME << SELECT_SHIFT) | uint32_t(SELECT_MASK & body->id);
-		iconInstance.position = distance * cast(viz.position / viz.distance);
-		iconInstance.scale = LUCID_GAL::Vector2(24, 24);
-		iconInstance.texcoord = LUCID_GAL::Vector4(0, 0, 1, 1);
-		iconInstance.color = LUCID_GAL::Color(1, 1, 1, 1);
-		_sceneBatch.addInstance(renderProperties.icon, iconInstance);
-	}
-
-	batchOrbit(body);
-}
-	  
-void Renderer::evaluate(DynamicBody *body)
-{
-	LUCID_PROFILE_SCOPE("Renderer::evaluate(DynamicBody)");
-	///	TBD: implement
-}
-
-void Renderer::evaluate(CameraFrame *camera)
-{
-	LUCID_PROFILE_SCOPE("Renderer::evaluate(CameraFrame)");
-	///	TBD: implement
-}
-
 void Renderer::initialize(std::string const &path)
 {
 	shutdown();
@@ -159,6 +79,9 @@ void Renderer::initialize(std::string const &path)
 	_screenSize = LUCID_GAL::Vector2(float32_t(_width), float32_t(_height));
 	_texelSize = LUCID_GAL::Vector2(1.f / _screenSize.x, 1.f / _screenSize.y);
 
+	_compositor.initialize(BATCH_MAXIMUM, _zmid);
+	_iconBatch.initialize();
+
 	_starCount = theStarCatalog().count();
 	_starMesh.reset(LUCID_GIGL::Mesh::create("content/star.mesh"));
 	_starInstances.reset(LUCID_GAL::VertexBuffer::create(LUCID_GAL::VertexBuffer::USAGE_STATIC, int32_t(_starCount), sizeof(StarInstance)));
@@ -169,8 +92,7 @@ void Renderer::initialize(std::string const &path)
 		StarCatalog::Entry const &entry = theStarCatalog()[i];
 		StarInstance &instance = starInstances[i];
 
-		instance.id = uint32_t((SELECT_STAR << SELECT_SHIFT) | i);
-
+		instance.          id = uint32_t((Selection::TYPE_STAR << Selection::SELECT_SHIFT) | i);
 		instance.parameters.x = /* unused */ 0.f;
 		instance.parameters.y = float32_t(entry.right_ascension);
 		instance.parameters.z = float32_t(entry.declination);
@@ -179,24 +101,11 @@ void Renderer::initialize(std::string const &path)
 	}
 	_starInstances->unlock();
 
-	_sceneBatch.initialize();
-	_orbitBatch.initialize();
-
 	/// test {
 	///	need a data driven method for registering these... 
 	/// ...just read the ephemeris stupid!!!
-	_sceneBatch.createBatch<MeshInstance, Back2Front<MeshInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(   "content/atmosphere.mesh"), BATCH_MAXIMUM);
-	_sceneBatch.createBatch<MeshInstance, Front2Back<MeshInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(       "content/cuboid.mesh"), BATCH_MAXIMUM);
-	_sceneBatch.createBatch<MeshInstance, Front2Back<MeshInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(       "content/sphere.mesh"), BATCH_MAXIMUM);
-	_sceneBatch.createBatch<MeshInstance, Front2Back<MeshInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(     "content/_010/sun.mesh"), BATCH_MAXIMUM);
-	_sceneBatch.createBatch<MeshInstance, Front2Back<MeshInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(   "content/_399/earth.mesh"), BATCH_MAXIMUM);
-	_sceneBatch.createBatch<MeshInstance, Front2Back<MeshInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(    "content/_301/moon.mesh"), BATCH_MAXIMUM);
-	_sceneBatch.createBatch<MeshInstance, Front2Back<MeshInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(    "content/_499/mars.mesh"), BATCH_MAXIMUM);
-	_sceneBatch.createBatch<IconInstance, NullSort  <IconInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(  "content/iconDefault.mesh"), BATCH_MAXIMUM);
-	_sceneBatch.createBatch<IconInstance, NullSort  <IconInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>("content/iconSatellite.mesh"), BATCH_MAXIMUM);
-
-	_orbitMesh = LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>("content/orbit.mesh");
-	_orbitBatch.createBatch<MeshInstance, NullSort<MeshInstance> >(_orbitMesh, BATCH_MAXIMUM);
+	_iconBatch.createBatch<IconInstance, NullSort<IconInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(  "content/iconDefault.mesh"), BATCH_MAXIMUM, NullSort<IconInstance>());
+	_iconBatch.createBatch<IconInstance, NullSort<IconInstance> >(LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>("content/iconSatellite.mesh"), BATCH_MAXIMUM, NullSort<IconInstance>());
 	/// } test
 
 	_font = LUCID_GIGL::Resources::get<LUCID_GIGL::Font>("content/OCRa.font");
@@ -236,10 +145,7 @@ void Renderer::shutdown()
 	_text.reset();
 	_font.reset();
 
-	_orbitBatch.shutdown();
-	_sceneBatch.shutdown();
-
-	_orbitMesh.reset();
+	_iconBatch.shutdown();
 
 	_selectReader.reset();
 	_selectTarget.reset();
@@ -265,11 +171,13 @@ void Renderer::render(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t time,
 	resize();
 
 	_culler.cull(rootFrame, cameraFrame, interpolant);
+	_compositor.process(rootFrame, cameraFrame, interpolant);
 
 	Frame *focusFrame = cameraFrame->focus;
 	_interpolant = interpolant;
 
-	_fov = cast(cameraFrame->fov);
+	float32_t fov = cast(cameraFrame->fov);
+
 	_cameraPosition = LUCID_MATH::lerp(interpolant, cameraFrame->absolutePosition[0], cameraFrame->absolutePosition[1]);
 	_focusPosition = LUCID_MATH::lerp(interpolant, focusFrame->absolutePosition[0], focusFrame->absolutePosition[1]);
 
@@ -279,10 +187,10 @@ void Renderer::render(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t time,
 	_renderContext["time"] = cast(time);
 	_renderContext["interpolant"] = cast(_interpolant);
 		
-	_renderContext["lightPosition"] = cast(vector3_t(0, 0, 0) - _cameraPosition);
+	_renderContext["lightDirection"] = LUCID_MATH::normalize(cast(vector3_t(0, 0, 0) - _cameraPosition));
 
 	LUCID_GAL::Matrix4x4 viewMatrix = LUCID_MATH::look(LUCID_GAL::Vector3(0, 0, 0), cast(_focusPosition - _cameraPosition), LUCID_GAL::Vector3(0, 0, 1));
-	LUCID_GAL::Matrix4x4 projMatrix = LUCID_MATH::perspective(_fov, _aspect, _znear, _zfar);
+	LUCID_GAL::Matrix4x4 projMatrix = LUCID_MATH::perspective(fov, _aspect, _znear, _zfar);
 	LUCID_GAL::Matrix4x4 viewProjMatrix = projMatrix * viewMatrix;
 
 	_renderContext["viewPosition"] = LUCID_GAL::Vector3(0, 0, 0);
@@ -297,46 +205,32 @@ void Renderer::render(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t time,
 	_renderContext["viewProjMatrix"] = viewProjMatrix;
 	_renderContext["invViewProjMatrix"] = LUCID_MATH::inverse(viewProjMatrix);
 
-	_sceneBatch.clear();
-	_orbitBatch.clear();
-
-	batch(rootFrame);
+	_iconBatch.clear();
 
 	preRender();
 	render();
 	postRender(useFXAA);
 }
 
-uint32_t Renderer::hit(int32_t x, int32_t y) const
+Selection Renderer::hit(int32_t x, int32_t y) const
 {
 	x = LUCID_MATH::clamp(x, 0,  _width - 1);
 	y = LUCID_MATH::clamp(y, 0, _height - 1);
 
-	uint32_t const *select = (uint32_t const *)(_selectReader->read());
-	return select[y * _width + x];
+	uint32_t const *target = (uint32_t const *)(_selectReader->read());
+	uint32_t code = target[y * _width + x];
+
+	Selection selection;
+	selection.type = (Selection::TYPE)((0xf0000000 & code) >> Selection::SELECT_SHIFT);
+	selection.token = (Selection::SELECT_MASK & code);
+
+	return selection;
 }
 
-void Renderer::batch(Frame *frame)
-{
-	LUCID_PROFILE_SCOPE("Renderer::batch(Frame)");
-
-	if (nullptr == frame)
-		return;
-
-	Culler::Visibility const &viz = _culler[frame->id];
-	if (Culler::Visibility::STATE_PRUNED == viz.state)
-		return;
-
-	if (Culler::Visibility::STATE_CULLED != viz.state)
-		frame->apply(this);
-
-	for (Frame *child = frame->firstChild; nullptr != child; child = child->nextSibling)
-		batch(child);
-}
+#if false
 
 void Renderer::batchOrbit(OrbitalBody *body)
 {
-#if false
 	RenderProperties const &renderProperties = body->renderProperties;
 	if (!renderProperties.showOrbit)
 		return;
@@ -365,8 +259,9 @@ void Renderer::batchOrbit(OrbitalBody *body)
 	orbitInstance.color = renderProperties.orbitHighlight ? LUCID_GAL::Color(1.f, 1.f, 1.f, 1.f) : LUCID_GAL::Color(0, 0, 1, 1);
 	orbitInstance.parameters = LUCID_GAL::Vector4(hu, e, /* from */ 0, /* to */ constants::two_pi<float32_t>);
 	_orbitBatch.addInstance(_orbitMesh, orbitInstance);
-#endif
 }
+
+#endif
 
 void Renderer::preRender()
 {
@@ -387,8 +282,8 @@ void Renderer::render()
 	LUCID_GAL_PIPELINE.setVertexStream(1, _starInstances.get());
 	_starMesh->renderInstanced(_renderContext, int32_t(_starCount));
 
-	_sceneBatch.render(_renderContext);
-	_orbitBatch.render(_renderContext);
+	_compositor.render(_renderContext);
+	_iconBatch.render(_renderContext);
 
 	if (0 == _textCount)
 		return;

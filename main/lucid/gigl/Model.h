@@ -14,9 +14,16 @@ class Reader;
 
 LUCID_CORE_END
 
+LUCID_GAL_BEGIN
+
+class VertexBuffer;
+
+LUCID_GAL_END
+
 LUCID_GIGL_BEGIN
 
 class Batched;
+class Context;
 
 ///	Model
 ///
@@ -31,6 +38,14 @@ public:
 	virtual ~Model();
 
 	LUCID_CORE::Identity const &identity() const;
+
+	void render(Context const &context) const;
+
+	void renderInstanced(Context const &context, LUCID_GAL::VertexBuffer *instanceStream, int32_t start, int32_t count) const;
+
+	void draw() const;
+
+	void drawInstanced(LUCID_GAL::VertexBuffer *instanceStream, int32_t start, int32_t count) const;
 
 	static Model *create(std::string const &path);
 

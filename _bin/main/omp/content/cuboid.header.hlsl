@@ -1,5 +1,4 @@
-float3    lightPosition;
-float3     viewPosition;
+float3   lightDirection;	// unit direction from view position to light position
 float4x4 viewProjMatrix;
 
 struct InputVertex

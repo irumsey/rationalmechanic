@@ -7,16 +7,18 @@ OutputVertex main(InputVertex input)
 
 	float3 position = input.position.xyz;
 	float  scale = input.position.w;
+	float  lightDistance = input.parameters.x;
 
-	float3 lightDirection = normalize(lightPosition - position);
+	float3x3 worldMatrix = rotationFromQuaterion(input.rotation);
+	float3 worldPosition = mul(worldMatrix, scale * input.vertex) + position;
 
-	float3x3 R = rotationFromQuaterion(input.rotation);
-	position = mul(R, scale * input.vertex) + position;
+	float3 normal = mul(worldMatrix, input.normal);
 
-	float3 normal = mul(R, input.normal);
+	float3 lightPosition = lightDistance * lightDirection;
+	float3 lightDirection2 = normalize(lightPosition - position);
 
-	output.ppsPosition = mul(viewProjMatrix, float4(position, 1));
-	output.shade = clamp(dot(lightDirection, normal), 0.2, 1);
+	output.ppsPosition = mul(viewProjMatrix, float4(worldPosition, 1));
+	output.shade = clamp(dot(lightDirection2, normal), 0.2, 1);
 	output.id = input.id;
 	output.diffuse = input.diffuse;
 	output.ambient = input.ambient;

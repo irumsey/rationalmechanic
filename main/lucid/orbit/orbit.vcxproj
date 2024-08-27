@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="Algorithm.h" />
     <ClInclude Include="Callout.h" />
+    <ClInclude Include="Compositor.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Culler.h" />
     <ClInclude Include="Defines.h" />
@@ -38,6 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Callout.cpp" />
+    <ClCompile Include="Compositor.cpp" />
     <ClCompile Include="Culler.cpp" />
     <ClCompile Include="Ephemeris.cpp" />
     <ClCompile Include="Frame.cpp" />

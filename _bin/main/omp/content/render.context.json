@@ -7,7 +7,7 @@
 		{ "name" :             "time",     "float" : 0 },
 		{ "name" :      "interpolant",     "float" : 0 },
 
-		{ "name":     "lightPosition",   "vector3" : [ 0, 0, 0 ] },
+		{ "name":    "lightDirection",   "vector3" : [ 0, 0, 0 ] },
                                                
 		{ "name":       "viewForward",   "vector3" : [ 0, 0, 0 ] },
 		{ "name":         "viewRight",   "vector3" : [ 0, 0, 0 ] },

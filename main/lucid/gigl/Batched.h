@@ -4,7 +4,6 @@
 #include <vector>
 #include <unordered_map>
 #include <lucid/core/Error.h>
-#include <lucid/gal/Pipeline.h>
 #include <lucid/gal/VertexBuffer.h>
 #include <lucid/gigl/Defines.h>
 #include <lucid/gigl/Context.h>
@@ -18,7 +17,7 @@ LUCID_GIGL_BEGIN
 ///
 ///	Instanced batching
 ///	Note: first, batches are rendered in the order of batch creation.
-///	Note: second, all instances within the batch are rendered in the order determined using the supplied predicate.
+///	Note: second, all instances within the batch are rendered in order using the supplied predicate.
 class Batched
 {
 public:
@@ -30,11 +29,11 @@ public:
 
 	void shutdown();
 
-	template<typename I, typename Pred> void createBatch(std::shared_ptr<Model> model, size_t maximum);
+	template<typename I, typename Pred> void createBatch(std::shared_ptr<Model> model, size_t maximum, Pred const &predicate);
 
 	template<typename I> void addInstance(std::shared_ptr<Model> model, I const &instance);
 
-	template<typename I, typename Pred> void createBatch(std::shared_ptr<Mesh> mesh, size_t maximum);
+	template<typename I, typename Pred> void createBatch(std::shared_ptr<Mesh> mesh, size_t maximum, Pred const &predicate);
 
 	template<typename I> void addInstance(std::shared_ptr<Mesh> mesh, I const &instance);
 
@@ -43,24 +42,26 @@ public:
 	void clear();
 
 private:
+	///	Type
 	///
-	///
-	///
-	struct TypeID
+	///	Used to generate a unique number per supplied instance type.
+	template<typename I> struct Type
 	{
-		static size_t counter;
-
-		template<typename I> static size_t value()
+		static size_t ID()
 		{
-			static size_t id = ++counter;
-			return id;
+			return size_t(&ID);
 		}
 	};
 
-
+	///	Key
 	///
-	///
-	///
+	///	Hashes a key value using the mesh and instance type.
+	/// 
+	/// Note: the shared pointer keeps the mesh instance alive.
+	///	this allows the system to "register" the batch using createBatch()
+	/// then not "worry" about the mesh "going away".
+	/// 
+	/// See: gigl::Resources
 	struct Key
 	{
 		std::shared_ptr<Mesh> mesh;
@@ -76,14 +77,13 @@ private:
 		{
 			return size_t(mesh.get());
 		}
-
 	};
 
 	struct BatchHash
 	{
 		size_t operator()(Key const &key) const
 		{
-			return ((key.mid() << 16) |  key.iid);
+			return ((0xffff0000 & (key.iid << 16)) | (0x0000ffff & key.mid()));
 		}
 	};
 
@@ -123,11 +123,15 @@ private:
 	template<typename I, typename Pred> struct Batch : public BatchBase
 	{
 		size_t maximum = 0;
-		std::shared_ptr<LUCID_GAL::VertexBuffer> batch;
-		std::vector<I> instances;
 
-		Batch(size_t maximum)
+		Pred predicate;
+
+		std::vector<I> instances;
+		std::shared_ptr<LUCID_GAL::VertexBuffer> batch;
+
+		Batch(size_t maximum, Pred const &predicate)
 			: maximum(maximum)
+			, predicate(predicate)
 		{
 			batch.reset(LUCID_GAL::VertexBuffer::create(LUCID_GAL::VertexBuffer::USAGE_DYNAMIC, int32_t(maximum), sizeof(I)));
 		}
@@ -147,10 +151,7 @@ private:
 
 		virtual void render(Context const &context, std::shared_ptr<Mesh> mesh) override
 		{
-			LUCID_GAL::Pipeline &pipeline = LUCID_GAL::Pipeline::instance();
-
-			LUCID_GAL::Vector3 const &viewPosition = context.lookup("viewPosition").as<LUCID_GAL::Vector3>();
-			std::sort(instances.begin(), instances.end(), Pred(viewPosition));
+			std::sort(instances.begin(), instances.end(), predicate);
 
 			size_t totalCount = instances.size();
 			size_t index = 0;
@@ -164,7 +165,7 @@ private:
 				::memcpy((I*)(batch->lock()), &instances[index], count * sizeof(I));
 				batch->unlock();
 
-				pipeline.setVertexStream(1, batch.get());
+				LUCID_GAL_PIPELINE.setVertexStream(1, batch.get());
 				mesh->drawInstanced(int32_t(count));
 
 				index += count;
@@ -174,12 +175,12 @@ private:
 	};
 };
 
-template<typename I, typename Pred> inline void Batched::createBatch(std::shared_ptr<Model> model, size_t maximum)
+template<typename I, typename Pred> inline void Batched::createBatch(std::shared_ptr<Model> model, size_t maximum, Pred const &predicate)
 {
 	Model::mesh_vec_t const &meshes = model->_meshes;
 	for (size_t i = 0; i < meshes.size(); ++i)
 	{
-		createBatch(meshes[i], maximum);
+		createBatch<I,Pred>(meshes[i], maximum, predicate);
 	}
 }
 
@@ -188,23 +189,23 @@ template<typename I> inline void Batched::addInstance(std::shared_ptr<Model> mod
 	Model::mesh_vec_t const &meshes = model->_meshes;
 	for (size_t i = 0; i < meshes.size(); ++i)
 	{
-		addInstance(meshes[i], instance);
+		addInstance<I>(meshes[i], instance);
 	}
 }
 
-template<typename I, typename Pred> inline void Batched::createBatch(std::shared_ptr<Mesh> mesh, size_t maximum)
+template<typename I, typename Pred> inline void Batched::createBatch(std::shared_ptr<Mesh> mesh, size_t maximum, Pred const &predicate)
 {
-	Key key = Key(mesh, TypeID::value<I>());
+	Key key = Key(mesh, Type<I>::ID());
 	if (_batches.end() != _batches.find(key))
 		return;
 
 	_order.push_back(key);
-	_batches.insert(std::make_pair(key, new Batch<I,Pred>(maximum)));
+	_batches.insert(std::make_pair(key, new Batch<I,Pred>(maximum, predicate)));
 }
 
 template<typename I> inline void Batched::addInstance(std::shared_ptr<Mesh> mesh, I const &instance)
 {
-	auto iter = _batches.find(Key(mesh, TypeID::value<I>()));
+	auto iter = _batches.find(Key(mesh, Type<I>::ID()));
 	LUCID_VALIDATE(iter != _batches.end(), "batched mesh/instance pair not registered");
 
 	iter->second->push(&instance);

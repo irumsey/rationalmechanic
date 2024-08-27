@@ -60,8 +60,6 @@
 	"attributes":
 	[
 		{ "name":           "time",     "query":                          "time" },	
-		{ "name":  "lightPosition",     "query":                 "lightPosition" },
-		{ "name":   "viewPosition",     "query":                  "viewPosition" },
 		{ "name": "viewProjMatrix",     "query":                "viewProjMatrix" },
 		{ "name": "diffuseTexture", "texture2d":  "content/_010/diffuse.texture" },
 		{ "name":   "noiseTexture", "texture2d":    "content/_010/noise.texture" }

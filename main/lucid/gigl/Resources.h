@@ -16,6 +16,9 @@ LUCID_GIGL_BEGIN
 ///	the only requirement for a resource is that it define a static create(std::string const &) method.
 ///	in other words, the resource is created from a key.  the key which has meaning
 ///	to the resource being created.  same key, same resource.  the method of creation is deferred to the type.
+/// 
+/// Note: Leverages core::Cache<> which uses std::weak_ptr<> to cache the required resources.  If the
+/// "external" reference count for the resource goes to zero, it is cleared from the cache.
 class Resources final
 {
 public:
@@ -37,9 +40,9 @@ private:
 		///	unique ID "generated" by returning the address of this function (which is
 		///	unique for each Type<T> instance, unique for each T).
 		///	note: internal use only, do not persist this value across application instances.
-		static void* ID()
+		static size_t ID()
 		{
-			return &ID;
+			return size_t(&ID);
 		}
 	};
 
@@ -78,7 +81,8 @@ private:
 		LUCID_CORE::Cache<std::string, T> internal;
 	};
 
-	std::unordered_map<void*, CacheBase*> _caches;
+	typedef std::unordered_map<size_t, CacheBase*> cache_map_t;
+	cache_map_t _caches;
 
 	LUCID_PREVENT_COPY(Resources);
 	LUCID_PREVENT_ASSIGNMENT(Resources);
@@ -87,11 +91,11 @@ private:
 template<class T> inline std::shared_ptr<T> Resources::get(std::string const &key)
 {
 	Resources &resources = instance();
-	std::unordered_map<void*, CacheBase*> &caches = resources._caches;
+	cache_map_t &caches = resources._caches;
 
 	ResourceCache<T> *cache = nullptr;
 
-	std::unordered_map<void*, CacheBase*>::iterator iter = caches.find(Type<T>::ID());
+	cache_map_t::iterator iter = caches.find(Type<T>::ID());
 	if (iter != caches.end())
 	{
 		cache = static_cast<ResourceCache<T>*>(iter->second);

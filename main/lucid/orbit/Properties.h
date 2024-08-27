@@ -44,9 +44,9 @@ struct PhysicalProperties
 ///
 struct RenderProperties
 {
-	bool showOrbit = false;			//	the default is provided by the ephemeris
-	bool bodyHighlight = false;		//	used only at runtime to toggle highlighting
-	bool orbitHighlight = false;	//	used only at runtime to toggle highlighting 
+	bool showOrbit = false;						//	the default is provided by the ephemeris
+	bool bodyHighlight = false;					//	used only at runtime to toggle highlighting
+	bool orbitHighlight = false;				//	used only at runtime to toggle highlighting 
 
 	std::shared_ptr<LUCID_GIGL::Model> model;
 	std::shared_ptr<LUCID_GIGL::Mesh> icon;
