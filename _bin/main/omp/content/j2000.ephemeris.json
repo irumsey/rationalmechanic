@@ -32,7 +32,11 @@
 
     "Mass in kg",
     "Radius in meters",
-    "GM in m^3/s^2"
+    "GM in m^3/s^2",
+
+    "Note: because the rendering system uses a compositing scheme to overcome the extreme",
+    "differences in relative scale, the system reserves use of the per-instance",
+    "data in channel2[0]." 
   ],
 
   "frames": [

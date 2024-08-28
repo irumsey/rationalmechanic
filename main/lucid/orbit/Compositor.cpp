@@ -73,7 +73,7 @@ void Compositor::render(LUCID_GIGL::Context const &context)
 	{
 		Pass const &pass = _passes[i];
 		
-		pass.model->renderInstanced(context, _instanceStream.get(), i, 1);
+		pass.model->renderInstanced(context, _instanceStream.get(), int32_t(i), 1);
 		LUCID_GAL_PIPELINE.clear(false, true, true);
 	}
 }
@@ -96,9 +96,9 @@ void Compositor::evaluate(OrbitalBody *body)
 	pass.   distance = LUCID_MATH::len(pass.position);
 	pass.   rotation = LUCID_MATH::slerp(_interpolant, body->absoluteRotation[0], body->absoluteRotation[1]);
 	pass.scaleFactor = physicalProperties.radius / pass.distance;
-	pass.    diffuse = renderProperties.diffuse;
-	pass.    ambient = renderProperties.ambient;
-	pass. parameters = renderProperties.parameters;
+	pass.   channel0 = renderProperties.channel0;
+	pass.   channel1 = renderProperties.channel1;
+	pass.   channel2 = renderProperties.channel2;
 
 	_passes.push_back(pass);
 }
@@ -145,15 +145,16 @@ void Compositor::copyInstances()
 		instances[i].position = _midRange * cast(pass.position / pass.distance);
 		instances[i].scale = _midRange * cast(pass.scaleFactor);
 		instances[i].rotation = cast(pass.rotation);
-		instances[i].diffuse = pass.diffuse;
-		instances[i].ambient = pass.ambient;
-		instances[i].parameters = pass.parameters;
+		instances[i].channel0 = pass.channel0;
+		instances[i].channel1 = pass.channel1;
+		instances[i].channel2 = pass.channel2;
 
 		/// test {
-		/// everything is rendered with view view position as (0, 0, 0)
-		/// the sun is at (0, 0, 0) in world corrdinates, therefore, the
+		/// everything is rendered in "camera space" with the origin at (0, 0, 0)
+		/// the sun is at (0, 0, 0) in world corrdinates. therefore, the
 		/// light distance is the magnitude of the view position.
-		instances[i].parameters.x = cast(LUCID_MATH::len(_cameraPosition) * _midRange / pass.distance);
+		instances[i].channel2.x = cast(LUCID_MATH::len(_cameraPosition) * _midRange / pass.distance);
+		/// } test
 	}
 	_instanceStream->unlock();
 }

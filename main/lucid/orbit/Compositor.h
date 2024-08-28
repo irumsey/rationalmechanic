@@ -71,9 +71,9 @@ private:
 		scalar_t              distance = 0;
 		quaternion_t          rotation;
 		scalar_t           scaleFactor = 0;
-		LUCID_GAL::Color       diffuse;
-		LUCID_GAL::Color       ambient;
-		LUCID_GAL::Vector4  parameters;
+		LUCID_GAL::Vector4    channel0;
+		LUCID_GAL::Vector4    channel1;
+		LUCID_GAL::Vector4    channel2;
 	};
 
 #	pragma pack(push)
@@ -85,9 +85,9 @@ private:
 		LUCID_GAL::Vector3      position;		//	position and scale are "packed" into
 		float32_t                  scale = 0;	//	a hlsl float4 type
 		LUCID_GAL::Quaternion   rotation;
-		LUCID_GAL::Color         diffuse;
-		LUCID_GAL::Color	     ambient;
-		LUCID_GAL::Vector4    parameters;
+		LUCID_GAL::Vector4      channel0;
+		LUCID_GAL::Vector4      channel1;
+		LUCID_GAL::Vector4      channel2;
 	};
 
 #	pragma pack(pop)
