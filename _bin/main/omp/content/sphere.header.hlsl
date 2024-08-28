@@ -9,9 +9,9 @@ struct InputVertex
 	uint1          id : LOCATION3;
 	float4   position : LOCATION4;	// ( position(3), radius )
 	float4   rotation : LOCATION5;
-	float4    diffuse : LOCATION6;
-	float4    ambient : LOCATION7;
-	float4 parameters : LOCATION8;	// ( scaleFactor, x, x, x )
+	float4   channel0 : LOCATION6;
+	float4   channel1 : LOCATION7;
+	float4   channel2 : LOCATION8;	// ( light distance, x, x, x )
 };
 
 struct OutputVertex
@@ -21,7 +21,7 @@ struct OutputVertex
 	float3   viewDirection : POSITION0;
 	float3  lightDirection : POSITION1;
 	uint1               id : POSITION2;
-	float4         diffuse : COLOR0;
+	float        specCoeff : COLOR0;
 	float4         ambient : COLOR1;
 };
 

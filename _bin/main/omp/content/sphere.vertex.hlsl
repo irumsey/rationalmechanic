@@ -17,7 +17,7 @@ OutputVertex main(InputVertex input)
 	float3x3 worldMatrix = rotationFromQuaterion(input.rotation);
 	float3 worldPosition = mul(worldMatrix, radius * e2) + sphereCenter;
 
-	float  lightDistance = input.parameters.x;
+	float  lightDistance = input.channel2.x;
 	float3 lightPosition = lightDistance * lightDirection;
 	float3 lightDirection2 = normalize(lightPosition - sphereCenter);
 
@@ -27,8 +27,8 @@ OutputVertex main(InputVertex input)
 	output.texcoord = input.texcoord;
 	output.lightDirection = mul(surfaceMatrix, mul(lightDirection2, worldMatrix));
 	output.viewDirection = mul(surfaceMatrix, mul(viewDirection, worldMatrix));
-	output.diffuse = input.diffuse;
-	output.ambient = input.ambient;
+	output.specCoeff = input.channel0.w;
+	output.ambient = input.channel1;
 	output.id = input.id;
 
 	return output;

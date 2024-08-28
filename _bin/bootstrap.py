@@ -694,9 +694,9 @@ def bootFrameOrbitalBody(dst, frame):
 		bootString(dst, mesh)			
 	
 	bootString(dst, properties['render']['icon'])
-	bootColor(dst, properties['render']['diffuse'])
-	bootColor(dst, properties['render']['ambient'])
-	bootVector4(dst, properties['render']['parameters'])
+	bootVector4(dst, properties['render']['channel0'])
+	bootVector4(dst, properties['render']['channel1'])
+	bootVector4(dst, properties['render']['channel2'])
 
 	elements = frame['elements']
 	bootUnsigned(dst, len(elements))

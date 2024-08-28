@@ -7,11 +7,11 @@ struct InputVertex
 {
 	float3     vertex : LOCATION0;
 	uint1          id : LOCATION1;
-	float4      focus : LOCATION2;	// focus.w is scale
+	float4   position : LOCATION2;	// focus.w is scale
 	float4   rotation : LOCATION3;
-	float4    diffuse : LOCATION4;
-	float4    ambient : LOCATION5;
-	float4 parameters : LOCATION6;
+	float4   channel0 : LOCATION4;
+	float4   channel1 : LOCATION5;
+	float4   channel2 : LOCATION6;
 };
 
 struct OutputVertex

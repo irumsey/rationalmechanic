@@ -7,8 +7,8 @@ OutputVertex main(InputVertex input)
 
 	float3 normal = input.vertex;
 	float3 planetCenter = input.position.xyz;
-	float lightDistance = input.parameters.x;
-	float thickness = input.parameters.y;
+	float lightDistance = input.channel2.x;
+	float thickness = input.channel2.y;
 	float radii[2] = { input.position.w, thickness * input.position.w };
 
 	float3 lightPosition = lightDirection * lightDistance;
@@ -20,6 +20,7 @@ OutputVertex main(InputVertex input)
 	output.planetCenter = planetCenter;
 	output.radii = float2(radii[0], radii[1]);
 	output.normal = mul(worldMatrix, normal);
+	output.beta = input.channel0.xyz;
 	output.viewDirection = -normalize(worldPosition);
 	output.lightDirection = normalize(lightPosition - worldPosition);
 

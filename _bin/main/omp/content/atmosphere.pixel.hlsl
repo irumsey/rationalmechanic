@@ -48,7 +48,7 @@ OutputPixel main(InputPixel input)
 	float I = 0.3 * (1 + cosPhi) * h * F * (d / D);
 
 	output.color = float4(0, 0, 0, 0);
-	output.glow = float4(float3(1.0, 0.5, 0.5), I);
+	output.glow = float4(input.beta, I);
 
 	return output;
 }

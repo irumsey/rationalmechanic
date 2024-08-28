@@ -59,9 +59,9 @@
           "orbit": false,
           "model": [ "content/_010/sun.mesh" ],
           "icon": "content/iconDefault.mesh",
-          "diffuse": [ 1, 1, 0, 1 ],
-          "ambient": [ 1, 1, 0, 1 ],
-          "parameters": [ 0, 0, 0, 0 ]
+          "channel0": [ 1, 1, 0, 1 ],
+          "channel1": [ 1, 1, 0, 1 ],
+          "channel2": [ 0, 0, 0, 0 ]
         }
       },
       "elements": [
@@ -87,9 +87,9 @@
           "orbit": true,
           "model": [ "content/sphere.mesh" ],
           "icon": "content/iconDefault.mesh",
-          "diffuse": [ 0.7, 0.7, 0.7, 1 ],
-          "ambient": [ 0.1, 0.1, 0.1, 0 ],
-          "parameters": [ 0, 0, 0, 0 ]
+          "channel0": [ 0.7, 0.7, 0.7, 1 ],
+          "channel1": [ 0.1, 0.1, 0.1, 0 ],
+          "channel2": [ 0, 0, 0, 0 ]
         }
       },
       "elements": [
@@ -115,9 +115,9 @@
           "orbit": true,
           "model": [ "content/sphere.mesh" ],
           "icon": "content/iconDefault.mesh",
-          "diffuse": [ 0.7, 0.7, 0.7, 1 ],
-          "ambient": [ 0.1, 0.1, 0.1, 0 ],
-          "parameters": [ 0, 0, 0, 0 ]
+          "channel0": [ 0.7, 0.7, 0.7, 1 ],
+          "channel1": [ 0.1, 0.1, 0.1, 0 ],
+          "channel2": [ 0, 0, 0, 0 ]
         }
       },
       "elements": [
@@ -143,9 +143,9 @@
           "orbit": true,
           "model": [ "content/_399/earth.mesh", "content/atmosphere.mesh" ],
           "icon": "content/iconDefault.mesh",
-          "diffuse": [ 1.0, 1.0, 1.0, 0.33 ],
-          "ambient": [ 0.1, 0.1, 0.1, 0 ],
-          "parameters": [ 0, 1.015, 0, 0 ]
+          "channel0": [ 0.7, 0.7, 1.0, 0.33 ],
+          "channel1": [ 0.1, 0.1, 0.1, 0 ],
+          "channel2": [ 0, 1.015, 0, 0 ]
         }
       },
       "elements": [
@@ -172,9 +172,9 @@
           "orbit": true,
           "model": [ "content/_301/moon.mesh" ],
           "icon": "content/iconDefault.mesh",
-          "diffuse": [ 1.0, 1.0, 1.0, 0.33 ],
-          "ambient": [ 0.1, 0.1, 0.1, 0 ],
-          "parameters": [ 0, 0, 0, 0 ]
+          "channel0": [ 1.0, 1.0, 1.0, 0.33 ],
+          "channel1": [ 0.1, 0.1, 0.1, 0 ],
+          "channel2": [ 0, 0, 0, 0 ]
         }
       },
       "elements": [
@@ -200,9 +200,9 @@
           "orbit": true,
           "model": [ "content/_499/mars.mesh", "content/atmosphere.mesh" ],
           "icon": "content/iconDefault.mesh",
-          "diffuse": [ 1.0, 1.0, 1.0, 0.1 ],
-          "ambient": [ 0.1, 0.1, 0.1, 0 ],
-          "parameters": [ 0, 1.015, 0, 0 ]
+          "channel0": [ 1.0, 0.7, 0.7, 0.1 ],
+          "channel1": [ 0.1, 0.1, 0.1, 0 ],
+          "channel2": [ 0, 1.015, 0, 0 ]
         }
       },
       "elements": [
@@ -228,9 +228,9 @@
           "orbit": true,
           "model": [ "content/sphere.mesh" ],
           "icon": "content/iconDefault.mesh",
-          "diffuse": [ 0.7, 0.7, 0.7, 1 ],
-          "ambient": [ 0.1, 0.1, 0.1, 0 ],
-          "parameters": [ 0, 0, 0, 0 ]
+          "channel0": [ 0.7, 0.7, 0.7, 1 ],
+          "channel1": [ 0.1, 0.1, 0.1, 0 ],
+          "channel2": [ 0, 0, 0, 0 ]
         }
       },
       "elements": [
@@ -256,9 +256,9 @@
           "orbit": true,
           "model": [ "content/sphere.mesh" ],
           "icon": "content/iconDefault.mesh",
-          "diffuse": [ 0.7, 0.7, 0.7, 1 ],
-          "ambient": [ 0.1, 0.1, 0.1, 0 ],
-          "parameters": [ 0, 0, 0, 0 ]
+          "channel0": [ 0.7, 0.7, 0.7, 1 ],
+          "channel1": [ 0.1, 0.1, 0.1, 0 ],
+          "channel2": [ 0, 0, 0, 0 ]
         }
       },
       "elements": [
@@ -283,9 +283,9 @@
           "orbit": true,
           "model": [ "content/sphere.mesh" ],
           "icon": "content/iconDefault.mesh",
-          "diffuse": [ 0.7, 0.7, 0.7, 1 ],
-          "ambient": [ 0.1, 0.1, 0.1, 0 ],
-          "parameters": [ 0, 0, 0, 0 ]
+          "channel0": [ 0.7, 0.7, 0.7, 1 ],
+          "channel1": [ 0.1, 0.1, 0.1, 0 ],
+          "channel2": [ 0, 0, 0, 0 ]
         }
       },
       "elements": [
@@ -311,9 +311,9 @@
           "orbit": true,
           "model": [ "content/sphere.mesh" ],
           "icon": "content/iconDefault.mesh",
-          "diffuse": [ 0.7, 0.7, 0.7, 1 ],
-          "ambient": [ 0.1, 0.1, 0.1, 0 ],
-          "parameters": [ 0, 0, 0, 0 ]
+          "channel0": [ 0.7, 0.7, 0.7, 1 ],
+          "channel1": [ 0.1, 0.1, 0.1, 0 ],
+          "channel2": [ 0, 0, 0, 0 ]
         }
       },
       "elements": [
@@ -337,9 +337,9 @@
           "orbit": true,
           "model": [ "content/sphere.mesh" ],
           "icon": "content/iconDefault.mesh",
-          "diffuse": [ 0.7, 0.7, 0.7, 1 ],
-          "ambient": [ 0.1, 0.1, 0.1, 0 ],
-          "parameters": [ 0, 0, 0, 0 ]
+          "channel0": [ 0.7, 0.7, 0.7, 1 ],
+          "channel1": [ 0.1, 0.1, 0.1, 0 ],
+          "channel2": [ 0, 0, 0, 0 ]
         }
       },
       "elements": [
@@ -366,9 +366,9 @@
           "orbit": true,
           "model": [ "content/cuboid.mesh" ],
           "icon": "content/iconSatellite.mesh",
-          "diffuse": [ 0.7, 0.7, 0.7, 1 ],
-          "ambient": [ 0.1, 0.1, 0.1, 0 ],
-          "parameters": [ 0, 0, 0, 0 ]
+          "channel0": [ 0.7, 0.7, 0.7, 1 ],
+          "channel1": [ 0.1, 0.1, 0.1, 0 ],
+          "channel2": [ 0, 0, 0, 0 ]
         }
       },
       "elements": [
@@ -392,9 +392,9 @@
           "orbit": true,
           "model": [ "content/cuboid.mesh" ],
           "icon": "content/iconSatellite.mesh",
-          "diffuse": [ 0.7, 0.7, 0.7, 1 ],
-          "ambient": [ 0.1, 0.1, 0.1, 0 ],
-          "parameters": [ 0, 0, 0, 0 ]
+          "channel0": [ 0.7, 0.7, 0.7, 1 ],
+          "channel1": [ 0.1, 0.1, 0.1, 0 ],
+          "channel2": [ 0, 0, 0, 0 ]
         }
       },
       "elements": [
@@ -421,9 +421,9 @@
           "orbit": true,
           "model": [ "content/cuboid.mesh" ],
           "icon": "content/iconSatellite.mesh",
-          "diffuse": [ 0.7, 0.7, 0.7, 1 ],
-          "ambient": [ 0.1, 0.1, 0.1, 0 ],
-          "parameters": [ 0, 0, 0, 0 ]
+          "channel0": [ 0.7, 0.7, 0.7, 1 ],
+          "channel1": [ 0.1, 0.1, 0.1, 0 ],
+          "channel2": [ 0, 0, 0, 0 ]
         }
       },
       "elements": [

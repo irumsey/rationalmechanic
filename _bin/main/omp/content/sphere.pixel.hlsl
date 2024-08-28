@@ -13,7 +13,7 @@ OutputPixel main(InputPixel input)
 	float4 diffuseTexel = diffuseTexture.Sample(theSampler, input.texcoord);
 	float3 normalTexel = normalsTexture.Sample(theSampler, input.texcoord).rgb;
 
-	float3 diffuse = input.diffuse.rgb * diffuseTexel.rgb;
+	float3 diffuse = diffuseTexel.rgb;
 	float3 ambient = input.ambient.rgb * diffuseTexel.rgb;
 
 	float3 normal = normalize(2 * normalTexel - 1);
@@ -25,7 +25,7 @@ OutputPixel main(InputPixel input)
 	float shade = clamp(dot(normal, lightDirectionN), 0, 1);
 	float3 color = (diffuse - ambient) * shade + ambient;
 
-	float specMask = (input.diffuse.a - input.ambient.a) * shade + input.ambient.a;
+	float specMask = (input.specCoeff - input.ambient.a) * shade + input.ambient.a;
 	specMask = diffuseTexel.a * specMask;
 
 	float spec = clamp(dot(reflect(-viewDirectionN, normal), lightDirectionN), 0, 1);

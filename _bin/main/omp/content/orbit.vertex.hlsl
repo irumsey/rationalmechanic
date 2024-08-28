@@ -5,14 +5,14 @@ OutputVertex main(InputVertex input)
 {
 	OutputVertex    output = (OutputVertex)0;
 
-	float      hu = input.parameters.x;
-	float     ecc = input.parameters.y;
-	float2 domain = input.parameters.zw;
+	float      hu = input.channel2.x;
+	float     ecc = input.channel2.y;
+	float2 domain = input.channel2.zw;
 	float  theta0 = (domain.y - domain.x) * input.vertex.x + domain.x;
 	float  theta1 = (domain.y - domain.x) * input.vertex.y + domain.x;
 
-	float3 position = input.focus.xyz;
-	float scale = input.focus.w;
+	float3 position = input.position.xyz;
+	float scale = input.position.w;
 
 	float4x4 worldMatrix = matrixFromQuaternion(input.rotation, position);
 
@@ -40,7 +40,7 @@ OutputVertex main(InputVertex input)
 
 	output.ppsPosition = psPosition0;
 	output.id = input.id;
-	output.color = input.diffuse;
+	output.color = input.channel0;
 	output.blend = input.vertex.z;
 
 	return output;
