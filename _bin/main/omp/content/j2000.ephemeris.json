@@ -370,7 +370,7 @@
           "orbit": true,
           "model": [ "content/cuboid.mesh" ],
           "icon": "content/iconSatellite.mesh",
-          "channel0": [ 0.7, 0.7, 0.7, 1 ],
+          "channel0": [ 100, 50, 10, 1 ],
           "channel1": [ 0.1, 0.1, 0.1, 0 ],
           "channel2": [ 0, 0, 0, 0 ]
         }
@@ -396,7 +396,7 @@
           "orbit": true,
           "model": [ "content/cuboid.mesh" ],
           "icon": "content/iconSatellite.mesh",
-          "channel0": [ 0.7, 0.7, 0.7, 1 ],
+          "channel0": [ 100, 50, 50, 1 ],
           "channel1": [ 0.1, 0.1, 0.1, 0 ],
           "channel2": [ 0, 0, 0, 0 ]
         }
@@ -425,7 +425,7 @@
           "orbit": true,
           "model": [ "content/cuboid.mesh" ],
           "icon": "content/iconSatellite.mesh",
-          "channel0": [ 0.7, 0.7, 0.7, 1 ],
+          "channel0": [ 100, 50, 20, 1 ],
           "channel1": [ 0.1, 0.1, 0.1, 0 ],
           "channel2": [ 0, 0, 0, 0 ]
         }
