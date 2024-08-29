@@ -1,7 +1,7 @@
 #include "utility.header.hlsl"
 #include "orbit.header.hlsl"
  
-OutputPixel main(InputPixel input)
+OutputPixel main(InputPS input)
 {
 	OutputPixel output = (OutputPixel)0;
 

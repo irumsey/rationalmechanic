@@ -1,20 +1,23 @@
 #include "utility.header.hlsl"
 #include "orbit.header.hlsl"
 
-OutputVertex main(InputVertex input)
+OutputVS main(InputVS input)
 {
-	OutputVertex    output = (OutputVertex)0;
+	OutputVS output = (OutputVS)0;
 
-	float      hu = input.channel2.x;
-	float     ecc = input.channel2.y;
-	float2 domain = input.channel2.zw;
-	float  theta0 = (domain.y - domain.x) * input.vertex.x + domain.x;
-	float  theta1 = (domain.y - domain.x) * input.vertex.y + domain.x;
+	Vertex vertex = input.vertex;
+	Instance instance = input.instance;
 
-	float3 position = input.position.xyz;
-	float scale = input.position.w;
+	float      hu = instance.channel2.x;
+	float     ecc = instance.channel2.y;
+	float2 domain = instance.channel2.zw;
+	float  theta0 = (domain.y - domain.x) * vertex.parameters.x + domain.x;
+	float  theta1 = (domain.y - domain.x) * vertex.parameters.y + domain.x;
 
-	float4x4 worldMatrix = matrixFromQuaternion(input.rotation, position);
+	float3 position = instance.position.xyz;
+	float scale = instance.position.w;
+
+	float4x4 worldMatrix = matrixFromQuaternion(instance.rotation, position);
 
 	float4 worldPosition0 = mul(worldMatrix, float4(computeConicPoint(hu, ecc, theta0), 0, 1));
 	float4 csPosition0 = mul(viewMatrix, worldPosition0);
@@ -34,14 +37,14 @@ OutputVertex main(InputVertex input)
 	float2 tangent = normalize(psPosition1.xy - psPosition0.xy);
 	float2 normal = float2(-tangent.y, tangent.x);
 
-	float2 width = input.vertex.z * scale * texelSize;
+	float2 width = vertex.parameters.z * scale * texelSize;
 
 	psPosition0.xy = (width * normal + psPosition0.xy) * psPosition0.w;
 
 	output.ppsPosition = psPosition0;
-	output.id = input.id;
-	output.color = input.channel0;
-	output.blend = input.vertex.z;
+	output.id = instance.id;
+	output.color = instance.channel0;
+	output.blend = vertex.parameters.z;
 
 	return output;
 }

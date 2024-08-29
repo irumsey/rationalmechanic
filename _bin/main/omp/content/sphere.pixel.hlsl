@@ -6,7 +6,7 @@ Texture2D normalsTexture;
 
 SamplerState theSampler;
 
-OutputPixel main(InputPixel input)
+OutputPixel main(InputPS input)
 {
 	OutputPixel output = (OutputPixel)0;
 

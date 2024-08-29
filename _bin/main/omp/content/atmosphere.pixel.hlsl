@@ -5,7 +5,7 @@ Texture2D scatterTexture;
 
 SamplerState theSampler;
 
-OutputPixel main(InputPixel input)
+OutputPixel main(InputPS input)
 {
 	OutputPixel output = (OutputPixel)0;
 
@@ -14,7 +14,7 @@ OutputPixel main(InputPixel input)
 	float3 normal = normalize(input.normal);
 
 	// position[0] is quaranteed to be the intersection of the atmosphere
-	// position[1] requires a test if it hits the planet
+	// position[1] requires a test if it hits the planet or atmosphere
 	float3 position[2] = {
 		radii[1] * normal + input.planetCenter,
 		radii[1] * normal + input.planetCenter
@@ -31,21 +31,22 @@ OutputPixel main(InputPixel input)
 	}
 	else
 	{
+		// failing the above test the ray must hit
+		// the atmosphere somewhere
 		result = intersects(ray, atmosphere);
 		position[1] = result.position[1];
 	}
 
 	float h = length(0.5 * (position[1] + position[0]) - input.planetCenter);
-	h = 1 - (h - radii[0]) / (radii[1] - radii[0]);
+	h = 1 - input.radii.z * (h - radii[0]);
 
-	float d = length(position[1] - position[0]);
-	float D = 2 * sqrt(radii[1] * radii[1] - radii[0] * radii[0]);
+	float d = input.radii.w * length(position[1] - position[0]);
 
 	float cosTheta = dot(input.viewDirection, input.lightDirection);
 	float cosPhi = dot(normal, input.lightDirection);
 
-	float F = 5 * (1 + cosTheta * cosTheta);
-	float I = 0.3 * (1 + cosPhi) * h * F * (d / D);
+	float F = 5.0 * (1 + cosTheta * cosTheta);
+	float I = 0.3 * (0.75 + cosPhi) * h * F * d;
 
 	output.color = float4(0, 0, 0, 0);
 	output.glow = float4(input.beta, I);

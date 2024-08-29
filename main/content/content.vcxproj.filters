@@ -146,5 +146,8 @@
     <None Include="..\..\_bin\main\omp\content\cuboid.header.hlsl">
       <Filter>omp</Filter>
     </None>
+    <None Include="..\..\_bin\main\omp\content\instance.header.hlsl">
+      <Filter>omp</Filter>
+    </None>
   </ItemGroup>
 </Project>

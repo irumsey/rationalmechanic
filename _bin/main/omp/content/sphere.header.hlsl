@@ -1,20 +1,22 @@
+#include "instance.header.hlsl"
+
 float3   lightDirection;	// unit direction from view position to light position
 float4x4 viewProjMatrix;
 
-struct InputVertex
+struct Vertex
 {
-	float3     vertex : LOCATION0;
-	float3    tangent : LOCATION1;
-	float2   texcoord : LOCATION2;
-	uint1          id : LOCATION3;
-	float4   position : LOCATION4;	// ( position(3), radius )
-	float4   rotation : LOCATION5;
-	float4   channel0 : LOCATION6;
-	float4   channel1 : LOCATION7;
-	float4   channel2 : LOCATION8;	// ( light distance, x, x, x )
+	float3   normal : LOCATION0;
+	float3  tangent : LOCATION1;
+	float2 texcoord : LOCATION2;
 };
 
-struct OutputVertex
+struct InputVS
+{
+	Vertex      vertex;
+	Instance  instance;
+};
+
+struct OutputVS
 {
 	float4     ppsPosition : SV_POSITION;
 	float2        texcoord : TEXCOORD0;
@@ -25,7 +27,7 @@ struct OutputVertex
 	float4         ambient : COLOR1;
 };
 
-typedef OutputVertex InputPixel;
+typedef OutputVS InputPS;
 
 struct OutputPixel
 {
