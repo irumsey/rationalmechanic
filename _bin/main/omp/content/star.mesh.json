@@ -49,10 +49,12 @@
 
 		"attributes":
 		[
-      { "name" :   "viewPosition",     "query" :                  "viewPosition" },
-      { "name" :         "viewUp",     "query" :                        "viewUp" },
-			{ "name" : "viewProjMatrix",     "query" :                "viewProjMatrix" },
-		  { "name":    "shapeTexture", "texture2d" :     "content/starShape.texture" }
+			{ "name" : "starFieldRadius",     "query" :               "starFieldRadius" },
+			{ "name" :       "starScale",     "query" :                     "starScale" },
+      { "name" :    "viewPosition",     "query" :                  "viewPosition" },
+      { "name" :          "viewUp",     "query" :                        "viewUp" },
+			{ "name" :  "viewProjMatrix",     "query" :                "viewProjMatrix" },
+		  { "name":     "shapeTexture", "texture2d" :     "content/starShape.texture" }
     ]
 	},
 

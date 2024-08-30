@@ -1,7 +1,7 @@
 #include "instance.header.hlsl"
 
-float3   lightDirection;	// unit direction from view position to light position
-float4x4 viewProjMatrix;
+float3   lightDirFromOrigin;			// unit direction from world origin to light position
+float4x4     viewProjMatrix;
 
 struct Vertex
 {
@@ -28,7 +28,8 @@ typedef OutputVS InputPS;
 
 struct OutputPixel
 {
+	uint1     id : SV_TARGET2;
 	float4 color : SV_TARGET0;
 	float4  glow : SV_TARGET1;
-	uint1     id : SV_TARGET2;
+	float  depth : SV_TARGET3;
 };

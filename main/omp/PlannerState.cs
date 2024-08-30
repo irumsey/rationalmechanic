@@ -290,13 +290,14 @@ namespace omp
 
                 if (Lucid.Orbit.SelectionType.TYPE_CAMERA == selection.Type)
                 {
-                    planner.statusLabel.Text = "Callout";
+                    planner.statusLabel.Text = "Camera";
                     return;
                 }
 
                 if (Lucid.Orbit.SelectionType.TYPE_CALLOUT == selection.Type)
                 {
-                    planner.statusLabel.Text = "Callout";
+                    Lucid.Orbit.Frame frame = planner.orbitalMechainics[selection.Token];
+                    planner.statusLabel.Text = "Callout: " + frame.Name;
                     return;
                 }
 

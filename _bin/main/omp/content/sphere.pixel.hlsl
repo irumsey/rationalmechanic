@@ -31,9 +31,10 @@ OutputPixel main(InputPS input)
 	float spec = clamp(dot(reflect(-viewDirectionN, normal), lightDirectionN), 0, 1);
 	spec = specMask * pow(spec, 16);
 
+	output.   id = input.id;
 	output.color = float4(spec.rrr + color, 1);
 	output. glow = float4(0, 0, 0, 1);
-	output.   id = input.id;
+	output.depth = 0;
 
 	return output;
 }

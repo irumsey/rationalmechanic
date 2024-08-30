@@ -61,11 +61,11 @@
         },
         "render": {
           "orbit": false,
-          "model": [ "content/_010/sun.mesh" ],
+          "model": [ "content/_010/sun.mesh", "content/_010/atmosphere.mesh" ],
           "icon": "content/iconDefault.mesh",
           "channel0": [ 1, 1, 0, 1 ],
           "channel1": [ 1, 1, 0, 1 ],
-          "channel2": [ 0, 0, 0, 0 ]
+          "channel2": [ 0, 1.3, 0, 0 ]
         }
       },
       "elements": [

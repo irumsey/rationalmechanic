@@ -17,6 +17,7 @@
 #include <lucid/orbit/Selection.h>
 #include <lucid/orbit/Culler.h>
 #include <lucid/orbit/Compositor.h>
+#include <lucid/orbit/Overlay.h>
 
 LUCID_GAL_BEGIN
 
@@ -57,12 +58,6 @@ private:
 	enum {       BATCH_MAXIMUM = 1024 };
 	enum { TEXT_LENGTH_MAXIMUM = 4096 };
 
-	struct StarParameters
-	{
-		LUCID_GAL::Parameter const *sphereRadius = nullptr;
-		LUCID_GAL::Parameter const *spriteScale = nullptr;
-	};
-
 	struct CopyParameters
 	{
 		LUCID_GAL::Parameter const *theSource = nullptr;
@@ -79,27 +74,6 @@ private:
 		LUCID_GAL::Parameter const *colorTarget = nullptr;
 		LUCID_GAL::Parameter const *glowTarget = nullptr;
 	};
-
-#	pragma pack(push)
-#	pragma pack(1)
-
-	struct StarInstance
-	{
-		uint32_t                   id = 0;
-		LUCID_GAL::Vector4 parameters;
-		LUCID_GAL::Color        color;
-	};
-
-	struct IconInstance
-	{
-		uint32_t                 id = 0;
-		LUCID_GAL::Vector3 position;
-		LUCID_GAL::Vector4 texcoord;
-		LUCID_GAL::Vector2    scale;
-		LUCID_GAL::Color      color;
-	};
-
-#	pragma pack(pop)
 
 	///	test {
 	/// magic numbers
@@ -121,26 +95,16 @@ private:
 
 	Culler _culler;
 	Compositor _compositor;
+	Overlay _overlay;
 
 	LUCID_GIGL::Context _renderContext;
-
-	size_t _starCount = 0;
-	StarParameters _starParameters;
-	std::unique_ptr<LUCID_GIGL::Mesh> _starMesh;
-	std::unique_ptr<LUCID_GAL::VertexBuffer> _starInstances;
-
-	LUCID_GIGL::Batched _iconBatch;
-
-#if false
-	std::shared_ptr<LUCID_GIGL::Mesh> _orbitMesh;
-	LUCID_GIGL::Batched _orbitBatch;
-#endif
 
 	std::shared_ptr<LUCID_GIGL::Font> _font;
 	std::unique_ptr<LUCID_GAL::VertexBuffer> _text;
 	int32_t _textCount = 0;
 
 	std::unique_ptr<LUCID_GAL::RenderTarget2D> _colorTarget;
+	std::unique_ptr<LUCID_GAL::RenderTarget2D> _depthTarget;
 	std::unique_ptr<LUCID_GAL::RenderTarget2D> _glowTarget;
 	std::unique_ptr<LUCID_GAL::RenderTarget2D> _blurTarget[2];
 

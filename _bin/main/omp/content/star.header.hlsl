@@ -1,5 +1,5 @@
-float      sphereRadius;
-float       spriteScale;
+float   starFieldRadius;
+float        starScale;
 
 float3     viewPosition;
 float3           viewUp;
@@ -25,9 +25,9 @@ typedef OutputVertex InputPixel;
 
 struct OutputPixel
 {
+	uint       id : SV_TARGET2;
 	float4  color : SV_TARGET0;
 	float4   glow : SV_TARGET1;
-	uint       id : SV_TARGET2;
 };
 
 float3 computeRelativeDirection(float ra, float dec)

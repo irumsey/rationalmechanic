@@ -102,6 +102,9 @@
     <FxCompile Include="..\..\_bin\main\omp\content\_010\sun.pixel.hlsl">
       <Filter>omp\_010</Filter>
     </FxCompile>
+    <FxCompile Include="..\..\_bin\main\omp\content\_010\atmosphere.pixel.hlsl">
+      <Filter>omp\_010</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\_bin\main\omp\content\atmosphere.header.hlsl">

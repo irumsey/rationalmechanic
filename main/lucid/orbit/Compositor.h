@@ -6,6 +6,7 @@
 #include <lucid/gal/Types.h>
 #include <lucid/gal/Defines.h>
 #include <lucid/gigl/Types.h>
+#include <lucid/orbit/Types.h>
 #include <lucid/orbit/Defines.h>
 #include <lucid/orbit/Types.h>
 #include <lucid/orbit/Algorithm.h>
@@ -20,6 +21,7 @@ LUCID_GIGL_BEGIN
 
 class Context;
 class Model;
+class Mesh;
 
 LUCID_GIGL_END
 
@@ -58,6 +60,10 @@ public:
 	virtual void evaluate(CameraFrame *camera) override;
 
 private:
+	size_t _starCount = 0;
+	std::unique_ptr<LUCID_GIGL::Mesh> _starMesh;
+	std::unique_ptr<LUCID_GAL::VertexBuffer> _starInstances;
+
 	///	Pass
 	///
 	///	In the near future, this might become generalized to
@@ -76,22 +82,6 @@ private:
 		LUCID_GAL::Vector4    channel2;
 	};
 
-#	pragma pack(push)
-#	pragma pack(4)
-
-	struct ModelInstance
-	{
-		uint32_t                      id = 0;
-		LUCID_GAL::Vector3      position;		//	position and scale are "packed" into
-		float32_t                  scale = 0;	//	a hlsl float4 type
-		LUCID_GAL::Quaternion   rotation;
-		LUCID_GAL::Vector4      channel0;
-		LUCID_GAL::Vector4      channel1;
-		LUCID_GAL::Vector4      channel2;
-	};
-
-#	pragma pack(pop)
-
 	size_t       _passMaximum = 0;
 	float32_t       _midRange = 0;
 
@@ -99,9 +89,9 @@ private:
 	vector3_t _cameraPosition;
 
 	std::vector<Pass> _passes;
-	std::unique_ptr<LUCID_GAL::VertexBuffer> _instanceStream;
+	std::unique_ptr<LUCID_GAL::VertexBuffer> _meshInstances;
 
-	void composite(Frame *frame);
+	void process(Frame *frame);
 
 	void copyInstances();
 

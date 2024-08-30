@@ -14,7 +14,7 @@ OutputVS main(InputVS input)
 	float thickness = instance.channel2.y;
 	float radii[2] = { instance.position.w, thickness * instance.position.w };
 
-	float3 lightPosition = lightDirection * lightDistance;
+	float3 lightPosition = lightDirFromOrigin * lightDistance;
 
 	float3x3 worldMatrix = rotationFromQuaterion(instance.rotation);
 	float3 worldPosition = mul(worldMatrix, radii[1] * normal) + planetCenter;

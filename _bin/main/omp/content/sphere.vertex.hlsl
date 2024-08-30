@@ -8,8 +8,8 @@ OutputVS main(InputVS input)
 	Vertex vertex = input.vertex;
 	Instance instance = input.instance;
 
-	float3 e2 = vertex.normal;		/// normal
-	float3 e0 = vertex.tangent;		/// tangent
+	float3 e2 = vertex.normal;				/// normal
+	float3 e0 = vertex.tangent;				/// tangent
 	float3 e1 = normalize(cross(e2, e0));	///	bi-tangent
 
 	float3x3 surfaceMatrix = float3x3(e0, e1, e2);
@@ -21,14 +21,14 @@ OutputVS main(InputVS input)
 	float3 worldPosition = mul(worldMatrix, radius * e2) + sphereCenter;
 
 	float  lightDistance = instance.channel2.x;
-	float3 lightPosition = lightDistance * lightDirection;
-	float3 lightDirection2 = normalize(lightPosition - sphereCenter);
+	float3 lightPosition = lightDistance * lightDirFromOrigin;
+	float3 lightDirection = normalize(lightPosition - sphereCenter);
 
 	float3 viewDirection = -normalize(worldPosition);
 
 	output.ppsPosition = mul(viewProjMatrix, float4(worldPosition, 1));
 	output.texcoord = vertex.texcoord;
-	output.lightDirection = mul(surfaceMatrix, mul(lightDirection2, worldMatrix));
+	output.lightDirection = mul(surfaceMatrix, mul(lightDirection, worldMatrix));
 	output.viewDirection = mul(surfaceMatrix, mul(viewDirection, worldMatrix));
 	output.specCoeff = instance.channel0.w;
 	output.ambient = instance.channel1;

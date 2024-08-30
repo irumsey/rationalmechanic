@@ -29,6 +29,7 @@
     <ClInclude Include="Ephemeris.h" />
     <ClInclude Include="Frame.h" />
     <ClInclude Include="Mechanics.h" />
+    <ClInclude Include="Overlay.h" />
     <ClInclude Include="Properties.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Selection.h" />
@@ -44,6 +45,7 @@
     <ClCompile Include="Ephemeris.cpp" />
     <ClCompile Include="Frame.cpp" />
     <ClCompile Include="Mechanics.cpp" />
+    <ClCompile Include="Overlay.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Simulator.cpp" />
     <ClCompile Include="StarCatalog.cpp" />

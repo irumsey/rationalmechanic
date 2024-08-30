@@ -9,9 +9,9 @@ OutputPixel main(InputPixel input)
 
 	float4 texel = theTexture.Sample(theSampler, input.texcoord);
 
+	output.id = input.id;
 	output.color = input.color * texel;
 	output.glow = float4(0, 0, 0, 1);
-	output.id = input.id;
 
 	return output;
 }

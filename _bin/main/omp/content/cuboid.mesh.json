@@ -49,8 +49,8 @@
 
 		"attributes":
 		[
-			{ "name": "lightDirection", "query":     "lightDirection" },											     
-			{ "name": "viewProjMatrix", "query":     "viewProjMatrix" }
+		  { "name": "lightDirFromOrigin", "query": "lightDirFromOrigin" },
+			{ "name":     "viewProjMatrix", "query":     "viewProjMatrix" }
 		]
 	},
 

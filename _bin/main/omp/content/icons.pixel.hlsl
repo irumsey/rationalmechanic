@@ -10,9 +10,9 @@ OutputPixel main(InputPixel input)
 
 	float4 texel = iconsTexture.Sample(theSampler, input.texcoord);
 
+	output.   id = input.id;
 	output.color = input.color * texel;
-	output.glow = float4(0, 0, 0, 0);
-	output.id = input.id;
+	output. glow = float4(0, 0, 0, 0);
 
 	return output;
 }

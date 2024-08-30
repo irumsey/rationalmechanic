@@ -59,9 +59,9 @@
 
 	"attributes":
 	[
-		{ "name": "lightDirection",     "query":                "lightDirection" },
-		{ "name": "viewProjMatrix",     "query":                "viewProjMatrix" },
-		{ "name": "diffuseTexture", "texture2d":  "content/_301/diffuse.texture" },
-		{ "name": "normalsTexture", "texture2d":  "content/_301/normals.texture" }
+		{ "name": "lightDirFromOrigin",     "query":            "lightDirFromOrigin" },
+		{ "name":     "viewProjMatrix",     "query":                "viewProjMatrix" },
+		{ "name":     "diffuseTexture", "texture2d":  "content/_301/diffuse.texture" },
+		{ "name":     "normalsTexture", "texture2d":  "content/_301/normals.texture" }
 ]
 }

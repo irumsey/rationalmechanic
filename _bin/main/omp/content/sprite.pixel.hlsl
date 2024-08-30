@@ -12,9 +12,9 @@ OutputPixel main(InputPixel input)
 	float3 normal = normalize(2 * texel.rgb - 1);
 	float   shade = clamp(dot(input.lightDirection, normal), 0, 1) + input.diffuse.a;
 
+	output.id = input.id;
 	output.color = float4(shade * input.diffuse.rgb, texel.a);
 	output.glow = float4(0, 0, 0, 1);
-	output.id = input.id;
 
 	return output;
 }

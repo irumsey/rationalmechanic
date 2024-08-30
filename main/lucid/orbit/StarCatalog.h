@@ -7,6 +7,8 @@
 #include <lucid/gal/Types.h>
 #include <lucid/orbit/Defines.h>
 
+#define LUCID_ORBIT_STARCATALOG LUCID_ORBIT::StarCatalog::instance()
+
 LUCID_ORBIT_BEGIN
 
 ///	StarCatalog

@@ -29,7 +29,15 @@ struct SinglePixel
 
 struct TriplePixel
 {
+	uint1      id : SV_TARGET2;	//	the select target's format is UINT_R32
 	float4  color : SV_TARGET0;
 	float4   glow : SV_TARGET1;
-	uint1      id : SV_TARGET2;	//	the select target's format is UINT_R32
+};
+
+struct QuadPixel
+{
+	uint1     id : SV_TARGET2;
+	float4 color : SV_TARGET0;
+	float4  glow : SV_TARGET1;
+	float  depth : SV_TARGET3;
 };

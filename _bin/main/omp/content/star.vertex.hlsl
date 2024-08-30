@@ -12,7 +12,7 @@ OutputVertex main(InputVertex input)
 
 	float2 vertex = input.parameters.w * input.vertex;
 
-	float3 position =  spriteScale * (e0 * vertex.xxx + e2 * vertex.yyy) + (sphereRadius * direction + viewPosition);
+	float3 position =  starScale * (e0 * vertex.xxx + e2 * vertex.yyy) + (starFieldRadius * direction + viewPosition);
 
 	output.ppsPosition = mul(viewProjMatrix, float4(position, 1));
 	output.         id = input.id;

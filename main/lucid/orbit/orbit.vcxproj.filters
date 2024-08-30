@@ -18,6 +18,7 @@
     <ClInclude Include="Culler.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="Compositor.h" />
+    <ClInclude Include="Overlay.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Frame.cpp" />
@@ -29,5 +30,6 @@
     <ClCompile Include="Callout.cpp" />
     <ClCompile Include="Culler.cpp" />
     <ClCompile Include="Compositor.cpp" />
+    <ClCompile Include="Overlay.cpp" />
   </ItemGroup>
 </Project>

@@ -1,4 +1,5 @@
 #include "Compositor.h"
+#include "StarCatalog.h"
 #include "Frame.h"
 #include "Selection.h"
 #include "Utility.h"
@@ -38,7 +39,26 @@ void Compositor::initialize(size_t passMaximum, float32_t midRange)
 	_passMaximum = passMaximum;
 	_midRange = midRange;
 
-	_instanceStream.reset(LUCID_GAL::VertexBuffer::create(LUCID_GAL::VertexBuffer::USAGE_DYNAMIC, int32_t(_passMaximum), sizeof(ModelInstance)));
+	_starCount = LUCID_ORBIT_STARCATALOG.count();
+	_starMesh.reset(LUCID_GIGL::Mesh::create("content/star.mesh"));
+	_starInstances.reset(LUCID_GAL::VertexBuffer::create(LUCID_GAL::VertexBuffer::USAGE_STATIC, int32_t(_starCount), sizeof(StarInstance)));
+
+	StarInstance *starInstances = (StarInstance *)(_starInstances->lock());
+	for (size_t i = 0; i < _starCount; ++i)
+	{
+		StarCatalog::Entry const &entry = LUCID_ORBIT_STARCATALOG[i];
+		StarInstance &instance = starInstances[i];
+
+		instance.          id = uint32_t((Selection::TYPE_STAR << Selection::SELECT_SHIFT) | i);
+		instance.parameters.x = /* unused */ 0.f;
+		instance.parameters.y = float32_t(entry.right_ascension);
+		instance.parameters.z = float32_t(entry.declination);
+		instance.parameters.w = 0.2f * entry.magnitude;
+		instance.       color = entry.color;
+	}
+	_starInstances->unlock();
+
+	_meshInstances.reset(LUCID_GAL::VertexBuffer::create(LUCID_GAL::VertexBuffer::USAGE_DYNAMIC, int32_t(_passMaximum), sizeof(MeshInstance)));
 }
 
 void Compositor::shutdown()
@@ -46,7 +66,11 @@ void Compositor::shutdown()
 	_passMaximum = 0;
 	_midRange = 0.f;
 
-	_instanceStream.reset();
+	_meshInstances.reset();
+
+	_starCount = 0;
+	_starInstances.reset();
+	_starMesh.reset();
 }
 
 void Compositor::process(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t interpolant)
@@ -55,25 +79,27 @@ void Compositor::process(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t in
 	_cameraPosition = LUCID_MATH::lerp(interpolant, cameraFrame->absolutePosition[0], cameraFrame->absolutePosition[1]);
 
 	_passes.clear();
-	composite(rootFrame);
+	process(rootFrame);
 
 	copyInstances();
 }
 
 void Compositor::render(LUCID_GIGL::Context const &context)
 {
-	size_t count = std::min(_passes.size(), _passMaximum);
-	if (0 == count)
-	{
-		LUCID_GAL_PIPELINE.clear(false, true, true);
-		return;
-	}
+	LUCID_GAL_PIPELINE.setVertexStream(1, _starInstances.get());
+	_starMesh->renderInstanced(context, int32_t(_starCount));
 
+	size_t count = std::min(_passes.size(), _passMaximum);
 	for (size_t i = 0; i < count; ++i)
 	{
 		Pass const &pass = _passes[i];
 		
-		pass.model->renderInstanced(context, _instanceStream.get(), int32_t(i), 1);
+		pass.model->renderInstanced(context, _meshInstances.get(), int32_t(i), 1);
+		LUCID_GAL_PIPELINE.clear(false, true, true);
+	}
+
+	if (0 == count)
+	{
 		LUCID_GAL_PIPELINE.clear(false, true, true);
 	}
 }
@@ -113,7 +139,7 @@ void Compositor::evaluate(CameraFrame *camera)
 	/// TBD: implement...
 }
 
-void Compositor::composite(Frame *frame)
+void Compositor::process(Frame *frame)
 {
 	if (nullptr == frame)
 		return;
@@ -125,7 +151,7 @@ void Compositor::composite(Frame *frame)
 		frame->apply(this);
 
 	for (Frame *child = frame->firstChild; nullptr != child; child = child->nextSibling)
-		composite(child);
+		process(child);
 }
 
 void Compositor::copyInstances()
@@ -136,7 +162,7 @@ void Compositor::copyInstances()
 
 	std::sort(_passes.begin(), _passes.end(), Back2Front<Pass>());
 
-	ModelInstance *instances = (ModelInstance *)(_instanceStream->lock());
+	MeshInstance *instances = (MeshInstance *)(_meshInstances->lock());
 	for (size_t i = 0; i < count; ++i)
 	{
 		Pass const &pass = _passes[i];
@@ -156,7 +182,7 @@ void Compositor::copyInstances()
 		instances[i].channel2.x = cast(LUCID_MATH::len(_cameraPosition) * _midRange / pass.distance);
 		/// } test
 	}
-	_instanceStream->unlock();
+	_meshInstances->unlock();
 }
 
 LUCID_ORBIT_END

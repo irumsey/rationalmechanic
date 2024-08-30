@@ -1,9 +1,11 @@
 #pragma once
 
 #include <memory>
+#include <algorithm>
 #include <vector>
 #include <unordered_map>
 #include <lucid/core/Error.h>
+#include <lucid/math/Algorithm.h>
 #include <lucid/gal/VertexBuffer.h>
 #include <lucid/gigl/Defines.h>
 #include <lucid/gigl/Context.h>

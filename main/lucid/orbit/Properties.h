@@ -51,9 +51,9 @@ struct RenderProperties
 	std::shared_ptr<LUCID_GIGL::Model> model;
 	std::shared_ptr<LUCID_GIGL::Mesh> icon;
 
-	LUCID_GAL::Vector4 channel0;
-	LUCID_GAL::Vector4 channel1;
-	LUCID_GAL::Vector4 channel2;
+	LUCID_GAL::Vector4 channel0;				//	specified in ephemeris
+	LUCID_GAL::Vector4 channel1;				//
+	LUCID_GAL::Vector4 channel2;				//
 
 	RenderProperties() = default;
 

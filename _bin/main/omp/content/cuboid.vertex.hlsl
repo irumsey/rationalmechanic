@@ -17,11 +17,11 @@ OutputVS main(InputVS input)
 
 	float3 normal = mul(worldMatrix, vertex.normal);
 
-	float3 lightPosition = lightDistance * lightDirection;
-	float3 lightDirection2 = normalize(lightPosition - position);
+	float3 lightPosition = lightDistance * lightDirFromOrigin;
+	float3 lightDirection = normalize(lightPosition - position);
 
 	output.ppsPosition = mul(viewProjMatrix, float4(worldPosition, 1));
-	output.shade = clamp(dot(lightDirection2, normal), 0.2, 1);
+	output.shade = clamp(dot(lightDirection, normal), 0.2, 1);
 	output.id = instance.id;
 	output.specCoeff = instance.channel0.w;
 	output.ambient = instance.channel1;

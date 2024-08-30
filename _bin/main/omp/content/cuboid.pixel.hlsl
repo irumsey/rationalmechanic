@@ -8,9 +8,10 @@ OutputPixel main(InputPS input)
 	float3 diffuse = float3(1, 1, 1);
 	float3 color = (diffuse.rgb - input.ambient.rgb) * input.shade + input.ambient.rgb;
 
+	output.   id = input.id;
 	output.color = float4(color, 1);
 	output. glow = float4(0, 0, 0, 1);
-	output.   id = input.id;
+	output. depth = 0;
 
 	return output;
 }

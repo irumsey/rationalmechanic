@@ -42,7 +42,7 @@
 		},
 
 		"VertexShader" : { "Path" : "content/atmosphere.vertex.cso" },
-		"PixelShader" : { "Path" : "content/atmosphere.pixel.cso" }
+		"PixelShader" : { "Path" : "content/_010/atmosphere.pixel.cso" }
 	},
 
 	"attributes":

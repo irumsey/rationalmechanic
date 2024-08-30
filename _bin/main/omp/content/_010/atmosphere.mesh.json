@@ -1,0 +1,4 @@
+{
+	"material" : "content/_010/atmosphere.material",
+	"geometry" : "content/sphere.geometry"
+}

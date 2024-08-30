@@ -21,9 +21,10 @@ OutputPixel main(InputPS input)
 	float modulation = clamp(0.5 * (noise2 + noise1 + noise0), 0.3, 1);
 	float additive = 0.333 * (noise3 + noise2 + noise1);
 
+	output.   id = input.id;
 	output.color = float4(modulation * diffuseTexel.rgb, 1);
 	output. glow = float4(additive.rr, 0, 1);
-	output.   id = input.id;
+	output. depth = 0;
 
 	return output;
 }

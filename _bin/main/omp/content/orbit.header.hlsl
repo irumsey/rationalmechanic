@@ -28,9 +28,9 @@ typedef OutputVS InputPS;
 
 struct OutputPixel
 {
+	uint1     id : SV_TARGET2;
 	float4 color : SV_TARGET0;
 	float4  glow : SV_TARGET1;
-	uint1     id : SV_TARGET2;
 };
 
 float2 computeConicPoint(float hu, float e, float theta)

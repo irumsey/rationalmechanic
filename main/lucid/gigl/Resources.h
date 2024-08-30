@@ -8,6 +8,8 @@
 #include <lucid/core/Cache.h>
 #include <lucid/gigl/Defines.h>
 
+#define LUCID_GIGL_RESOURCES LUCID_GIGL::Resources::instance()
+
 LUCID_GIGL_BEGIN
 
 ///	Resources

@@ -10,9 +10,9 @@ OutputPixel main(InputPixel input)
 
 	float4 texel = fontsTexture.Sample(theSampler, input.texcoord);
 
+	output.   id = 0;
 	output.color = input.color * dot(input.channel, texel);
-	output.glow = float4(0, 0, 0, 1);
-	output.id = 0;
+	output. glow = float4(0, 0, 0, 1);
 
 	return output;
 }
