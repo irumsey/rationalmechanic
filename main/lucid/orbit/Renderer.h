@@ -77,7 +77,7 @@ private:
 
 	///	test {
 	/// magic numbers
-	float32_t _znear = 10.f;
+	float32_t _znear = 0.1f;
 	float32_t _zfar = 1000.f;
 	float32_t _zmid = 0.5f * (_znear + _zfar);
 	/// } test
@@ -88,11 +88,6 @@ private:
 	LUCID_GAL::Vector2 _screenSize;
 	LUCID_GAL::Vector2 _texelSize;
 	
-	scalar_t _interpolant = 0.0;
-
-	vector3_t _cameraPosition;
-	vector3_t _focusPosition;
-
 	Culler _culler;
 	Compositor _compositor;
 	Overlay _overlay;

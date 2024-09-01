@@ -2,8 +2,7 @@
 
 float2 texelSize;
 
-float4x4 viewMatrix;
-float4x4 projMatrix;
+float4x4 viewProjMatrix;
 
 struct Vertex
 {

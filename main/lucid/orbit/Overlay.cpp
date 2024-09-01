@@ -111,12 +111,22 @@ void Overlay::batchOrbit(OrbitalBody *body)
 	Elements const *elements = body->elements;
 
 	Frame const *centerFrame = body->centerFrame;
+
 	vector3_t centerPosition = LUCID_MATH::lerp(_interpolant, centerFrame->absolutePosition[0], centerFrame->absolutePosition[1]) - _cameraPosition;
 	scalar_t centerDistance = LUCID_MATH::len(centerPosition);
 
 	quaternion_t q0 = LUCID_MATH::quaternionFromMatrix(rotationFromElements(elements[0]));
 	quaternion_t q1 = LUCID_MATH::quaternionFromMatrix(rotationFromElements(elements[1]));
 	quaternion_t  q = LUCID_MATH::slerp(_interpolant, q0, q1);
+
+	/// test {
+	matrix3x3_t R = LUCID_MATH::matrixFromQuaternion(q);
+	vector3_t relPosition = LUCID_MATH::lerp(_interpolant, body->relativePosition[0], body->relativePosition[1]);
+	relPosition = relPosition * R;
+
+	float32_t theta = cast(LUCID_MATH::atan2(relPosition.y, relPosition.x));
+	theta = (theta > 0.f) ? theta : LUCID_CORE_NUMBERS::two_pi<float32_t> + theta;
+	/// } test
 
 	float32_t  a = _midRange * cast(LUCID_MATH::lerp(_interpolant, elements[0].A, elements[1].A) / centerDistance);
 	float32_t  e = cast(LUCID_MATH::lerp(_interpolant, elements[0].EC, elements[1].EC));
@@ -128,8 +138,12 @@ void Overlay::batchOrbit(OrbitalBody *body)
 	orbitInstance.scale = 4;
 	orbitInstance.rotation = cast(q);
 	orbitInstance.channel0 = renderProperties.orbitHighlight ? LUCID_GAL::Vector4(1.f, 1.f, 1.f, 1.f) : LUCID_GAL::Vector4(0, 0, 1, 1);
-	orbitInstance.channel2 = LUCID_GAL::Vector4(hu, e, /* from */ 0, /* to */ constants::two_pi<float32_t>);
+	orbitInstance.channel2 = LUCID_GAL::Vector4(hu, e, theta + 0.05f, theta + (LUCID_CORE_NUMBERS::two_pi<float32_t> - 0.05f));
+
 	_batched.addInstance(_orbitMesh, orbitInstance);
+
+//	orbitInstance.channel2 = LUCID_GAL::Vector4(hu, e, theta + 0.05f, (theta + (LUCID_CORE_NUMBERS::two_pi<float32_t> - 0.05f)));
+//	_batched.addInstance(_orbitMesh, orbitInstance);
 }
 
 void Overlay::batchIcon(OrbitalBody *body)

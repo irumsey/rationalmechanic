@@ -119,27 +119,25 @@ void Renderer::render(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t time,
 
 	resize();
 
+	float32_t fov = cast(cameraFrame->fov);
+	Frame *focusFrame = cameraFrame->focus;
+
+	vector3_t cameraPosition = LUCID_MATH::lerp(interpolant, cameraFrame->absolutePosition[0], cameraFrame->absolutePosition[1]);
+	vector3_t focusPosition = LUCID_MATH::lerp(interpolant, focusFrame->absolutePosition[0], focusFrame->absolutePosition[1]) - cameraPosition;
+
 	_culler.cull(rootFrame, cameraFrame, interpolant);
 	_compositor.process(rootFrame, cameraFrame, interpolant);
 	_overlay.process(rootFrame, cameraFrame, interpolant);
-
-	Frame *focusFrame = cameraFrame->focus;
-	_interpolant = interpolant;
-
-	float32_t fov = cast(cameraFrame->fov);
-
-	_cameraPosition = LUCID_MATH::lerp(interpolant, cameraFrame->absolutePosition[0], cameraFrame->absolutePosition[1]);
-	_focusPosition = LUCID_MATH::lerp(interpolant, focusFrame->absolutePosition[0], focusFrame->absolutePosition[1]);
 
 	_renderContext["screenSize"] = _screenSize;
 	_renderContext["texelSize"] = _texelSize;
 
 	_renderContext["time"] = cast(time);
-	_renderContext["interpolant"] = cast(_interpolant);
+	_renderContext["interpolant"] = cast(interpolant);
 		
-	_renderContext["lightDirFromOrigin"] = LUCID_MATH::normalize(cast(vector3_t(0, 0, 0) - _cameraPosition));
+	_renderContext["lightDirFromOrigin"] = LUCID_MATH::normalize(cast(vector3_t(0, 0, 0) - cameraPosition));
 
-	LUCID_GAL::Matrix4x4 viewMatrix = LUCID_MATH::look(LUCID_GAL::Vector3(0, 0, 0), cast(_focusPosition - _cameraPosition), LUCID_GAL::Vector3(0, 0, 1));
+	LUCID_GAL::Matrix4x4 viewMatrix = LUCID_MATH::look(LUCID_GAL::Vector3(0, 0, 0), cast(focusPosition), LUCID_GAL::Vector3(0, 0, 1));
 	LUCID_GAL::Matrix4x4 projMatrix = LUCID_MATH::perspective(fov, _aspect, _znear, _zfar);
 	LUCID_GAL::Matrix4x4 viewProjMatrix = projMatrix * viewMatrix;
 
