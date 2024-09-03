@@ -48,6 +48,7 @@
 	"attributes":
 	[
 		{ "name" :      "texelSize",     "query" :      "texelSize" },
-		{ "name" : "viewProjMatrix",     "query" : "viewProjMatrix" }
-  ]
+		{ "name" : "viewProjMatrix",     "query" : "viewProjMatrix" },
+		{ "name" :    "depthTarget",     "query" :    "depthTarget" }
+]
 }

@@ -22,6 +22,7 @@ struct OutputVS
 	uint1               id : POSITION1;
 	float        specCoeff : COLOR0;
 	float4         ambient : COLOR1;
+	float            depth : POSITION2;
 };
 
 typedef OutputVS InputPS;

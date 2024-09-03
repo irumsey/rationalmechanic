@@ -76,16 +76,16 @@ struct MeshInstance
 #	pragma pack(pop)
 
 #	pragma pack(push)
-#	pragma pack(1)
+#	pragma pack(2)
 
-	struct IconInstance
-	{
-		uint32_t                 id = 0;
-		LUCID_GAL::Vector3 position;
-		LUCID_GAL::Vector4 texcoord;
-		LUCID_GAL::Vector2    scale;
-		LUCID_GAL::Color      color;
-	};
+struct IconInstance
+{
+	uint32_t                 id = 0;
+	LUCID_GAL::Vector4 position;
+	LUCID_GAL::Vector4 texcoord;
+	LUCID_GAL::Vector2    scale;
+	LUCID_GAL::Color      color;
+};
 
 #	pragma pack(pop)
 

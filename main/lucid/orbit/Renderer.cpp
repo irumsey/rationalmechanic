@@ -85,6 +85,8 @@ void Renderer::initialize(std::string const &path)
 	_postParameters.  glowTarget = GET_MATERIAL_PARAMETER(    _post,   glowTarget);
 	_fxaaParameters. colorTarget = GET_MATERIAL_PARAMETER(    _fxaa,  colorTarget);
 	_fxaaParameters.  glowTarget = GET_MATERIAL_PARAMETER(    _fxaa,   glowTarget);
+
+	_renderContext.add("depthTarget", _depthTarget);
 }
 
 void Renderer::shutdown()
@@ -153,6 +155,9 @@ void Renderer::render(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t time,
 	_renderContext["viewProjMatrix"] = viewProjMatrix;
 	_renderContext["invViewProjMatrix"] = LUCID_MATH::inverse(viewProjMatrix);
 
+	// set it each time, just in case the target was re-created since initialization
+	_renderContext["depthTarget"] = _depthTarget;
+
 	preRender();
 	render();
 	postRender(useFXAA);
@@ -188,6 +193,10 @@ void Renderer::preRender()
 void Renderer::render()
 {
 	_compositor.render(_renderContext);
+
+	LUCID_GAL_PIPELINE.setRenderTarget(3, nullptr);
+	LUCID_GAL_PIPELINE.updateTargets();
+
 	_overlay.render(_renderContext);
 
 	if (0 == _textCount)

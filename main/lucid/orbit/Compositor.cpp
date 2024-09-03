@@ -180,6 +180,7 @@ void Compositor::copyInstances()
 		/// the sun is at (0, 0, 0) in world corrdinates. therefore, the
 		/// light distance is the magnitude of the view position.
 		instances[i].channel2.x = cast(LUCID_MATH::len(_cameraPosition) * _midRange / pass.distance);
+		instances[i].channel2.w = cast(pass.distance / _midRange);
 		/// } test
 	}
 	_meshInstances->unlock();

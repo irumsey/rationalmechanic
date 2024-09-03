@@ -25,6 +25,7 @@ OutputVS main(InputVS input)
 	output.id = instance.id;
 	output.specCoeff = instance.channel0.w;
 	output.ambient = instance.channel1;
+	output.depth = instance.channel2.w * length(worldPosition);
 
 	return output;
 }

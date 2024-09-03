@@ -8,7 +8,7 @@ QuadPixel main(InputPixel input)
 	output.id = 0;
 	output.color = float4(0, 0, 0, 1);
 	output.glow = float4(0, 0, 0, 1);
-	output.depth = 1.0;
+	output.depth = 1e15;
 
 	return output;
 }

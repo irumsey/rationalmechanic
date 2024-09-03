@@ -49,6 +49,7 @@
 	[
 		{ "name":      "texelSize",     "query":                     "texelSize" },
 		{ "name": "viewProjMatrix",     "query":                "viewProjMatrix" },
+		{ "name":    "depthTarget",     "query":                   "depthTarget" },
 		{ "name":   "iconsTexture", "texture2d": "content/iconSatellite.texture" }
 	]
 }

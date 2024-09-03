@@ -99,7 +99,7 @@ private:
 	int32_t _textCount = 0;
 
 	std::unique_ptr<LUCID_GAL::RenderTarget2D> _colorTarget;
-	std::unique_ptr<LUCID_GAL::RenderTarget2D> _depthTarget;
+	std::shared_ptr<LUCID_GAL::RenderTarget2D> _depthTarget;
 	std::unique_ptr<LUCID_GAL::RenderTarget2D> _glowTarget;
 	std::unique_ptr<LUCID_GAL::RenderTarget2D> _blurTarget[2];
 

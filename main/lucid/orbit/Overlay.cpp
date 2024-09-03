@@ -33,14 +33,15 @@ void Overlay::initialize(size_t passMaximum, float32_t midRange)
 
 	_batched.initialize();
 
+	_orbitMesh = LUCID_GIGL_RESOURCES.get<LUCID_GIGL::Mesh>("content/orbit.mesh");
+	_batched.createBatch<MeshInstance, mesh_sort_t>(_orbitMesh, _passMaximum, mesh_sort_t());
+
 	_iconDefault = LUCID_GIGL_RESOURCES.get<LUCID_GIGL::Mesh>("content/iconDefault.mesh");
 	_batched.createBatch<IconInstance, icon_sort_t>(_iconDefault, _passMaximum, icon_sort_t());
 
 	_iconSatellite = LUCID_GIGL_RESOURCES.get<LUCID_GIGL::Mesh>("content/iconSatellite.mesh");
 	_batched.createBatch<IconInstance, icon_sort_t>(_iconSatellite, _passMaximum, icon_sort_t());
 
-	_orbitMesh = LUCID_GIGL_RESOURCES.get<LUCID_GIGL::Mesh>("content/orbit.mesh");
-	_batched.createBatch<MeshInstance, mesh_sort_t>(_orbitMesh, _passMaximum, mesh_sort_t());
 }
 
 void Overlay::shutdown()
@@ -136,8 +137,8 @@ void Overlay::batchOrbit(OrbitalBody *body)
 	orbitInstance.scale = 4;
 	orbitInstance.rotation = cast(q);
 	orbitInstance.channel0 = renderProperties.orbitHighlight ? LUCID_GAL::Vector4(1.f, 1.f, 1.f, 1.f) : LUCID_GAL::Vector4(0, 0, 1, 1);
-	orbitInstance.channel2 = LUCID_GAL::Vector4(hu, e, theta + 0.05f, theta + (LUCID_CORE_NUMBERS::two_pi<float32_t> - 0.05f));
-
+	orbitInstance.channel1 = LUCID_GAL::Vector4(0, 0, 0, cast(centerDistance / _midRange));
+	orbitInstance.channel2 = LUCID_GAL::Vector4(hu, e, theta + 0.01f, theta + (LUCID_CORE_NUMBERS::two_pi<float32_t> - 0.01f));
 	_batched.addInstance(_orbitMesh, orbitInstance);
 }
 
@@ -153,7 +154,7 @@ void Overlay::batchIcon(OrbitalBody *body)
 
 	IconInstance iconInstance;
 	iconInstance.id = uint32_t((Selection::TYPE_CALLOUT << Selection::SELECT_SHIFT) | body->id);
-	iconInstance.position = _midRange * cast(bodyPosition / bodyDistance);
+	iconInstance.position = LUCID_GAL::Vector4(_midRange * cast(bodyPosition / bodyDistance), cast(bodyDistance / _midRange));
 	iconInstance.scale = LUCID_GAL::Vector2(24, 24);
 	iconInstance.texcoord = LUCID_GAL::Vector4(0, 0, 1, 1);
 	iconInstance.color = LUCID_GAL::Color(1, 1, 1, 1);

@@ -24,7 +24,7 @@ OutputPixel main(InputPS input)
 	output.   id = input.id;
 	output.color = float4(modulation * diffuseTexel.rgb, 1);
 	output. glow = float4(additive.rr, 0, 1);
-	output. depth = 0;
+	output. depth = input.depth;
 
 	return output;
 }
