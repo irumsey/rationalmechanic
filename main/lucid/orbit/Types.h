@@ -75,19 +75,6 @@ struct MeshInstance
 	LUCID_GAL::Vector4         channel2;
 };
 
-#if false
-struct MeshInstance
-{
-	uint32_t                      id = 0;
-	LUCID_GAL::Vector3      position;		//	position and scale are "packed" into
-	float32_t                  scale = 0;	//	a hlsl float4 type
-	LUCID_GAL::Quaternion   rotation;
-	LUCID_GAL::Vector4      channel0;
-	LUCID_GAL::Vector4      channel1;
-	LUCID_GAL::Vector4      channel2;
-};
-#endif
-
 #	pragma pack(pop)
 
 #	pragma pack(push)
