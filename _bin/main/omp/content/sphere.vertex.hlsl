@@ -20,8 +20,7 @@ OutputVS main(InputVS input)
 	float3x3 worldMatrix = rotationFromQuaterion(instance.rotation);
 	float3 worldPosition = mul(worldMatrix, radius * e2) + sphereCenter;
 
-	float  lightDistance = instance.channel2.x;
-	float3 lightPosition = lightDistance * lightDirFromOrigin;
+	float3 lightPosition = instance.lightPosition.xyz;
 	float3 lightDirection = normalize(lightPosition - sphereCenter);
 
 	float3 viewDirection = -normalize(worldPosition);
@@ -33,7 +32,7 @@ OutputVS main(InputVS input)
 	output.specCoeff = instance.channel0.w;
 	output.ambient = instance.channel1;
 	output.id = instance.id;
-	output.depth = instance.channel2.w * length(worldPosition);
+	output.depth = instance.compositing.y * length(worldPosition);
 
 	return output;
 }

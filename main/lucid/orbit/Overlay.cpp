@@ -127,18 +127,24 @@ void Overlay::batchOrbit(OrbitalBody *body)
 	float32_t theta = cast(LUCID_MATH::atan2(relPosition.y, relPosition.x));
 	theta = (theta > 0.f) ? theta : LUCID_CORE_NUMBERS::two_pi<float32_t> + theta;
 
-	float32_t  a = _midRange * cast(LUCID_MATH::lerp(_interpolant, elements[0].A, elements[1].A) / centerDistance);
-	float32_t  e = cast(LUCID_MATH::lerp(_interpolant, elements[0].EC, elements[1].EC));
-	float32_t hu = a * (1.f - e * e);
+	scalar_t a = LUCID_MATH::lerp(_interpolant, elements[0].A, elements[1].A);
+	scalar_t e = LUCID_MATH::lerp(_interpolant, elements[0].EC, elements[1].EC);
+
+	scalar_t scaleFactor = a / centerDistance;
+	a = _midRange * scaleFactor;
+
+	scalar_t hu = a * (1.0 - e * e);
 
 	MeshInstance orbitInstance;
 	orbitInstance.id = uint32_t((Selection::TYPE_ORBIT << Selection::SELECT_SHIFT) | body->id);
 	orbitInstance.position = _midRange * cast(centerPosition / centerDistance);
 	orbitInstance.scale = 4;
 	orbitInstance.rotation = cast(q);
+	orbitInstance.lightPosition = LUCID_GAL::Vector4(0, 0, 0, 0);
+	orbitInstance.compositing = cast(vector4_t(scaleFactor, centerDistance / _midRange, 0, 0));
 	orbitInstance.channel0 = renderProperties.orbitHighlight ? LUCID_GAL::Vector4(1.f, 1.f, 1.f, 1.f) : LUCID_GAL::Vector4(0, 0, 1, 1);
-	orbitInstance.channel1 = LUCID_GAL::Vector4(0, 0, 0, cast(centerDistance / _midRange));
-	orbitInstance.channel2 = LUCID_GAL::Vector4(hu, e, theta + 0.01f, theta + (LUCID_CORE_NUMBERS::two_pi<float32_t> - 0.01f));
+	orbitInstance.channel1 = LUCID_GAL::Vector4(0, 0, 0, 0);
+	orbitInstance.channel2 = cast(vector4_t(hu, e, theta + 0.01f, theta + (LUCID_CORE_NUMBERS::two_pi<float32_t> - 0.01f)));
 	_batched.addInstance(_orbitMesh, orbitInstance);
 }
 

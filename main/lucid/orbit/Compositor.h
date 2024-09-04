@@ -43,7 +43,7 @@ public:
 
 	virtual ~Compositor();
 
-	void initialize(size_t passMaximum, float32_t midRange);
+	void initialize(size_t passMaximum, scalar_t midRange);
 
 	void shutdown();
 
@@ -67,26 +67,29 @@ private:
 	///	Pass
 	///
 	///	In the near future, this might become generalized to
-	/// allow for any kind of render pass (not just a model).
+	/// allow for any kind of compositing pass (not just for models).
 	struct Pass
 	{
 		std::shared_ptr<LUCID_GIGL::Model> model;
 
-		uint32_t                    id = 0;
-		vector3_t             position;
-		scalar_t              distance = 0;
-		quaternion_t          rotation;
-		scalar_t           scaleFactor = 0;
-		LUCID_GAL::Vector4    channel0;
-		LUCID_GAL::Vector4    channel1;
-		LUCID_GAL::Vector4    channel2;
+		uint32_t                      id = 0;
+		vector3_t               position;
+		scalar_t                distance = 0;
+		quaternion_t            rotation;
+		vector4_t          lightPosition;
+		vector4_t            compositing;
+		LUCID_GAL::Vector4      channel0;
+		LUCID_GAL::Vector4      channel1;
+		LUCID_GAL::Vector4      channel2;
 	};
 
 	size_t       _passMaximum = 0;
-	float32_t       _midRange = 0;
+	scalar_t        _midRange = 0;
 
 	scalar_t     _interpolant = 0;
 	vector3_t _cameraPosition;
+
+	vector4_t  _lightPosition;
 
 	std::vector<Pass> _passes;
 	std::unique_ptr<LUCID_GAL::VertexBuffer> _meshInstances;

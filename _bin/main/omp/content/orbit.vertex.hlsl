@@ -49,7 +49,7 @@ OutputVS main(InputVS input)
 	ppsPosition[0].xyz = ppsPosition[0].xyz * ppsPosition[0].w;
 
 	float2 texcoord = float2(0.5, -0.5) * ppsPosition[0].xy / ppsPosition[0].w + float2(0.5, 0.5);
-	float depth = instance.channel1.w * length(worldPosition[0].xyz);
+	float depth = instance.compositing.y * length(worldPosition[0].xyz);
 
 	output.ppsPosition = ppsPosition[0];
 	output.id = instance.id;

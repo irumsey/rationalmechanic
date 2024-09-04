@@ -36,9 +36,24 @@ inline LUCID_GAL::Vector3 cast(vector3_t const &rhs)
 	return LUCID_GAL::Vector3(float32_t(rhs.x), float32_t(rhs.y), float32_t(rhs.z));
 }
 
+inline LUCID_GAL::Vector4 cast(vector4_t const &rhs)
+{
+	return LUCID_GAL::Vector4(float32_t(rhs.x), float32_t(rhs.y), float32_t(rhs.z), float32_t(rhs.w));
+}
+
+inline vector2_t cast(LUCID_GAL::Vector2 const &rhs)
+{
+	return vector2_t(scalar_t(rhs.x), scalar_t(rhs.y));
+}
+
 inline vector3_t cast(LUCID_GAL::Vector3 const &rhs)
 {
 	return vector3_t(scalar_t(rhs.x), scalar_t(rhs.y), scalar_t(rhs.z));
+}
+
+inline vector4_t cast(LUCID_GAL::Vector4 const &rhs)
+{
+	return vector4_t(scalar_t(rhs.x), scalar_t(rhs.y), scalar_t(rhs.z), scalar_t(rhs.w));
 }
 
 inline LUCID_GAL::Matrix3x3 cast(matrix3x3_t const &rhs)

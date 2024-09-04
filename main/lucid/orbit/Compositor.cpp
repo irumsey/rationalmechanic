@@ -32,7 +32,7 @@ Compositor::~Compositor()
 	shutdown();
 }
 
-void Compositor::initialize(size_t passMaximum, float32_t midRange)
+void Compositor::initialize(size_t passMaximum, scalar_t midRange)
 {
 	shutdown();
 
@@ -78,6 +78,12 @@ void Compositor::process(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t in
 	_interpolant = interpolant;
 	_cameraPosition = LUCID_MATH::lerp(interpolant, cameraFrame->absolutePosition[0], cameraFrame->absolutePosition[1]);
 
+	// test {
+	// making use of the fact that the sun is at the origin of world space
+	// and, when rendering, everything is specified with the camera at the origin.
+	_lightPosition = vector4_t(-_cameraPosition, 0);
+	// } test
+
 	_passes.clear();
 	process(rootFrame);
 
@@ -117,14 +123,16 @@ void Compositor::evaluate(OrbitalBody *body)
 	Pass pass;
 
 	pass.      model = renderProperties.model;
-	pass.         id = uint32_t((Selection::TYPE_FRAME << Selection::SELECT_SHIFT) | body->id);
-	pass.   position = LUCID_MATH::lerp(_interpolant, body->absolutePosition[0], body->absolutePosition[1]) - _cameraPosition;
-	pass.   distance = LUCID_MATH::len(pass.position);
-	pass.   rotation = LUCID_MATH::slerp(_interpolant, body->absoluteRotation[0], body->absoluteRotation[1]);
-	pass.scaleFactor = physicalProperties.radius / pass.distance;
-	pass.   channel0 = renderProperties.channel0;
-	pass.   channel1 = renderProperties.channel1;
-	pass.   channel2 = renderProperties.channel2;
+
+	pass.           id = uint32_t((Selection::TYPE_FRAME << Selection::SELECT_SHIFT) | body->id);
+	pass.     position = LUCID_MATH::lerp(_interpolant, body->absolutePosition[0], body->absolutePosition[1]) - _cameraPosition;
+	pass.     distance = LUCID_MATH::len(pass.position);
+	pass.     rotation = LUCID_MATH::slerp(_interpolant, body->absoluteRotation[0], body->absoluteRotation[1]);
+	pass.lightPosition = _midRange * _lightPosition / pass.distance;
+	pass.  compositing = vector4_t(physicalProperties.radius / pass.distance, pass.distance / _midRange, 0, 0);
+	pass.     channel0 = renderProperties.channel0;
+	pass.     channel1 = renderProperties.channel1;
+	pass.     channel2 = renderProperties.channel2;
 
 	_passes.push_back(pass);
 }
@@ -167,21 +175,15 @@ void Compositor::copyInstances()
 	{
 		Pass const &pass = _passes[i];
 
-		instances[i].id = pass.id;
-		instances[i].position = _midRange * cast(pass.position / pass.distance);
-		instances[i].scale = _midRange * cast(pass.scaleFactor);
-		instances[i].rotation = cast(pass.rotation);
-		instances[i].channel0 = pass.channel0;
-		instances[i].channel1 = pass.channel1;
-		instances[i].channel2 = pass.channel2;
-
-		/// test {
-		/// everything is rendered in "camera space" with the origin at (0, 0, 0)
-		/// the sun is at (0, 0, 0) in world corrdinates. therefore, the
-		/// light distance is the magnitude of the view position.
-		instances[i].channel2.x = cast(LUCID_MATH::len(_cameraPosition) * _midRange / pass.distance);
-		instances[i].channel2.w = cast(pass.distance / _midRange);
-		/// } test
+		instances[i].           id = pass.id;
+		instances[i].     position = cast(_midRange * pass.position / pass.distance);
+		instances[i].        scale = cast(_midRange * pass.compositing.x);
+		instances[i].     rotation = cast(pass.rotation);
+		instances[i].lightPosition = cast(pass.lightPosition);
+		instances[i].  compositing = cast(pass.compositing);
+		instances[i].     channel0 = pass.channel0;
+		instances[i].     channel1 = pass.channel1;
+		instances[i].     channel2 = pass.channel2;
 	}
 	_meshInstances->unlock();
 }

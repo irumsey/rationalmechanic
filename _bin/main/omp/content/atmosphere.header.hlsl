@@ -1,6 +1,5 @@
 #include "instance.header.hlsl"
 
-float3      lightDirFromOrigin;			// unit direction from world origin to light position
 float4x4    viewProjMatrix;
 
 struct Vertex
