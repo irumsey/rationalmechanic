@@ -14,12 +14,6 @@ Frame::Frame(size_t id, std::string const &name, std::string const &description)
 	, name(name)
 	, description(description)
 {
-	::memset(        aabbSelf, 0, 2 * sizeof(  aabb3_t));
-	::memset(       aabbTotal, 0, 2 * sizeof(  aabb3_t));
-	::memset(relativePosition, 0, 2 * sizeof(vector3_t));
-	::memset(relativeVelocity, 0, 2 * sizeof(vector3_t));
-	::memset(absolutePosition, 0, 2 * sizeof(vector3_t));
-
 	++_instances;
 }
 

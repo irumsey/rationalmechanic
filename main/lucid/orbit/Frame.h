@@ -57,11 +57,13 @@ public:
 	std::string name;
 	std::string description;
 
+	quaternion_t relativeRotation[2];
 	vector3_t relativePosition[2];
 	vector3_t relativeVelocity[2];
 
-	vector3_t absolutePosition[2];
 	quaternion_t absoluteRotation[2];
+	vector3_t absolutePosition[2];
+	vector3_t absoluteVelocity[2];
 
 	aabb3_t aabbSelf[2];
 	aabb3_t aabbTotal[2];

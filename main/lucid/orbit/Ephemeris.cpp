@@ -72,7 +72,12 @@ void Ephemeris::initialize(std::string const &path)
 			_renderProperties.insert(std::make_pair(target.id, RenderProperties(reader)));
 
 			int32_t elementsCount = reader.read<int32_t>();
+			rotation_vec_t pluralRotation(elementsCount);
+			for (int32_t i = 0; i < elementsCount; ++i)
+				reader.read(&pluralRotation[i], sizeof(RotationalElements));
+			_rotation.insert(std::make_pair(target.id, pluralRotation));
 
+			elementsCount = reader.read<int32_t>();
 			elements_vec_t pluralElements(elementsCount);
 			for (int32_t i = 0; i < elementsCount; ++i)
 				reader.read(&pluralElements[i], sizeof(Elements));
@@ -89,6 +94,7 @@ void Ephemeris::shutdown()
 	_entries.clear();
 	_physicalProperties.clear();
 	_renderProperties.clear();
+	_rotation.clear();
 	_elements.clear();
 }
 
@@ -153,10 +159,16 @@ bool Ephemeris::lookup(Elements &elements, size_t target, scalar_t jdn) const
 
 bool Ephemeris::lookup(RotationalElements &elements, size_t target, scalar_t jdn) const
 {
+	auto iter = _rotation.find(target);
+	if (iter == _rotation.end())
+		return false;
+
+	rotation_vec_t const &entries = iter->second;
+	size_t const count = entries.size();
+
 	/// test {
-	elements.A = vector3_t(0.3987, 0.0, 0.9171);
-	elements.theta = 0.0;
-	elements.w = constants::seconds_per_day<scalar_t> * 7.2921159e-5;
+	/// for now, just return the first
+	elements = entries[0];
 	/// } test
 
 	return true;

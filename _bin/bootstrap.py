@@ -698,6 +698,15 @@ def bootFrameOrbitalBody(dst, frame):
 	bootVector4(dst, properties['render']['channel1'])
 	bootVector4(dst, properties['render']['channel2'])
 
+	rotation = frame['rotation']
+	bootUnsigned(dst, len(rotation))
+	
+	for entry in rotation:
+		if 6 != len(entry):
+			raise Exception('invalid number of elements in ephemeris file')
+		for value in entry:
+			bootDouble(dst, value)
+			
 	elements = frame['elements']
 	bootUnsigned(dst, len(elements))
 

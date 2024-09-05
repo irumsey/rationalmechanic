@@ -45,8 +45,8 @@ template<typename T, size_t DIM> struct AABB
 ///
 template<typename T> struct AABB<T, 1>
 {
-	T min;
-	T max;
+	T min = T();
+	T max = T();
 
 	AABB() = default;
 

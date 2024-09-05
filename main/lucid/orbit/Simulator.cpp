@@ -54,8 +54,14 @@ void Simulator::evaluate(OrbitalBody *body)
 	body->absolutePosition[0] = body->absolutePosition[1];
 	body->absolutePosition[1] = body->relativePosition[1] + center->absolutePosition[1];
 
+	body->absoluteVelocity[0] = body->absoluteVelocity[1];
+	body->absoluteVelocity[1] = body->relativeVelocity[1] + center->absoluteVelocity[1];
+
+	body->relativeRotation[0] = body->relativeRotation[1];
+	rotationFromElements(body->relativeRotation[1], rotationalElements, _dayNumber);
+
 	body->absoluteRotation[0] = body->absoluteRotation[1];
-	rotationFromElements(body->absoluteRotation[1], rotationalElements, _dayNumber);
+	body->absoluteRotation[1] = body->relativeRotation[1] * LUCID_MATH::quaternionFromMatrix(rotationFromElements(body->elements[1]));
 
 	PhysicalProperties const &bodyProperties = body->physicalProperties;
 	scalar_t radius = bodyProperties.radius;

@@ -66,10 +66,12 @@ void Overlay::shutdown()
 
 void Overlay::print(LUCID_GAL::Vector2 const &position, LUCID_GAL::Vector2 const &size, std::string const &text, LUCID_GAL::Color const &color)
 {
-	_font->typeset(_text->lock_as<LUCID_GIGL::Font::Character>(_textCount, text.size()), position, size, text, color);
+	int32_t count = int32_t(text.size());
+
+	_font->typeset(_text->lock_as<LUCID_GIGL::Font::Character>(_textCount, count), position, size, text, color);
 	_text->unlock();
 
-	_textCount = _textCount + text.size();
+	_textCount = _textCount + count;
 }
 
 void Overlay::process(Frame *frame, CameraFrame *cameraFrame, scalar_t interpolant)

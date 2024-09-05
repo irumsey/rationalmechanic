@@ -87,6 +87,7 @@ protected:
 
 private:
 	typedef std::vector<Elements> elements_vec_t;
+	typedef std::vector<RotationalElements> rotation_vec_t;
 
 	typedef std::unordered_map<std::string, size_t> id_map_t;
 
@@ -94,6 +95,7 @@ private:
 	typedef std::unordered_map<size_t, PhysicalProperties> physical_properties_map_t;
 	typedef std::unordered_map<size_t, RenderProperties> render_properties_map_t;
 	typedef std::unordered_map<size_t, elements_vec_t> elements_map_t;
+	typedef std::unordered_map<size_t, rotation_vec_t> rotation_map_t;
 
 	ordinal_vec_t _order;
 
@@ -103,6 +105,7 @@ private:
 	physical_properties_map_t _physicalProperties;
 	render_properties_map_t _renderProperties;
 	elements_map_t _elements;
+	rotation_map_t _rotation;
 
 	size_t lookup(std::string const &target) const;
 
