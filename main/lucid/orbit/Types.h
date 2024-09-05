@@ -32,6 +32,10 @@ typedef LUCID_MATH::AABB<scalar_t, 3> aabb3_t;
 
 typedef LUCID_MATH::Frustum<scalar_t> frustum_t;
 
+///
+/// 
+/// 
+
 template<typename T> struct NullSort
 {
 	bool operator()(T const &, T const &) const

@@ -34,6 +34,8 @@ public:
 
 	virtual int32_t stride() const = 0;
 
+	template<typename T> T *lock_as(int32_t start = 0, int32_t count = 0);
+
 	virtual void *lock(int32_t start = 0, int32_t count = 0) = 0;
 
 	virtual void unlock() = 0;
@@ -48,5 +50,10 @@ protected:
 	LUCID_PREVENT_COPY(VertexBuffer);
 	LUCID_PREVENT_ASSIGNMENT(VertexBuffer);
 };
+
+template<typename T> inline T *VertexBuffer::lock_as(int32_t start, int32_t count)
+{
+	return reinterpret_cast<T*>(lock(start, count));
+}
 
 LUCID_GAL_END

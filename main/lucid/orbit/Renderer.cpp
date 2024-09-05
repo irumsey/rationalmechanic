@@ -60,9 +60,6 @@ void Renderer::initialize(std::string const &path)
 	_compositor.initialize(BATCH_MAXIMUM, _zmid);
 	_overlay.initialize(BATCH_MAXIMUM, _zmid);
 
-	_font = LUCID_GIGL::Resources::get<LUCID_GIGL::Font>("content/OCRa.font");
-	_text.reset(LUCID_GAL::VertexBuffer::create(LUCID_GAL::VertexBuffer::USAGE_DYNAMIC, TEXT_LENGTH_MAXIMUM, sizeof(LUCID_GIGL::Font::Character)));
-
 	_selectTarget.reset(LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UINT_R32, _width, _height));
 	_selectReader.reset(LUCID_GAL::TargetReader2D::create(_selectTarget.get(), _width, _height));
 
@@ -94,9 +91,6 @@ void Renderer::shutdown()
 	_overlay.shutdown();
 	_compositor.shutdown();
 
-	_text.reset();
-	_font.reset();
-
 	_selectReader.reset();
 	_selectTarget.reset();
 
@@ -112,6 +106,11 @@ void Renderer::shutdown()
 	_fxaa.reset();
 
 	_renderContext = LUCID_GIGL::Context();
+}
+
+void Renderer::print(LUCID_GAL::Vector2 const &position, LUCID_GAL::Vector2 const &size, std::string const &text, LUCID_GAL::Color const &color)
+{
+	_overlay.print(position, size, text, color);
 }
 
 void Renderer::render(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t time, scalar_t interpolant, bool useFXAA)
@@ -198,12 +197,6 @@ void Renderer::render()
 	LUCID_GAL_PIPELINE.updateTargets();
 
 	_overlay.render(_renderContext);
-
-	if (0 == _textCount)
-		return;
-
-	LUCID_GAL_PIPELINE.setVertexStream(1, _text.get());
-	_font->renderInstanced(_renderContext, _textCount);
 }
 
 void Renderer::postRender(bool useFXAA)

@@ -43,7 +43,7 @@ void Compositor::initialize(size_t passMaximum, scalar_t midRange)
 	_starMesh.reset(LUCID_GIGL::Mesh::create("content/star.mesh"));
 	_starInstances.reset(LUCID_GAL::VertexBuffer::create(LUCID_GAL::VertexBuffer::USAGE_STATIC, int32_t(_starCount), sizeof(StarInstance)));
 
-	StarInstance *starInstances = (StarInstance *)(_starInstances->lock());
+	StarInstance *starInstances = _starInstances->lock_as<StarInstance>();
 	for (size_t i = 0; i < _starCount; ++i)
 	{
 		StarCatalog::Entry const &entry = LUCID_ORBIT_STARCATALOG[i];
@@ -170,7 +170,7 @@ void Compositor::copyInstances()
 
 	std::sort(_passes.begin(), _passes.end(), Back2Front<Pass>());
 
-	MeshInstance *instances = (MeshInstance *)(_meshInstances->lock());
+	MeshInstance *instances = _meshInstances->lock_as<MeshInstance>();
 	for (size_t i = 0; i < count; ++i)
 	{
 		Pass const &pass = _passes[i];

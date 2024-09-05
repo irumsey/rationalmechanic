@@ -2,15 +2,23 @@
 
 #include <memory>
 #include <lucid/core/Noncopyable.h>
+#include <lucid/gal/Defines.h>
 #include <lucid/gigl/Defines.h>
 #include <lucid/gigl/Batched.h>
 #include <lucid/orbit/Types.h>
 #include <lucid/orbit/Defines.h>
 #include <lucid/orbit/Algorithm.h>
 
+LUCID_GAL_BEGIN
+
+class VertexBuffer;
+
+LUCID_GAL_END
+
 LUCID_GIGL_BEGIN
 
 class Context;
+class Font;
 
 LUCID_GIGL_END
 
@@ -36,6 +44,8 @@ public:
 
 	void shutdown();
 
+	void print(LUCID_GAL::Vector2 const &position, LUCID_GAL::Vector2 const &size, std::string const &text, LUCID_GAL::Color const &color);
+
 	void process(Frame *frame, CameraFrame *cameraFrame, scalar_t interpolant);
 
 	void render(LUCID_GIGL::Context const &context);
@@ -49,6 +59,8 @@ public:
 	virtual void evaluate(CameraFrame *camera) override;
 
 private:
+	enum { TEXT_LENGTH_MAXIMUM = 4096 };
+
 	size_t _passMaximum = 0;
 	float32_t _midRange = 0.f;
 
@@ -60,6 +72,10 @@ private:
 	std::shared_ptr<LUCID_GIGL::Mesh> _iconSatellite;
 
 	LUCID_GIGL::Batched _batched;
+
+	std::shared_ptr<LUCID_GIGL::Font> _font;
+	std::unique_ptr<LUCID_GAL::VertexBuffer> _text;
+	int32_t _textCount = 0;
 
 	void process(Frame *frame);
 

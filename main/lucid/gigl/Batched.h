@@ -164,7 +164,7 @@ private:
 			{
 				size_t count = LUCID_MATH::min(totalCount - index, maximum);
 
-				::memcpy((I*)(batch->lock()), &instances[index], count * sizeof(I));
+				::memcpy(batch->lock_as<I>(), &instances[index], count * sizeof(I));
 				batch->unlock();
 
 				LUCID_GAL_PIPELINE.setVertexStream(1, batch.get());

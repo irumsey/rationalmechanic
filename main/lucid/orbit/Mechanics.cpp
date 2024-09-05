@@ -5,6 +5,8 @@
 #include "Utility.h"
 #include <lucid/core/Clock.h>
 #include <lucid/core/Error.h>
+#include <sstream>
+#include <iomanip>
 
 LUCID_ORBIT_BEGIN
 
@@ -201,6 +203,11 @@ void Mechanics::render(CameraFrame *cameraFrame, bool useFXAA)
 {
 	LUCID_VALIDATE(nullptr != _root, "attempt to use uninitialized system");
 	LUCID_VALIDATE(nullptr != cameraFrame, "attempt to render using invalid camera frame");
+
+	std::ostringstream stream;
+	stream << std::fixed << std::setprecision(1) << "JDN: " << _dayNumber[1];
+
+	_renderer.print(LUCID_GAL::Vector2(10, 10), LUCID_GAL::Vector2(32, 32), stream.str(), LUCID_GAL::Color(0, 1, 0, 1));
 
 	// here, pass in the wall time not the sim time.  wall time is simply for rendering effects
 	// which are not part of the simulation (ie particle effects, etc).  the frame interpolant

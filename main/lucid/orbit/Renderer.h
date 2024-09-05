@@ -9,7 +9,6 @@
 #include <lucid/gal/Types.h>
 #include <lucid/gigl/Defines.h>
 #include <lucid/gigl/Context.h>
-#include <lucid/gigl/Font.h>
 #include <lucid/gigl/Batched.h>
 #include <lucid/orbit/Defines.h>
 #include <lucid/orbit/Types.h>
@@ -50,13 +49,14 @@ public:
 
 	void shutdown();
 
+	void print(LUCID_GAL::Vector2 const &position, LUCID_GAL::Vector2 const &size, std::string const &text, LUCID_GAL::Color const &color = LUCID_GAL::Color(1, 1, 1, 1));
+
 	void render(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t time, scalar_t interpolant, bool useFXAA = false);
 
 	Selection hit(int32_t x, int32_t y) const;
 
 private:
 	enum {       BATCH_MAXIMUM = 1024 };
-	enum { TEXT_LENGTH_MAXIMUM = 4096 };
 
 	struct CopyParameters
 	{
@@ -93,10 +93,6 @@ private:
 	Overlay _overlay;
 
 	LUCID_GIGL::Context _renderContext;
-
-	std::shared_ptr<LUCID_GIGL::Font> _font;
-	std::unique_ptr<LUCID_GAL::VertexBuffer> _text;
-	int32_t _textCount = 0;
 
 	std::unique_ptr<LUCID_GAL::RenderTarget2D> _colorTarget;
 	std::shared_ptr<LUCID_GAL::RenderTarget2D> _depthTarget;

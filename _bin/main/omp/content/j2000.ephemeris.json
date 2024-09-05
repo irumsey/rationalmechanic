@@ -364,7 +364,7 @@
         "physical": {
           "GM": 4.0350323562548007e+05,
           "mass": 4.19725e05,
-          "radius": 100
+          "radius": 112.3
         },
         "render": {
           "orbit": true,
@@ -390,7 +390,7 @@
         "physical": {
           "GM": 4.0350323562548007e+05,
           "mass": 4.19725e05,
-          "radius": 100
+          "radius": 122.5
         },
         "render": {
           "orbit": true,
@@ -419,7 +419,7 @@
         "physical": {
           "GM": 2.9591220828411951E-04,
           "mass": 4.19725e05,
-          "radius": 100
+          "radius": 113.6
         },
         "render": {
           "orbit": true,

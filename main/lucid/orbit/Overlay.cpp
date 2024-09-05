@@ -3,8 +3,10 @@
 #include "Properties.h"
 #include "Selection.h"
 #include "Utility.h"
+#include <lucid/gigl/Font.h>
 #include <lucid/gigl/Mesh.h>
 #include <lucid/gigl/Resources.h>
+#include <lucid/gal/Pipeline.h>
 
 LUCID_ANONYMOUS_BEGIN
 
@@ -42,18 +44,32 @@ void Overlay::initialize(size_t passMaximum, float32_t midRange)
 	_iconSatellite = LUCID_GIGL_RESOURCES.get<LUCID_GIGL::Mesh>("content/iconSatellite.mesh");
 	_batched.createBatch<IconInstance, icon_sort_t>(_iconSatellite, _passMaximum, icon_sort_t());
 
+	_font = LUCID_GIGL::Resources::get<LUCID_GIGL::Font>("content/OCRa.font");
+	_text.reset(LUCID_GAL::VertexBuffer::create(LUCID_GAL::VertexBuffer::USAGE_DYNAMIC, TEXT_LENGTH_MAXIMUM, sizeof(LUCID_GIGL::Font::Character)));
 }
 
 void Overlay::shutdown()
 {
+	_text.reset();
+	_font.reset();
+
 	_batched.shutdown();
 
 	_iconDefault.reset();
 	_iconSatellite.reset();
+
 	_orbitMesh.reset();
 
 	_midRange = 0.f;
 	_passMaximum = 0;
+}
+
+void Overlay::print(LUCID_GAL::Vector2 const &position, LUCID_GAL::Vector2 const &size, std::string const &text, LUCID_GAL::Color const &color)
+{
+	_font->typeset(_text->lock_as<LUCID_GIGL::Font::Character>(_textCount, text.size()), position, size, text, color);
+	_text->unlock();
+
+	_textCount = _textCount + text.size();
 }
 
 void Overlay::process(Frame *frame, CameraFrame *cameraFrame, scalar_t interpolant)
@@ -68,6 +84,14 @@ void Overlay::render(LUCID_GIGL::Context const &context)
 {
 	_batched.render(context);
 	_batched.clear();
+
+	if (0 == _textCount)
+		return;
+
+	LUCID_GAL_PIPELINE.setVertexStream(1, _text.get());
+	_font->renderInstanced(context, _textCount);
+
+	_textCount = 0;
 }
 
 void Overlay::evaluate(DynamicPoint *point)

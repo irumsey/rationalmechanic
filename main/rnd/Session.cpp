@@ -216,7 +216,7 @@ void Session::update(float64_t t, float64_t dt)
 #endif
 
 #if true
-	Instance *instances = (Instance*)(_orbitInstances->lock());
+	Instance *instances = _orbitInstances->lock_as<Instance>();
 	for (size_t i = 0; i < 10; ++i)
 	{
 		Instance& instance = instances[i];
