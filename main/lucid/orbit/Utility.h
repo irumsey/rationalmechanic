@@ -112,7 +112,7 @@ struct JDN
 		int32_t A = year / 100;
 		int32_t B = 2 - A + (A / 4);
 
-		scalar_t frac = (3600.0 * time.hour + 60.0 * time.minute + time.second) / 86400.0;
+		scalar_t frac = (3600.0 * time.hour + 60.0 * time.minute + time.second) / constants::seconds_per_day<scalar_t>;
 
 		return int32_t(365.25 * (year + 4716)) + int32_t(30.6001 * (month + 1)) + day + B - 1524.5 + frac;
 	}
