@@ -127,9 +127,10 @@ void Mechanics::initialize(scalar_t dayNumber)
 	///	bootstrap simulation
 	///
 
-	// test {
+	/// test {
+	/// for now, just kick off the simulation using the current JDN.
 	dayNumber = JDN::now();
-	// } test
+	/// } test
 
 	_dayNumber[0] = dayNumber;
 	_dayNumber[1] = dayNumber;
@@ -230,6 +231,7 @@ void Mechanics::update(scalar_t delta)
 	LUCID_VALIDATE(nullptr != _root, "attempt to use uninitialized system");
 
 	/// test {
+	/// for now, just tick off at the "real" rate.
 	_dayNumber[0] = _dayNumber[1];
 	_dayNumber[1] = _dayNumber[1] + delta / constants::seconds_per_day<scalar_t>;
 	/// } test
