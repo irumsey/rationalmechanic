@@ -101,7 +101,7 @@ namespace omp
                 Lucid.Orbit.Ephemeris.Initialize("content/j2000.ephemeris");
                 Lucid.Orbit.StarCatalog.Initialize("content/bsc5.starcatalog");
 
-                planner.orbitalMechainics = new Lucid.Orbit.Mechanics(2451544.0);
+                planner.orbitalMechainics = new Lucid.Orbit.Mechanics(2460559.1632000);
                 populateListview(planner, planner.orbitalMechainics.Root);
                 // } test
 

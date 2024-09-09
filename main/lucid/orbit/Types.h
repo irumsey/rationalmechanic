@@ -32,6 +32,24 @@ typedef LUCID_MATH::AABB<scalar_t, 3> aabb3_t;
 
 typedef LUCID_MATH::Frustum<scalar_t> frustum_t;
 
+/// 
+///
+/// 
+
+struct Date
+{
+	int32_t  year = 1970;
+	int32_t month =    1;
+	int32_t   day =    1;
+};
+
+struct Time
+{
+	int32_t   hour = 0;
+	int32_t minute = 0;
+	int32_t second = 0;
+};
+
 ///
 /// 
 /// 

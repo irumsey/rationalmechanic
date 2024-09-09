@@ -1,5 +1,6 @@
 #pragma once
 
+#include <ctime>
 #include <cmath>
 #include <lucid/math/Algorithm.h>
 #include <lucid/math/Vector.h>
@@ -80,6 +81,43 @@ inline LUCID_GAL::Quaternion cast(quaternion_t const &rhs)
 	return LUCID_GAL::Quaternion(float32_t(rhs.x), float32_t(rhs.y), float32_t(rhs.z), float32_t(rhs.w));
 }
 
+/// JDN
+///
+/// Used to compute the Julian Day Number.  All times are UTC.
+struct JDN
+{
+
+	static scalar_t now()
+	{
+		std::time_t localTime = std::time(nullptr);
+		std::tm utcTime;
+
+		::gmtime_s(&utcTime, &localTime);
+
+		Date date { utcTime.tm_year + 1900, utcTime.tm_mon + 1, utcTime.tm_mday };
+		Time time { utcTime.tm_hour, utcTime.tm_min, utcTime.tm_sec };
+
+		return from(date, time);
+	}
+
+	// since the JPL Horizons database is where I have been getting the orbital elements,
+	// I have tested the following against the Horizons website which provides a JD date/time
+	// conversion.
+	static scalar_t from(Date const &date, Time const &time = Time())
+	{
+		int32_t  year = (2 < date.month) ? date. year : date. year -  1;
+		int32_t month = (2 < date.month) ? date.month : date.month + 12;
+		int32_t   day = date.day;
+
+		int32_t A = year / 100;
+		int32_t B = 2 - A + (A / 4);
+
+		scalar_t frac = (3600.0 * time.hour + 60.0 * time.minute + time.second) / 86400.0;
+
+		return int32_t(365.25 * (year + 4716)) + int32_t(30.6001 * (month + 1)) + day + B - 1524.5 + frac;
+	}
+};
+
 ///
 /// 
 /// 
@@ -97,7 +135,10 @@ inline vector2_t computeConicPoint(scalar_t hu, scalar_t e, scalar_t theta)
 ///
 inline matrix3x3_t rotationFromElements(Elements const &elements)
 {
-	return LUCID_MATH::rotateAboutZ(elements.OM) * LUCID_MATH::rotateAboutX(elements.IN) * LUCID_MATH::rotateAboutZ(elements.W);
+	return
+		LUCID_MATH::rotateAboutZ(elements.OM) *
+		LUCID_MATH::rotateAboutX(elements.IN) *
+		LUCID_MATH::rotateAboutZ(elements.W);
 }
 
 ///
@@ -107,12 +148,17 @@ inline void kinematicsFromElements(vector3_t &position, vector3_t &velocity, Phy
 {
 	scalar_t const twopi = constants::two_pi<scalar_t>;
 	scalar_t const tolsq = constants::tolsq<scalar_t>;
-	scalar_t const    dt = constants::seconds_per_day<scalar_t> * (jdn - targetElements.JDN);
 	scalar_t const    GM = centerProperties.GM;
 	scalar_t const     e = targetElements.EC;
 	scalar_t const     a = targetElements.A;
 
-	scalar_t MA = targetElements.MA + dt * std::sqrt(GM / std::pow(a, 3.0));
+#if false
+	scalar_t const dt = constants::seconds_per_day<scalar_t> * (jdn - targetElements.JDN);
+	scalar_t MA = targetElements.MA + dt * LUCID_MATH::sqrt(GM / LUCID_MATH::pow(a, 3.0));
+#else
+	scalar_t const dt = jdn - targetElements.JDN;
+	scalar_t MA = targetElements.MA + targetElements.N * dt;
+#endif
 	MA = std::fmod(MA, twopi);
 	MA = (MA < 0.0) ? MA + twopi: MA;
 
@@ -124,18 +170,18 @@ inline void kinematicsFromElements(vector3_t &position, vector3_t &velocity, Phy
 	scalar_t err = EA[0] - EA[1];
 	while (((err * err) > tolsq) && (iter < limit))
 	{
-		EA[1] = EA[0] - (EA[0] - e * std::sin(EA[0]) - MA) / (1.0 - e * std::cos(EA[0]));
+		EA[1] = EA[0] - (EA[0] - e * LUCID_MATH::sin(EA[0]) - MA) / (1.0 - e * LUCID_MATH::cos(EA[0]));
 		err = EA[1] - EA[0];
 
 		std::swap(EA[0], EA[1]);
 		++iter;
 	}
 
-	scalar_t TA = scalar_t(2.0) * LUCID_MATH::atan2(LUCID_MATH::sqrt(scalar_t(1.0) + e) * LUCID_MATH::sin(scalar_t(0.5) * EA[0]), LUCID_MATH::sqrt(scalar_t(1.0) - e) * LUCID_MATH::cos(scalar_t(0.5) * EA[0]));
+	scalar_t TA = 2.0 * LUCID_MATH::atan2(LUCID_MATH::sqrt(1.0 + e) * LUCID_MATH::sin(0.5 * EA[0]), LUCID_MATH::sqrt(1.0 - e) * LUCID_MATH::cos(0.5 * EA[0]));
 	scalar_t  r = a * (1.0 - e * LUCID_MATH::cos(EA[0]));
 
-	position = r * vector3_t(LUCID_MATH::cos(TA), LUCID_MATH::sin(TA), scalar_t(0.0));
-	velocity = LUCID_MATH::sqrt(GM * a) / r * vector3_t(-LUCID_MATH::sin(EA[0]), LUCID_MATH::sqrt(scalar_t(1.0) - e * e) * LUCID_MATH::cos(EA[0]), scalar_t(0.0));
+	position = r * vector3_t(LUCID_MATH::cos(TA), LUCID_MATH::sin(TA), 0.0);
+	velocity = LUCID_MATH::sqrt(GM * a) / r * vector3_t(-LUCID_MATH::sin(EA[0]), LUCID_MATH::sqrt(1.0 - e * e) * LUCID_MATH::cos(EA[0]), 0.0);
 
 	matrix3x3_t R = rotationFromElements(targetElements);
 

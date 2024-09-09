@@ -127,6 +127,10 @@ void Mechanics::initialize(scalar_t dayNumber)
 	///	bootstrap simulation
 	///
 
+	// test {
+	dayNumber = JDN::now();
+	// } test
+
 	_dayNumber[0] = dayNumber;
 	_dayNumber[1] = dayNumber;
 
@@ -227,7 +231,7 @@ void Mechanics::update(scalar_t delta)
 
 	/// test {
 	_dayNumber[0] = _dayNumber[1];
-	_dayNumber[1] = _dayNumber[1] + 0.001 * delta;
+	_dayNumber[1] = _dayNumber[1] + delta / constants::seconds_per_day<scalar_t>;
 	/// } test
 
 	_simulator.simulate(_root, _dayNumber[1], delta);
