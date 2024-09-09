@@ -89,7 +89,7 @@ void Session::initialize()
 	shutdown();
 
 	LUCID_GAL::Quaternion q = LUCID_MATH::rotateUsingAxis(LUCID_GAL::Vector3(1, 0, 0), 0.7f);
-	LUCID_GAL::Vector3 r = q * LUCID_GAL::Vector4(0, 1, 0, 0) * LUCID_MATH::conjugate(q);
+	LUCID_GAL::Vector3 r = LUCID_MATH::matrixFromQuaternion(q) * LUCID_GAL::Vector3(0, 1, 0);
 
 	_viewPosition = orbitPositions[9] + computeConicPosition(elements[9], 0.f);
 	_viewFocus = orbitPositions[9] + computeConicPosition(elements[9], 0.01f);

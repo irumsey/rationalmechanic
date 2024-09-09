@@ -27,13 +27,31 @@ public:
 		fill(T());
 	}
 
-	Array(Array const &) = default;
+	Array(Array const &rhs)
+	{
+		meta<T>::copy<LAST>(_data, rhs._data);
+	}
+
+	Array(T const &value)
+	{
+		fill(value);
+	}
 
 	~Array() = default;
 
 	size_t count() const
 	{
 		return N;
+	}
+
+	self_t &operator=(self_t const &rhs)
+	{
+		if (this == &rhs)
+			return *this;
+
+		meta<T>::copy<LAST>(_data, rhs._data);
+
+		return *this;
 	}
 
 	value_t const &operator[](size_t index) const
