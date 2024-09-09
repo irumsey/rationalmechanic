@@ -7,6 +7,8 @@
 #include <lucid/orbit/Defines.h>
 #include <lucid/orbit/Types.h>
 
+#define LUCID_ORBIT_EPHEMERIS LUCID_ORBIT::Ephemeris::instance()
+
 LUCID_ORBIT_BEGIN
 
 struct PhysicalProperties;

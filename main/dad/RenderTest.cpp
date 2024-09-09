@@ -10,8 +10,8 @@
 #include <lucid/gal/IndexBuffer.h>
 #include <lucid/gal/VertexBuffer.h>
 #include <lucid/gal/VertexFormat.h>
-#include <lucid/math/Constants.h>
 #include <lucid/core/FileReader.h>
+#include <lucid/core/Numbers.h>
 #include <sstream>
 #include <algorithm>
 
@@ -19,26 +19,15 @@
 ///
 ///
 
-namespace constants = lucid::math::constants;
-namespace core = lucid::core;
-namespace math = lucid::math;
-namespace gal = lucid::gal;
-namespace gigl = lucid::gigl;
+LUCID_ANONYMOUS_BEGIN
 
-///
-///
-///
-
-namespace /* anonymous */
+inline float32_t random(float32_t a, float32_t b)
 {
+	float32_t t = 0.01f * (::rand() % 101);
+	return (b - a) * t + a;
+}
 
-	inline float32_t random(float32_t a, float32_t b)
-	{
-		float32_t t = 0.01f * (::rand() % 101);
-		return (b - a) * t + a;
-	}
-
-}	///	anonymous
+LUCID_ANONYMOUS_END
 
 ///
 ///
@@ -49,15 +38,15 @@ float64_t const RenderTest::EMIT_RATE = 11.0;
 
 void RenderTest::begin(float64_t t)
 {
-	::log("INFO", "starting basic render test...");
+	LUCID_CORE::log("INFO", "starting basic render test...");
 
 	_timeStart = t;
 	_frameCount = 0;
 
-	_context = gigl::Context("content/test.context");
-	_mesh = gigl::Resources::get<gigl::Mesh>("content/particle.mesh");
+	_context = LUCID_GIGL::Context("content/test.context");
+	_mesh = LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>("content/particle.mesh");
 
-	_instances.reset(gal::VertexBuffer::create(gal::VertexBuffer::USAGE_DYNAMIC, PARTICLE_MAXIMUM, sizeof(Particle)));
+	_instances.reset(LUCID_GAL::VertexBuffer::create(LUCID_GAL::VertexBuffer::USAGE_DYNAMIC, PARTICLE_MAXIMUM, sizeof(Particle)));
 }
 
 void RenderTest::onInput(MouseEvent const &event)
@@ -78,7 +67,7 @@ bool RenderTest::update(float64_t t, float64_t dt)
 		std::ostringstream os;
 		os << "FPS = " << fps;
 
-		::log("INFO", os.str());
+		LUCID_CORE::log("INFO", os.str());
 
 		return true;
 	}
@@ -88,22 +77,20 @@ bool RenderTest::update(float64_t t, float64_t dt)
 
 void RenderTest::render(float32_t time, float32_t interpolant)
 {
-	lucid::gal::Pipeline &pipeline = lucid::gal::Pipeline::instance();
-
-	float32_t const fov = constants::half_pi<float32_t>();
-	float32_t const aspect = ::lucid::gal::System::instance().aspect();
+	float32_t const fov = 0.25f * LUCID_CORE_NUMBERS::pi<float32_t>;
+	float32_t const aspect =LUCID_GAL_SYSTEM.aspect();
 
 	///
 	///	in a "real" application, setting up global render information (context) would be
 	///	a once per-frame operation.  however, this is just a test.
 	///
 
-	pipeline.clear(true, true, true, ::lucid::gal::Color(0.9f, 0.9f, 0.9f, 1));
+	LUCID_GAL_PIPELINE.clear(true, true, true, LUCID_GAL::Color(0.9f, 0.9f, 0.9f, 1));
 
-	Matrix4x4 viewMatrix = math::look(Vector3(-20.f, 0, 30.f), Vector3(-20.f, 0, 0), Vector3(0, 1, 0));
-	Matrix4x4 projMatrix = math::perspective(fov, aspect, 1.f, 1000.f);
+	Matrix4x4 viewMatrix = LUCID_MATH::look(Vector3(-20.f, 0, 30.f), Vector3(-20.f, 0, 0), Vector3(0, 1, 0));
+	Matrix4x4 projMatrix = LUCID_MATH::perspective(fov, aspect, 1.f, 1000.f);
 
-	Matrix4x4 invViewMatrix = math::inverse(viewMatrix);
+	Matrix4x4 invViewMatrix = LUCID_MATH::inverse(viewMatrix);
 
 	Vector4 e0 = invViewMatrix * Vector4(1, 0, 0, 0);
 	Vector4 e2 = invViewMatrix * Vector4(0, 1, 0, 0);
@@ -124,11 +111,11 @@ void RenderTest::render(float32_t time, float32_t interpolant)
 	int32_t count = int32_t(_particles.size());
 	if (0 < count)
 	{
-		std::shared_ptr<gal::Program> program = _mesh->program();
-		std::shared_ptr<gigl::Material> material = _mesh->material();
+		std::shared_ptr<LUCID_GAL::Program> program = _mesh->program();
+		std::shared_ptr<LUCID_GIGL::Material> material = _mesh->material();
 
 		material->begin(_context);
-				pipeline.setVertexStream(1, _instances.get());
+				LUCID_GAL_PIPELINE.setVertexStream(1, _instances.get());
 				_mesh->drawInstanced(count);
 		material->end();
 	}
@@ -161,7 +148,7 @@ void RenderTest::emitParticle(float32_t t, float32_t dt)
 	particle.position[0] = Vector3(random(-0.1f, 0.1f), random(-0.1f, 0.1f), 0.f);
 	particle.position[1] = Vector3(random(-0.3f, 0.3f), random(-0.3f, 0.3f), random(3.f, 5.f)) * dt + particle.position[0];
 
-	particle.rotation[0] = random(-constants::pi<float32_t>(), constants::pi<float32_t>());
+	particle.rotation[0] = random(-LUCID_CORE_NUMBERS::pi<float32_t>, LUCID_CORE_NUMBERS::pi<float32_t>);
 	particle.rotation[1] = random(-0.9f, 0.9f) * dt + particle.rotation[0];
 
 	particle.scale[0] = random(0.77f, 1.3f);

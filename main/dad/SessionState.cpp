@@ -5,6 +5,7 @@
 #include "UserInput.h"
 #include "Utility.h"
 #include <lucid/gal/Pipeline.h>
+#include <lucid/core/Profiler.h>
 #include <Windows.h>
 #include <cassert>
 
@@ -14,7 +15,8 @@
 
 void SessionStarting::onEnter(Session *session)
 {
-	::log("INFO", "starting...");
+	LUCID_CORE::log("INFO", "starting...");
+	LUCID_PROFILER_INITIALIZE();
 
 	///	TBD: initialization code...
 }
@@ -34,8 +36,7 @@ void SessionStarting::onUpdate(Session *session, float64_t t, float64_t dt)
 
 void SessionStarting::onRender(Session *session, float32_t time, float32_t interpolant)
 {
-	lucid::gal::Pipeline &pipeline = lucid::gal::Pipeline::instance();
-	pipeline.clear(true, true, true, ::lucid::gal::Color(0, 1, 0, 1));;
+	LUCID_GAL_PIPELINE.clear(true, true, true, ::lucid::gal::Color(0, 1, 0, 1));;
 }
 
 SessionState *SessionStarting::instance()
@@ -57,7 +58,8 @@ void SessionStopping::onEnter(Session *session)
 
 void SessionStopping::onLeave(Session *session)
 {
-	::log("INFO", "stopped.");
+	LUCID_CORE::log("INFO", "stopped.");
+	LUCID_PROFILER_SHUTDOWN();
 }
 
 void SessionStopping::onInput(Session *session, MouseEvent const &event)
@@ -87,7 +89,7 @@ SessionState *SessionStopping::instance()
 
 void SessionTesting::onEnter(Session *session)
 {
-	::log("INFO", "beginning tests...");
+	LUCID_CORE::log("INFO", "beginning tests...");
 	session->_passed = true;
 }
 
@@ -97,7 +99,7 @@ void SessionTesting::onLeave(Session *session)
 	delete session->_test;
 	session->_test = nullptr;
 
-	::log("INFO", "testing complete.");
+	LUCID_CORE::log("INFO", "testing complete.");
 }
 
 void SessionTesting::onInput(Session *session, MouseEvent const &event)

@@ -429,7 +429,7 @@ template<size_t N> inline bool neq(Integer<N> const lhs, Integer<N> const rhs)
 LUCID_MATH_END
 
 #pragma push_macro("NUMBER")
-#define NUMBER(N) ::lucid::LUCID_MATH::Integer<N>
+#define NUMBER(N) LUCID_MATH::Integer<N>
 
 template<size_t N> inline bool operator==(NUMBER(N) const &lhs, NUMBER(N) const &rhs)
 {

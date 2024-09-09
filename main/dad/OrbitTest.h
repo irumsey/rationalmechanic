@@ -9,18 +9,17 @@
 
 struct MouseEvent;
 
-namespace lucid {
-namespace gal {
+LUCID_GAL_BEGIN
 
-	class VertexBuffer;
+class VertexBuffer;
 
-}	///	gal
-namespace gigl {
+LUCID_GAL_END
 
-	class Mesh;
+LUCID_GIGL_BEGIN
 
-}	///	gigl
-}	///	lucid
+class Mesh;
+
+LUCID_GIGL_END
 
 ///
 ///
@@ -45,8 +44,8 @@ public:
 private:
 	bool _passed = true;
 
-	lucid::orbit::CameraFrame *_cameraFrame = nullptr;
-	lucid::orbit::Mechanics *_orbitalMechanics = nullptr;
+	LUCID_ORBIT::CameraFrame *_cameraFrame = nullptr;
+	LUCID_ORBIT::Mechanics *_orbitalMechanics = nullptr;
 
 	LUCID_PREVENT_COPY(OrbitTest);
 	LUCID_PREVENT_ASSIGNMENT(OrbitTest);

@@ -13,49 +13,32 @@
 
 #include <lucid/gigl/Mesh.h>
 
-///
-///
-///
+/// 
+/// 
+/// 
 
-namespace  core = ::lucid:: core;
-namespace   gal = ::lucid::  gal;
-namespace  gigl = ::lucid:: gigl; 
-namespace  math = ::lucid:: math;
-namespace orbit = ::lucid::orbit;
+LUCID_ANONYMOUS_BEGIN
 
-namespace /* anonymous */
-{
+LUCID_ANONYMOUS_END
 
-	inline orbit::StarCatalog &theStarCatalog()
-	{
-		return orbit::StarCatalog::instance();
-	}
-
-	inline orbit::Ephemeris &theEphemeris()
-	{
-		return orbit::Ephemeris::instance();
-	}
-
-}	///	anonymous
-
-///
-///
-///
+/// 
+/// 
+/// 
 
 void OrbitTest::begin(float64_t t)
 {
-	::log("INFO", "starting orbit test...");
+	LUCID_CORE::log("INFO", "starting orbit test...");
 
 	LUCID_PROFILE_BEGIN("begin orbit test");
 
-	theStarCatalog().initialize("content/bsc5.starcatalog");
-	theEphemeris().initialize("content/j2000.ephemeris");
+	LUCID_ORBIT_STARCATALOG.initialize("content/bsc5.starcatalog");
+	LUCID_ORBIT_EPHEMERIS.initialize("content/j2000.ephemeris");
 
-	_orbitalMechanics = new orbit::Mechanics(orbit::constants::J2000<orbit::scalar_t>());
-	_cameraFrame = new orbit::CameraFrame(1001, "camaera", "");
+	_orbitalMechanics = new LUCID_ORBIT::Mechanics(LUCID_ORBIT::JDN::now());
+	_cameraFrame = new LUCID_ORBIT::CameraFrame(1001, "camaera", "");
 
 	_orbitalMechanics->attach(_orbitalMechanics->frame(399), _cameraFrame);
-	_cameraFrame->relativePosition[0] = _cameraFrame->relativePosition[1] = orbit::vector3_t(10, 10, 5);
+	_cameraFrame->relativePosition[0] = _cameraFrame->relativePosition[1] = LUCID_ORBIT::vector3_t(10, 10, 5);
 	_cameraFrame->look(_orbitalMechanics->frame(499));
 
 	LUCID_PROFILE_END();
@@ -69,12 +52,6 @@ bool OrbitTest::update(float64_t t, float64_t dt)
 {
 	_passed = true;
 
-	float32_t const    fov = math::constants::quarter_pi<float32_t>();
-	float32_t const aspect = gal::System::instance().aspect();
-
-	gigl::Camera2D &camera = _cameraFrame->camera;
-	camera.initPerspective(fov, aspect, 1.f, 1000.f);
-
 	_orbitalMechanics->update();
 
 	///	return true to exit testing (false to continue)
@@ -83,8 +60,6 @@ bool OrbitTest::update(float64_t t, float64_t dt)
 
 void OrbitTest::render(float32_t time, float32_t interpolant)
 {
-	gal::Pipeline &pipeline = gal::Pipeline::instance();
-
 	LUCID_PROFILE_BEGIN("orbit rendering");
 
 	_orbitalMechanics->render(_cameraFrame);

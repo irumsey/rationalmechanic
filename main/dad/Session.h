@@ -9,26 +9,6 @@
 ///
 ///
 
-namespace lucid {
-namespace gal {
-
-	class RenderTarget2D;
-
-}	///	gal
-}	///	lucid
-
-namespace lucid {
-namespace gigl {
-
-	class Mesh;
-
-}	///	gigl
-}	///	lucid
-
-///
-///
-///
-
 struct MouseEvent;
 class SessionState;
 

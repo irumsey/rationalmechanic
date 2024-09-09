@@ -10,29 +10,19 @@
 #include <lucid/gigl/Context.h>
 #include <dad/Test.h>
 
-///
-///
-///
-namespace lucid {
-namespace gal {
+LUCID_GAL_BEGIN
 
-	class VertexFormat;
-	class VertexBuffer;
-	class IndexBuffer;
+class VertexFormat;
+class VertexBuffer;
+class IndexBuffer;
 
-}	///	gal
-}	///	lucid
+LUCID_GAL_END
 
-///
-///
-///
-namespace lucid {
-namespace gigl {
+LUCID_GIGL_BEGIN
 
-	class Mesh;
+class Mesh;
 
-}	///	gigl
-}	///	lucid
+LUCID_GIGL_END
 
 struct MouseEvent;
 
@@ -57,10 +47,10 @@ public:
 	virtual void render(float32_t time, float32_t interpolant) override;
 
 private:
-	typedef lucid::math::Vector<float32_t,2> Vector2;
-	typedef lucid::math::Vector<float32_t,3> Vector3;
-	typedef lucid::math::Vector<float32_t,4> Vector4;
-	typedef lucid::math::Matrix<float32_t,4,4> Matrix4x4;
+	typedef LUCID_MATH::Vector<float32_t,2> Vector2;
+	typedef LUCID_MATH::Vector<float32_t,3> Vector3;
+	typedef LUCID_MATH::Vector<float32_t,4> Vector4;
+	typedef LUCID_MATH::Matrix<float32_t,4,4> Matrix4x4;
 
 	static int32_t const PARTICLE_MAXIMUM = 1000;
 	static float64_t const EMIT_RATE;
@@ -84,10 +74,10 @@ private:
 	float64_t _emitAccum = 0;
 	std::vector<Particle> _particles;
 
-	lucid::gigl::Context _context;
+	LUCID_GIGL::Context _context;
 
-	std::shared_ptr<lucid::gigl::Mesh> _mesh;
-	std::shared_ptr<lucid::gal::VertexBuffer> _instances;
+	std::shared_ptr<LUCID_GIGL::Mesh> _mesh;
+	std::shared_ptr<LUCID_GAL::VertexBuffer> _instances;
 
 	void emitParticles(float32_t t, float32_t dt);
 

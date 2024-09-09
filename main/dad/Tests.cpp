@@ -24,8 +24,8 @@ Tests::Tests()
 	DAD_ADD_TEST(  "Core",   CoreTest);
 	DAD_ADD_TEST( "Units",  UnitsTest);
 	DAD_ADD_TEST(  "Math",   MathTest);
-#if false
 	DAD_ADD_TEST( "Orbit",  OrbitTest);
+#if false
 	DAD_ADD_TEST("Render", RenderTest);
 #endif
 }
