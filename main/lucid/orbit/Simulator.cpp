@@ -4,13 +4,9 @@
 #include "Properties.h"
 #include "Frame.h"
 #include "Utility.h"
+#include <lucid/core/Logger.h>
 
 LUCID_ANONYMOUS_BEGIN
-
-inline LUCID_ORBIT::Ephemeris &theEphemeris()
-{
-	return LUCID_ORBIT::Ephemeris::instance();
-}
 
 LUCID_ANONYMOUS_END
 
@@ -35,36 +31,49 @@ void Simulator::evaluate(OrbitalBody *body)
 {
 	LUCID_PROFILE_SCOPE("Simulator::evaluate(OrbitalBody)");
 
+	PhysicalProperties const &properties = body->physicalProperties;
+	scalar_t radius = properties.radius;
+	scalar_t GM = properties.GM;
+
 	Frame const *center = body->centerFrame;
-	LUCID_VALIDATE(body != center, "orbital body is defined as root (it has no center, attracting body, defined)");
+	LUCID_VALIDATE(nullptr != center, "consistency error: " + body->name + " does not have a center frame defined");
 
 	body->elements[0] = body->elements[1];
-	theEphemeris().lookup(body->elements[1], body->id, _dayNumber);
+	if (!LUCID_ORBIT_EPHEMERIS.lookup(body->elements[1], body->id, _dayNumber))
+	{
+		LUCID_CORE::log("ERR", "specified JDN out-of-bounds (orbital elements) for: " + body->name);
+		body->simState = Frame::SIM_STATE_ERROR;
+		return;
+	}
 
 	RotationalElements rotationalElements;
-	theEphemeris().lookup(rotationalElements, body->id, _dayNumber);
+	if (!LUCID_ORBIT_EPHEMERIS.lookup(rotationalElements, body->id, _dayNumber))
+	{
+		LUCID_CORE::log("ERR", "specified JDN out-of-bounds (rotational elements) for: " + body->name);
+		body->simState = Frame::SIM_STATE_ERROR;
+		return;
+	}
 
+	Frame const *centerFrame = body->centerFrame;
 	PhysicalProperties centerProperties;
-	theEphemeris().lookup(centerProperties, center->id);
+	if (LUCID_ORBIT_EPHEMERIS.lookup(centerProperties, centerFrame->id))
+	{
+		body->relativePosition[0] = body->relativePosition[1];
+		body->relativeVelocity[0] = body->relativeVelocity[1];
+		kinematicsFromElements(body->relativePosition[1], body->relativeVelocity[1], body->elements[1], centerProperties, _dayNumber);
 
-	body->relativePosition[0] = body->relativePosition[1];
-	body->relativeVelocity[0] = body->relativeVelocity[1];
-	kinematicsFromElements(body->relativePosition[1], body->relativeVelocity[1], centerProperties, body->elements[1], _dayNumber);
+		body->absolutePosition[0] = body->absolutePosition[1];
+		body->absolutePosition[1] = body->relativePosition[1] + center->absolutePosition[1];
 
-	body->absolutePosition[0] = body->absolutePosition[1];
-	body->absolutePosition[1] = body->relativePosition[1] + center->absolutePosition[1];
-
-	body->absoluteVelocity[0] = body->absoluteVelocity[1];
-	body->absoluteVelocity[1] = body->relativeVelocity[1] + center->absoluteVelocity[1];
+		body->absoluteVelocity[0] = body->absoluteVelocity[1];
+		body->absoluteVelocity[1] = body->relativeVelocity[1] + center->absoluteVelocity[1];
+	}
 
 	body->relativeRotation[0] = body->relativeRotation[1];
 	rotationFromElements(body->relativeRotation[1], rotationalElements, _dayNumber);
 
 	body->absoluteRotation[0] = body->absoluteRotation[1];
 	body->absoluteRotation[1] = body->relativeRotation[1] * LUCID_MATH::quaternionFromMatrix(rotationFromElements(body->elements[1]));
-
-	PhysicalProperties const &bodyProperties = body->physicalProperties;
-	scalar_t radius = bodyProperties.radius;
 
 	vector3_t extents = vector3_t(radius, radius, radius);
 
@@ -73,6 +82,8 @@ void Simulator::evaluate(OrbitalBody *body)
 
 	body->aabbTotal[0] = body->aabbTotal[1];
 	body->aabbTotal[1] = body->aabbSelf[1];
+
+	body->simState = Frame::SIM_STATE_STABLE;
 }
 
 void Simulator::evaluate(DynamicBody *body)
@@ -101,6 +112,9 @@ void Simulator::shutdown()
 void Simulator::simulate(Frame *frame)
 {
 	if (nullptr == frame)
+		return;
+
+	if (Frame::SIM_STATE_ERROR == frame->simState)
 		return;
 
 	frame->apply(this);

@@ -53,6 +53,8 @@ public:
 
 	Selection hit(int32_t x, int32_t y) const;
 
+	scalar_t distance(size_t sid, size_t tid) const;
+
 private:
 	typedef std::unordered_map<size_t, Frame *> frame_map_t;
 

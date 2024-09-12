@@ -7,6 +7,7 @@
 #include <lucid/math/Algorithm.h>
 #include <lucid/core/FileReader.h>
 #include <lucid/core/Logger.h>
+#include <lucid/core/Error.h>
 
 LUCID_ORBIT_BEGIN
 
@@ -124,36 +125,42 @@ bool Ephemeris::lookup(Elements &elements, size_t target, scalar_t jdn) const
 {
 	auto iter = _elements.find(target);
 	if (iter == _elements.end())
+	{
+		LUCID_CORE::log("ERR", "Ephemeris: specified target not found");
 		return false;
+	}
 
 	elements_vec_t const &entries = iter->second;
 	size_t const count = entries.size();
 
-	if (0 == count)
-		return false;
-
-	///	find the closest entry to the given day number.
-	///	for now, it is a simple linear scan through the list which
-	///	exits when the difference would increase.
-
-	size_t index = 0;
-	scalar_t a = LUCID_MATH::abs(entries[index].JDN - jdn);
-	for (size_t i = 1; i < count; ++i)
+	if (count < 2)
 	{
-		scalar_t b = LUCID_MATH::abs(entries[i].JDN - jdn);
-		if (b < a)
-		{
-			index = i;
-			a = b;
-		}
-		else
-		{
-			break;
-		}
+		LUCID_CORE::log("WARN", "Ephemeris: insufficient number of entries");
+		return false;
 	}
 
-	elements = entries[index];
+	size_t first = 0;
+	size_t last = count - 1;
+	size_t mid = (last + first) >> 1;
 
+	if(!((entries[first].JDN <= jdn) && (jdn < entries[last].JDN)))
+	{
+		LUCID_CORE::log("WARN", "Ephemeris: specified JDN out of bounds");
+		return false;
+	}
+
+	while ((first != mid) && (mid != last))
+	{
+		if ((entries[first].JDN <= jdn) && (jdn < entries[mid].JDN))
+			last = mid;
+		else
+			first = mid;
+		mid = (last + first) >> 1;
+	}
+
+	LUCID_VALIDATE((entries[first].JDN <= jdn) && (jdn < entries[last].JDN), "consistency error in ephemeris");
+
+	elements = entries[first];
 	return true;
 }
 

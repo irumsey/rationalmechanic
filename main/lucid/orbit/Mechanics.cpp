@@ -226,6 +226,23 @@ Selection Mechanics::hit(int32_t x, int32_t y) const
 	return _renderer.hit(x, y);
 }
 
+scalar_t Mechanics::distance(size_t sid, size_t tid) const
+{
+	auto iter = _frames.find(sid);
+	if (iter == _frames.end())
+		return 0.0;
+
+	Frame const *source = iter->second;
+
+	iter = _frames.find(tid);
+	if (iter == _frames.end())
+		return 0.0;
+
+	Frame const *target = iter->second;
+
+	return LUCID_MATH::len(target->absolutePosition[1] - source->absolutePosition[1]);
+}
+
 void Mechanics::update(scalar_t delta)
 {
 	LUCID_VALIDATE(nullptr != _root, "attempt to use uninitialized system");

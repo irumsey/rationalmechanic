@@ -79,6 +79,9 @@ void Culler::cull(Frame *frame)
 {
 	LUCID_PROFILE_SCOPE("Culler::cull(Frame *)");
 
+	if (Frame::SIM_STATE_ERROR == frame->simState)
+		return;
+
 	aabb3_t aabbTotal = aabb3_t(
 		LUCID_MATH::lerp(_interpolant, frame->aabbTotal[0].min, frame->aabbTotal[1].min) - _cameraPosition,
 		LUCID_MATH::lerp(_interpolant, frame->aabbTotal[0].max, frame->aabbTotal[1].max) - _cameraPosition

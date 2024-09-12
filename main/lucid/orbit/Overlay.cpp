@@ -164,7 +164,7 @@ void Overlay::batchOrbit(OrbitalBody *body)
 	MeshInstance orbitInstance;
 	orbitInstance.id = uint32_t((Selection::TYPE_ORBIT << Selection::SELECT_SHIFT) | body->id);
 	orbitInstance.position = _midRange * cast(centerPosition / centerDistance);
-	orbitInstance.scale = 4;
+	orbitInstance.scale = 3;
 	orbitInstance.rotation = cast(q);
 	orbitInstance.lightPosition = LUCID_GAL::Vector4(0, 0, 0, 0);
 	orbitInstance.compositing = cast(vector4_t(scaleFactor, centerDistance / _midRange, 0, 0));

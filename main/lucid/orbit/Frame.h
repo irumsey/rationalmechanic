@@ -35,6 +35,16 @@ class Algorithm;
 class Frame
 {
 public:
+	///
+	/// 
+	/// 
+	enum SIM_STATE
+	{
+		SIM_STATE_IDLE = 0,			// basically, not started yet
+		SIM_STATE_ERROR,			// the most likely issue, JDN out of bounds.
+		SIM_STATE_STABLE,			//
+	};
+
 	/// 
 	/// 
 	/// 
@@ -51,6 +61,7 @@ public:
 	Frame *firstChild = nullptr;
 	Frame *nextSibling = nullptr;
 
+	SIM_STATE simState = SIM_STATE_IDLE;
 	CULL_STATE cullState = CULL_STATE_PRUNED;
 
 	size_t id = 0;

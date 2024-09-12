@@ -62,6 +62,13 @@ public:
 
 	Iterator end() const;
 
+	///	the following lookup(...) methods will fail (return false)
+	///	if the requested target doesn't exist or if the specified JDN
+	/// doesn't fall within an exiting range of elements.  the idea
+	/// is data must exist or it will fail.
+	/// 
+	/// important: no defaults for physical or orbital element data.
+
 	bool lookup(Entry &entry, std::string const &target) const;
 	
 	bool lookup(Entry &entry, size_t target) const;

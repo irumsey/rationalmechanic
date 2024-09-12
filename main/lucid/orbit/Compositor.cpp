@@ -152,6 +152,9 @@ void Compositor::process(Frame *frame)
 	if (nullptr == frame)
 		return;
 
+	if (Frame::SIM_STATE_ERROR == frame->simState)
+		return;
+
 	if (Frame::CULL_STATE_PRUNED == frame->cullState)
 		return;
 
