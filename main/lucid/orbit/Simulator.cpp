@@ -72,8 +72,9 @@ void Simulator::evaluate(OrbitalBody *body)
 	body->relativeRotation[0] = body->relativeRotation[1];
 	rotationFromElements(body->relativeRotation[1], rotationalElements, _dayNumber);
 
+	// TBD: keep absolute == relative...
 	body->absoluteRotation[0] = body->absoluteRotation[1];
-	body->absoluteRotation[1] = body->relativeRotation[1] * LUCID_MATH::quaternionFromMatrix(rotationFromElements(body->elements[1]));
+	body->absoluteRotation[1] = body->relativeRotation[1];
 
 	vector3_t extents = vector3_t(radius, radius, radius);
 

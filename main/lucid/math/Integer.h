@@ -7,7 +7,6 @@
 #include <lucid/core/Error.h>
 #include <lucid/core/Array.h>
 #include <lucid/math/Defines.h>
-#include <lucid/math/Algorithm.h>
 
 LUCID_MATH_BEGIN
 

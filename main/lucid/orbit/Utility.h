@@ -194,7 +194,7 @@ inline void kinematicsFromElements(vector3_t &position, vector3_t &velocity, Ele
 ///
 inline void rotationFromElements(quaternion_t &rotation, RotationalElements const &elements, scalar_t jdn)
 {
-	scalar_t const dt = 10 * (jdn - elements.JDN);
+	scalar_t const dt = jdn - elements.JDN;
 	scalar_t const theta = elements.theta + elements.w * dt;
 
 	rotation = LUCID_MATH::rotateUsingAxis(elements.A, theta);
