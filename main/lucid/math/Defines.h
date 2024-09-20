@@ -1,11 +1,14 @@
 #pragma once
 
 #include <lucid/core/Defines.h>
+#include <lucid/units/Defines.h>
 
 #define LUCID_MATH ::lucid::math
 
 #define LUCID_MATH_BEGIN LUCID_BEGIN namespace math {
 #define LUCID_MATH_END } LUCID_END
+
+#define LUCID_SCALAR(T,S,Q) LUCID_MATH::Scalar<T,LUCID_UNITS::Unit<S,Q> >
 
 #define LUCID_VECTOR(T, DIM) LUCID_MATH::Vector<T, DIM>
 

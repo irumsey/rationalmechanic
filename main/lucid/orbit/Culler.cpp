@@ -2,7 +2,7 @@
 #include "Frame.h"
 #include "Utility.h"
 #include <lucid/gal/System.h>
-#include <lucid/math/Algorithm.h>
+#include <lucid/math/Math.h>
 #include <lucid/core/Profiler.h>
 
 LUCID_ORBIT_BEGIN

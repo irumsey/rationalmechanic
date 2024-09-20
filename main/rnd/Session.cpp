@@ -4,9 +4,7 @@
 #include <lucid/gal/VertexBuffer.h>
 #include <lucid/gal/Pipeline.h>
 #include <lucid/gal/System.h>
-#include <lucid/math/Algorithm.h>
-#include <lucid/math/Matrix.h>
-#include <lucid/math/AABB.h>
+#include <lucid/math/Math.h>
 #include <lucid/core/Random.h>
 #include <lucid/core/Numbers.h>
 

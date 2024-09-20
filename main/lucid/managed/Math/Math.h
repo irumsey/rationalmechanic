@@ -1,7 +1,6 @@
 #pragma once
 
-#include <lucid/math/Defines.h>
-#include <lucid/math/Algorithm.h>
+#include <lucid/math/Math.h>
 #include <lucid/managed/Math/Types.h>
 
 namespace Lucid {

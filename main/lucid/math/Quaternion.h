@@ -120,9 +120,9 @@ template<typename T> inline Quaternion<T> normalize(Quaternion<T> const &rhs)
 template<typename T> inline Quaternion<T> rotateUsingAxis(LUCID_VECTOR(T, 3) const &axis, T const &theta)
 {
 	T hTheta = T(0.5) * theta;
-	LUCID_VECTOR(T, 3) n = normalize(axis) * sin(hTheta);
+	LUCID_VECTOR(T, 3) n = axis * sin(hTheta);
 
-	return Quaternion<T>(n.x, n.y, n.z, cos(hTheta));
+	return normalize(Quaternion<T>(n.x, n.y, n.z, cos(hTheta)));
 }
 
 ///	transform direction

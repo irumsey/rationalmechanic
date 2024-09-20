@@ -12,7 +12,7 @@
 #include <lucid/gal/VertexBuffer.h>
 #include <lucid/gal/Program.h>
 #include <lucid/gal/System.h>
-#include <lucid/math/Algorithm.h>
+#include <lucid/math/Math.h>
 #include <algorithm>
 
 #include <lucid/gigl/Font.h>

@@ -6,7 +6,7 @@
 #include <lucid/gigl/Model.h>
 #include <lucid/gal/VertexBuffer.h>
 #include <lucid/gal/Pipeline.h>
-#include <lucid/math/Algorithm.h>
+#include <lucid/math/Math.h>
 #include <algorithm>
 
 LUCID_ANONYMOUS_BEGIN
@@ -127,7 +127,7 @@ void Compositor::evaluate(OrbitalBody *body)
 	pass.           id = uint32_t((Selection::TYPE_FRAME << Selection::SELECT_SHIFT) | body->id);
 	pass.     position = LUCID_MATH::lerp(_interpolant, body->absolutePosition[0], body->absolutePosition[1]) - _cameraPosition;
 	pass.     distance = LUCID_MATH::len(pass.position);
-	pass.     rotation = LUCID_MATH::slerp(_interpolant, body->absoluteRotation[0], body->absoluteRotation[1]);
+	pass.     rotation = LUCID_MATH::normalize(LUCID_MATH::slerp(_interpolant, body->absoluteRotation[0], body->absoluteRotation[1]));
 	pass.lightPosition = _midRange * _lightPosition / pass.distance;
 	pass.  compositing = vector4_t(physicalProperties.radius / pass.distance, pass.distance / _midRange, 0, 0);
 	pass.     channel0 = renderProperties.channel0;

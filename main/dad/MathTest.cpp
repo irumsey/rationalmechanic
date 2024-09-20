@@ -2,15 +2,12 @@
 #include "Utility.h"
 #include <lucid/gal/Pipeline.h>
 #include <lucid/gal/Types.h>
-#include <lucid/math/Matrix.h>
-#include <lucid/math/Vector.h>
-#include <lucid/math/Fixed.h>
-#include <lucid/math/Integer.h>
-#include <lucid/math/Defines.h>
-#include <lucid/math/Algorithm.h>
+#include <lucid/math/Math.h>
 #include <lucid/core/Profiler.h>
 #include <lucid/core/Numbers.h>
 #include <lucid/core/Defines.h>
+
+#include <chrono>
 
 ///
 ///
@@ -21,6 +18,27 @@ LUCID_ANONYMOUS_BEGIN
 typedef LUCID_MATH::Integer<256> int256_t;
 typedef LUCID_MATH::Fixed<256, 16> fixed256_t;
 typedef LUCID_MATH::Vector<float32_t, 3> vector3_t;
+
+typedef LUCID_MATH::Scalar<float32_t, LUCID_UNITS::si::        pure>         pure;
+typedef LUCID_MATH::Scalar<float32_t, LUCID_UNITS::si::      second>       second;
+typedef LUCID_MATH::Scalar<float32_t, LUCID_UNITS::si::       meter>        meter;
+typedef LUCID_MATH::Scalar<float32_t, LUCID_UNITS::si::    velocity>     velocity;
+typedef LUCID_MATH::Scalar<float32_t, LUCID_UNITS::si::acceleration> acceleration;
+
+inline constexpr meter operator"" _meters(long double x)
+{
+	return meter(float32_t(x));
+}
+
+inline constexpr velocity operator"" _meters_per_second(long double x)
+{
+	return velocity(float32_t(x));
+}
+
+inline constexpr acceleration operator"" _meters_per_second_squared(long double x)
+{
+	return acceleration(float32_t(x));
+}
 
 template<typename T> inline bool validate(std::string const &test, T const &value, T const &target)
 {
@@ -93,39 +111,57 @@ bool MathTest::update(float64_t t, float64_t dt)
 	}
 
 	///
+	///	Scalar tests...
+	/// 
+	{
+		acceleration a(9.8f);
+		velocity v0(101.f);
+		second t(21.f);
+		pure half(0.5f);
+
+		meter d = half * a * t * t + 101.3_meters_per_second * t - 7.0_meters;
+	}
+
+	///
 	///	Vector tests...
 	///
-	vector3_t e0 = LUCID_MATH::normalize(vector3_t(1, 1, 0));
-	vector3_t e2(0, 0, 1);
-	vector3_t e1 = LUCID_MATH::cross(e2, e0);
+	{
+		vector3_t e0 = LUCID_MATH::normalize(vector3_t(1, 1, 0));
+		vector3_t e2(0, 0, 1);
+		vector3_t e1 = LUCID_MATH::cross(e2, e0);
 
-	_passed &= validate("vector dot product", dot(e0, e1), LUCID_MATH::cos(half_pi));
+		_passed &= validate("vector dot product", dot(e0, e1), LUCID_MATH::cos(half_pi));
+
+		///
+		///	Matrix tests...
+		///
+		{
+			typedef LUCID_MATH::Matrix<float32_t, 3, 3> Matrix3x3;
+
+			Matrix3x3 const I = Matrix3x3(1, 0, 0, 0, 1, 0, 0, 0, 1);
+			Matrix3x3 R(e0.x, e1.x, e2.x, e0.y, e1.y, e2.y, e0.z, e1.z, e2.z);
+
+			_passed &= validate("rotate using matrix", R, LUCID_MATH::rotateAboutZ(quarter_pi));
+			_passed &= validate("matrix inverse", R * LUCID_MATH::inverse(R), I);
+			_passed &= validate("matrix transpose", R * LUCID_MATH::transpose(R), I);
+		}
+	}
 
 	///
 	///	quaternion tests...
 	///
-	typedef LUCID_MATH::Quaternion<float32_t> Quaternion;
+	{
+		typedef LUCID_MATH::Quaternion<float32_t> Quaternion;
 
-	Quaternion q = LUCID_MATH::rotateUsingAxis(vector3_t(0, 0, 1), theta);
-	_passed &= validate("rotate using quaternion", LUCID_MATH::transformDirection(q, vector3_t(1, 0, 0)), LUCID_MATH::rotateAboutZ(theta) * vector3_t(1, 0, 0));
+		Quaternion q = LUCID_MATH::rotateUsingAxis(vector3_t(0, 0, 1), theta);
+		_passed &= validate("rotate using quaternion", LUCID_MATH::transformDirection(q, vector3_t(1, 0, 0)), LUCID_MATH::rotateAboutZ(theta) * vector3_t(1, 0, 0));
 
-	q =  LUCID_MATH::rotateUsingAxis(vector3_t(0, 0, 1), quarter_pi);
-	_passed &= validate("rotate using quaternion", LUCID_MATH::transformDirection(q, vector3_t(1, 0, 0)), LUCID_MATH::rotateAboutZ(quarter_pi) * vector3_t(1, 0, 0));
+		q =  LUCID_MATH::rotateUsingAxis(vector3_t(0, 0, 1), quarter_pi);
+		_passed &= validate("rotate using quaternion", LUCID_MATH::transformDirection(q, vector3_t(1, 0, 0)), LUCID_MATH::rotateAboutZ(quarter_pi) * vector3_t(1, 0, 0));
 
-	q =  LUCID_MATH::rotateUsingAxis(vector3_t(0, 0, 1), half_pi);
-	_passed &= validate("rotate using quaternion", LUCID_MATH::transformDirection(q, vector3_t(1, 0, 0)), LUCID_MATH::rotateAboutZ(half_pi) * vector3_t(1, 0, 0));
-
-	///
-	///	Matrix tests...
-	///
-	typedef LUCID_MATH::Matrix<float32_t, 3, 3> Matrix3x3;
-
-	Matrix3x3 const I = Matrix3x3(1, 0, 0, 0, 1, 0, 0, 0, 1);
-	Matrix3x3 R(e0.x, e1.x, e2.x, e0.y, e1.y, e2.y, e0.z, e1.z, e2.z);
-
-	_passed &= validate("rotate using matrix", R, LUCID_MATH::rotateAboutZ(quarter_pi));
-	_passed &= validate("matrix inverse", R * LUCID_MATH::inverse(R), I);
-	_passed &= validate("matrix transpose", R * LUCID_MATH::transpose(R), I);
+		q =  LUCID_MATH::rotateUsingAxis(vector3_t(0, 0, 1), half_pi);
+		_passed &= validate("rotate using quaternion", LUCID_MATH::transformDirection(q, vector3_t(1, 0, 0)), LUCID_MATH::rotateAboutZ(half_pi) * vector3_t(1, 0, 0));
+	}
 
 	return true;
 }

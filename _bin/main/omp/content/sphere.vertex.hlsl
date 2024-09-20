@@ -26,7 +26,7 @@ OutputVS main(InputVS input)
 	float3 viewDirection = -normalize(worldPosition);
 
 	output.ppsPosition = mul(viewProjMatrix, float4(worldPosition, 1));
-	output.texcoord = vertex.texcoord;
+	output.texcoord = vertex.texcoord + float2(0.5, 0.0);
 	output.lightDirection = mul(surfaceMatrix, mul(lightDirection, worldMatrix));
 	output.viewDirection = mul(surfaceMatrix, mul(viewDirection, worldMatrix));
 	output.specCoeff = instance.channel0.w;

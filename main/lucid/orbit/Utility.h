@@ -2,9 +2,7 @@
 
 #include <ctime>
 #include <cmath>
-#include <lucid/math/Algorithm.h>
-#include <lucid/math/Vector.h>
-#include <lucid/math/Matrix.h>
+#include <lucid/math/Math.h>
 #include <lucid/gal/Types.h>
 #include <lucid/orbit/Constants.h>
 #include <lucid/orbit/Types.h>
@@ -91,19 +89,6 @@ inline vector4_t cast(LUCID_GAL::Vector4 const &rhs)
 struct JDN
 {
 
-	static scalar_t now()
-	{
-		std::time_t localTime = std::time(nullptr);
-		std::tm utcTime;
-
-		::gmtime_s(&utcTime, &localTime);
-
-		Date date { utcTime.tm_year + 1900, utcTime.tm_mon + 1, utcTime.tm_mday };
-		Time time { utcTime.tm_hour, utcTime.tm_min, utcTime.tm_sec };
-
-		return from(date, time);
-	}
-
 	// since the JPL Horizons database is where I have been getting the orbital elements,
 	// I have tested the following against the Horizons website which provides a JD date/time
 	// conversion.
@@ -120,6 +105,95 @@ struct JDN
 
 		return int32_t(365.25 * (year + 4716)) + int32_t(30.6001 * (month + 1)) + day + B - 1524.5 + frac;
 	}
+
+	static scalar_t now()
+	{
+		std::time_t localTime = std::time(nullptr);
+		std::tm utcTime;
+
+		::gmtime_s(&utcTime, &localTime);
+
+		Date date { utcTime.tm_year + 1900, utcTime.tm_mon + 1, utcTime.tm_mday };
+		Time time { utcTime.tm_hour, utcTime.tm_min, scalar_t(utcTime.tm_sec) };
+
+		return from(date, time);
+	}
+
+	static scalar_t toCentury2000(scalar_t jdn)
+	{
+		return scalar_t(0.01 / 365.25) * (jdn - constants::J2000<scalar_t>);
+	}
+
+};
+
+///	ERA
+/// 
+/// 
+struct ERA
+{
+	static scalar_t now()
+	{
+		return from(JDN::now());
+	}
+
+	static scalar_t from(Date const &date, Time const &time = Time())
+	{
+		return from(JDN::from(date, time));
+	}
+
+	static scalar_t from(scalar_t jdn)
+	{
+		// TBD: (UT1 - UTC) is a result of a table lookup
+		// implement it
+		scalar_t days = jdn - constants::J2000<scalar_t>;
+		scalar_t UT1 = days /* - (UT1 - UTC) */ ;
+		return constants::two_pi<scalar_t> * (0.779057273264 + 1.00273781191135448 * UT1);
+	}
+};
+
+///
+/// 
+/// 
+struct NameThis
+{
+
+	// obliquity of the ecliptic
+	static scalar_t epsilon(scalar_t jdn)
+	{
+		scalar_t const c[] = {
+			LUCID_MATH::deg2rad(23.0 + 26.0 / 60.0 + 21.45000 / 3600.0),
+			LUCID_MATH::deg2rad( 0.0 +  0.0 / 60.0 - 46.81500 / 3600.0),
+			LUCID_MATH::deg2rad( 0.0 +  0.0 / 60.0 -  0.00060 / 3600.0),
+			LUCID_MATH::deg2rad( 0.0 +  0.0 / 60.0 +  0.00181 / 3600.0),
+		};
+
+		scalar_t const T = JDN::toCentury2000(jdn);
+		scalar_t const TT = T * T;
+		scalar_t const TTT = TT * T;
+
+		return c[0] + c[1] * T + c[2] * TT + c[3] * TTT;
+	}
+
+	static matrix3x3_t BPN(vector3_t cip)
+	{
+		scalar_t a = 1.0 / (1.0 + cip.z);
+
+		matrix3x3_t BPN = matrix3x3_t(
+			1 - a * cip.x * cip.x,    -a * cip.x * cip.y,                                  cip.x,
+			   -a * cip.x * cip.y, 1 - a * cip.y * cip.y,                                  cip.y,
+						   -cip.x,                -cip.y, 1 - a * (cip.x * cip.x + cip.y * cip.y)
+		);
+
+		// TBD: CIO locator s matrix
+		matrix3x3_t Rs(
+			1, 0, 0,
+			0, 1, 0,
+			0, 0, 1
+		);
+
+		return BPN * Rs;
+	}
+
 };
 
 ///
@@ -142,7 +216,7 @@ inline matrix3x3_t rotationFromElements(Elements const &elements)
 	return
 		LUCID_MATH::rotateAboutZ(elements.OM) *
 		LUCID_MATH::rotateAboutX(elements.IN) *
-		LUCID_MATH::rotateAboutZ(elements.W);
+		LUCID_MATH::rotateAboutZ(elements. W);
 }
 
 ///
@@ -194,10 +268,28 @@ inline void kinematicsFromElements(vector3_t &position, vector3_t &velocity, Ele
 ///
 inline void rotationFromElements(quaternion_t &rotation, RotationalElements const &elements, scalar_t jdn)
 {
-	scalar_t const dt = jdn - elements.JDN;
-	scalar_t const theta = elements.theta + elements.w * dt;
+	// test {
+	scalar_t const    T = JDN::toCentury2000(jdn);
+	scalar_t const days = jdn - constants::J2000<scalar_t>;
 
-	rotation = LUCID_MATH::rotateUsingAxis(elements.A, theta);
+	scalar_t const  pole_ra[3] = {   0.000,  -0.6410000, 0.0, };
+	scalar_t const pole_dec[3] = {  90.000,  -0.5570000, 0.0, };
+	scalar_t const       pm[3] = { 190.147, 360.9856235, 0.0, };
+
+	scalar_t  ra = LUCID_MATH::deg2rad(pole_ra [0] + pole_ra [1] * T);
+	scalar_t dec = LUCID_MATH::deg2rad(pole_dec[0] + pole_dec[1] * T);
+	scalar_t   w = LUCID_MATH::deg2rad(      pm[0] +       pm[1] * days);
+	scalar_t era = ERA::from(jdn);
+	
+	vector3_t cip = LUCID_MATH::rotateAboutY(dec) * LUCID_MATH::rotateAboutZ(ra) * vector3_t(1, 0, 0);
+
+	matrix3x3_t Re = LUCID_MATH::rotateAboutX(NameThis::epsilon(jdn));
+	matrix3x3_t Rz = LUCID_MATH::rotateAboutZ(era);
+
+	matrix3x3_t R = LUCID_MATH::transpose(Re) * Rz;
+
+	rotation = LUCID_MATH::normalize(LUCID_MATH::quaternionFromMatrix(R));
+	// } test
 }
 
 LUCID_ORBIT_END

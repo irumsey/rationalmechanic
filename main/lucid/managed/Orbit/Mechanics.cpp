@@ -4,7 +4,7 @@
 #include <lucid/orbit/Mechanics.h>
 #include <lucid/orbit/Selection.h>
 #include <lucid/orbit/Utility.h>
-#include <lucid/math/Algorithm.h>
+#include <lucid/math/Math.h>
 #include <lucid/core/Logger.h>
 #include <lucid/core/Error.h>
 

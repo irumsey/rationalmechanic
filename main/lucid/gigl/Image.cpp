@@ -1,5 +1,5 @@
 #include "Image.h"
-#include <lucid/math/Algorithm.h>
+#include <lucid/math/Math.h>
 #include <lucid/core/Error.h>
 #include <fstream>
 

@@ -4,7 +4,7 @@
 #include "Constants.h"
 #include <lucid/gigl/Resources.h>
 #include <lucid/gigl/Mesh.h>
-#include <lucid/math/Algorithm.h>
+#include <lucid/math/Math.h>
 #include <lucid/core/FileReader.h>
 #include <lucid/core/Logger.h>
 #include <lucid/core/Error.h>

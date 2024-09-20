@@ -31,10 +31,8 @@ struct Elements
 /// the rotation of objects.  for now, just going to
 /// represent angular position and velocity at a given
 /// moment of time. 
-/// In the future, i imagine adding a generalized 
-/// moment of inertia matrix into physical properties
-/// and extending this for more generalized simulations.
-/// (esp. for dynamic bodies)
+/// Note: going down the rabbit hole of orientation of
+/// objects.  going to take work.  foundational work.
 struct RotationalElements
 {
 	scalar_t	JDN = 0.0;	/// Julian day number

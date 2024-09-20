@@ -17,6 +17,8 @@ LUCID_MATH_BEGIN
 ///	 as a base 65536 integer.
 template<size_t N> struct Integer
 {
+	static_assert((0 == (N % 16)) && "number of bits in large integer must be multiple of 16");
+
 	enum {  BITS = N };
 	enum { COUNT = N >> 4 };
 	enum {  LAST = COUNT - 1 };
@@ -378,7 +380,7 @@ template<size_t N> struct Integer
 		lval = lhs;
 		while (bits > 0)
 		{
-			uint16_t shift = LUCID_MATH::min(bits, uint16_t(SHIFT));
+			uint16_t shift = std::min(bits, uint16_t(SHIFT));
 			bits -= shift;
 
 			uint32_t carry = 0;
@@ -396,7 +398,7 @@ template<size_t N> struct Integer
 		lval = lhs;
 		while (bits > 0)
 		{
-			uint16_t shift = LUCID_MATH::min(bits, uint16_t(SHIFT));
+			uint16_t shift = std::min(bits, uint16_t(SHIFT));
 			bits -= shift;
 
 			uint32_t carry = 0;

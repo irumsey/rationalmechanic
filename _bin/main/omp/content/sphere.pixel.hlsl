@@ -35,7 +35,7 @@ OutputPixel main(InputPS input)
 	output.color = float4(spec.rrr + color, 1);
 	output. glow = float4(0, 0, 0, 1);
 	output.depth = input.depth;
-
+	
 	return output;
 }
  

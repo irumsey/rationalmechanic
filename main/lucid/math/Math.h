@@ -3,10 +3,14 @@
 #include <algorithm>
 #include <lucid/core/Numbers.h>
 #include <lucid/math/Defines.h>
+#include <lucid/math/Integer.h>
+#include <lucid/math/Fixed.h>
+#include <lucid/math/Scalar.h>
 #include <lucid/math/Vector.h>
 #include <lucid/math/Matrix.h>
 #include <lucid/math/Quaternion.h>
 #include <lucid/math/Sphere.h>
+#include <lucid/math/Plane.h>
 #include <lucid/math/AABB.h>
 #include <lucid/math/Frustum.h>
 
@@ -79,6 +83,20 @@ template<typename T> inline T exclude(T const &x, T const &a, T const &b)
 		return a;
 
 	return b;
+}
+
+///
+/// 
+/// 
+
+template<typename T> inline T deg2rad(T theta)
+{
+	return LUCID_CORE_NUMBERS::pi<T> * theta / T(180);
+}
+
+template<typename T> inline T rad2deg(T theta)
+{
+	return T(180) * theta / LUCID_CORE_NUMBERS::pi<T>;
 }
 
 ///

@@ -45,9 +45,9 @@ struct Date
 
 struct Time
 {
-	int32_t   hour = 0;
-	int32_t minute = 0;
-	int32_t second = 0;
+	int32_t    hour = 0;
+	int32_t  minute = 0;
+	scalar_t second = 0.0;
 };
 
 ///
