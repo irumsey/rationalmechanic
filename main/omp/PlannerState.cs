@@ -98,10 +98,11 @@ namespace omp
                 // test {
                 // initial user action should be to specify an ephemeris
                 // or to have a default that can be user specified.
+                // creating orbital mechanics without a JDN will default to current time.
                 Lucid.Orbit.Ephemeris.Initialize("content/j2000.ephemeris");
                 Lucid.Orbit.StarCatalog.Initialize("content/bsc5.starcatalog");
+                planner.orbitalMechainics = new Lucid.Orbit.Mechanics();
 
-                planner.orbitalMechainics = new Lucid.Orbit.Mechanics(2460559.1632000);
                 populateListview(planner, planner.orbitalMechainics.Root);
                 // } test
 

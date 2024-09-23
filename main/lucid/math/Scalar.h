@@ -5,6 +5,10 @@
 
 LUCID_MATH_BEGIN
 
+/// Scalar
+///
+/// Beginning the re-introduction of units-of-measure and
+/// dimensional analysis.
 template<typename T, typename Q> struct Scalar
 {
 	T value = T();

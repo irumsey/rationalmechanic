@@ -42,11 +42,11 @@ namespace Orbit {
 	public:
 		Mechanics(double dayNumber);
 
+		Mechanics();
+
 		~Mechanics();
 
 		!Mechanics();
-
-		void Initialize(double dayNumber);
 
 		void Shutdown();
 

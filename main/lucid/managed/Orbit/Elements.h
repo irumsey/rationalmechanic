@@ -12,14 +12,14 @@ namespace Orbit{
 	///
 	///
 	///
-	public ref class Elements
+	public ref class OrbitalElements
 	{
 	public:
-		Elements(LUCID_ORBIT::Elements const &elements);
+		OrbitalElements(LUCID_ORBIT::OrbitalElements const &elements);
 
-		~Elements();
+		~OrbitalElements();
 
-		!Elements();
+		!OrbitalElements();
 
 		PROPERTY( JDN, double)	///	Julian day number
 		PROPERTY(  EC, double)	/// Eccentricity
@@ -35,12 +35,12 @@ namespace Orbit{
 		PROPERTY(  AD, double)	/// Apoapsis distance
 		PROPERTY(  PR, double)	/// Sidereal orbit period
 
-		property LUCID_ORBIT::Elements const &ref { LUCID_ORBIT::Elements const &get() { return *ptr; } }
+		property LUCID_ORBIT::OrbitalElements const &ref { LUCID_ORBIT::OrbitalElements const &get() { return *ptr; } }
 
-		property LUCID_ORBIT::Elements const *ptr { LUCID_ORBIT::Elements const *get() { return _internal; } }
+		property LUCID_ORBIT::OrbitalElements const *ptr { LUCID_ORBIT::OrbitalElements const *get() { return _internal; } }
 
 	private:
-		LUCID_ORBIT::Elements *_internal = nullptr;
+		LUCID_ORBIT::OrbitalElements *_internal = nullptr;
 
 	};
 

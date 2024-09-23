@@ -32,24 +32,18 @@ void Simulator::evaluate(OrbitalBody *body)
 	LUCID_PROFILE_SCOPE("Simulator::evaluate(OrbitalBody)");
 
 	PhysicalProperties const &properties = body->physicalProperties;
+	RotationalElements const &rotationalElements = body->rotationalElements;
+
 	scalar_t radius = properties.radius;
 	scalar_t GM = properties.GM;
 
 	Frame const *center = body->centerFrame;
 	LUCID_VALIDATE(nullptr != center, "consistency error: " + body->name + " does not have a center frame defined");
 
-	body->elements[0] = body->elements[1];
-	if (!LUCID_ORBIT_EPHEMERIS.lookup(body->elements[1], body->id, _dayNumber))
+	body->orbitalElements[0] = body->orbitalElements[1];
+	if (!LUCID_ORBIT_EPHEMERIS.lookup(body->orbitalElements[1], body->id, _dayNumber))
 	{
 		LUCID_CORE::log("ERR", "specified JDN out-of-bounds (orbital elements) for: " + body->name);
-		body->simState = Frame::SIM_STATE_ERROR;
-		return;
-	}
-
-	RotationalElements rotationalElements;
-	if (!LUCID_ORBIT_EPHEMERIS.lookup(rotationalElements, body->id, _dayNumber))
-	{
-		LUCID_CORE::log("ERR", "specified JDN out-of-bounds (rotational elements) for: " + body->name);
 		body->simState = Frame::SIM_STATE_ERROR;
 		return;
 	}
@@ -60,7 +54,7 @@ void Simulator::evaluate(OrbitalBody *body)
 	{
 		body->relativePosition[0] = body->relativePosition[1];
 		body->relativeVelocity[0] = body->relativeVelocity[1];
-		kinematicsFromElements(body->relativePosition[1], body->relativeVelocity[1], body->elements[1], centerProperties, _dayNumber);
+		kinematicsFromElements(body->relativePosition[1], body->relativeVelocity[1], body->orbitalElements[1], centerProperties, _dayNumber);
 
 		body->absolutePosition[0] = body->absolutePosition[1];
 		body->absolutePosition[1] = body->relativePosition[1] + center->absolutePosition[1];
@@ -69,12 +63,8 @@ void Simulator::evaluate(OrbitalBody *body)
 		body->absoluteVelocity[1] = body->relativeVelocity[1] + center->absoluteVelocity[1];
 	}
 
-	body->relativeRotation[0] = body->relativeRotation[1];
-	rotationFromElements(body->relativeRotation[1], rotationalElements, _dayNumber);
-
-	// TBD: keep absolute == relative...
-	body->absoluteRotation[0] = body->absoluteRotation[1];
-	body->absoluteRotation[1] = body->relativeRotation[1];
+	body->rotation[0] = body->rotation[1];
+	rotationFromElements(body->rotation[1], body->rotationalElements, _dayNumber);
 
 	vector3_t extents = vector3_t(radius, radius, radius);
 

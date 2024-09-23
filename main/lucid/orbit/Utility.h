@@ -103,7 +103,14 @@ struct JDN
 
 		scalar_t frac = (3600.0 * time.hour + 60.0 * time.minute + time.second) / constants::seconds_per_day<scalar_t>;
 
-		return int32_t(365.25 * (year + 4716)) + int32_t(30.6001 * (month + 1)) + day + B - 1524.5 + frac;
+		/// test {
+		/// testing against spice which computes mean and eccentric anomaly (as well as leap seconds)
+		/// the kernal i have stops at 1990, so, just testing its calculations to make sure the mechanism
+		/// matches.  once done, will actually implement the calculation properly.
+		scalar_t correction = 57.184 / 86400.0;
+		/// } test
+
+		return int32_t(365.25 * (year + 4716)) + int32_t(30.6001 * (month + 1)) + day + B - 1524.5 + frac + correction;
 	}
 
 	static scalar_t now()
@@ -121,7 +128,7 @@ struct JDN
 
 	static scalar_t toCentury2000(scalar_t jdn)
 	{
-		return scalar_t(0.01 / 365.25) * (jdn - constants::J2000<scalar_t>);
+		return (jdn - constants::J2000<scalar_t>) / 36525.0;
 	}
 
 };
@@ -211,7 +218,7 @@ inline vector2_t computeConicPoint(scalar_t hu, scalar_t e, scalar_t theta)
 ///
 ///
 ///
-inline matrix3x3_t rotationFromElements(Elements const &elements)
+inline matrix3x3_t rotationFromElements(OrbitalElements const &elements)
 {
 	return
 		LUCID_MATH::rotateAboutZ(elements.OM) *
@@ -222,7 +229,7 @@ inline matrix3x3_t rotationFromElements(Elements const &elements)
 ///
 ///
 ///
-inline void kinematicsFromElements(vector3_t &position, vector3_t &velocity, Elements const &elements, PhysicalProperties const &centerProperties, scalar_t jdn)
+inline void kinematicsFromElements(vector3_t &position, vector3_t &velocity, OrbitalElements const &elements, PhysicalProperties const &centerProperties, scalar_t jdn)
 {
 	scalar_t const twopi = constants::two_pi<scalar_t>;
 	scalar_t const tolsq = constants::tolsq<scalar_t>;
@@ -266,29 +273,33 @@ inline void kinematicsFromElements(vector3_t &position, vector3_t &velocity, Ele
 ///
 ///
 ///
-inline void rotationFromElements(quaternion_t &rotation, RotationalElements const &elements, scalar_t jdn)
+inline void rotationFromElements(matrix3x3_t &rotation, RotationalElements const &elements, scalar_t jdn)
 {
-	// test {
-	scalar_t const    T = JDN::toCentury2000(jdn);
-	scalar_t const days = jdn - constants::J2000<scalar_t>;
+	scalar_t const  T = JDN::toCentury2000(jdn);
+	scalar_t const TT = T * T;
+	scalar_t const  d = jdn - constants::J2000<scalar_t>;
 
-	scalar_t const  pole_ra[3] = {   0.000,  -0.6410000, 0.0, };
-	scalar_t const pole_dec[3] = {  90.000,  -0.5570000, 0.0, };
-	scalar_t const       pm[3] = { 190.147, 360.9856235, 0.0, };
-
-	scalar_t  ra = LUCID_MATH::deg2rad(pole_ra [0] + pole_ra [1] * T);
-	scalar_t dec = LUCID_MATH::deg2rad(pole_dec[0] + pole_dec[1] * T);
-	scalar_t   w = LUCID_MATH::deg2rad(      pm[0] +       pm[1] * days);
-	scalar_t era = ERA::from(jdn);
+	scalar_t  ra = elements. ra[0] + elements. ra[1] * T + elements. ra[2] * TT;
+	scalar_t dec = elements.dec[0] + elements.dec[1] * T + elements.dec[2] * TT;
+	scalar_t   w = elements. pm[0] + elements. pm[1] * d;
 	
-	vector3_t cip = LUCID_MATH::rotateAboutY(dec) * LUCID_MATH::rotateAboutZ(ra) * vector3_t(1, 0, 0);
+	matrix3x3_t R_y = LUCID_MATH::rotateAboutY(0.5 * constants::pi<scalar_t>);
+	matrix3x3_t R_x = LUCID_MATH::rotateAboutX(0.5 * constants::pi<scalar_t>);
 
-	matrix3x3_t Re = LUCID_MATH::rotateAboutX(NameThis::epsilon(jdn));
-	matrix3x3_t Rz = LUCID_MATH::rotateAboutZ(era);
+	matrix3x3_t R_w  = LUCID_MATH::rotateAboutX(w);
+	matrix3x3_t R_dec = LUCID_MATH::rotateAboutY(-dec);
+	matrix3x3_t R_ra  = LUCID_MATH::rotateAboutZ(ra);
 
-	matrix3x3_t R = LUCID_MATH::transpose(Re) * Rz;
+	matrix3x3_t R_ecliptic = LUCID_MATH::rotateAboutX(-NameThis::epsilon(jdn));
 
-	rotation = LUCID_MATH::normalize(LUCID_MATH::quaternionFromMatrix(R));
+	rotation = R_ecliptic * R_ra * R_dec * R_w * R_x * R_y;
+
+	// test {
+	vector3_t axis[] = {
+		rotation * vector3_t(1, 0, 0),
+		rotation * vector3_t(0, 1, 0),
+		rotation * vector3_t(0, 0, 1),
+	};
 	// } test
 }
 

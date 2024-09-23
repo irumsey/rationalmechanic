@@ -14,11 +14,6 @@ LUCID_ORBIT_BEGIN
 ///
 ///
 
-inline Ephemeris &theEphemeris()
-{
-	return Ephemeris::instance();
-}
-
 typedef Frame *(*create_func_t)(size_t id, std::string const &name, std::string const &description);
 
 Frame *creationError(size_t, std::string const &, std::string const &)
@@ -36,8 +31,9 @@ Frame *createOrbitalBody(size_t id, std::string const &name, std::string const &
 {
 	OrbitalBody *body = new OrbitalBody(id, name, description);
 
-	LUCID_VALIDATE(theEphemeris().lookup(body->physicalProperties, id), "physical properties not found for frame: " + name);
-	LUCID_VALIDATE(theEphemeris().lookup(body->  renderProperties, id), "render properties not found for frame: " + name);
+	LUCID_VALIDATE(LUCID_ORBIT_EPHEMERIS.lookup(body->physicalProperties, id), "physical properties not found for frame: " + name);
+	LUCID_VALIDATE(LUCID_ORBIT_EPHEMERIS.lookup(body->  renderProperties, id), "render properties not found for frame: " + name);
+	LUCID_VALIDATE(LUCID_ORBIT_EPHEMERIS.lookup(body->rotationalElements, id), "rotational properites not found for frame: " + name);
 
 	return body;
 }
@@ -76,6 +72,11 @@ Mechanics::Mechanics(scalar_t dayNumber)
 	initialize(dayNumber);
 }
 
+Mechanics::Mechanics()
+{
+	initialize(JDN::now());
+}
+
 Mechanics::~Mechanics()
 {
 	shutdown();
@@ -96,10 +97,10 @@ void Mechanics::initialize(scalar_t dayNumber)
 	_simulator.initialize();
 	_renderer.initialize("content/render.context");
 
-	for (Ephemeris::Iterator iter = theEphemeris().begin(); iter != theEphemeris().end(); ++iter)
+	for (Ephemeris::Iterator iter = LUCID_ORBIT_EPHEMERIS.begin(); iter != LUCID_ORBIT_EPHEMERIS.end(); ++iter)
 	{
 		Ephemeris::Entry entry;
-		LUCID_VALIDATE(theEphemeris().lookup(entry, *iter), "ephemeris consistency error (id exists without entry)");
+		LUCID_VALIDATE(LUCID_ORBIT_EPHEMERIS.lookup(entry, *iter), "ephemeris consistency error (id exists without entry)");
 
 		Frame *frame = createFrame[entry.type](entry.id, entry.name, entry.description);
 			
@@ -126,11 +127,6 @@ void Mechanics::initialize(scalar_t dayNumber)
 	///
 	///	bootstrap simulation
 	///
-
-	/// test {
-	/// for now, just kick off the simulation using the current JDN.
-	dayNumber = JDN::now();
-	/// } test
 
 	_dayNumber[0] = dayNumber;
 	_dayNumber[1] = dayNumber;

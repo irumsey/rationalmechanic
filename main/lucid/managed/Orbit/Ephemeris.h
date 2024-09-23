@@ -10,7 +10,7 @@ namespace Lucid {
 namespace Orbit {
 
 	ref class PhysicalProperties;
-	ref class Elements;
+	ref class OrbitalElements;
 
 	///
 	/// 
@@ -84,9 +84,9 @@ namespace Orbit {
 
 		static PhysicalProperties ^LookupProperties(size_t id);
 
-		static Elements ^LookupElements(System::String ^name, double jdn);
+		static OrbitalElements ^LookupElements(System::String ^name, double jdn);
 
-		static Elements ^LookupElements(size_t id, double jdn);
+		static OrbitalElements ^LookupElements(size_t id, double jdn);
 
 	protected:
 		Ephemeris() {}

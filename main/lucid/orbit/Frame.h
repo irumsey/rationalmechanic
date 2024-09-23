@@ -21,6 +21,11 @@ class Algorithm;
 ///	Note: cascading delete is used.  a frame will delete its children causing those
 /// children to delete their children, etc.
 /// 
+/// Note: position and rotation
+///		0)	absolute positions and velocites are wrt BECS (Barycentric Ecliptic Coordinate System)
+///		1)	relative positions and velocites are wrt the parent's frame
+///		2)	rotations are wrt BECS
+/// 
 /// Note: ownership rules
 ///
 ///		0)	a parent frame always owns its children and will delete them when
@@ -68,13 +73,13 @@ public:
 	std::string name;
 	std::string description;
 
-	quaternion_t relativeRotation[2];
 	vector3_t relativePosition[2];
 	vector3_t relativeVelocity[2];
 
-	quaternion_t absoluteRotation[2];
 	vector3_t absolutePosition[2];
 	vector3_t absoluteVelocity[2];
+
+	matrix3x3_t rotation[2];
 
 	aabb3_t aabbSelf[2];
 	aabb3_t aabbTotal[2];
@@ -132,7 +137,7 @@ inline void Frame::removeChild(Frame *child)
 
 ///	Dynamic point
 ///
-///	General point of reference such as solar system barycenter, earth/moon barycenter, etc.
+///	General point of reference such as a barycenter, etc.
 class DynamicPoint : public Frame
 {
 public:
@@ -155,10 +160,11 @@ public:
 class OrbitalBody : public Frame
 {
 public:
-	Elements elements[2];	/// used during simulation (changes over time)
-
 	PhysicalProperties physicalProperties;
 	RenderProperties renderProperties;
+
+	RotationalElements rotationalElements;
+	OrbitalElements orbitalElements[2];			/// can change over time
 
 	OrbitalBody(size_t id, std::string const &name, std::string const &description);
 

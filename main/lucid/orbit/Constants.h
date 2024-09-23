@@ -1,25 +1,23 @@
 #pragma once
 
 #include <lucid/core/Types.h>
-#include <lucid/core/Numbers.h>
 #include <lucid/orbit/Defines.h>
 #include <lucid/orbit/Types.h>
 
-LUCID_ORBIT_BEGIN
+#define LUCID_ORBIT_CONSTANTS_BEGIN LUCID_ORBIT_BEGIN namespace constants {
+#define LUCID_ORBIT_CONSTANTS_END } LUCID_ORBIT_END
 
-template<typename T> struct invalid_type {};
-
-LUCID_ORBIT_END
+#define LUCID_ORBIT_CONSTANTS LUCID_ORBIT::constants
 
 #define LUCID_ORBIT_CONSTANT(name, value)									\
-	template<typename T> T const name = LUCID_ORBIT::invalid_type<T>();		\
-	template<>  float32_t const name< float32_t> =  float32_t(value);		\
-	template<>  float64_t const name< float64_t> =  float64_t(value);		\
-	template<> float128_t const name<float128_t> = float128_t(value);
+	template<typename T> T const name = invalid_type<T>();					\
+	template<>   float32_t const name< float32_t> =  float32_t(value);		\
+	template<>   float64_t const name< float64_t> =  float64_t(value);		\
+	template<>  float128_t const name<float128_t> = float128_t(value);
 
 LUCID_ORBIT_CONSTANTS_BEGIN
 
-///	 AU = astronomical unit
+template<typename T> struct invalid_type {};
 
 LUCID_ORBIT_CONSTANT(     e, 2.718281828459045235360287471352);
 LUCID_ORBIT_CONSTANT(two_pi, 6.283185307179586476925286766559);

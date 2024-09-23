@@ -11,8 +11,6 @@ namespace MI = msclr::interop;
 
 LUCID_ANONYMOUS_END
 
-#define theEphemeris (LUCID_ORBIT::Ephemeris::instance())
-
 namespace Lucid {
 namespace Orbit {
 
@@ -71,18 +69,18 @@ namespace Orbit {
 
 	void Ephemeris::Initialize(System::String ^path)
 	{
-		theEphemeris.initialize(MI::marshal_as<std::string>(path));
+		LUCID_ORBIT_EPHEMERIS.initialize(MI::marshal_as<std::string>(path));
 	}
 
 	void Ephemeris::Shutdown()
 	{
-		theEphemeris.shutdown();
+		LUCID_ORBIT_EPHEMERIS.shutdown();
 	}
 
 	EphemerisEntry ^Ephemeris::LookupEntry(System::String ^name)
 	{
 		LUCID_ORBIT::Ephemeris::Entry entry;
-		if (theEphemeris.lookup(entry, MI::marshal_as<std::string>(name)))
+		if (LUCID_ORBIT_EPHEMERIS.lookup(entry, MI::marshal_as<std::string>(name)))
 			return gcnew EphemerisEntry(entry);
 
 		return nullptr;
@@ -91,7 +89,7 @@ namespace Orbit {
 	EphemerisEntry ^Ephemeris::LookupEntry(size_t id)
 	{
 		LUCID_ORBIT::Ephemeris::Entry entry;
-		if (theEphemeris.lookup(entry, id))
+		if (LUCID_ORBIT_EPHEMERIS.lookup(entry, id))
 			return gcnew EphemerisEntry(entry);
 
 		return nullptr;
@@ -100,7 +98,7 @@ namespace Orbit {
 	PhysicalProperties ^Ephemeris::LookupProperties(System::String ^name)
 	{
 		LUCID_ORBIT::PhysicalProperties properties;
-		if (theEphemeris.lookup(properties, MI::marshal_as<std::string>(name)))
+		if (LUCID_ORBIT_EPHEMERIS.lookup(properties, MI::marshal_as<std::string>(name)))
 			return gcnew PhysicalProperties(properties);
 
 		return nullptr;
@@ -109,26 +107,26 @@ namespace Orbit {
 	PhysicalProperties ^Ephemeris::LookupProperties(size_t id)
 	{
 		LUCID_ORBIT::PhysicalProperties properties;
-		if (theEphemeris.lookup(properties, id))
+		if (LUCID_ORBIT_EPHEMERIS.lookup(properties, id))
 			return gcnew PhysicalProperties(properties);
 
 		return nullptr;
 	}
 
-	Elements ^Ephemeris::LookupElements(System::String ^name, double jdn)
+	OrbitalElements ^Ephemeris::LookupElements(System::String ^name, double jdn)
 	{
-		LUCID_ORBIT::Elements elements;
-		if (theEphemeris.lookup(elements, MI::marshal_as<std::string>(name), LUCID_ORBIT::scalar_t(jdn)))
-			return gcnew Elements(elements);
+		LUCID_ORBIT::OrbitalElements elements;
+		if (LUCID_ORBIT_EPHEMERIS.lookup(elements, MI::marshal_as<std::string>(name), LUCID_ORBIT::scalar_t(jdn)))
+			return gcnew OrbitalElements(elements);
 
 		return nullptr;
 	}
 
-	Elements ^Ephemeris::LookupElements(size_t id, double jdn)
+	OrbitalElements ^Ephemeris::LookupElements(size_t id, double jdn)
 	{
-		LUCID_ORBIT::Elements elements;
-		if (theEphemeris.lookup(elements, id, LUCID_ORBIT::scalar_t(jdn)))
-			return gcnew Elements(elements);
+		LUCID_ORBIT::OrbitalElements elements;
+		if (LUCID_ORBIT_EPHEMERIS.lookup(elements, id, LUCID_ORBIT::scalar_t(jdn)))
+			return gcnew OrbitalElements(elements);
 
 		return nullptr;
 	}

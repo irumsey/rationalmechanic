@@ -31,9 +31,11 @@ class Mechanics
 public:
 	Mechanics(scalar_t dayNumber);
 
+	Mechanics();
+
 	virtual ~Mechanics();
 
-	void initialize(scalar_t dayNumber /* add filter for frame inclusion/exclusion */);
+	void initialize(scalar_t dayNumber);
 
 	void shutdown();
 

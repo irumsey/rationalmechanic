@@ -3,17 +3,17 @@
 namespace Lucid {
 namespace Orbit {
 
-	Elements::Elements(LUCID_ORBIT::Elements const &elements)
+	OrbitalElements::OrbitalElements(LUCID_ORBIT::OrbitalElements const &elements)
 	{
-		_internal = new LUCID_ORBIT::Elements(elements);
+		_internal = new LUCID_ORBIT::OrbitalElements(elements);
 	}
 
-	Elements::~Elements()
+	OrbitalElements::~OrbitalElements()
 	{
-		this->!Elements();
+		this->!OrbitalElements();
 	}
 
-	Elements::!Elements()
+	OrbitalElements::!OrbitalElements()
 	{
 		delete _internal;
 	}

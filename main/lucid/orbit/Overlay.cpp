@@ -135,15 +135,15 @@ void Overlay::batchOrbit(OrbitalBody *body)
 		return;
 
 	PhysicalProperties const &physicalProperties = body->physicalProperties;
-	Elements const *elements = body->elements;
+	OrbitalElements const *orbitalElements = body->orbitalElements;
 
 	Frame const *centerFrame = body->centerFrame;
 
 	vector3_t centerPosition = LUCID_MATH::lerp(_interpolant, centerFrame->absolutePosition[0], centerFrame->absolutePosition[1]) - _cameraPosition;
 	scalar_t centerDistance = LUCID_MATH::len(centerPosition);
 
-	quaternion_t q0 = LUCID_MATH::quaternionFromMatrix(rotationFromElements(elements[0]));
-	quaternion_t q1 = LUCID_MATH::quaternionFromMatrix(rotationFromElements(elements[1]));
+	quaternion_t q0 = LUCID_MATH::quaternionFromMatrix(rotationFromElements(orbitalElements[0]));
+	quaternion_t q1 = LUCID_MATH::quaternionFromMatrix(rotationFromElements(orbitalElements[1]));
 	quaternion_t  q = LUCID_MATH::slerp(_interpolant, q0, q1);
 
 	vector3_t relPosition = LUCID_MATH::lerp(_interpolant, body->relativePosition[0], body->relativePosition[1]);
@@ -153,8 +153,8 @@ void Overlay::batchOrbit(OrbitalBody *body)
 	float32_t theta = cast(LUCID_MATH::atan2(relPosition.y, relPosition.x));
 	theta = (theta > 0.f) ? theta : LUCID_CORE_NUMBERS::two_pi<float32_t> + theta;
 
-	scalar_t a = LUCID_MATH::lerp(_interpolant, elements[0].A, elements[1].A);
-	scalar_t e = LUCID_MATH::lerp(_interpolant, elements[0].EC, elements[1].EC);
+	scalar_t a = LUCID_MATH::lerp(_interpolant, orbitalElements[0]. A, orbitalElements[1]. A);
+	scalar_t e = LUCID_MATH::lerp(_interpolant, orbitalElements[0].EC, orbitalElements[1].EC);
 
 	scalar_t scaleFactor = a / centerDistance;
 	a = _midRange * scaleFactor;

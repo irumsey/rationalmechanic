@@ -55,7 +55,7 @@ namespace /* anonymous */ {
 		return LUCID_GAL::Vector2(c, s) * hu / (1.f + ecc * c);
 	}
 
-	inline LUCID_GAL::Vector3 computeConicPosition(Elements const &elmn, float32_t theta)
+	inline LUCID_GAL::Vector3 computeConicPosition(OrbitalElements const &elmn, float32_t theta)
 	{
 		float32_t hu = elmn.a * (1.f - elmn.ecc * elmn.ecc);
 

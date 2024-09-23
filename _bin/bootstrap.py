@@ -225,6 +225,11 @@ def bootDouble(dst, value):
 def bootDegreesAsRadians(dst, value):
 	bootDouble(dst, deg2rad(value))
 
+def bootDegreesAsRadians3(dst, values):
+	bootDegreesAsRadians(dst, values[0])
+	bootDegreesAsRadians(dst, values[1])
+	bootDegreesAsRadians(dst, values[2])
+	
 def bootAUsAsMeters(dst, value):
 	bootDouble(dst, au2meter(value))
 
@@ -698,23 +703,19 @@ def bootFrameOrbitalBody(dst, frame):
 	bootVector4(dst, properties['render']['channel1'])
 	bootVector4(dst, properties['render']['channel2'])
 
-	rotation = frame['rotation']
-	bootUnsigned(dst, len(rotation))
+	rotationalElements = frame['rotationalElements']
+	bootDegreesAsRadians3(dst, rotationalElements[ 'ra'])
+	bootDegreesAsRadians3(dst, rotationalElements['dec'])
+	bootDegreesAsRadians3(dst, rotationalElements[ 'pm'])
 	
-	for entry in rotation:
-		if 6 != len(entry):
-			raise Exception('invalid number of elements in ephemeris file')
-		for value in entry:
-			bootDouble(dst, value)
-			
-	elements = frame['elements']
-	bootUnsigned(dst, len(elements))
+	orbitalElements = frame['orbitalElements']
+	bootUnsigned(dst, len(orbitalElements))
 
-	for entry in elements:
-		if 13 != len(entry):
+	for elements in orbitalElements:
+		if 13 != len(elements):
 			raise Exception('invalid number of elements in ephemeris file')
 		index = 0
-		for value in entry:
+		for value in elements:
 			onOrbitalElement[index](dst, value)
 			index = index + 1
 

@@ -5,10 +5,10 @@
 
 LUCID_ORBIT_BEGIN
 
-///	Orbital Elements
+///	OrbitalElements
 ///
 ///
-struct Elements
+struct OrbitalElements
 {
 	scalar_t JDN = 0.0;	///	Julian day number
 	scalar_t  EC = 0.0;	/// Eccentricity
@@ -27,18 +27,15 @@ struct Elements
 
 ///	RotationalElements
 ///
-/// Note: just starting the process of representing
-/// the rotation of objects.  for now, just going to
-/// represent angular position and velocity at a given
-/// moment of time. 
-/// Note: going down the rabbit hole of orientation of
-/// objects.  going to take work.  foundational work.
+/// Note: each of the elements are coefficients.
+/// Usage: angle = c[0] + c[1] * t + c[2] * t**2
+/// Where: t is julian centuries since J2000.
 struct RotationalElements
 {
-	scalar_t	JDN = 0.0;	/// Julian day number
-	vector3_t     A;		///	Axis of rotation
-	scalar_t  theta = 0.0;	/// Angular position (radians)
-	scalar_t      w = 0.0;	///	Angular velocity (radians / day)
+	scalar_t  ra[3] = { 0, 0, 0, };
+	scalar_t dec[3] = { 0, 0, 0, };
+	scalar_t  pm[3] = { 0, 0, 0, };
+
 };
 
 LUCID_ORBIT_END

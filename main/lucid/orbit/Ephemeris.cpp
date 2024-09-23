@@ -72,16 +72,14 @@ void Ephemeris::initialize(std::string const &path)
 			_physicalProperties.insert(std::make_pair(target.id, PhysicalProperties(reader)));
 			_renderProperties.insert(std::make_pair(target.id, RenderProperties(reader)));
 
-			int32_t elementsCount = reader.read<int32_t>();
-			rotation_vec_t pluralRotation(elementsCount);
-			for (int32_t i = 0; i < elementsCount; ++i)
-				reader.read(&pluralRotation[i], sizeof(RotationalElements));
-			_rotation.insert(std::make_pair(target.id, pluralRotation));
+			RotationalElements rotationalElements;
+			reader.read(&rotationalElements, sizeof(RotationalElements));
+			_rotation.insert(std::make_pair(target.id, rotationalElements));
 
-			elementsCount = reader.read<int32_t>();
+			size_t elementsCount = reader.read<int32_t>();
 			elements_vec_t pluralElements(elementsCount);
 			for (int32_t i = 0; i < elementsCount; ++i)
-				reader.read(&pluralElements[i], sizeof(Elements));
+				reader.read(&pluralElements[i], sizeof(OrbitalElements));
 			_elements.insert(std::make_pair(target.id, pluralElements));
 		}
 	}
@@ -121,7 +119,7 @@ bool Ephemeris::lookup(RenderProperties &properties, size_t target) const
 	return true;
 }
 
-bool Ephemeris::lookup(Elements &elements, size_t target, scalar_t jdn) const
+bool Ephemeris::lookup(OrbitalElements &elements, size_t target, scalar_t jdn) const
 {
 	auto iter = _elements.find(target);
 	if (iter == _elements.end())
@@ -164,19 +162,13 @@ bool Ephemeris::lookup(Elements &elements, size_t target, scalar_t jdn) const
 	return true;
 }
 
-bool Ephemeris::lookup(RotationalElements &elements, size_t target, scalar_t jdn) const
+bool Ephemeris::lookup(RotationalElements &elements, size_t target) const
 {
 	auto iter = _rotation.find(target);
 	if (iter == _rotation.end())
 		return false;
 
-	rotation_vec_t const &entries = iter->second;
-	size_t const count = entries.size();
-
-	/// test {
-	/// for now, just return the first
-	elements = entries[0];
-	/// } test
+	elements = iter->second;
 
 	return true;
 }

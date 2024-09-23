@@ -13,7 +13,7 @@ LUCID_ORBIT_BEGIN
 
 struct PhysicalProperties;
 struct RenderProperties;
-struct Elements;
+struct OrbitalElements;
 struct RotationalElements;
 
 ///	Ephemeris
@@ -81,13 +81,13 @@ public:
 
 	bool lookup(RenderProperties &properties, size_t target) const;
 
-	bool lookup(Elements &elements, std::string const &target, scalar_t jdn) const;
+	bool lookup(OrbitalElements &elements, std::string const &target, scalar_t jdn) const;
 			 
-	bool lookup(Elements &elements, size_t target, scalar_t jdn) const;
+	bool lookup(OrbitalElements &elements, size_t target, scalar_t jdn) const;
 
-	bool lookup(RotationalElements &elements, std::string const &target, scalar_t jdn) const;
+	bool lookup(RotationalElements &elements, std::string const &target) const;
 
-	bool lookup(RotationalElements &elements, size_t target, scalar_t jdn) const;
+	bool lookup(RotationalElements &elements, size_t target) const;
 
 	static Ephemeris &instance();
 
@@ -95,8 +95,7 @@ protected:
 	Ephemeris();
 
 private:
-	typedef std::vector<Elements> elements_vec_t;
-	typedef std::vector<RotationalElements> rotation_vec_t;
+	typedef std::vector<OrbitalElements> elements_vec_t;
 
 	typedef std::unordered_map<std::string, size_t> id_map_t;
 
@@ -104,7 +103,7 @@ private:
 	typedef std::unordered_map<size_t, PhysicalProperties> physical_properties_map_t;
 	typedef std::unordered_map<size_t, RenderProperties> render_properties_map_t;
 	typedef std::unordered_map<size_t, elements_vec_t> elements_map_t;
-	typedef std::unordered_map<size_t, rotation_vec_t> rotation_map_t;
+	typedef std::unordered_map<size_t, RotationalElements> rotation_map_t;
 
 	ordinal_vec_t _order;
 
@@ -170,7 +169,7 @@ inline bool Ephemeris::lookup(RenderProperties &properties, std::string const &t
 	return lookup(properties, id);
 }
 
-inline bool Ephemeris::lookup(Elements &elements, std::string const &target, scalar_t jdn) const
+inline bool Ephemeris::lookup(OrbitalElements &elements, std::string const &target, scalar_t jdn) const
 {
 	size_t id = lookup(target);
 	if (-1 == id)
@@ -179,13 +178,13 @@ inline bool Ephemeris::lookup(Elements &elements, std::string const &target, sca
 	return lookup(elements, id, jdn);
 }
 
-inline bool Ephemeris::lookup(RotationalElements &elements, std::string const &target, scalar_t jdn) const
+inline bool Ephemeris::lookup(RotationalElements &elements, std::string const &target) const
 {
 	size_t id = lookup(target);
 	if (-1 == id)
 		return false;
 
-	return lookup(elements, id, jdn);
+	return lookup(elements, id);
 }
 
 inline size_t Ephemeris::lookup(std::string const &target) const

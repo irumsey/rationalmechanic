@@ -17,9 +17,23 @@ namespace Orbit {
 	{
 		try
 		{
-			Initialize(dayNumber);
+			_internal = new LUCID_ORBIT::Mechanics(dayNumber);
 		}
 		catch (LUCID_CORE::Error const &error)
+		{
+			LUCID_CORE::log("ERR", error.what());
+			Shutdown();
+			throw;
+		}
+	}
+
+	Mechanics::Mechanics()
+	{
+		try
+		{
+			_internal = new LUCID_ORBIT::Mechanics();
+		}
+		catch(LUCID_CORE::Error const &error)
 		{
 			LUCID_CORE::log("ERR", error.what());
 			Shutdown();
@@ -35,13 +49,6 @@ namespace Orbit {
 	Mechanics::!Mechanics()
 	{
 		Shutdown();
-	}
-
-	void Mechanics::Initialize(double dayNumber)
-	{
-		Shutdown();
-
-		_internal = new LUCID_ORBIT::Mechanics(dayNumber);
 	}
 
 	void Mechanics::Shutdown()
