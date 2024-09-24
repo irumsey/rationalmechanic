@@ -12,9 +12,9 @@ LUCID_ORBIT_BEGIN
 
 class Frame;
 
+///	Simulator
 ///
-///
-///
+///	Note: The JDN passed for the simulation must be in TDB
 class Simulator : public Algorithm
 {
 public:
@@ -37,7 +37,7 @@ public:
 	void simulate(Frame *root, scalar_t dayNumber, scalar_t delta);
 
 private:
-	scalar_t _dayNumber = constants::J2000<float64_t>;
+	scalar_t _dayNumber = constants::J2000;
 	scalar_t _delta = 0.0;
 
 	void simulate(Frame *frame);

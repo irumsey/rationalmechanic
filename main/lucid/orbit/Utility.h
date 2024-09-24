@@ -60,7 +60,9 @@ inline LUCID_GAL::Matrix4x4 cast(matrix4x4_t const &rhs)
 }
 
 ///
-///
+///	TBD: i would like these removed
+/// the above casts take more precision to less for rendering purposes.
+/// i don't like the chance of less being cast to "more" without the more.
 ///
 
 inline scalar_t cast(float32_t rhs)
@@ -86,9 +88,14 @@ inline vector4_t cast(LUCID_GAL::Vector4 const &rhs)
 /// JDN
 ///
 /// Used to compute the Julian Day Number.  All times are UTC.
+/// The idea is for the simulation to keep time in terms of Julian Day Numbers
+/// measured in Universal Coordinated Time.  This will allow the simulator to
+/// simply "tick" off time in seconds.  Then, at each simulation step convert
+/// JDN in UTC to JDN in TDB for the updates.
+/// 
+/// See: TDB
 struct JDN
 {
-
 	// since the JPL Horizons database is where I have been getting the orbital elements,
 	// I have tested the following against the Horizons website which provides a JD date/time
 	// conversion.
@@ -101,16 +108,9 @@ struct JDN
 		int32_t A = year / 100;
 		int32_t B = 2 - A + (A / 4);
 
-		scalar_t frac = (3600.0 * time.hour + 60.0 * time.minute + time.second) / constants::seconds_per_day<scalar_t>;
+		scalar_t frac = (3600.0 * time.hour + 60.0 * time.minute + time.second) / constants::seconds_per_day;
 
-		/// test {
-		/// testing against spice which computes mean and eccentric anomaly (as well as leap seconds)
-		/// the kernal i have stops at 1990, so, just testing its calculations to make sure the mechanism
-		/// matches.  once done, will actually implement the calculation properly.
-		scalar_t correction = 57.184 / 86400.0;
-		/// } test
-
-		return int32_t(365.25 * (year + 4716)) + int32_t(30.6001 * (month + 1)) + day + B - 1524.5 + frac + correction;
+		return int32_t(365.25 * (year + 4716)) + int32_t(30.6001 * (month + 1)) + day + B - 1524.5 + frac;
 	}
 
 	static scalar_t now()
@@ -128,14 +128,51 @@ struct JDN
 
 	static scalar_t toCentury2000(scalar_t jdn)
 	{
-		return (jdn - constants::J2000<scalar_t>) / 36525.0;
+		return (jdn - constants::J2000) / constants::days_per_century;
 	}
 
 };
 
+///	TDB
+/// 
+/// Barycentric Dynamical Time.
+/// This is the "Ephemeris Time" which is a function of UTC.
+/// 
+/// Note:	TDB = TT + E
+///			TT	= TAI + 32.184s
+///			TAI = UTC + dAT
+/// Where:
+///			TT		Terrestrial Time
+///			E		periodic variations due to Earth's elliptical orbit (1.6mS max)
+///			TAI		International Atomic Time
+///			dAT		Number of leap seconds
+struct TDB
+{
+	static scalar_t from(scalar_t jdn)
+	{
+		// test {
+
+		// seconds since J2000
+		scalar_t seconds = (jdn - constants::J2000) * constants::seconds_per_day;
+		// mean anomaly
+		scalar_t MA = 6.239996 + 1.99096871e-7 * seconds;
+		// eccentric anomaly
+		scalar_t EA = MA + 1.671e-2 * LUCID_MATH::sin(MA);
+		// dAT = 37s at 2017-01-01
+		scalar_t dAT = 37.0;
+		// delta
+		// TT - TAI = 32.184s
+		scalar_t delta = 32.184 + dAT + 1.657e-3 * LUCID_MATH::sin(EA);
+
+		return jdn + delta / constants::seconds_per_day;
+
+		// } test
+	}
+};
+
 ///	ERA
 /// 
-/// 
+/// Earth Rotation Angle
 struct ERA
 {
 	static scalar_t now()
@@ -152,9 +189,9 @@ struct ERA
 	{
 		// TBD: (UT1 - UTC) is a result of a table lookup
 		// implement it
-		scalar_t days = jdn - constants::J2000<scalar_t>;
+		scalar_t days = jdn - constants::J2000;
 		scalar_t UT1 = days /* - (UT1 - UTC) */ ;
-		return constants::two_pi<scalar_t> * (0.779057273264 + 1.00273781191135448 * UT1);
+		return constants::two_pi * (0.779057273264 + 1.00273781191135448 * UT1);
 	}
 };
 
@@ -226,13 +263,11 @@ inline matrix3x3_t rotationFromElements(OrbitalElements const &elements)
 		LUCID_MATH::rotateAboutZ(elements. W);
 }
 
+///	kinematicsFromElements
 ///
-///
-///
+///	Note: the jdn parameter must be in TDB.
 inline void kinematicsFromElements(vector3_t &position, vector3_t &velocity, OrbitalElements const &elements, PhysicalProperties const &centerProperties, scalar_t jdn)
 {
-	scalar_t const twopi = constants::two_pi<scalar_t>;
-	scalar_t const tolsq = constants::tolsq<scalar_t>;
 	scalar_t const    GM = centerProperties.GM;
 	scalar_t const     e = elements.EC;
 	scalar_t const     a = elements.A;
@@ -240,8 +275,8 @@ inline void kinematicsFromElements(vector3_t &position, vector3_t &velocity, Orb
 	scalar_t const dt = jdn - elements.JDN;
 	scalar_t MA = elements.MA + elements.N * dt;
 
-	MA = std::fmod(MA, twopi);
-	MA = (MA < 0.0) ? MA + twopi: MA;
+	MA = std::fmod(MA, constants::two_pi);
+	MA = (MA < 0.0) ? MA + constants::two_pi: MA;
 
 	scalar_t EA[2] = { MA, 0.0 };
 
@@ -249,7 +284,7 @@ inline void kinematicsFromElements(vector3_t &position, vector3_t &velocity, Orb
 	size_t iter = 0;
 
 	scalar_t err = EA[0] - EA[1];
-	while (((err * err) > tolsq) && (iter < limit))
+	while (((err * err) > constants::tolsq) && (iter < limit))
 	{
 		EA[1] = EA[0] - (EA[0] - e * LUCID_MATH::sin(EA[0]) - MA) / (1.0 - e * LUCID_MATH::cos(EA[0]));
 		err = EA[1] - EA[0];
@@ -270,21 +305,21 @@ inline void kinematicsFromElements(vector3_t &position, vector3_t &velocity, Orb
 	velocity = R * velocity;
 }
 
+///	rotationFromElements
 ///
-///
-///
+///	Note: the jdn parameter must be in TDB.
 inline void rotationFromElements(matrix3x3_t &rotation, RotationalElements const &elements, scalar_t jdn)
 {
 	scalar_t const  T = JDN::toCentury2000(jdn);
 	scalar_t const TT = T * T;
-	scalar_t const  d = jdn - constants::J2000<scalar_t>;
+	scalar_t const  d = jdn - constants::J2000;
 
 	scalar_t  ra = elements. ra[0] + elements. ra[1] * T + elements. ra[2] * TT;
 	scalar_t dec = elements.dec[0] + elements.dec[1] * T + elements.dec[2] * TT;
 	scalar_t   w = elements. pm[0] + elements. pm[1] * d;
 	
-	matrix3x3_t R_y = LUCID_MATH::rotateAboutY(0.5 * constants::pi<scalar_t>);
-	matrix3x3_t R_x = LUCID_MATH::rotateAboutX(0.5 * constants::pi<scalar_t>);
+	matrix3x3_t R_y = LUCID_MATH::rotateAboutY(0.5 * constants::pi);
+	matrix3x3_t R_x = LUCID_MATH::rotateAboutX(0.5 * constants::pi);
 
 	matrix3x3_t R_w  = LUCID_MATH::rotateAboutX(w);
 	matrix3x3_t R_dec = LUCID_MATH::rotateAboutY(-dec);
@@ -293,14 +328,6 @@ inline void rotationFromElements(matrix3x3_t &rotation, RotationalElements const
 	matrix3x3_t R_ecliptic = LUCID_MATH::rotateAboutX(-NameThis::epsilon(jdn));
 
 	rotation = R_ecliptic * R_ra * R_dec * R_w * R_x * R_y;
-
-	// test {
-	vector3_t axis[] = {
-		rotation * vector3_t(1, 0, 0),
-		rotation * vector3_t(0, 1, 0),
-		rotation * vector3_t(0, 0, 1),
-	};
-	// } test
 }
 
 LUCID_ORBIT_END

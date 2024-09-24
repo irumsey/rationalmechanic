@@ -201,7 +201,7 @@ public:
 class CameraFrame : public Frame
 {
 public:
-	scalar_t fov = 0.25 * constants::pi<float64_t>;
+	scalar_t fov = 0.25 * constants::pi;
 	Frame *focus = nullptr;
 
 	CameraFrame(size_t id, std::string const &name, std::string const &description);

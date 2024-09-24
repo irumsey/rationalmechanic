@@ -25,7 +25,7 @@ class CameraFrame;
 
 ///	Mechanics
 ///
-/// 
+/// Note: The JDN passed must be in UTC
 class Mechanics
 {
 public:
@@ -60,7 +60,7 @@ public:
 private:
 	typedef std::unordered_map<size_t, Frame *> frame_map_t;
 
-	scalar_t _dayNumber[2] = { constants::J2000<float64_t>, constants::J2000<float64_t>, };
+	scalar_t _dayNumber[2] = { constants::J2000, constants::J2000, };
 
 	scalar_t const    TIME_STEP = scalar_t(0.1);
 	scalar_t const   TIME_LIMIT = scalar_t(0.3);

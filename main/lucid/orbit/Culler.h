@@ -38,7 +38,7 @@ private:
 	///	test {
 	/// magic numbers
 	scalar_t const ZNEAR = 10.0;
-	scalar_t const  ZFAR = 50.0 * constants::meters_per_AU<scalar_t>;
+	scalar_t const  ZFAR = 50.0 * constants::meters_per_AU;
 	scalar_t const hysteresis[2] = { 0.01, 0.03, };
 	/// }
 

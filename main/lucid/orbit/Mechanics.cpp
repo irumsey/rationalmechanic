@@ -246,10 +246,10 @@ void Mechanics::update(scalar_t delta)
 	/// test {
 	/// for now, just tick off at the "real" rate.
 	_dayNumber[0] = _dayNumber[1];
-	_dayNumber[1] = _dayNumber[1] + delta / constants::seconds_per_day<scalar_t>;
+	_dayNumber[1] = _dayNumber[1] + delta / constants::seconds_per_day;
 	/// } test
 
-	_simulator.simulate(_root, _dayNumber[1], delta);
+	_simulator.simulate(_root, TDB::from(_dayNumber[1]), delta);
 }
 
 LUCID_ORBIT_END
