@@ -249,7 +249,10 @@ void Mechanics::update(scalar_t delta)
 	_dayNumber[1] = _dayNumber[1] + delta / constants::seconds_per_day;
 	/// } test
 
-	_simulator.simulate(_root, TDB::from(_dayNumber[1]), delta);
+	/// get ephemeris time (Barycentric Dynamical Time)
+	/// i keep writing out TDB because it always looks like "To Be Determined" instead.
+	scalar_t Teph = LUCID_ORBIT_EPHEMERIS.time(_dayNumber[1]);
+	_simulator.simulate(_root, Teph, delta);
 }
 
 LUCID_ORBIT_END

@@ -133,43 +133,6 @@ struct JDN
 
 };
 
-///	TDB
-/// 
-/// Barycentric Dynamical Time.
-/// This is the "Ephemeris Time" which is a function of UTC.
-/// 
-/// Note:	TDB = TT + E
-///			TT	= TAI + 32.184s
-///			TAI = UTC + dAT
-/// Where:
-///			TT		Terrestrial Time
-///			E		periodic variations due to Earth's elliptical orbit (1.6mS max)
-///			TAI		International Atomic Time
-///			dAT		Number of leap seconds
-struct TDB
-{
-	static scalar_t from(scalar_t jdn)
-	{
-		// test {
-
-		// seconds since J2000
-		scalar_t seconds = (jdn - constants::J2000) * constants::seconds_per_day;
-		// mean anomaly
-		scalar_t MA = 6.239996 + 1.99096871e-7 * seconds;
-		// eccentric anomaly
-		scalar_t EA = MA + 1.671e-2 * LUCID_MATH::sin(MA);
-		// dAT = 37s at 2017-01-01
-		scalar_t dAT = 37.0;
-		// delta
-		// TT - TAI = 32.184s
-		scalar_t delta = 32.184 + dAT + 1.657e-3 * LUCID_MATH::sin(EA);
-
-		return jdn + delta / constants::seconds_per_day;
-
-		// } test
-	}
-};
-
 ///	ERA
 /// 
 /// Earth Rotation Angle
@@ -310,6 +273,10 @@ inline void kinematicsFromElements(vector3_t &position, vector3_t &velocity, Orb
 ///	Note: the jdn parameter must be in TDB.
 inline void rotationFromElements(matrix3x3_t &rotation, RotationalElements const &elements, scalar_t jdn)
 {
+	matrix3x3_t const R_y = LUCID_MATH::rotateAboutY(0.5 * constants::pi);
+	matrix3x3_t const R_x = LUCID_MATH::rotateAboutX(0.5 * constants::pi);
+	matrix3x3_t const R_align = R_x * R_y;
+
 	scalar_t const  T = JDN::toCentury2000(jdn);
 	scalar_t const TT = T * T;
 	scalar_t const  d = jdn - constants::J2000;
@@ -318,16 +285,13 @@ inline void rotationFromElements(matrix3x3_t &rotation, RotationalElements const
 	scalar_t dec = elements.dec[0] + elements.dec[1] * T + elements.dec[2] * TT;
 	scalar_t   w = elements. pm[0] + elements. pm[1] * d;
 	
-	matrix3x3_t R_y = LUCID_MATH::rotateAboutY(0.5 * constants::pi);
-	matrix3x3_t R_x = LUCID_MATH::rotateAboutX(0.5 * constants::pi);
-
 	matrix3x3_t R_w  = LUCID_MATH::rotateAboutX(w);
 	matrix3x3_t R_dec = LUCID_MATH::rotateAboutY(-dec);
 	matrix3x3_t R_ra  = LUCID_MATH::rotateAboutZ(ra);
 
 	matrix3x3_t R_ecliptic = LUCID_MATH::rotateAboutX(-NameThis::epsilon(jdn));
 
-	rotation = R_ecliptic * R_ra * R_dec * R_w * R_x * R_y;
+	rotation = R_ecliptic * R_ra * R_dec * R_w * R_align;
 }
 
 LUCID_ORBIT_END

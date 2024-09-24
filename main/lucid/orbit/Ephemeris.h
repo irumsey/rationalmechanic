@@ -4,6 +4,8 @@
 #include <vector>
 #include <unordered_map>
 #include <lucid/core/Noncopyable.h>
+#include <lucid/math/Math.h>
+#include <lucid/orbit/Constants.h>
 #include <lucid/orbit/Defines.h>
 #include <lucid/orbit/Types.h>
 
@@ -58,6 +60,8 @@ public:
 	
 	void shutdown();
 
+	scalar_t time(scalar_t jdn) const;
+
 	Iterator begin() const;
 
 	Iterator end() const;
@@ -95,6 +99,9 @@ protected:
 	Ephemeris();
 
 private:
+	typedef std::pair<scalar_t, scalar_t> leap_sec_t;
+	typedef std::vector<leap_sec_t> leap_vec_t;
+
 	typedef std::vector<OrbitalElements> elements_vec_t;
 
 	typedef std::unordered_map<std::string, size_t> id_map_t;
@@ -109,13 +116,24 @@ private:
 
 	id_map_t _ids;
 
+	mutable bool _alreadyWarned = false;
+
+	scalar_t _tai_tt = 0;
+	scalar_t _meanAnomaly[2] = { 0, 0 };
+	scalar_t _eccentricAnomaly[2] = { 0, 0 };
+	leap_vec_t _leapSeconds;
+
 	entry_map_t _entries;	
 	physical_properties_map_t _physicalProperties;
 	render_properties_map_t _renderProperties;
 	elements_map_t _elements;
 	rotation_map_t _rotation;
 
+	scalar_t time(scalar_t jdn, scalar_t ls) const;
+
 	size_t lookup(std::string const &target) const;
+
+	void warnOnce(std::string const &msg) const;
 
 	LUCID_PREVENT_COPY(Ephemeris);
 	LUCID_PREVENT_ASSIGNMENT(Ephemeris);
@@ -129,6 +147,21 @@ inline Ephemeris::Iterator Ephemeris::begin() const
 inline Ephemeris::Iterator Ephemeris::end() const
 {
 	return _order.end();
+}
+
+inline scalar_t Ephemeris::time(scalar_t jdn, scalar_t ls) const
+{
+	// seconds since J2000
+	scalar_t seconds = (jdn - constants::J2000) * constants::seconds_per_day;
+
+	// mean anomaly
+	scalar_t MA = _meanAnomaly[0] + _meanAnomaly[1] * seconds;
+
+	// eccentric anomaly
+	scalar_t EA = MA + _eccentricAnomaly[0] * LUCID_MATH::sin(MA);
+	scalar_t delta = _tai_tt + ls + _eccentricAnomaly[1] * LUCID_MATH::sin(EA);
+
+	return jdn + delta / constants::seconds_per_day;
 }
 
 inline bool Ephemeris::lookup(Entry &entry, std::string const &target) const

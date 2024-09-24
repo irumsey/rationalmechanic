@@ -1,18 +1,22 @@
 {
   "comments": [
-    "Generated using JPL Horizons database",
+    "time constants extracted from Spice Kernel files",
+    "    TDB      Barycentric Dynamical Time (AKA Ephemeris Time)",
+    "    TAI_TT   difference between TAI (International Atomic time) and TT (Terrestrial Time)",
+    "    MA       Mean Anomaly",
+    "    EB       Constant used to compute Eccentric Anomaly",
+    "    K        Constant used to apply Eccentric Anomaly",
+    "    DELTA_AT Leap seconds up to specified date",
 
+    "Orbital Elements Generated using JPL Horizons database",
     "Coordinate system description:",
-
     "    Ecliptic at the standard reference epoch",
-
     "        Reference epoch: J2000.0",
     "        X-Y plane: adopted Earth orbital plane at the reference epoch",
     "                   Note: obliquity of 84381.448 arcseconds (IAU76) wrt ICRF equator",
     "        X-axis   : ICRF",
     "        Z-axis   : perpendicular to the X-Y plane in the directional (+ or -) sense",
     "                   of Earth's north pole at the reference epoch.",
-
     "    Symbol meaning [1 au= 149597870.700 km, 1 day= 86400.0 s]",
     "        JD     Julian day number, barycentric dynamical time",
     "        EC     Eccentricity, e",
@@ -27,18 +31,33 @@
     "        A      Semi-major axis, a (au)",
     "        AD     Apoapsis distance (au)",
     "        PR     Sidereal orbit period (day)",
-
     "Geometric states/elements have no aberrations applied",
 
+    "Physical Properties",
     "Mass in kg",
     "Radius in meters",
     "GM in m^3/s^2",
 
-    "rotationalElements:",
+    "Rotational Elements extrated from Spice Kernel files",
     "  ra   right ascension of axis of rotation",
     "  dec  declination of axis of rotation",
     "  pm   position of prime meridian"
 ],
+
+  "time": {
+    "TAI_TT": 32.184,
+    "MA": [ 6.239996, 1.99096871E-07 ],
+    "K": 1.657E-03,
+    "EB": 1.671E-02,
+    "DELTA_AT": [
+      [ 1999, 1, 1, 32.0 ],
+      [ 2006, 1, 1, 33.0 ],
+      [ 2009, 1, 1, 34.0 ],
+      [ 2012, 7, 1, 35.0 ],
+      [ 2015, 1, 1, 36.0 ],
+      [ 2017, 1, 1, 37.0 ]
+    ]
+  },
 
   "frames": [
     {

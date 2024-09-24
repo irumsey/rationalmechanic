@@ -5,6 +5,14 @@
 
 LUCID_ORBIT_BEGIN
 
+///	TemporalElements
+/// 
+/// 
+struct TemporalElements
+{
+	
+};
+
 ///	OrbitalElements
 ///
 ///
@@ -35,7 +43,6 @@ struct RotationalElements
 	scalar_t  ra[3] = { 0, 0, 0, };
 	scalar_t dec[3] = { 0, 0, 0, };
 	scalar_t  pm[3] = { 0, 0, 0, };
-
 };
 
 LUCID_ORBIT_END

@@ -1,4 +1,5 @@
 #include "Ephemeris.h"
+#include "Utility.h"
 #include "Elements.h"
 #include "Properties.h"
 #include "Constants.h"
@@ -41,6 +42,37 @@ void Ephemeris::initialize(std::string const &path)
 	shutdown();
 
 	LUCID_CORE::Reader &reader = LUCID_CORE::FileReader(path);
+
+	///
+	///	load the data required to compute Barycentric Dynamical Time
+	/// AKA ephemeris time
+	/// 
+
+	_tai_tt = reader.read<scalar_t>();
+
+	_meanAnomaly[0] = reader.read<scalar_t>();
+	_meanAnomaly[1] = reader.read<scalar_t>();
+
+	_eccentricAnomaly[0] = reader.read<scalar_t>();
+	_eccentricAnomaly[1] = reader.read<scalar_t>();
+
+	int32_t count = reader.read<int32_t>();
+	_leapSeconds.resize(count);
+
+	for (int32_t i = 0; i < count; ++i)
+	{
+		Date date;
+		date.year = reader.read<uint32_t>();
+		date.month = reader.read<uint32_t>();
+		date.day = reader.read<uint32_t>();
+
+		_leapSeconds[i].first = JDN::from(date, Time());
+		_leapSeconds[i].second = reader.read<scalar_t>();
+	}
+
+	///
+	///	load the frames and their orbital elements
+	/// 
 
 	int32_t frameCount = reader.read<int32_t>();
 	for (int32_t frameIndex = 0; frameIndex < frameCount; ++frameIndex)
@@ -95,6 +127,53 @@ void Ephemeris::shutdown()
 	_renderProperties.clear();
 	_rotation.clear();
 	_elements.clear();
+
+	_leapSeconds.clear();
+
+	_alreadyWarned = false;
+}
+
+scalar_t Ephemeris::time(scalar_t jdn) const
+{
+	size_t count = _leapSeconds.size();
+
+	if (count < 2)
+	{
+		warnOnce("insufficient number of entries in leap second list");
+		return jdn;
+	}
+
+	size_t first = 0;
+	size_t last = count - 1;
+	size_t mid = (last + first) >> 1;
+
+	if (jdn < _leapSeconds[first].first)
+	{
+		warnOnce("specified JDN comes before first leap second entry");
+		return jdn;
+	}
+
+	if (_leapSeconds[last].second < jdn)
+	{
+		warnOnce("specified JDN comes after last leap second entry");
+		return time(jdn, _leapSeconds[last].second);
+	}
+
+	while ((first != mid) && (mid != last))
+	{
+		if ((_leapSeconds[first].first <= jdn) && (jdn < _leapSeconds[mid].first))
+			last = mid;
+		else
+			first = mid;
+		mid = (last + first) >> 1;
+	}
+	
+	LUCID_VALIDATE(
+		(_leapSeconds[first].first <= jdn) && (jdn < _leapSeconds[last].first),
+		"consistency error in ephemeris leap seconds list"
+	);
+
+	return time(jdn, _leapSeconds[first].second);
 }
 
 bool Ephemeris::lookup(PhysicalProperties &properties, size_t target) const
@@ -155,8 +234,7 @@ bool Ephemeris::lookup(OrbitalElements &elements, size_t target, scalar_t jdn) c
 			first = mid;
 		mid = (last + first) >> 1;
 	}
-
-	LUCID_VALIDATE((entries[first].JDN <= jdn) && (jdn < entries[last].JDN), "consistency error in ephemeris");
+	LUCID_VALIDATE((entries[first].JDN <= jdn) && (jdn < entries[last].JDN), "consistency error in ephemeris orbital elements");
 
 	elements = entries[first];
 	return true;
@@ -177,6 +255,15 @@ Ephemeris &Ephemeris::instance()
 {
 	static Ephemeris theInstance;
 	return theInstance;
+}
+
+void Ephemeris::warnOnce(std::string const &msg) const
+{
+	if (_alreadyWarned)
+		return;
+	_alreadyWarned = true;
+
+	LUCID_CORE::log("WARN", msg);
 }
 
 LUCID_ORBIT_END

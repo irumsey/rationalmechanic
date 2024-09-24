@@ -740,10 +740,30 @@ bootFrameType = {
 	 'CAMERA_FRAME' : bootFrameCamera,
 }
 
+def bootEphemerisLeapSeconds(dst, entry):
+	bootUnsigned(dst, entry[0])
+	bootUnsigned(dst, entry[1])
+	bootUnsigned(dst, entry[2])
+	bootDouble(dst, entry[3])
+	
+def bootEphemerisTime(dst, time):
+	bootDouble(dst, time['TAI_TT'])
+	bootDouble(dst, time['MA'][0])
+	bootDouble(dst, time['MA'][1])
+	bootDouble(dst, time['K'])
+	bootDouble(dst, time['EB'])
+	
+	delta_at = time['DELTA_AT']
+	bootUnsigned(dst, len(delta_at))
+	for entry in delta_at:
+		bootEphemerisLeapSeconds(dst, entry)
+
 def bootEphemerisFrame(dst, frame):
 	bootFrameType[frame['type']](dst, frame)
 
 def bootEphemeris(dst, ephemeris):
+	bootEphemerisTime(dst, ephemeris['time'])
+	
 	frames = ephemeris['frames']
 	bootUnsigned(dst, len(frames))
 	for frame in frames:
