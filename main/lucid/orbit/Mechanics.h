@@ -25,6 +25,9 @@ class CameraFrame;
 
 ///	Mechanics
 ///
+/// Top level object which contains a simulator and a renderer.
+/// This manages the frame hierarchy.
+/// 
 /// Note: The JDN passed must be in UTC
 class Mechanics
 {

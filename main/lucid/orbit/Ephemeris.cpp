@@ -46,19 +46,19 @@ void Ephemeris::initialize(std::string const &path)
 
 	///
 	///	load the data required to compute Barycentric Dynamical Time
-	/// AKA ephemeris time
+	/// aka ephemeris time
 	/// 
 
-	_tai_tt = reader.read<scalar_t>();
+	_TAI_TT = reader.read<scalar_t>();
 
-	_meanAnomaly[0] = reader.read<scalar_t>();
-	_meanAnomaly[1] = reader.read<scalar_t>();
+	_MA[0] = reader.read<scalar_t>();
+	_MA[1] = reader.read<scalar_t>();
 
-	_eccentricAnomaly[0] = reader.read<scalar_t>();
-	_eccentricAnomaly[1] = reader.read<scalar_t>();
+	_K = reader.read<scalar_t>();
+	_EB = reader.read<scalar_t>();
 
 	int32_t count = reader.read<int32_t>();
-	_leapSeconds.resize(count);
+	_DELTA_AT.resize(count);
 
 	for (int32_t i = 0; i < count; ++i)
 	{
@@ -67,8 +67,8 @@ void Ephemeris::initialize(std::string const &path)
 		date.month = reader.read<uint32_t>();
 		date.day = reader.read<uint32_t>();
 
-		_leapSeconds[i].first = JDN::from(date, Time());
-		_leapSeconds[i].second = reader.read<scalar_t>();
+		_DELTA_AT[i].first = JDN::from(date, Time());
+		_DELTA_AT[i].second = reader.read<scalar_t>();
 	}
 
 	///
@@ -127,7 +127,7 @@ void Ephemeris::shutdown()
 	_rotationalElements.clear();
 	_orbitalElements.clear();
 
-	_leapSeconds.clear();
+	_DELTA_AT.clear();
 
 	_alreadyWarned = false;
 }
@@ -136,7 +136,7 @@ scalar_t Ephemeris::time(scalar_t jdn) const
 {
 	LUCID_PROFILE_SCOPE("Ephemeris::time(...)");
 
-	size_t count = _leapSeconds.size();
+	size_t count = _DELTA_AT.size();
 
 	if (count < 2)
 	{
@@ -148,21 +148,22 @@ scalar_t Ephemeris::time(scalar_t jdn) const
 	size_t last = count - 1;
 	size_t mid = (last + first) >> 1;
 
-	if (jdn < _leapSeconds[first].first)
+	/// even if the file is kept up to date, the specified jdn going past the last entry
+	/// would be common.  IERS only announces a leap second a few months in advance.
+	if (_DELTA_AT[last].second < jdn)
 	{
-		warnOnce("specified JDN comes before first leap second entry");
-		return jdn;
+		return time(jdn, _DELTA_AT[last].second);
 	}
 
-	if (_leapSeconds[last].second < jdn)
+	if (jdn < _DELTA_AT[first].first)
 	{
-		warnOnce("specified JDN comes after last leap second entry");
-		return time(jdn, _leapSeconds[last].second);
+		warnOnce("specified JDN comes before first leap second entry");
+		return time(jdn, 0.0);
 	}
 
 	while ((first != mid) && (mid != last))
 	{
-		if ((_leapSeconds[first].first <= jdn) && (jdn < _leapSeconds[mid].first))
+		if ((_DELTA_AT[first].first <= jdn) && (jdn < _DELTA_AT[mid].first))
 			last = mid;
 		else
 			first = mid;
@@ -170,11 +171,11 @@ scalar_t Ephemeris::time(scalar_t jdn) const
 	}
 	
 	LUCID_VALIDATE(
-		(_leapSeconds[first].first <= jdn) && (jdn < _leapSeconds[last].first),
+		(_DELTA_AT[first].first <= jdn) && (jdn < _DELTA_AT[last].first),
 		"consistency error in ephemeris leap seconds list"
 	);
 
-	return time(jdn, _leapSeconds[first].second);
+	return time(jdn, _DELTA_AT[first].second);
 }
 
 bool Ephemeris::lookup(PhysicalProperties &properties, size_t target) const

@@ -20,6 +20,11 @@ struct RotationalElements;
 
 ///	Ephemeris
 ///
+/// Note: the lookup(...) methods will fail, return false, if the specified target
+/// doesn't exist or the JDN doesn't fall within the existing range of elements.
+/// 
+/// Note: the time(...) methods are used to convert from UTC day numbers to TDB day numbers.
+/// 
 ///	Note: while camera frame is here for completeness, the ephemeris file shouldn't
 /// define camera frames.
 class Ephemeris final
@@ -60,18 +65,13 @@ public:
 	
 	void shutdown();
 
+	scalar_t time(scalar_t jdn, scalar_t leapSeconds) const;
+
 	scalar_t time(scalar_t jdn) const;
 
 	Iterator begin() const;
 
 	Iterator end() const;
-
-	///	the following lookup(...) methods will fail (return false)
-	///	if the requested target doesn't exist or if the specified JDN
-	/// doesn't fall within an exiting range of elements.  the idea
-	/// is data must exist or it will fail.
-	/// 
-	/// important: no defaults for physical or orbital element data.
 
 	bool lookup(Entry &entry, std::string const &target) const;
 	
@@ -118,18 +118,17 @@ private:
 
 	mutable bool _alreadyWarned = false;
 
-	scalar_t _tai_tt = 0;
-	scalar_t _meanAnomaly[2] = { 0, 0 };
-	scalar_t _eccentricAnomaly[2] = { 0, 0 };
-	leap_vec_t _leapSeconds;
+	scalar_t _TAI_TT = 0;
+	scalar_t _MA[2] = { 0, 0 };
+	scalar_t _K = 0;
+	scalar_t _EB = 0;
+	leap_vec_t _DELTA_AT;
 
 	entry_map_t _entries;	
 	physical_properties_map_t _physicalProperties;
 	render_properties_map_t _renderProperties;
 	rotation_map_t _rotationalElements;
 	elements_map_t _orbitalElements;
-
-	scalar_t time(scalar_t jdn, scalar_t ls) const;
 
 	size_t lookup(std::string const &target) const;
 
@@ -139,6 +138,21 @@ private:
 	LUCID_PREVENT_ASSIGNMENT(Ephemeris);
 };
 
+inline scalar_t Ephemeris::time(scalar_t jdn, scalar_t leapSeconds) const
+{
+	// seconds since J2000
+	scalar_t seconds = (jdn - constants::J2000) * constants::seconds_per_day;
+
+	// mean anomaly
+	scalar_t MA = _MA[0] + _MA[1] * seconds;
+
+	// eccentric anomaly
+	scalar_t EA = MA + _EB * LUCID_MATH::sin(MA);
+	scalar_t delta = _TAI_TT + leapSeconds + _K * LUCID_MATH::sin(EA);
+
+	return jdn + delta / constants::seconds_per_day;
+}
+
 inline Ephemeris::Iterator Ephemeris::begin() const
 {
 	return _order.begin();
@@ -147,21 +161,6 @@ inline Ephemeris::Iterator Ephemeris::begin() const
 inline Ephemeris::Iterator Ephemeris::end() const
 {
 	return _order.end();
-}
-
-inline scalar_t Ephemeris::time(scalar_t jdn, scalar_t ls) const
-{
-	// seconds since J2000
-	scalar_t seconds = (jdn - constants::J2000) * constants::seconds_per_day;
-
-	// mean anomaly
-	scalar_t MA = _meanAnomaly[0] + _meanAnomaly[1] * seconds;
-
-	// eccentric anomaly
-	scalar_t EA = MA + _eccentricAnomaly[1] * LUCID_MATH::sin(MA);
-	scalar_t delta = _tai_tt + ls + _eccentricAnomaly[0] * LUCID_MATH::sin(EA);
-
-	return jdn + delta / constants::seconds_per_day;
 }
 
 inline bool Ephemeris::lookup(Entry &entry, std::string const &target) const
