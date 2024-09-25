@@ -107,6 +107,7 @@ void Mechanics::initialize(scalar_t dayNumber)
 		LUCID_VALIDATE(_frames.end() == _frames.find(entry.id), "duplicate frame id");
 		_frames.insert(std::make_pair(frame->id, frame));
 
+		/// if the frame's id is the same as its center id, it is a root frame
 		if (entry.id == entry.cid)
 			continue;
 
@@ -243,11 +244,8 @@ void Mechanics::update(scalar_t delta)
 {
 	LUCID_VALIDATE(nullptr != _root, "attempt to use uninitialized system");
 
-	/// test {
-	/// for now, just tick off at the "real" rate.
 	_dayNumber[0] = _dayNumber[1];
 	_dayNumber[1] = _dayNumber[1] + delta / constants::seconds_per_day;
-	/// } test
 
 	/// get ephemeris time (Barycentric Dynamical Time)
 	/// i keep writing out TDB because it always looks like "To Be Determined" instead.

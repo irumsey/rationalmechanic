@@ -1,5 +1,6 @@
 #pragma once
 
+#include <lucid/core/Reader.h>
 #include <lucid/orbit/Defines.h>
 #include <lucid/orbit/Types.h>
 
@@ -43,6 +44,23 @@ struct RotationalElements
 	scalar_t  ra[3] = { 0, 0, 0, };
 	scalar_t dec[3] = { 0, 0, 0, };
 	scalar_t  pm[3] = { 0, 0, 0, };
+
+	RotationalElements() = default;
+
+	RotationalElements(LUCID_CORE::Reader &reader)
+	{
+		read(reader);
+	}
+
+	~RotationalElements() = default;
+
+	void read(LUCID_CORE::Reader &reader)
+	{
+		reader.read( ra, 3 * sizeof(scalar_t));
+		reader.read(dec, 3 * sizeof(scalar_t));
+		reader.read( pm, 3 * sizeof(scalar_t));
+	}
+
 };
 
 LUCID_ORBIT_END

@@ -41,7 +41,7 @@ void Simulator::evaluate(OrbitalBody *body)
 	LUCID_VALIDATE(nullptr != center, "consistency error: " + body->name + " does not have a center frame defined");
 
 	body->orbitalElements[0] = body->orbitalElements[1];
-	if (!LUCID_ORBIT_EPHEMERIS.lookup(body->orbitalElements[1], body->id, _dayNumber))
+	if (!LUCID_ORBIT_EPHEMERIS.lookup(body->orbitalElements[1], body->id, _jdn))
 	{
 		LUCID_CORE::log("ERR", "specified JDN out-of-bounds (orbital elements) for: " + body->name);
 		body->simState = Frame::SIM_STATE_ERROR;
@@ -54,7 +54,7 @@ void Simulator::evaluate(OrbitalBody *body)
 	{
 		body->relativePosition[0] = body->relativePosition[1];
 		body->relativeVelocity[0] = body->relativeVelocity[1];
-		kinematicsFromElements(body->relativePosition[1], body->relativeVelocity[1], body->orbitalElements[1], centerProperties, _dayNumber);
+		kinematicsFromElements(body->relativePosition[1], body->relativeVelocity[1], body->orbitalElements[1], centerProperties, _jdn);
 
 		body->absolutePosition[0] = body->absolutePosition[1];
 		body->absolutePosition[1] = body->relativePosition[1] + center->absolutePosition[1];
@@ -64,7 +64,7 @@ void Simulator::evaluate(OrbitalBody *body)
 	}
 
 	body->rotation[0] = body->rotation[1];
-	rotationFromElements(body->rotation[1], body->rotationalElements, _dayNumber);
+	rotationFromElements(body->rotation[1], body->rotationalElements, _jdn);
 
 	vector3_t extents = vector3_t(radius, radius, radius);
 

@@ -126,8 +126,8 @@ private:
 	entry_map_t _entries;	
 	physical_properties_map_t _physicalProperties;
 	render_properties_map_t _renderProperties;
-	elements_map_t _elements;
-	rotation_map_t _rotation;
+	rotation_map_t _rotationalElements;
+	elements_map_t _orbitalElements;
 
 	scalar_t time(scalar_t jdn, scalar_t ls) const;
 
@@ -158,8 +158,8 @@ inline scalar_t Ephemeris::time(scalar_t jdn, scalar_t ls) const
 	scalar_t MA = _meanAnomaly[0] + _meanAnomaly[1] * seconds;
 
 	// eccentric anomaly
-	scalar_t EA = MA + _eccentricAnomaly[0] * LUCID_MATH::sin(MA);
-	scalar_t delta = _tai_tt + ls + _eccentricAnomaly[1] * LUCID_MATH::sin(EA);
+	scalar_t EA = MA + _eccentricAnomaly[1] * LUCID_MATH::sin(MA);
+	scalar_t delta = _tai_tt + ls + _eccentricAnomaly[0] * LUCID_MATH::sin(EA);
 
 	return jdn + delta / constants::seconds_per_day;
 }

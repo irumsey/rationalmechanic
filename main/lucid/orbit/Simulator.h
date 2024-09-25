@@ -34,10 +34,10 @@ public:
 
 	void shutdown();
 
-	void simulate(Frame *root, scalar_t dayNumber, scalar_t delta);
+	void simulate(Frame *root, scalar_t jdn, scalar_t delta);
 
 private:
-	scalar_t _dayNumber = constants::J2000;
+	scalar_t _jdn = constants::J2000;
 	scalar_t _delta = 0.0;
 
 	void simulate(Frame *frame);
@@ -48,11 +48,11 @@ private:
 	LUCID_PREVENT_ASSIGNMENT(Simulator);
 };
 
-inline void Simulator::simulate(Frame *root, scalar_t dayNumber, scalar_t delta)
+inline void Simulator::simulate(Frame *root, scalar_t jdn, scalar_t delta)
 {
 	LUCID_PROFILE_SCOPE("Simulator::simulate(...)");
 
-	_dayNumber = dayNumber;
+	_jdn = jdn;
 	_delta = delta;
 
 	simulate(root);

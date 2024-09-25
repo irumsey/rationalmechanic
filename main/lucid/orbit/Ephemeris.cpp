@@ -7,6 +7,7 @@
 #include <lucid/gigl/Mesh.h>
 #include <lucid/math/Math.h>
 #include <lucid/core/FileReader.h>
+#include <lucid/core/Profiler.h>
 #include <lucid/core/Logger.h>
 #include <lucid/core/Error.h>
 
@@ -103,16 +104,13 @@ void Ephemeris::initialize(std::string const &path)
 		{
 			_physicalProperties.insert(std::make_pair(target.id, PhysicalProperties(reader)));
 			_renderProperties.insert(std::make_pair(target.id, RenderProperties(reader)));
-
-			RotationalElements rotationalElements;
-			reader.read(&rotationalElements, sizeof(RotationalElements));
-			_rotation.insert(std::make_pair(target.id, rotationalElements));
+			_rotationalElements.insert(std::make_pair(target.id, RotationalElements(reader)));
 
 			size_t elementsCount = reader.read<int32_t>();
 			elements_vec_t pluralElements(elementsCount);
 			for (int32_t i = 0; i < elementsCount; ++i)
 				reader.read(&pluralElements[i], sizeof(OrbitalElements));
-			_elements.insert(std::make_pair(target.id, pluralElements));
+			_orbitalElements.insert(std::make_pair(target.id, pluralElements));
 		}
 	}
 
@@ -123,10 +121,11 @@ void Ephemeris::shutdown()
 {
 	_order.clear();
 	_entries.clear();
+
 	_physicalProperties.clear();
 	_renderProperties.clear();
-	_rotation.clear();
-	_elements.clear();
+	_rotationalElements.clear();
+	_orbitalElements.clear();
 
 	_leapSeconds.clear();
 
@@ -135,6 +134,8 @@ void Ephemeris::shutdown()
 
 scalar_t Ephemeris::time(scalar_t jdn) const
 {
+	LUCID_PROFILE_SCOPE("Ephemeris::time(...)");
+
 	size_t count = _leapSeconds.size();
 
 	if (count < 2)
@@ -200,8 +201,10 @@ bool Ephemeris::lookup(RenderProperties &properties, size_t target) const
 
 bool Ephemeris::lookup(OrbitalElements &elements, size_t target, scalar_t jdn) const
 {
-	auto iter = _elements.find(target);
-	if (iter == _elements.end())
+	LUCID_PROFILE_SCOPE("Ephemeris::lookup(OrbitalElements &,...)");
+
+	auto iter = _orbitalElements.find(target);
+	if (iter == _orbitalElements.end())
 	{
 		LUCID_CORE::log("ERR", "Ephemeris: specified target not found");
 		return false;
@@ -242,8 +245,8 @@ bool Ephemeris::lookup(OrbitalElements &elements, size_t target, scalar_t jdn) c
 
 bool Ephemeris::lookup(RotationalElements &elements, size_t target) const
 {
-	auto iter = _rotation.find(target);
-	if (iter == _rotation.end())
+	auto iter = _rotationalElements.find(target);
+	if (iter == _rotationalElements.end())
 		return false;
 
 	elements = iter->second;
