@@ -2,9 +2,7 @@
 
 #include <lucid/orbit/Defines.h>
 #include <lucid/orbit/Properties.h>
-
-#pragma push_macro("PROPERTY")
-#define PROPERTY(alias, name, type) property type alias { type get() { return _internal->name; } void set(type value) { _internal->name = value; } }
+#include <lucid/managed/Core/Utility.h>
 
 namespace Lucid {
 namespace Orbit{
@@ -23,9 +21,9 @@ namespace Orbit{
 
 		!PhysicalProperties();
 
-		PROPERTY(     GM,     GM, double)
-		PROPERTY(   Mass,   mass, double)
-		PROPERTY( Radius, radius, double)
+		LUCID_MANAGED_PROPERTY_EX(     GM,     GM, double)
+		LUCID_MANAGED_PROPERTY_EX(   Mass,   mass, double)
+		LUCID_MANAGED_PROPERTY_EX( Radius, radius, double)
 
 		property LUCID_ORBIT::PhysicalProperties const &ref { LUCID_ORBIT::PhysicalProperties const &get() { return *ptr; } }
 
@@ -51,9 +49,9 @@ namespace Orbit{
 
 		!RenderProperties();
 
-		PROPERTY(     ShowOrbit,      showOrbit, bool)
-		PROPERTY(OrbitHighlight, orbitHighlight, bool)
-		PROPERTY( BodyHighlight,  bodyHighlight, bool)
+		LUCID_MANAGED_PROPERTY_EX(     ShowOrbit,      showOrbit, bool)
+		LUCID_MANAGED_PROPERTY_EX(OrbitHighlight, orbitHighlight, bool)
+		LUCID_MANAGED_PROPERTY_EX( BodyHighlight,  bodyHighlight, bool)
 
 		property LUCID_ORBIT::RenderProperties const &ref { LUCID_ORBIT::RenderProperties const &get() { return *ptr; } }
 
@@ -67,6 +65,3 @@ namespace Orbit{
 
 }	///	Orbit
 }	///	Lucid
-
-#undef PROPERTY
-#pragma pop_macro("PROPERTY")

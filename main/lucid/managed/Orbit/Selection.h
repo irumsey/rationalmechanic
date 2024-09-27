@@ -2,9 +2,7 @@
 
 #include <lucid/orbit/Defines.h>
 #include <lucid/orbit/Selection.h>
-
-#pragma push_macro("PROPERTY")
-#define PROPERTY(alias, name, type) property type alias { type get() { return _internal->name; } void set(type value) { _internal->name = value; } }
+#include <lucid/managed/Core/Utility.h>
 
 namespace Lucid {
 namespace Orbit{
@@ -12,15 +10,21 @@ namespace Orbit{
 	///	
 	///
 	///
+
+	public enum class SelectionOrigin
+	{
+		ORIGIN_NATURAL		= LUCID_ORBIT::Selection::ORIGIN_NATURAL,
+		ORIGIN_ARTIFICIAL	= LUCID_ORBIT::Selection::ORIGIN_ARTIFICIAL,
+	};
+
 	public enum class SelectionType
 	{
-		TYPE_NONE    = 0,
-		TYPE_STAR    = LUCID_ORBIT::Selection::TYPE_STAR,
-		TYPE_FRAME   = LUCID_ORBIT::Selection::TYPE_FRAME,
-		TYPE_ORBIT   = LUCID_ORBIT::Selection::TYPE_ORBIT,
-		TYPE_CAMERA  = LUCID_ORBIT::Selection::TYPE_CAMERA,
-		TYPE_CALLOUT = LUCID_ORBIT::Selection::TYPE_CALLOUT,
-		TYPE_OTHER   = LUCID_ORBIT::Selection::TYPE_OTHER,
+		TYPE_NONE			= LUCID_ORBIT::Selection::TYPE_NONE,
+		TYPE_STAR			= LUCID_ORBIT::Selection::TYPE_STAR,
+		TYPE_ORBIT			= LUCID_ORBIT::Selection::TYPE_ORBIT,
+		TYPE_FRAME			= LUCID_ORBIT::Selection::TYPE_FRAME,
+		TYPE_CAMERA			= LUCID_ORBIT::Selection::TYPE_CAMERA,
+		TYPE_ICON			= LUCID_ORBIT::Selection::TYPE_ICON,
 	};
 
 	///
@@ -35,12 +39,11 @@ namespace Orbit{
 
 		!Selection();
 
-		property SelectionType Type {
-			SelectionType get();
-			void set(SelectionType value);
-		}
+		property int ID { int get() { return _internal->id(); }}
 
-		PROPERTY(   Token,   token,      uint32_t)
+		LUCID_MANANGED_ENUMERATION(Origin, origin, SelectionOrigin, LUCID_ORBIT::Selection::ORIGIN)
+		LUCID_MANANGED_ENUMERATION(  Type,   type,   SelectionType, LUCID_ORBIT::Selection::  TYPE)
+		LUCID_MANAGED_PROPERTY_EX ( Token,  token,       uint32_t)
 
 		property LUCID_ORBIT::Selection const &ref { LUCID_ORBIT::Selection const &get() { return *ptr; } }
 
@@ -53,7 +56,3 @@ namespace Orbit{
 
 }	///	Orbit
 }	///	Lucid
-
-
-#undef PROPERTY
-#pragma pop_macro("PROPERTY")

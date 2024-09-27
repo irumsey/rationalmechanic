@@ -47,12 +47,12 @@ public:
 			TYPE_ORBITAL_BODY  = 2,
 			TYPE_DYNAMIC_BODY  = 3,
 			TYPE_CAMERA_FRAME  = 4,
-		};
+		}; 
 		enum { TYPE_COUNT = 5 };
 
 		TYPE  type = TYPE_UNDEFINED;
-		size_t  id = 0;
-		size_t cid = 0;
+		int32_t  id = 0;
+		int32_t cid = 0;
 		std::string name;
 		std::string description;
 
@@ -75,23 +75,23 @@ public:
 
 	bool lookup(Entry &entry, std::string const &target) const;
 	
-	bool lookup(Entry &entry, size_t target) const;
+	bool lookup(Entry &entry, int32_t target) const;
 
 	bool lookup(PhysicalProperties &properties, std::string const &target) const;
 			 
-	bool lookup(PhysicalProperties &properties, size_t target) const;
+	bool lookup(PhysicalProperties &properties, int32_t target) const;
 			 
 	bool lookup(RenderProperties &properties, std::string const &target) const;
 
-	bool lookup(RenderProperties &properties, size_t target) const;
+	bool lookup(RenderProperties &properties, int32_t target) const;
 
 	bool lookup(OrbitalElements &elements, std::string const &target, scalar_t jdn) const;
 			 
-	bool lookup(OrbitalElements &elements, size_t target, scalar_t jdn) const;
+	bool lookup(OrbitalElements &elements, int32_t target, scalar_t jdn) const;
 
 	bool lookup(RotationalElements &elements, std::string const &target) const;
 
-	bool lookup(RotationalElements &elements, size_t target) const;
+	bool lookup(RotationalElements &elements, int32_t target) const;
 
 	static Ephemeris &instance();
 
@@ -104,13 +104,13 @@ private:
 
 	typedef std::vector<OrbitalElements> elements_vec_t;
 
-	typedef std::unordered_map<std::string, size_t> id_map_t;
+	typedef std::unordered_map<std::string, int32_t> id_map_t;
 
-	typedef std::unordered_map<size_t, Entry> entry_map_t;
-	typedef std::unordered_map<size_t, PhysicalProperties> physical_properties_map_t;
-	typedef std::unordered_map<size_t, RenderProperties> render_properties_map_t;
-	typedef std::unordered_map<size_t, elements_vec_t> elements_map_t;
-	typedef std::unordered_map<size_t, RotationalElements> rotation_map_t;
+	typedef std::unordered_map<int32_t, Entry> entry_map_t;
+	typedef std::unordered_map<int32_t, PhysicalProperties> physical_properties_map_t;
+	typedef std::unordered_map<int32_t, RenderProperties> render_properties_map_t;
+	typedef std::unordered_map<int32_t, elements_vec_t> elements_map_t;
+	typedef std::unordered_map<int32_t, RotationalElements> rotation_map_t;
 
 	ordinal_vec_t _order;
 
@@ -130,7 +130,7 @@ private:
 	rotation_map_t _rotationalElements;
 	elements_map_t _orbitalElements;
 
-	size_t lookup(std::string const &target) const;
+	bool lookup(int32_t &id, std::string const &target) const;
 
 	void warnOnce(std::string const &msg) const;
 
@@ -165,14 +165,13 @@ inline Ephemeris::Iterator Ephemeris::end() const
 
 inline bool Ephemeris::lookup(Entry &entry, std::string const &target) const
 {
-	size_t id = lookup(target);
-	if (-1 == id)
-		return false;
-
-	return lookup(entry, id);
+	int32_t id = 0;
+	if (lookup(id, target))
+		return lookup(entry, id);
+	return false;
 }
 
-inline bool Ephemeris::lookup(Entry &entry, size_t id) const
+inline bool Ephemeris::lookup(Entry &entry, int32_t id) const
 {
 	auto iter = _entries.find(id);
 	if (iter == _entries.end())
@@ -185,47 +184,45 @@ inline bool Ephemeris::lookup(Entry &entry, size_t id) const
 
 inline bool Ephemeris::lookup(PhysicalProperties &properties, std::string const &target) const
 {
-	size_t id = lookup(target);
-	if (-1 == id)
-		return false;
-
-	return lookup(properties, id);
+	int32_t id = 0;
+	if(lookup(id, target))
+		return lookup(properties, id);
+	return false;
 }
 
 inline bool Ephemeris::lookup(RenderProperties &properties, std::string const &target) const
 {
-	size_t id = lookup(target);
-	if (-1 == id)
-		return false;
-
-	return lookup(properties, id);
+	int32_t id = 0;
+	if(lookup(id, target))
+		return lookup(properties, id);
+	return false;
 }
 
 inline bool Ephemeris::lookup(OrbitalElements &elements, std::string const &target, scalar_t jdn) const
 {
-	size_t id = lookup(target);
-	if (-1 == id)
-		return false;
-
-	return lookup(elements, id, jdn);
+	int32_t id = 0;
+	if(lookup(id, target))
+		return lookup(elements, id, jdn);
+	return false;
 }
 
 inline bool Ephemeris::lookup(RotationalElements &elements, std::string const &target) const
 {
-	size_t id = lookup(target);
-	if (-1 == id)
-		return false;
-
-	return lookup(elements, id);
+	int32_t id = 0;
+	if (lookup(id, target))
+		return lookup(elements, id);
+	return false;
 }
 
-inline size_t Ephemeris::lookup(std::string const &target) const
+inline bool Ephemeris::lookup(int32_t &id, std::string const &target) const
 {
 	auto iter = _ids.find(target);
 	if (iter == _ids.end())
-		return -1;
+		return false;
 
-	return iter->second;
+	id = iter->second;
+
+	return true;
 }
 
 LUCID_ORBIT_END

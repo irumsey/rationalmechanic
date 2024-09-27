@@ -102,8 +102,8 @@ void Ephemeris::initialize(std::string const &path)
 		///	for now, orbital body is the only type with extra information
 		if (Entry::TYPE_ORBITAL_BODY == target.type)
 		{
-			_physicalProperties.insert(std::make_pair(target.id, PhysicalProperties(reader)));
 			_renderProperties.insert(std::make_pair(target.id, RenderProperties(reader)));
+			_physicalProperties.insert(std::make_pair(target.id, PhysicalProperties(reader)));
 			_rotationalElements.insert(std::make_pair(target.id, RotationalElements(reader)));
 
 			size_t elementsCount = reader.read<int32_t>();
@@ -178,7 +178,7 @@ scalar_t Ephemeris::time(scalar_t jdn) const
 	return time(jdn, _DELTA_AT[first].second);
 }
 
-bool Ephemeris::lookup(PhysicalProperties &properties, size_t target) const
+bool Ephemeris::lookup(PhysicalProperties &properties, int32_t target) const
 {
 	auto iter = _physicalProperties.find(target);
 	if (iter == _physicalProperties.end())
@@ -189,7 +189,7 @@ bool Ephemeris::lookup(PhysicalProperties &properties, size_t target) const
 	return true;
 }
 
-bool Ephemeris::lookup(RenderProperties &properties, size_t target) const
+bool Ephemeris::lookup(RenderProperties &properties, int32_t target) const
 {
 	auto iter = _renderProperties.find(target);
 	if (iter == _renderProperties.end())
@@ -200,7 +200,7 @@ bool Ephemeris::lookup(RenderProperties &properties, size_t target) const
 	return true;
 }
 
-bool Ephemeris::lookup(OrbitalElements &elements, size_t target, scalar_t jdn) const
+bool Ephemeris::lookup(OrbitalElements &elements, int32_t target, scalar_t jdn) const
 {
 	LUCID_PROFILE_SCOPE("Ephemeris::lookup(OrbitalElements &,...)");
 
@@ -244,7 +244,7 @@ bool Ephemeris::lookup(OrbitalElements &elements, size_t target, scalar_t jdn) c
 	return true;
 }
 
-bool Ephemeris::lookup(RotationalElements &elements, size_t target) const
+bool Ephemeris::lookup(RotationalElements &elements, int32_t target) const
 {
 	auto iter = _rotationalElements.find(target);
 	if (iter == _rotationalElements.end())

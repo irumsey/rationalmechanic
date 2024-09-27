@@ -46,7 +46,7 @@ public:
 
 	Frame *root() const;
 
-	Frame *frame(size_t id) const;
+	Frame *frame(int32_t id) const;
 
 	void attach(Frame *center, Frame *frame);
 
@@ -58,10 +58,10 @@ public:
 
 	Selection hit(int32_t x, int32_t y) const;
 
-	scalar_t distance(size_t sid, size_t tid) const;
+	scalar_t distance(int32_t sid, int32_t tid) const;
 
 private:
-	typedef std::unordered_map<size_t, Frame *> frame_map_t;
+	typedef std::unordered_map<int32_t, Frame *> frame_map_t;
 
 	scalar_t _dayNumber[2] = { constants::J2000, constants::J2000, };
 
@@ -98,7 +98,7 @@ inline Frame *Mechanics::root() const
 	return _root;
 }
 
-inline Frame *Mechanics::frame(size_t id) const
+inline Frame *Mechanics::frame(int32_t id) const
 {
 	auto iter = _frames.find(id);
 	LUCID_VALIDATE(iter != _frames.end(), "unknown frame id specified");

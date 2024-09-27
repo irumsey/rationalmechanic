@@ -67,7 +67,7 @@ namespace Orbit {
 		return Frame::Wrap(_internal->root());
 	}
 
-	Frame ^Mechanics::default::get(size_t id)
+	Frame ^Mechanics::default::get(int32_t id)
 	{
 		return Frame::Wrap(_internal->frame(id));
 	}

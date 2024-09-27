@@ -170,11 +170,7 @@ Selection Renderer::hit(int32_t x, int32_t y) const
 	uint32_t const *target = (uint32_t const *)(_selectReader->read());
 	uint32_t code = target[y * _width + x];
 
-	Selection selection;
-	selection.type = (Selection::TYPE)((0xf0000000 & code) >> Selection::SELECT_SHIFT);
-	selection.token = (Selection::SELECT_MASK & code);
-
-	return selection;
+	return Selection(code);
 }
 
 void Renderer::preRender()

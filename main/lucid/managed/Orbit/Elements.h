@@ -2,9 +2,7 @@
 
 #include <lucid/orbit/Defines.h>
 #include <lucid/orbit/Elements.h>
-
-#pragma push_macro("PROPERTY")
-#define PROPERTY(name, type) property type name { type get() { return _internal->name; } void set(type value) { _internal->name = value; } }
+#include <lucid/managed/Core/Utility.h>
 
 namespace Lucid {
 namespace Orbit{
@@ -21,19 +19,19 @@ namespace Orbit{
 
 		!OrbitalElements();
 
-		PROPERTY( JDN, double)	///	Julian day number
-		PROPERTY(  EC, double)	/// Eccentricity
-		PROPERTY(  QR, double)	/// Periapsis distance
-		PROPERTY(  IN, double)	/// Inclination
-		PROPERTY(  OM, double)	/// Longitude of Ascending Node
-		PROPERTY(   W, double)	/// Argument of Perifocus
-		PROPERTY(  Tp, double)	/// Time of periapsis
-		PROPERTY(   N, double)	/// Mean motion
-		PROPERTY(  MA, double)	/// Mean anomaly
-		PROPERTY(  TA, double)	/// True anomaly
-		PROPERTY(   A, double)	/// Semi-major axis
-		PROPERTY(  AD, double)	/// Apoapsis distance
-		PROPERTY(  PR, double)	/// Sidereal orbit period
+		LUCID_MANAGED_PROPERTY( JDN, double)	///	Julian day number
+		LUCID_MANAGED_PROPERTY(  EC, double)	/// Eccentricity
+		LUCID_MANAGED_PROPERTY(  QR, double)	/// Periapsis distance
+		LUCID_MANAGED_PROPERTY(  IN, double)	/// Inclination
+		LUCID_MANAGED_PROPERTY(  OM, double)	/// Longitude of Ascending Node
+		LUCID_MANAGED_PROPERTY(   W, double)	/// Argument of Perifocus
+		LUCID_MANAGED_PROPERTY(  Tp, double)	/// Time of periapsis
+		LUCID_MANAGED_PROPERTY(   N, double)	/// Mean motion
+		LUCID_MANAGED_PROPERTY(  MA, double)	/// Mean anomaly
+		LUCID_MANAGED_PROPERTY(  TA, double)	/// True anomaly
+		LUCID_MANAGED_PROPERTY(   A, double)	/// Semi-major axis
+		LUCID_MANAGED_PROPERTY(  AD, double)	/// Apoapsis distance
+		LUCID_MANAGED_PROPERTY(  PR, double)	/// Sidereal orbit period
 
 		property LUCID_ORBIT::OrbitalElements const &ref { LUCID_ORBIT::OrbitalElements const &get() { return *ptr; } }
 
@@ -46,7 +44,3 @@ namespace Orbit{
 
 }	///	Orbit
 }	///	Lucid
-
-
-#undef PROPERTY
-#pragma pop_macro("PROPERTY")

@@ -49,7 +49,7 @@ void Compositor::initialize(size_t passMaximum, scalar_t midRange)
 		StarCatalog::Entry const &entry = LUCID_ORBIT_STARCATALOG[i];
 		StarInstance &instance = starInstances[i];
 
-		instance.          id = uint32_t((Selection::TYPE_STAR << Selection::SELECT_SHIFT) | i);
+		instance.          id = Selection(Selection::TYPE_STAR, int32_t(i)).token;
 		instance.parameters.x = /* unused */ 0.f;
 		instance.parameters.y = float32_t(entry.right_ascension);
 		instance.parameters.z = float32_t(entry.declination);
@@ -128,7 +128,7 @@ void Compositor::evaluate(OrbitalBody *body)
 
 	pass.      model = renderProperties.model;
 
-	pass.           id = uint32_t((Selection::TYPE_FRAME << Selection::SELECT_SHIFT) | body->id);
+	pass.           id = Selection(Selection::TYPE_FRAME, body->id).token;
 	pass.     position = LUCID_MATH::lerp(_interpolant, body->absolutePosition[0], body->absolutePosition[1]) - _cameraPosition;
 	pass.     distance = LUCID_MATH::len(pass.position);
 	pass.     rotation = LUCID_MATH::normalize(q);

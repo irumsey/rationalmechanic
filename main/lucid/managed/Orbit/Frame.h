@@ -51,7 +51,7 @@ namespace Orbit {
 
 		property Frame ^NextSibling { Frame ^get(); }
 
-		property size_t ID { size_t get(); }
+		property int32_t ID { int32_t get(); }
 
 		property System::String ^Name { System::String ^get(); }
 
@@ -83,7 +83,7 @@ namespace Orbit {
 	public:
 		DynamicPoint(LUCID_ORBIT::DynamicPoint *body);
 
-		DynamicPoint(size_t id, System::String ^name, System::String ^description);
+		DynamicPoint(int32_t id, System::String ^name, System::String ^description);
 
 		~DynamicPoint();
 
@@ -133,7 +133,7 @@ namespace Orbit {
 	public:
 		DynamicBody(LUCID_ORBIT::DynamicBody *body);
 
-		DynamicBody(size_t id, System::String ^name, System::String ^description);
+		DynamicBody(int32_t id, System::String ^name, System::String ^description);
 
 		~DynamicBody();
 
@@ -155,7 +155,7 @@ namespace Orbit {
 	public ref class CameraFrame : public Frame
 	{
 	public:
-		CameraFrame(size_t id, System::String ^name, System::String ^description);
+		CameraFrame(int32_t id, System::String ^name, System::String ^description);
 
 		CameraFrame(LUCID_ORBIT::CameraFrame *camera);
 

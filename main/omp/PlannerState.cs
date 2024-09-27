@@ -264,47 +264,51 @@ namespace omp
 
                 if (Lucid.Orbit.SelectionType.TYPE_NONE == selection.Type)
                 {
-                    planner.statusLabel.Text = "no selection";
+                    planner.statusLabel.Text = "<no selection>";
                     return;
                 }
 
                 if (Lucid.Orbit.SelectionType.TYPE_STAR == selection.Type)
                 {
-                    Lucid.Orbit.StarCatalogEntry entry = Lucid.Orbit.StarCatalog.At(selection.Token);
-                    planner.statusLabel.Text = "BSC5: " + entry.XNO.ToString() + " Type: " + entry.Type + " Mag: " + entry.Mag.ToString();
+                    StarCatalogEntry entry = StarCatalog.At((UInt32)(selection.ID));
+                    planner.statusLabel.Text = "BSC   : " + entry.XNO.ToString() + " Type: " + entry.Type.ToString() + " Mag: " + entry.Mag.ToString();
                     return;
                 }
 
                 if (Lucid.Orbit.SelectionType.TYPE_ORBIT == selection.Type)
                 {
-                    Lucid.Orbit.Frame frame = planner.orbitalMechainics[selection.Token];
-                    planner.statusLabel.Text = "Orbit: " + frame.Name;
+                    EphemerisEntry entry = Ephemeris.LookupEntry(selection.ID);
+                    planner.statusLabel.Text = "Orbit : " + entry.Name;
                     return;
                 }
 
                 if (Lucid.Orbit.SelectionType.TYPE_FRAME == selection.Type)
                 {
-                    Lucid.Orbit.Frame frame = planner.orbitalMechainics[selection.Token];
-                    planner.statusLabel.Text = "Frame: " + frame.Name;
+                    String origin =
+                        (Lucid.Orbit.SelectionOrigin.ORIGIN_ARTIFICIAL == selection.Origin) ?
+                        " (artificial)" :
+                        " (natural)";
+
+                    EphemerisEntry entry = Ephemeris.LookupEntry(selection.ID);
+                    planner.statusLabel.Text = "Frame : " + entry.Name + origin;
                     return;
                 }
 
                 if (Lucid.Orbit.SelectionType.TYPE_CAMERA == selection.Type)
                 {
-                    planner.statusLabel.Text = "Camera";
+                    planner.statusLabel.Text = "Camera: ";
                     return;
                 }
 
-                if (Lucid.Orbit.SelectionType.TYPE_CALLOUT == selection.Type)
+                if (Lucid.Orbit.SelectionType.TYPE_ICON == selection.Type)
                 {
-                    Lucid.Orbit.Frame frame = planner.orbitalMechainics[selection.Token];
-                    planner.statusLabel.Text = "Callout: " + frame.Name;
-                    return;
-                }
+                    String origin =
+                        (Lucid.Orbit.SelectionOrigin.ORIGIN_ARTIFICIAL == selection.Origin) ?
+                        " (artificial)" :
+                        " (natural)";
 
-                if (Lucid.Orbit.SelectionType.TYPE_OTHER == selection.Type)
-                {
-                    planner.statusLabel.Text = "Other";
+                    EphemerisEntry entry = Ephemeris.LookupEntry(selection.ID);
+                    planner.statusLabel.Text = "Icon  : " + entry.Name + origin;
                     return;
                 }
             }

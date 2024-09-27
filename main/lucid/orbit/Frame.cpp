@@ -7,29 +7,24 @@ LUCID_ORBIT_BEGIN
 ///
 ///
 
-size_t Frame::_instances = 0;
-
-Frame::Frame(size_t id, std::string const &name, std::string const &description)
+Frame::Frame(int32_t id, std::string const &name, std::string const &description)
 	: id(id)
 	, name(name)
 	, description(description)
 {
-	++_instances;
 }
 
 Frame::~Frame()
 {
 	delete firstChild;
 	delete nextSibling;
-
-	--_instances;
 }
 
 ///
 ///
 ///
 
-DynamicPoint::DynamicPoint(size_t id, std::string const &name, std::string const &description)
+DynamicPoint::DynamicPoint(int32_t id, std::string const &name, std::string const &description)
 	: Frame(id, name, description)
 {
 }
@@ -43,7 +38,7 @@ void DynamicPoint::apply(Algorithm *algorithm)
 ///
 ///
 
-OrbitalBody::OrbitalBody(size_t id, std::string const &name, std::string const &description)
+OrbitalBody::OrbitalBody(int32_t id, std::string const &name, std::string const &description)
 	: Frame(id, name, description)
 {
 }
@@ -57,7 +52,7 @@ void OrbitalBody::apply(Algorithm *algorithm)
 ///
 ///
 
-DynamicBody::DynamicBody(size_t id, std::string const &name, std::string const &description)
+DynamicBody::DynamicBody(int32_t id, std::string const &name, std::string const &description)
 	: Frame(id, name, description)
 {
 }
@@ -71,7 +66,7 @@ void DynamicBody::apply(Algorithm *algorithm)
 ///
 ///
 	
-CameraFrame::CameraFrame(size_t id, std::string const &name, std::string const &description)
+CameraFrame::CameraFrame(int32_t id, std::string const &name, std::string const &description)
 	: Frame(id, name, description)
 {
 }

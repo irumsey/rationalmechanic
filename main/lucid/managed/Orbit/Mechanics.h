@@ -54,7 +54,7 @@ namespace Orbit {
 
 		property Frame ^Root { Frame ^get(); };
 
-		property Frame ^default[size_t] { Frame ^get(size_t id); };
+		property Frame ^default[size_t] { Frame ^get(int32_t id); };
 
 		void Attach(Frame ^center, Frame ^frame);
 

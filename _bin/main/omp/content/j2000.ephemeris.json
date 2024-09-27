@@ -878,7 +878,7 @@
 
     {
       "type": "ORBITAL_BODY",
-      "hid": 39900,
+      "hid": -125544,
       "target": "ISS",
       "description": "International Space Station",
       "center": "Earth",
@@ -898,9 +898,9 @@
         }
       },
       "rotationalElements": {
-        "ra" : [ 0, 0, 0 ],
+        "ra": [ 0, 0, 0 ],
         "dec": [ 0, 0, 0 ],
-        "pm" : [ 0, 0, 0 ]
+        "pm": [ 0, 0, 0 ]
       },
       "orbitalElements": [
         [
@@ -937,7 +937,7 @@
     },
     {
       "type": "ORBITAL_BODY",
-      "hid": 39901,
+      "hid": -48,
       "target": "HST",
       "description": "Hubble Space Telescope",
       "center": "Earth",
@@ -996,7 +996,7 @@
     },
     {
       "type": "ORBITAL_BODY",
-      "hid": 39902,
+      "hid": -95,
       "target": "TESS",
       "description": "Transiting Exoplanet Survey Satellite",
       "center": "Earth",
@@ -1058,7 +1058,7 @@
 
     {
       "type": "ORBITAL_BODY",
-      "hid": 10003,
+      "hid": -170,
       "target": "JWST",
       "description": "Jame's Webb Space Telescope",
       "center": "Sun",

@@ -2,9 +2,7 @@
 
 #include <lucid/orbit/Defines.h>
 #include <lucid/orbit/StarCatalog.h>
-
-#pragma push_macro("PROPERTY")
-#define PROPERTY(alias, name, type) property type alias { type get() { return _internal->name; } void set(type value) { _internal->name = value; } }
+#include <lucid/managed/Core/Utility.h>
 
 namespace Lucid {
 namespace Orbit {
@@ -21,10 +19,10 @@ namespace Orbit {
 
 		!StarCatalogEntry();
 
-		PROPERTY( XNO,             xno,      size_t)
-		PROPERTY(  RA, right_ascension,      double)
-		PROPERTY( DEC,     declination,      double)
-		PROPERTY( Mag,       magnitude,       float)
+		LUCID_MANAGED_PROPERTY_EX( XNO,             xno,      size_t)
+		LUCID_MANAGED_PROPERTY_EX(  RA, right_ascension,      double)
+		LUCID_MANAGED_PROPERTY_EX( DEC,     declination,      double)
+		LUCID_MANAGED_PROPERTY_EX( Mag,       magnitude,       float)
 
 		property System::String ^Type { System::String ^get(); }
 
@@ -63,5 +61,3 @@ namespace Orbit {
 }	///	Orbit
 }	/// Lucid
 
-#undef PROPERTY
-#pragma pop_macro("PROPERTY")

@@ -680,16 +680,12 @@ def bootFrameDynamicPoint(dst, frame):
 
 def bootFrameOrbitalBody(dst, frame):
 	bootUnsigned(dst, orbitalFrameType['ORBITAL_BODY'])
-	bootUnsigned(dst, frame['hid'])
+	bootInteger(dst, frame['hid'])
 	bootString(dst, frame['target'])
 	bootString(dst, frame['description'])
 	bootString(dst, frame['center'])
 
 	properties = frame['properties']
-
-	bootDouble(dst, properties['physical']['GM'])
-	bootDouble(dst, properties['physical']['mass'])
-	bootDouble(dst, properties['physical']['radius'])
 
 	bootBoolean(dst, properties['render']['orbit'])
 
@@ -703,6 +699,10 @@ def bootFrameOrbitalBody(dst, frame):
 	bootVector4(dst, properties['render']['channel1'])
 	bootVector4(dst, properties['render']['channel2'])
 
+	bootDouble(dst, properties['physical']['GM'])
+	bootDouble(dst, properties['physical']['mass'])
+	bootDouble(dst, properties['physical']['radius'])
+	
 	rotationalElements = frame['rotationalElements']
 	bootDegreesAsRadians3(dst, rotationalElements[ 'ra'])
 	bootDegreesAsRadians3(dst, rotationalElements['dec'])

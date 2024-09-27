@@ -69,7 +69,7 @@ public:
 	SIM_STATE simState = SIM_STATE_IDLE;
 	CULL_STATE cullState = CULL_STATE_PRUNED;
 
-	size_t id = 0;
+	int32_t id = 0;
 	std::string name;
 	std::string description;
 
@@ -93,11 +93,7 @@ public:
 	virtual void apply(Algorithm *algorithm) = 0;
 
 protected:
-	Frame(size_t id, std::string const &name, std::string const &description);
-
-private:
-	/// TBD: remove this eventually.  right now, just paranoid about the new ownership rules.
-	static size_t _instances;
+	Frame(int32_t id, std::string const &name, std::string const &description);
 
 	LUCID_PREVENT_COPY(Frame);
 	LUCID_PREVENT_ASSIGNMENT(Frame);
@@ -143,7 +139,7 @@ class DynamicPoint : public Frame
 public:
 	/// TBD: data...
 
-	DynamicPoint(size_t id, std::string const &name, std::string const &description);
+	DynamicPoint(int32_t id, std::string const &name, std::string const &description);
 
 	virtual ~DynamicPoint() = default;
 
@@ -166,7 +162,7 @@ public:
 	RotationalElements rotationalElements;
 	OrbitalElements orbitalElements[2];			/// can change over time
 
-	OrbitalBody(size_t id, std::string const &name, std::string const &description);
+	OrbitalBody(int32_t id, std::string const &name, std::string const &description);
 
 	virtual ~OrbitalBody() = default;
 
@@ -185,7 +181,7 @@ class DynamicBody : public Frame
 public:
 	/// TBD: data...
 
-	DynamicBody(size_t id, std::string const &name, std::string const &description);
+	DynamicBody(int32_t id, std::string const &name, std::string const &description);
 
 	virtual ~DynamicBody() = default;
 
@@ -204,7 +200,7 @@ public:
 	scalar_t fov = 0.25 * constants::pi;
 	Frame *focus = nullptr;
 
-	CameraFrame(size_t id, std::string const &name, std::string const &description);
+	CameraFrame(int32_t id, std::string const &name, std::string const &description);
 
 	virtual ~CameraFrame() = default;
 

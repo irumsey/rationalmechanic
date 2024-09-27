@@ -18,15 +18,5 @@ namespace Orbit {
 		delete _internal;
 	}
 
-	SelectionType Selection::Type::get()
-	{
-		return SelectionType(_internal->type);
-	}
-
-	void Selection::Type::set(SelectionType value)
-	{
-		_internal->type = LUCID_ORBIT::Selection::TYPE(value);
-	}
-
 }	///	Orbit
 }	///	Lucid

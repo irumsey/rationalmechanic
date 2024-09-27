@@ -105,11 +105,14 @@
     <ClInclude Include="Orbit\StarCatalog.h">
       <Filter>Orbit</Filter>
     </ClInclude>
+    <ClInclude Include="Orbit\Mechanics.h">
+      <Filter>Orbit</Filter>
+    </ClInclude>
     <ClInclude Include="Orbit\Frame.h">
       <Filter>Orbit</Filter>
     </ClInclude>
-    <ClInclude Include="Orbit\Mechanics.h">
-      <Filter>Orbit</Filter>
+    <ClInclude Include="Core\Utility.h">
+      <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -179,7 +182,6 @@
     <ClCompile Include="GAL\Parameter.cpp">
       <Filter>GAL</Filter>
     </ClCompile>
-    <ClCompile Include="Link.cpp" />
     <ClCompile Include="Orbit\Elements.cpp">
       <Filter>Orbit</Filter>
     </ClCompile>
@@ -201,6 +203,7 @@
     <ClCompile Include="Orbit\Mechanics.cpp">
       <Filter>Orbit</Filter>
     </ClCompile>
+    <ClCompile Include="Link.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="app.ico">

@@ -157,6 +157,7 @@
     <ClInclude Include="Core\Clock.h" />
     <ClInclude Include="Core\Logger.h" />
     <ClInclude Include="Core\Profiler.h" />
+    <ClInclude Include="Core\Utility.h" />
     <ClInclude Include="GAL\DepthTarget2D.h" />
     <ClInclude Include="GAL\IndexBuffer.h" />
     <ClInclude Include="GAL\Parameter.h" />

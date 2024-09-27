@@ -33,16 +33,6 @@ namespace Orbit {
 		delete _internal;
 	}
 
-	EphemerisEntryType EphemerisEntry::Type::get()
-	{
-			return EphemerisEntryType(_internal->type);
-	}
-
-	void EphemerisEntry::Type::set(EphemerisEntryType value)
-	{
-		_internal->type = LUCID_ORBIT::Ephemeris::Entry::TYPE(value);
-	}
-
 	System::String ^EphemerisEntry::Name::get()
 	{
 		return MI::marshal_as<System::String ^>(_internal->name);
@@ -86,7 +76,7 @@ namespace Orbit {
 		return nullptr;
 	}
 
-	EphemerisEntry ^Ephemeris::LookupEntry(size_t id)
+	EphemerisEntry ^Ephemeris::LookupEntry(int32_t id)
 	{
 		LUCID_ORBIT::Ephemeris::Entry entry;
 		if (LUCID_ORBIT_EPHEMERIS.lookup(entry, id))
@@ -104,7 +94,7 @@ namespace Orbit {
 		return nullptr;
 	}
 
-	PhysicalProperties ^Ephemeris::LookupProperties(size_t id)
+	PhysicalProperties ^Ephemeris::LookupProperties(int32_t id)
 	{
 		LUCID_ORBIT::PhysicalProperties properties;
 		if (LUCID_ORBIT_EPHEMERIS.lookup(properties, id))
@@ -122,7 +112,7 @@ namespace Orbit {
 		return nullptr;
 	}
 
-	OrbitalElements ^Ephemeris::LookupElements(size_t id, double jdn)
+	OrbitalElements ^Ephemeris::LookupElements(int32_t id, double jdn)
 	{
 		LUCID_ORBIT::OrbitalElements elements;
 		if (LUCID_ORBIT_EPHEMERIS.lookup(elements, id, LUCID_ORBIT::scalar_t(jdn)))

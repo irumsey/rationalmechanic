@@ -103,7 +103,7 @@ namespace Orbit {
 		return Wrap(_internal->nextSibling);
 	}
 
-	size_t Frame::ID::get()
+	int32_t Frame::ID::get()
 	{
 		return _internal->id;
 	}
@@ -151,7 +151,7 @@ namespace Orbit {
 	{
 	}
 
-	DynamicPoint::DynamicPoint(size_t id, System::String ^name, System::String ^description)
+	DynamicPoint::DynamicPoint(int32_t id, System::String ^name, System::String ^description)
 		: _internal(new LUCID_ORBIT::DynamicPoint(id, MI::marshal_as<std::string>(name), MI::marshal_as<std::string>(description)))
 		, Frame(_internal)
 	{
@@ -205,7 +205,7 @@ namespace Orbit {
 	{
 	}
 
-	DynamicBody::DynamicBody(size_t id, System::String ^name, System::String ^description)
+	DynamicBody::DynamicBody(int32_t id, System::String ^name, System::String ^description)
 		: _internal(new LUCID_ORBIT::DynamicBody(id, MI::marshal_as<std::string>(name), MI::marshal_as<std::string>(description)))
 		, Frame(_internal)
 	{
@@ -224,7 +224,7 @@ namespace Orbit {
 	///
 	/// 
 
-	CameraFrame::CameraFrame(size_t id, System::String ^name, System::String ^description)
+	CameraFrame::CameraFrame(int32_t id, System::String ^name, System::String ^description)
 		: _internal(new LUCID_ORBIT::CameraFrame(id, MI::marshal_as<std::string>(name), MI::marshal_as<std::string>(description)))
 		, Frame(_internal)
 	{

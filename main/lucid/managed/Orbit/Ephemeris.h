@@ -2,9 +2,7 @@
 
 #include <lucid/orbit/Defines.h>
 #include <lucid/orbit/Ephemeris.h>
-
-#pragma push_macro("PROPERTY")
-#define PROPERTY(alias, name, type) property type alias { type get() { return _internal->name; } void set(type value) { _internal->name = value; } }
+#include <lucid/managed/Core/Utility.h>
 
 namespace Lucid {
 namespace Orbit {
@@ -35,13 +33,9 @@ namespace Orbit {
 
 		!EphemerisEntry();
 
-		PROPERTY( ID,  id, size_t)
-		PROPERTY(CID, cid, size_t)
-
-		property EphemerisEntryType Type {
-			EphemerisEntryType get();
-			void set(EphemerisEntryType value);
-		}
+		LUCID_MANAGED_PROPERTY_EX(   ID,   id,            int32_t)
+		LUCID_MANAGED_PROPERTY_EX(  CID,  cid,            int32_t)
+		LUCID_MANANGED_ENUMERATION(Type, type, EphemerisEntryType, LUCID_ORBIT::Ephemeris::Entry::TYPE)
 
 		property System::String ^Name {
 			System::String ^get();
@@ -78,15 +72,15 @@ namespace Orbit {
 
 		static EphemerisEntry ^LookupEntry(System::String ^name);
 
-		static EphemerisEntry ^LookupEntry(size_t id);
+		static EphemerisEntry ^LookupEntry(int32_t id);
 
 		static PhysicalProperties ^LookupProperties(System::String ^name);
 
-		static PhysicalProperties ^LookupProperties(size_t id);
+		static PhysicalProperties ^LookupProperties(int32_t id);
 
 		static OrbitalElements ^LookupElements(System::String ^name, double jdn);
 
-		static OrbitalElements ^LookupElements(size_t id, double jdn);
+		static OrbitalElements ^LookupElements(int32_t id, double jdn);
 
 	protected:
 		Ephemeris() {}
@@ -95,6 +89,3 @@ namespace Orbit {
 
 }	///	Orbit
 }	/// Lucid
-
-#undef PROPERTY
-#pragma pop_macro("PROPERTY")

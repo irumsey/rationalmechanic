@@ -162,7 +162,7 @@ void Overlay::batchOrbit(OrbitalBody *body)
 	scalar_t hu = a * (1.0 - e * e);
 
 	MeshInstance orbitInstance;
-	orbitInstance.id = uint32_t((Selection::TYPE_ORBIT << Selection::SELECT_SHIFT) | body->id);
+	orbitInstance.id = Selection(Selection::TYPE_ORBIT, body->id).token;
 	orbitInstance.position = _midRange * cast(centerPosition / centerDistance);
 	orbitInstance.scale = 3;
 	orbitInstance.rotation = cast(q);
@@ -185,7 +185,7 @@ void Overlay::batchIcon(OrbitalBody *body)
 	scalar_t bodyDistance = LUCID_MATH::len(bodyPosition);
 
 	IconInstance iconInstance;
-	iconInstance.id = uint32_t((Selection::TYPE_CALLOUT << Selection::SELECT_SHIFT) | body->id);
+	iconInstance.id = Selection(Selection::TYPE_ICON, body->id).token;
 	iconInstance.position = LUCID_GAL::Vector4(_midRange * cast(bodyPosition / bodyDistance), cast(bodyDistance / _midRange));
 	iconInstance.scale = LUCID_GAL::Vector2(24, 24);
 	iconInstance.texcoord = LUCID_GAL::Vector4(0, 0, 1, 1);

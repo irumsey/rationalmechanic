@@ -14,20 +14,20 @@ LUCID_ORBIT_BEGIN
 ///
 ///
 
-typedef Frame *(*create_func_t)(size_t id, std::string const &name, std::string const &description);
+typedef Frame *(*create_func_t)(int32_t id, std::string const &name, std::string const &description);
 
-Frame *creationError(size_t, std::string const &, std::string const &)
+Frame *creationError(int32_t, std::string const &, std::string const &)
 {
 	LUCID_THROW("attempt to create invalid frame type");
 	return nullptr;
 }
 
-Frame *createDynamicPoint(size_t id, std::string const &name, std::string const &description)
+Frame *createDynamicPoint(int32_t id, std::string const &name, std::string const &description)
 {
 	return new DynamicPoint(id, name, description);
 }
 
-Frame *createOrbitalBody(size_t id, std::string const &name, std::string const &description)
+Frame *createOrbitalBody(int32_t id, std::string const &name, std::string const &description)
 {
 	OrbitalBody *body = new OrbitalBody(id, name, description);
 
@@ -38,7 +38,7 @@ Frame *createOrbitalBody(size_t id, std::string const &name, std::string const &
 	return body;
 }
 
-Frame *createCameraFrame(size_t id, std::string const &name, std::string const &description)
+Frame *createCameraFrame(int32_t id, std::string const &name, std::string const &description)
 {
 	CameraFrame *camera = new CameraFrame(id, name, description);
 
@@ -47,7 +47,7 @@ Frame *createCameraFrame(size_t id, std::string const &name, std::string const &
 	return camera;
 }
 
-Frame *createDynamicBody(size_t id, std::string const &name, std::string const &description)
+Frame *createDynamicBody(int32_t id, std::string const &name, std::string const &description)
 {
 	return new DynamicBody(id, name, description);
 }
@@ -223,7 +223,7 @@ Selection Mechanics::hit(int32_t x, int32_t y) const
 	return _renderer.hit(x, y);
 }
 
-scalar_t Mechanics::distance(size_t sid, size_t tid) const
+scalar_t Mechanics::distance(int32_t sid, int32_t tid) const
 {
 	auto iter = _frames.find(sid);
 	if (iter == _frames.end())
