@@ -64,8 +64,8 @@ public:
 
 private:
 	enum { HEADER_SIZE =             18 };
-	enum {  PIXEL_SIZE =  sizeof(Pixel) };
-	enum { PIXEL_DEPTH = 8 * PIXEL_SIZE };
+	enum {  PIXEL_SIZE =  sizeof(Pixel) };	// in bytes
+	enum { PIXEL_DEPTH = 8 * PIXEL_SIZE };	// in pixels
 
 	size_t _width = 0;
 	size_t _height = 0;

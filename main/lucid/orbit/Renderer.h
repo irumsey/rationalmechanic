@@ -77,7 +77,7 @@ private:
 
 	///	test {
 	/// magic numbers
-	float32_t _znear = 0.1f;
+	float32_t _znear = 1.f;
 	float32_t _zfar = 1000.f;
 	float32_t _zmid = 0.5f * (_znear + _zfar);
 	/// } test

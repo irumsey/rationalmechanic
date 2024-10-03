@@ -174,15 +174,17 @@ template<typename T> inline T atan2(T y, T x)
 ///
 template<typename T> inline LUCID_MATRIX(T, 3, 3) matrixFromQuaternion(LUCID_QUATERNION(T) const &q) 
 {
-	T xx = q.x * q.x;
-	T xy = q.x * q.y;
-	T xz = q.x * q.z;
-	T xw = q.x * q.w;
-	T yy = q.y * q.y;
-	T yz = q.y * q.z;
-	T yw = q.y * q.w;
-	T zz = q.z * q.z;
-	T zw = q.z * q.w;
+	LUCID_QUATERNION(T) nq = normalize(q);
+
+	T xx = nq.x * nq.x;
+	T xy = nq.x * nq.y;
+	T xz = nq.x * nq.z;
+	T xw = nq.x * nq.w;
+	T yy = nq.y * nq.y;
+	T yz = nq.y * nq.z;
+	T yw = nq.y * nq.w;
+	T zz = nq.z * nq.z;
+	T zw = nq.z * nq.w;
 
 	return LUCID_MATRIX(T, 3, 3)(
 		T(1) - T(2) * ( yy + zz ),        T(2) * ( xy - zw ),        T(2) * ( xz + yw ),
@@ -205,7 +207,7 @@ template<typename T> inline LUCID_QUATERNION(T) quaternionFromMatrix(LUCID_MATRI
 	q.y = coeff * (R.xz - R.zx);
 	q.z = coeff * (R.yx - R.xy);
 
-	return q;
+	return normalize(q);
 }
 
 ///	intersects

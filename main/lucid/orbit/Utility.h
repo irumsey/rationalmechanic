@@ -150,8 +150,7 @@ struct ERA
 
 	static scalar_t from(scalar_t jdn)
 	{
-		// TBD: (UT1 - UTC) is a result of a table lookup
-		// implement it
+		// TBD: (UT1 - UTC) is available in the ephemeris now...
 		scalar_t days = jdn - constants::J2000;
 		scalar_t UT1 = days /* - (UT1 - UTC) */ ;
 		return constants::two_pi * (0.779057273264 + 1.00273781191135448 * UT1);
@@ -161,11 +160,9 @@ struct ERA
 ///
 /// 
 /// 
-struct NameThis
+struct Ecliptic
 {
-
-	// obliquity of the ecliptic
-	static scalar_t epsilon(scalar_t jdn)
+	static scalar_t obliquity(scalar_t jdn)
 	{
 		scalar_t const c[] = {
 			LUCID_MATH::deg2rad(23.0 + 26.0 / 60.0 + 21.45000 / 3600.0),
@@ -180,27 +177,6 @@ struct NameThis
 
 		return c[0] + c[1] * T + c[2] * TT + c[3] * TTT;
 	}
-
-	static matrix3x3_t BPN(vector3_t cip)
-	{
-		scalar_t a = 1.0 / (1.0 + cip.z);
-
-		matrix3x3_t BPN = matrix3x3_t(
-			1 - a * cip.x * cip.x,    -a * cip.x * cip.y,                                  cip.x,
-			   -a * cip.x * cip.y, 1 - a * cip.y * cip.y,                                  cip.y,
-						   -cip.x,                -cip.y, 1 - a * (cip.x * cip.x + cip.y * cip.y)
-		);
-
-		// TBD: CIO locator s matrix
-		matrix3x3_t Rs(
-			1, 0, 0,
-			0, 1, 0,
-			0, 0, 1
-		);
-
-		return BPN * Rs;
-	}
-
 };
 
 ///
@@ -289,7 +265,7 @@ inline void rotationFromElements(matrix3x3_t &rotation, RotationalElements const
 	matrix3x3_t R_dec = LUCID_MATH::rotateAboutY(-dec);
 	matrix3x3_t R_ra  = LUCID_MATH::rotateAboutZ(ra);
 
-	matrix3x3_t R_ecliptic = LUCID_MATH::rotateAboutX(-NameThis::epsilon(jdn));
+	matrix3x3_t R_ecliptic = LUCID_MATH::rotateAboutX(-Ecliptic::obliquity(jdn));
 
 	rotation = R_ecliptic * R_ra * R_dec * R_w * R_align;
 }
