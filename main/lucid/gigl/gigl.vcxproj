@@ -31,6 +31,7 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="Primitive.h" />
     <ClInclude Include="Resources.h" />
+    <ClInclude Include="Sphere.h" />
     <ClInclude Include="Types.h" />
   </ItemGroup>
   <ItemGroup>
@@ -45,6 +46,7 @@
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Primitive.cpp" />
     <ClCompile Include="Resources.cpp" />
+    <ClCompile Include="Sphere.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{BE23650D-5F0B-436D-A840-3023BE99C483}</ProjectGuid>

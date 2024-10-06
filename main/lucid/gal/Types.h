@@ -13,15 +13,17 @@ LUCID_GAL_BEGIN
 ///	these are convienience typedefs whose use is not required.
 ///
 
-typedef LUCID_MATH::Vector<float32_t, 2> Vector2;
-typedef LUCID_MATH::Vector<float32_t, 3> Vector3;
-typedef LUCID_MATH::Vector<float32_t, 4> Vector4;
+typedef float32_t Scalar;
 
-typedef LUCID_MATH::Quaternion<float32_t> Quaternion;
+typedef LUCID_MATH::Vector<Scalar, 2> Vector2;
+typedef LUCID_MATH::Vector<Scalar, 3> Vector3;
+typedef LUCID_MATH::Vector<Scalar, 4> Vector4;
 
-typedef LUCID_MATH::Matrix<float32_t, 2, 2> Matrix2x2;
-typedef LUCID_MATH::Matrix<float32_t, 3, 3> Matrix3x3;
-typedef LUCID_MATH::Matrix<float32_t, 4, 4> Matrix4x4;
+typedef LUCID_MATH::Quaternion<Scalar> Quaternion;
+
+typedef LUCID_MATH::Matrix<Scalar, 2, 2> Matrix2x2;
+typedef LUCID_MATH::Matrix<Scalar, 3, 3> Matrix3x3;
+typedef LUCID_MATH::Matrix<Scalar, 4, 4> Matrix4x4;
 
 ///	Color
 ///

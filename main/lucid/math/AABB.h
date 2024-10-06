@@ -11,9 +11,11 @@
 
 LUCID_MATH_BEGIN
 
+///	AABB
 ///
-///
-///
+///	Axis aligned bounding box
+/// 
+/// Note: min/max default to whatever the specified type T defaults to.
 template<typename T, size_t DIM> struct AABB
 {
 	Vector<T, DIM> min;
@@ -89,7 +91,7 @@ template<typename T, size_t DIM> inline AABB<T, DIM> fit(Vector<T, DIM> const &v
 {
 	AABB<T, DIM> box;
 
-	fit(box, v_i);
+	box.min = box.max = v_i;
 	fit(box, v_j);
 	fit(box, v_k);
 
