@@ -39,7 +39,9 @@ Geometry *Geometry::create(std::string const &path)
 
 Geometry *Geometry::create(LUCID_CORE::Reader &reader)
 {
-    int kind = reader.read<int>();
+    uint32_t kind = reader.read<uint32_t>();
+    LUCID_VALIDATE(kind < 2, "invalid geomtry type specified");
+
     return createGeometry[kind](reader);
 }
 
