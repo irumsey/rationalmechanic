@@ -1,4 +1,6 @@
 {
+	"kind" : "GEOMETRY_FIXED",
+
 	"topology": "TOPOLOGY_TRIANGLE_LIST",
 
 	"format": {

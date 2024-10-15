@@ -140,29 +140,32 @@ template<typename T, size_t DIM> inline bool contains(AABB<T, DIM> const &box, S
 	return true;
 }
 
+/// 
+/// 
+/// 
+template<typename T, size_t DIM> inline bool looselyContains(AABB<T, DIM> const &box, AABB<T, DIM> const &rhs)
+{
+	if (!contains(box, rhs.center()))
+		return false;
+
+	Vector<T, DIM> extent = rhs.extent();
+	Vector<T, DIM> boxExtent = box.extent();
+
+	for (size_t i = 0; i < DIM; ++i)
+	{
+		if (extent[i] > boxExtent[i])
+			return false;
+	}
+
+	return true;
+}
+
 ///
 ///
 ///
 template<typename T, size_t DIM> inline bool looselyContains(AABB<T, DIM> const &box, Vector<T, DIM> const &v_i, Vector<T, DIM> const &v_j, Vector<T, DIM> const &v_k)
 {
-	AABB<T, DIM> faceBox = fit(v_i, v_j, v_k);
-	Vector<T, DIM> faceCenter = faceBox.center();
-
-	if (!contains(box, faceCenter))
-	{
-		return false;
-	}
-
-	Vector<T, DIM> faceExtent = faceBox.extent();
-	Vector<T, DIM> boxExtent = box.extent();
-
-	for (size_t i = 0; i < DIM; ++i)
-	{
-		if (faceExtent[i] > boxExtent[i])
-			return false;
-	}
-
-	return true;
+	return looselyContains(box, fit(v_i, v_j, v_k));
 }
 
 LUCID_MATH_END

@@ -3,11 +3,14 @@
 #include <lucid/core/Types.h>
 #include <lucid/gal/Types.h>
 #include <lucid/gigl/Context.h>
+#include <lucid/gigl/Heightmap.h>
+#include <lucid/gigl/Sphere.h>
 #include <rnd/Utility.h>
 
 LUCID_GAL_BEGIN
 
 class VertexBuffer;
+class IndexBuffer;
 
 LUCID_GAL_END
 
@@ -66,5 +69,8 @@ private:
 
 	LUCID_GIGL::Mesh *_orbit = nullptr;
 	LUCID_GAL::VertexBuffer *_orbitInstances = nullptr;
+
+	LUCID_GIGL::Heightmap _heightmap;
+	LUCID_GIGL::Sphere _sphere;
 
 };

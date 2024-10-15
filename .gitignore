@@ -407,3 +407,6 @@ ModelManifest.xml
 /_bin/main/omp/content/_010/atmosphere.mesh
 /_bin/main/dad/content
 /_bin/main/dad/writeReadTest.bin
+/_bin/main/omp/content/celestialBody.geometry
+/_bin/main/omp/content/_399/earth.geometry
+/_bin/main/omp/content/sphere.format

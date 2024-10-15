@@ -20,13 +20,13 @@ LUCID_GIGL_BEGIN
 /// See : Face
 struct Edge
 {
-    static uint16_t const INVALID_INDEX = uint16_t(-1);
+    static uint32_t const INVALID_INDEX = uint32_t(-1);
 
-    uint16_t vertex[2] = { INVALID_INDEX, INVALID_INDEX, };
+    uint32_t vertex[2] = { INVALID_INDEX, INVALID_INDEX, };
 
     Edge() = default;
 
-    Edge(uint16_t i, uint16_t j)
+    Edge(uint32_t i, uint32_t j)
     {
         vertex[0] = i;
         vertex[1] = j;
@@ -34,13 +34,13 @@ struct Edge
 
     ~Edge() = default;
 
-    uint16_t const &operator[](size_t index) const
+    uint32_t const &operator[](uint32_t index) const
     {
         assert((index < 2) && "index out of bounds");
         return vertex[index];
     }
 
-    uint16_t &operator[](size_t index)
+    uint32_t &operator[](uint32_t index)
     {
         assert((index < 2) && "index out of bounds");
         return vertex[index];
@@ -58,12 +58,12 @@ struct Edge
 
     struct Hash
     {
-        size_t operator()(Edge const &edge) const
+        uint32_t operator()(Edge const &edge) const
         {
-            size_t const  mask = 0x0000ffff;
-            size_t const shift = 16;
+            uint32_t const  mask = 0x0000ffff;
+            uint32_t const shift = 16;
 
-            return ((mask & size_t(edge[0])) << shift) | (mask & size_t(edge[1]));
+            return ((mask & edge[0]) << shift) | (mask & edge[1]);
         }
     };
 
@@ -87,24 +87,22 @@ struct Edge
 /// Note : vertices are listed in strict CCW order, always.
 struct Face
 {
-    static size_t const INVALID_FACE = size_t(-1);
-    static uint16_t const INVALID_VERTEX = uint16_t(-1);
+    static uint32_t const INVALID_INDEX = uint32_t(-1);
 
-    size_t parent = INVALID_FACE;
-    size_t children[2] = { INVALID_FACE, INVALID_FACE, };
-
-    uint16_t vertex[3] = { INVALID_VERTEX, INVALID_VERTEX, INVALID_VERTEX, };
+    uint32_t parent    =   INVALID_INDEX;
+    uint32_t child [2] = { INVALID_INDEX, INVALID_INDEX, };
+    uint32_t vertex[3] = { INVALID_INDEX, INVALID_INDEX, INVALID_INDEX, };
     
     Face() = default;
 
-    Face(uint16_t i, uint16_t j, uint16_t k)
+    Face(uint32_t i, uint32_t j, uint32_t k)
     {
         vertex[0] = i;
         vertex[1] = j;
         vertex[2] = k;
     }
 
-    Face(size_t parent, uint16_t i, uint16_t j, uint16_t k)
+    Face(uint32_t parent, uint32_t i, uint32_t j, uint32_t k)
         : parent(parent)
     {
         vertex[0] = i;
@@ -114,56 +112,78 @@ struct Face
 
     ~Face() = default;
 
-    uint16_t const &operator[](size_t index) const
+    uint32_t const &operator[](uint32_t index) const
     {
+        validate();
         assert((index < 3) && "index out of bounds");
         return vertex[index];
     }
 
-    uint16_t &operator[](size_t index)
+    uint32_t &operator[](uint32_t index)
     {
+        validate();
         assert((index < 3) && "index out of bounds");
         return vertex[index];
     }
 
-    void setChildren(size_t i, size_t j)
+    bool isRoot() const
     {
-        children[0] = i;
-        children[1] = j;
+        validate();
+        return (INVALID_INDEX == parent);    
+    }
+
+    bool notRoot() const
+    {
+        validate();
+        return !isRoot();
     }
 
     bool isLeaf() const
     {
-        return (INVALID_FACE == children[0]) && (INVALID_FACE == children[1]);
+        validate();
+        return (INVALID_INDEX == child[0]) && (INVALID_INDEX == child[1]);
     }
 
     bool notLeaf() const
     {
+        validate();
         return !isLeaf();
     }
 
     Edge base() const
     {
+        validate();
         return Edge(vertex[0], vertex[1]);
     }
 
     Edge right() const
     {
+        validate();
         return Edge(vertex[1], vertex[2]);
     }
 
     Edge left() const
     {
+        validate();
         return Edge(vertex[2], vertex[0]);
     }
 
+    void validate() const
+    {
+#if _DEBUG
+        assert(
+            ((INVALID_INDEX == child[0]) && (INVALID_INDEX == child[1])) ||
+            ((INVALID_INDEX != child[0]) && (INVALID_INDEX != child[1]))
+        );
+#endif
+    }
 };
 
 /// Adjacency
 /// 
 /// Note: a given face's edge "points-to" the neighbor which shares that edge.
-/// Therefore, given a face, one can get the neighbors by looking up each edge.
-typedef std::unordered_map<Edge, size_t, Edge::Hash, Edge::Equal> Adjacency;
+/// Therefore, given a face, one can get the neighbors by looking them up by edge.
+typedef std::unordered_map<Edge, uint32_t, Edge::Hash, Edge::Equal> Adjacency;
 
 LUCID_GIGL_END
 

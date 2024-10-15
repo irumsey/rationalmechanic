@@ -1,6 +1,7 @@
 #include "Session.h"
 #include <lucid/orbit/Utility.h>
 #include <lucid/gigl/Mesh.h>
+#include <lucid/gal/IndexBuffer.h>
 #include <lucid/gal/VertexBuffer.h>
 #include <lucid/gal/Pipeline.h>
 #include <lucid/gal/System.h>
@@ -99,6 +100,51 @@ void Session::initialize()
 
 	_orbit = LUCID_GIGL::Mesh::create("content/orbit.mesh");
 	_orbitInstances = LUCID_GAL::VertexBuffer::create(LUCID_GAL::VertexBuffer::USAGE_DYNAMIC, INSTANCE_MAXIMUM, sizeof(Instance));
+
+#if false
+	std::ifstream stream("d:/work/references/earthBedrock.tga", std::ios::binary);
+	LUCID_VALIDATE(stream.is_open(), "unable to open height map for reading");
+
+	uint8_t header[18];
+
+	stream.read((char *)(header), 18);
+	LUCID_VALIDATE(8 == header[16], "invalid pixel depth in height map");
+
+	size_t width = ((size_t)header[13] << 8) | header[12];
+	size_t height = ((size_t)header[15] << 8) | header[14];
+
+	_heightmap.initialize(width, height, 0);
+	stream.read((char *)(_heightmap._data), width * height);
+	_heightmap.process(10, 8);
+
+	_sphere.initialize(5);
+	size_t first = 0;
+	for (size_t pass = 0; pass < 7; ++pass)
+	{
+		size_t end = _sphere.faceCount();
+		for (size_t i = first; i < end; ++i)
+		{
+			LUCID_GIGL::Face face = _sphere.face(i);
+			
+			LUCID_GAL::Vector2 t0 = _sphere.vertex(face[0]).texcoord;
+			LUCID_GAL::Vector2 t1 = _sphere.vertex(face[1]).texcoord;
+			LUCID_GAL::Vector2 t2 = _sphere.vertex(face[2]).texcoord;
+
+            bool right = (t0.x > 0.5f) || (t1.x > 0.5f) || (t2.x > 0.5f);
+
+            t0.x = (right && (0 == t0.x)) ? 1.f : t0.x;
+            t1.x = (right && (0 == t1.x)) ? 1.f : t1.x;
+            t2.x = (right && (0 == t2.x)) ? 1.f : t2.x;
+
+			LUCID_GIGL::Heightmap::Area area = LUCID_MATH::fit(t0, t1, t2);
+			LUCID_GIGL::Heightmap::Tile const &tile = _heightmap.filter(area);
+
+			if (128 < (tile.h[1] - tile.h[0]))
+				_sphere.splitFace(i);
+		}
+		first = end;
+	}
+#endif
 
 	_initialized = true;
 }
