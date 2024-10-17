@@ -11,6 +11,7 @@
 #include <lucid/gal/Pipeline.h>
 #include <lucid/gigl/Defines.h>
 #include <lucid/gigl/Types.h>
+#include <lucid/gigl/Heightmap.h>
 
 LUCID_CORE_BEGIN
 
@@ -204,6 +205,8 @@ private:
     std::vector<Face> _faces;
     Adjacency _adjacency;
 
+	Heightmap _heightmap;
+
 	/// rendering counts...
 	uint32_t _vertexCount = 0;
 	uint32_t _indexCount = 0;
@@ -223,6 +226,8 @@ private:
     bool notDiamond(Face const &lhs, Face const &rhs) const;
 
     uint32_t addVertex(Vertex const &vertex);
+
+	uint32_t makeVertex(LUCID_GAL::Vector3 const &p, LUCID_GAL::Vector3 const &q);
 
     uint32_t addFace(Face const &face);
 
@@ -320,6 +325,14 @@ inline uint32_t AdaptiveGeometry::addVertex(Vertex const &vertex)
 
     _vertices.push_back(vertex);
     return uint32_t(index);
+}
+
+inline uint32_t AdaptiveGeometry::makeVertex(LUCID_GAL::Vector3 const &p, LUCID_GAL::Vector3 const &q)
+{
+    Vertex vertex;
+    vertex.position = LUCID_MATH::normalize(0.5f * (p + q));
+    vertex.texcoord = computeTexcoord(vertex.position);
+    return addVertex(vertex);
 }
 
 inline uint32_t AdaptiveGeometry::addFace(Face const &face)

@@ -5,7 +5,7 @@
     "method" : "",
     "vertex maximum" : 131072,
     "face maximum" : 1048576,
-    "initial depth" : 5
+    "initial depth" : 8
   },
 
   "vertices": [

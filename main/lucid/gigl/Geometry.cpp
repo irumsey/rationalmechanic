@@ -154,6 +154,38 @@ void AdaptiveGeometry::initialize(LUCID_CORE::Reader &reader)
         first = end;
     }
 
+    /// test {
+    _heightmap.initialize(LUCID_CORE::FileReader("content/_399/earth.heightmap"), 8, 8);
+
+    first = 0;
+    for (uint32_t depth = 0; depth < 5; ++depth)
+    {
+        uint32_t end = uint32_t(_faces.size());
+        for (uint32_t i = first; i < end; ++i)
+        {
+            Face face = _faces[i];
+        
+            /// non-const copies
+            /// if one, or two, texcoords are on the seam
+            /// they will have to be adjusted
+            LUCID_GAL::Vector2 p = _vertices[face[0]].texcoord;
+            LUCID_GAL::Vector2 q = _vertices[face[1]].texcoord;
+            LUCID_GAL::Vector2 r = _vertices[face[2]].texcoord;
+
+            bool right = (p.x > 0.5f) || (q.x > 0.5f) || (r.x > 0.5f);
+
+            p.x = ((0 == p.x) && right) ? 1.f : p.x;
+            q.x = ((0 == q.x) && right) ? 1.f : q.x;
+            r.x = ((0 == r.x) && right) ? 1.f : r.x;
+
+            Heightmap::Tile const &tile = _heightmap.filter(p, q, r);
+            if ((tile.h[0] < 128) && (128 < tile.h[1]))
+                splitFace(i);
+        }
+        first = end;
+    }
+    /// } test
+
     _vertexFormat.reset(LUCID_GAL::VertexFormat::create("content/sphere.format"));
     _vertexBuffer.reset(LUCID_GAL::VertexBuffer::create(LUCID_GAL::VertexBuffer::USAGE_DYNAMIC, _vertexMaximum, sizeof(Vertex)));
     _indexBuffer .reset(LUCID_GAL:: IndexBuffer::create(LUCID_GAL::IndexBuffer::USAGE_DYNAMIC, LUCID_GAL::IndexBuffer::FORMAT_UINT32, 3 * _faceMaximum));
@@ -204,30 +236,89 @@ void AdaptiveGeometry::splitFace(uint32_t index)
 void AdaptiveGeometry::pushChanges()
 {
     /// test {
-    size_t faceCount = uint32_t(_faces.size());
-    _vertexCount = uint32_t(_vertices.size());
+    size_t faceCount = _faces.size();
     _indexCount = 0;
 
-    if ((0 == _vertexCount) || (0 == faceCount))
+    if (0 == faceCount)
         return;
 
-    ::memcpy(_vertexBuffer->lock(), &_vertices[0], _vertexCount * sizeof(Vertex));
-    _vertexBuffer->unlock();
-
     uint32_t *indices = _indexBuffer->lock_as<uint32_t>();
-    for (size_t i = 0; i < faceCount; ++i)
+    for (size_t faceIndex = 0; faceIndex < faceCount; ++faceIndex)
     {
-        Face const &face = _faces[i];
+        Face const &face = _faces[faceIndex];
         if (face.notLeaf())
             continue;
 
-        indices[_indexCount + 0] = face.vertex[0];
-        indices[_indexCount + 1] = face.vertex[1];
-        indices[_indexCount + 2] = face.vertex[2];
+        uint32_t i = face.vertex[0];
+        uint32_t j = face.vertex[1];
+        uint32_t k = face.vertex[2];
 
-        _indexCount = _indexCount + 3;
+        Vertex const &p = _vertices[i];
+        Vertex const &q = _vertices[j];
+        Vertex const &r = _vertices[k];
+
+        uint16_t h[3] = {
+            _heightmap(p.texcoord),
+            _heightmap(q.texcoord),
+            _heightmap(r.texcoord),
+        };
+
+        uint8_t code = ((0 != h[2]) << 2) | ((0 != h[1]) << 1) | ((0 != h[0]) << 0);
+
+        if ((0 == code) || (7 == code))
+        {
+            indices[_indexCount + 0] = i;
+            indices[_indexCount + 1] = j;
+            indices[_indexCount + 2] = k;
+
+            _indexCount = _indexCount + 3;
+        }
+        else
+        {
+            uint32_t l = makeVertex(p.position, q.position);
+            uint32_t m = makeVertex(q.position, r.position);
+            uint32_t n = makeVertex(r.position, p.position);
+
+            indices[_indexCount +  0] = n;
+            indices[_indexCount +  1] = m;
+            indices[_indexCount +  2] = k;
+
+            indices[_indexCount +  3] = i;
+            indices[_indexCount +  4] = l;
+            indices[_indexCount +  5] = n;
+
+            indices[_indexCount +  6] = l;
+            indices[_indexCount +  7] = m;
+            indices[_indexCount +  8] = n;
+
+            indices[_indexCount +  9] = l;
+            indices[_indexCount + 10] = j;
+            indices[_indexCount + 11] = m;
+
+            _indexCount = _indexCount + 12;
+
+            switch(code)
+            {
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            case 6:
+                break;
+            }
+        }
     }
     _indexBuffer->unlock();
+
+    _vertexCount = uint32_t(_vertices.size());
+    ::memcpy(_vertexBuffer->lock(), &_vertices[0], _vertexCount * sizeof(Vertex));
+    _vertexBuffer->unlock();
     /// } test
 }
 
@@ -245,10 +336,7 @@ void AdaptiveGeometry::splitDiamond(uint32_t lhsIndex, uint32_t rhsIndex)
     uint32_t k = lhs.vertex[2];
     uint32_t l = rhs.vertex[2];
 
-    Vertex vertex;
-    vertex.position = LUCID_MATH::normalize(0.5f * (_vertices[i].position + _vertices[j].position));
-    vertex.texcoord = computeTexcoord(vertex.position);
-    uint32_t m = addVertex(vertex);
+    uint32_t m = makeVertex(_vertices[i].position, _vertices[j].position);
 
     Face const A = Face(lhsIndex, k, i, m);
     Face const B = Face(rhsIndex, i, l, m);

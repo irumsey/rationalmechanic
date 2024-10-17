@@ -8,6 +8,12 @@
 #include <lucid/gal/Types.h>
 #include <lucid/gigl/Defines.h>
 
+LUCID_CORE_BEGIN
+
+class Reader;
+
+LUCID_CORE_END
+
 LUCID_GIGL_BEGIN
 
 ///	Heightmap
@@ -19,6 +25,9 @@ class Heightmap
 public:
 	typedef LUCID_MATH::AABB<LUCID_GAL::Scalar, 2> Area;
 
+    /// Tile
+    /// 
+    /// 
     struct Tile
     {
         static size_t const INVALID_INDEX = size_t(-1);
@@ -26,7 +35,7 @@ public:
         size_t id = INVALID_INDEX;
 
         Area area;
-        uint8_t h[2] = { 255, 0, };
+        uint16_t h[2] = { 65535, 0, };
 
         Tile() = default;
 
@@ -42,23 +51,37 @@ public:
 
 	Heightmap();
 
-    Heightmap(size_t width, size_t height, uint8_t value = 0);
+    Heightmap(size_t width, size_t height, uint16_t value = 0);
+
+    Heightmap(LUCID_CORE::Reader &reader, size_t depth, uint16_t tolerance);
 
 	virtual ~Heightmap();
 
-	void initialize(size_t width, size_t height, uint8_t value = 0);
+	void initialize(size_t width, size_t height, uint16_t value = 0);
+
+    void initialize(LUCID_CORE::Reader &reader, size_t depth, uint16_t tolerance);
 
 	void shutdown();
 
-	uint8_t &operator()(size_t x, size_t y);
+	uint16_t &operator()(size_t x, size_t y);
 
-	uint8_t const &operator()(size_t x, size_t y) const;
+	uint16_t const &operator()(size_t x, size_t y) const;
 
-	uint8_t &at(size_t x, size_t y);
+    uint16_t &operator()(LUCID_GAL::Vector2 const &texcoord);
 
-	uint8_t const &at(size_t x, size_t y) const;
+    uint16_t const &operator()(LUCID_GAL::Vector2 const &texcoord) const;
 
-    void process(size_t depth, uint8_t tolerance);
+	uint16_t &at(size_t x, size_t y);
+
+	uint16_t const &at(size_t x, size_t y) const;
+
+	uint16_t &at(LUCID_GAL::Vector2 const &texcoord);
+
+	uint16_t const &at(LUCID_GAL::Vector2 const &texcoord) const;
+
+    void process(size_t depth, uint16_t tolerance);
+
+    Tile const &filter(LUCID_GAL::Vector2 const &p, LUCID_GAL::Vector2 const &q, LUCID_GAL::Vector2 const &r) const;
 
     Tile const &filter(Area const &area) const;
 
@@ -67,7 +90,7 @@ private:
 	size_t _height = 0;
 	size_t _size = 0;
 
-	uint8_t *_data = nullptr;
+	uint16_t *_data = nullptr;
 
 	std::unordered_map<size_t, Tile> _tiles;
 
@@ -81,7 +104,7 @@ private:
  
     void removeChildren(size_t pid);
 
-    void subdivide(Tile &tile, size_t depth, uint8_t tolerance);
+    void subdivide(Tile &tile, size_t depth, uint16_t tolerance);
 
     void subdivide(Tile const &tile);
 
@@ -91,28 +114,57 @@ private:
 	LUCID_PREVENT_ASSIGNMENT(Heightmap);
 };
 
-inline uint8_t &Heightmap::operator()(size_t x, size_t y)
+inline uint16_t &Heightmap::operator()(size_t x, size_t y)
 {
 	return at(x, y);
 }
 
-inline uint8_t const &Heightmap::operator()(size_t x, size_t y) const
+inline uint16_t const &Heightmap::operator()(size_t x, size_t y) const
 {
 	return at(x, y);
 }
 
-inline uint8_t &Heightmap::at(size_t x, size_t y)
+inline uint16_t &Heightmap::operator()(LUCID_GAL::Vector2 const &texcoord)
+{
+    return at(texcoord);
+}
+
+inline uint16_t const &Heightmap::operator()(LUCID_GAL::Vector2 const &texcoord) const
+{
+    return at(texcoord);
+}
+
+inline uint16_t &Heightmap::at(size_t x, size_t y)
 {
 	assert((x < _width) && "index out of bounds");
 	assert((y < _height) && "index out of bounds");
 	return _data[y * _width + x];
 }
 
-inline uint8_t const &Heightmap::at(size_t x, size_t y) const
+inline uint16_t const &Heightmap::at(size_t x, size_t y) const
 {
 	assert((x < _width) && "index out of bounds");
 	assert((y < _height) && "index out of bounds");
 	return _data[y * _width + x];
+}
+
+inline uint16_t &Heightmap::at(LUCID_GAL::Vector2 const &texcoord)
+{
+    size_t x = size_t(texcoord.x * (_width - 1));
+    size_t y = size_t((1.f - texcoord.y) * (_height - 1));
+    return at(x, y);
+}
+
+inline uint16_t const &Heightmap::at(LUCID_GAL::Vector2 const &texcoord) const
+{
+    size_t x = size_t(texcoord.x * (_width - 1));
+    size_t y = size_t((1.f - texcoord.y) * (_height - 1));
+    return at(x, y);
+}
+
+inline Heightmap::Tile const &Heightmap::filter(LUCID_GAL::Vector2 const &p, LUCID_GAL::Vector2 const &q, LUCID_GAL::Vector2 const &r) const
+{
+    return filter(LUCID_MATH::fit(p, q, r));
 }
 
 inline size_t Heightmap::extract_parent_id(size_t cid) const

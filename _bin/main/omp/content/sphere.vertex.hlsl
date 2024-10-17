@@ -25,7 +25,7 @@ OutputVS main(InputVS input)
 
 	float3 viewDirection = -normalize(worldPosition);
 
-	float2 texOffset = float2(0.5, 0.0);
+	float2 texOffset = float2(0.0, 0.0);
 
 	output.ppsPosition = mul(viewProjMatrix, float4(worldPosition, 1));
 	output.texcoord = vertex.texcoord + texOffset;
