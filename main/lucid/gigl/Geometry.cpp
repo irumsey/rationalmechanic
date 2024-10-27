@@ -8,6 +8,46 @@
 ///
 ///
 ///
+
+LUCID_ANONYMOUS_BEGIN
+
+template<typename T, typename I> inline bool removeElements(
+    std::vector<T> &elements,
+    std::vector<I> & mapping,
+    std::vector<I> & removed
+)
+{
+    if (removed.empty())
+        return false;
+
+    mapping.resize(elements.size());
+    std::generate(mapping.begin(), mapping.end(), [i = 0]() mutable { return i++; });
+
+    std::sort(removed.rbegin(), removed.rend());
+
+    I last = I(elements.size() - 1);
+    for (I index : removed)
+    {
+        assert(index < last);
+        
+        std::swap(elements[index], elements[last]);
+        mapping[index] =  last;
+        mapping[ last] = index;
+
+        --last;
+    }
+
+    elements.resize(last + 1);
+
+    return true;
+}
+
+LUCID_ANONYMOUS_END
+
+///
+///
+///
+
 LUCID_GIGL_BEGIN
 
 ///
@@ -145,61 +185,59 @@ void AdaptiveGeometry::initialize(LUCID_CORE::Reader &reader)
         self_createAdjacency(face. left(), i);
     }
 
-    uint32_t first = 0;
-    for (uint32_t depth = 0; depth < depthInitial; ++depth)
-    {
-        uint32_t end = uint32_t(_faces.size());
-        for (uint32_t i = first; i < end; ++i)
-            splitFace(i);
-        first = end;
-    }
-
-    /// test {
-    _heightmap.initialize(LUCID_CORE::FileReader("content/_399/earth.heightmap"), 8, 8);
-
-    first = 0;
-    for (uint32_t depth = 0; depth < 5; ++depth)
-    {
-        uint32_t end = uint32_t(_faces.size());
-        for (uint32_t i = first; i < end; ++i)
+    beginRefinement();
+        uint32_t first = 0;
+        for (uint32_t depth = 0; depth < depthInitial; ++depth)
         {
-            Face face = _faces[i];
-        
-            /// non-const copies
-            /// if one, or two, texcoords are on the seam
-            /// they will have to be adjusted
-            LUCID_GAL::Vector2 p = _vertices[face[0]].texcoord;
-            LUCID_GAL::Vector2 q = _vertices[face[1]].texcoord;
-            LUCID_GAL::Vector2 r = _vertices[face[2]].texcoord;
-
-            bool right = (p.x > 0.5f) || (q.x > 0.5f) || (r.x > 0.5f);
-
-            p.x = ((0 == p.x) && right) ? 1.f : p.x;
-            q.x = ((0 == q.x) && right) ? 1.f : q.x;
-            r.x = ((0 == r.x) && right) ? 1.f : r.x;
-
-            Heightmap::Tile const &tile = _heightmap.filter(p, q, r);
-            if ((tile.h[0] < 128) && (128 < tile.h[1]))
+            uint32_t end = uint32_t(_faces.size());
+            for (uint32_t i = first; i < end; ++i)
                 splitFace(i);
-        }
-        first = end;
-    }
-    /// } test
+            first = end;
+        }    
+    endRefinement();
 
     _vertexFormat.reset(LUCID_GAL::VertexFormat::create("content/sphere.format"));
     _vertexBuffer.reset(LUCID_GAL::VertexBuffer::create(LUCID_GAL::VertexBuffer::USAGE_DYNAMIC, _vertexMaximum, sizeof(Vertex)));
     _indexBuffer .reset(LUCID_GAL:: IndexBuffer::create(LUCID_GAL::IndexBuffer::USAGE_DYNAMIC, LUCID_GAL::IndexBuffer::FORMAT_UINT32, 3 * _faceMaximum));
 
-    pushChanges();
+    /// test {
+    /// for testing, all leaf nodes makeup the surface
+    std::vector<uint32_t> surface;
+    for (uint32_t faceIndex = 0; faceIndex < _faces.size(); ++faceIndex)
+    {
+        Face const &face = _faces[faceIndex];
+        if (face.notLeaf())
+            continue;
+        surface.push_back(faceIndex);
+    }
+    updateBuffers(surface);
+    /// } test
 }
 
 void AdaptiveGeometry::shutdown()
 {
-	///	NOP for now
+	_vertexMaximum = 0;
+	_faceMaximum = 0;
+	_vertexCount = 0;
+	_indexCount = 0;
+
+    _vertices.clear();
+    _faces.clear();
+    _adjacency.clear();
+    
+    _removedVertices.clear();
+	_removedFaces.clear();
+
+	_vertexFormat.reset();
+	_vertexBuffer.reset();
+	_indexBuffer.reset();
 }
 
 void AdaptiveGeometry::draw() const
 {
+    if (0 == _vertexCount)
+        return;
+
     LUCID_GAL_PIPELINE.beginGeometry(_vertexFormat.get());
 		LUCID_GAL_PIPELINE.setVertexStream(0, _vertexBuffer.get());
 		LUCID_GAL_PIPELINE.setIndexStream(_indexBuffer.get());
@@ -209,6 +247,9 @@ void AdaptiveGeometry::draw() const
 
 void AdaptiveGeometry::drawInstanced(int32_t count) const
 {
+    if (0 == _vertexCount)
+        return;
+
 	LUCID_GAL_PIPELINE.beginGeometry(_vertexFormat.get());
 		LUCID_GAL_PIPELINE.setVertexStream(0, _vertexBuffer.get());
 		LUCID_GAL_PIPELINE.setIndexStream(_indexBuffer.get());
@@ -216,6 +257,11 @@ void AdaptiveGeometry::drawInstanced(int32_t count) const
 	LUCID_GAL_PIPELINE.endGeometry(_vertexFormat.get());
 }
 
+/// recursive until the supplied face is part of a diamond.
+/// so far, only "spherical" geometry has been tested.  "spherical"
+/// in that all faces have a neighbor.  this might mean the splitting
+/// operation wraps around causing an error condition, however, this
+/// has not happened and appears unlikely.
 void AdaptiveGeometry::splitFace(uint32_t index)
 {
     // make copy, not reference, altering collection
@@ -233,93 +279,118 @@ void AdaptiveGeometry::splitFace(uint32_t index)
     splitDiamond(index, _adjacency[face.base()]);
 }
 
-void AdaptiveGeometry::pushChanges()
+void AdaptiveGeometry::collapseFace(uint32_t index)
 {
-    /// test {
-    size_t faceCount = _faces.size();
-    _indexCount = 0;
+    // this method will not alter the collection of vertices
+    // or faces, therefore we can take references.
+    // this allows the user to collapse multiple faces, then
+    // call pushChanges(...) for a one time update.
+    Face const &A = getFace(index);
 
-    if (0 == faceCount)
+    if (A.notLeaf())
         return;
 
-    uint32_t *indices = _indexBuffer->lock_as<uint32_t>();
-    for (size_t faceIndex = 0; faceIndex < faceCount; ++faceIndex)
+    if (A.isRoot())
+        return;
+
+    Face B;
+    uint32_t b = faceFromEdge(B, A.right());
+
+    Face C;
+    uint32_t c = faceFromEdge(C, B.right());
+
+    Face D;
+    uint32_t d = faceFromEdge(D, C.right());
+
+    // a and c do not share an edge therefore they are guaranteed
+    // to have different parents (same for b and d).
+    assert((A.parent != C.parent) && "consistency error");
+    assert((B.parent != D.parent) && "consistency error");
+
+    // all faces should share the same apex vertex
+    assert((A.vertex[2] == B.vertex[2]) && "consistency error");
+    assert((B.vertex[2] == C.vertex[2]) && "consistency error");
+
+    Face &Pa = _faces[A.parent];
+    Face &Pc = _faces[C.parent];
+
+    assert((Pa.base() == Edge::reverse(Pc.base())) && "consistency errpr");
+
+    self_updateAdjacency(Pa.right(), A.parent);
+    self_updateAdjacency(Pa. left(), A.parent);
+
+    self_updateAdjacency(Pc.right(), C.parent);
+    self_updateAdjacency(Pc. left(), C.parent);
+
+    _removedVertices.push_back(A.vertex[2]);
+
+    _removedFaces.push_back(index);
+    _removedFaces.push_back(b);
+    _removedFaces.push_back(c);
+    _removedFaces.push_back(d);
+
+    Pa.child[0] = Pa.child[1] = Face::INVALID_INDEX;
+    Pc.child[0] = Pc.child[1] = Face::INVALID_INDEX;
+}
+
+void AdaptiveGeometry::beginRefinement()
+{
+
+}
+
+void AdaptiveGeometry::endRefinement()
+{
+    bool verticesRemoved = removeElements(_vertices, _vertexMapping, _removedVertices);
+    _removedVertices.clear();
+
+    bool facesRemoved = removeElements(_faces, _faceMapping, _removedFaces);
+    _removedFaces.clear();
+
+    if (!(verticesRemoved || facesRemoved))
+        return;
+
+    for (Face &face : _faces)
     {
-        Face const &face = _faces[faceIndex];
-        if (face.notLeaf())
-            continue;
-
-        uint32_t i = face.vertex[0];
-        uint32_t j = face.vertex[1];
-        uint32_t k = face.vertex[2];
-
-        Vertex const &p = _vertices[i];
-        Vertex const &q = _vertices[j];
-        Vertex const &r = _vertices[k];
-
-        uint16_t h[3] = {
-            _heightmap(p.texcoord),
-            _heightmap(q.texcoord),
-            _heightmap(r.texcoord),
-        };
-
-        uint8_t code = ((0 != h[2]) << 2) | ((0 != h[1]) << 1) | ((0 != h[0]) << 0);
-
-        if ((0 == code) || (7 == code))
+        if (facesRemoved)
         {
-            indices[_indexCount + 0] = i;
-            indices[_indexCount + 1] = j;
-            indices[_indexCount + 2] = k;
-
-            _indexCount = _indexCount + 3;
+            face.  parent = face.isRoot() ? Face::INVALID_INDEX : _faceMapping[face.  parent];
+            face.child[0] = face.isLeaf() ? Face::INVALID_INDEX : _faceMapping[face.child[0]];
+            face.child[1] = face.isLeaf() ? Face::INVALID_INDEX : _faceMapping[face.child[1]];
         }
-        else
+
+        if (verticesRemoved)
         {
-            uint32_t l = makeVertex(p.position, q.position);
-            uint32_t m = makeVertex(q.position, r.position);
-            uint32_t n = makeVertex(r.position, p.position);
-
-            indices[_indexCount +  0] = n;
-            indices[_indexCount +  1] = m;
-            indices[_indexCount +  2] = k;
-
-            indices[_indexCount +  3] = i;
-            indices[_indexCount +  4] = l;
-            indices[_indexCount +  5] = n;
-
-            indices[_indexCount +  6] = l;
-            indices[_indexCount +  7] = m;
-            indices[_indexCount +  8] = n;
-
-            indices[_indexCount +  9] = l;
-            indices[_indexCount + 10] = j;
-            indices[_indexCount + 11] = m;
-
-            _indexCount = _indexCount + 12;
-
-            switch(code)
-            {
-            case 1:
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-            case 4:
-                break;
-            case 5:
-                break;
-            case 6:
-                break;
-            }
+            face.vertex[0] = _vertexMapping[face.vertex[0]];
+            face.vertex[1] = _vertexMapping[face.vertex[1]];
+            face.vertex[2] = _vertexMapping[face.vertex[2]];
         }
     }
-    _indexBuffer->unlock();
 
+    _vertexMapping.clear();
+    _faceMapping.clear();
+}
+
+void AdaptiveGeometry::updateBuffers(std::vector<uint32_t> const &surface)
+{
     _vertexCount = uint32_t(_vertices.size());
-    ::memcpy(_vertexBuffer->lock(), &_vertices[0], _vertexCount * sizeof(Vertex));
+    std::memcpy(_vertexBuffer->lock(), &_vertices[0], _vertexCount * sizeof(Vertex));
     _vertexBuffer->unlock();
-    /// } test
+
+    uint32_t *indices = _indexBuffer->lock_as<uint32_t>();
+    _indexCount = 0;
+
+    for (uint32_t faceIndex : surface)
+    {
+        Face const &face = _faces[faceIndex];
+
+        indices[_indexCount + 0] = face.vertex[0];
+        indices[_indexCount + 1] = face.vertex[1];
+        indices[_indexCount + 2] = face.vertex[2];
+
+        _indexCount += 3;
+    }
+
+    _indexBuffer->unlock();
 }
 
 void AdaptiveGeometry::splitDiamond(uint32_t lhsIndex, uint32_t rhsIndex)
@@ -364,16 +435,7 @@ void AdaptiveGeometry::splitDiamond(uint32_t lhsIndex, uint32_t rhsIndex)
     self_createAdjacency(D.right(), d);
     self_createAdjacency(D. left(), d);
 
-    // TBD: don't know if this is required/desired.
-    // after spitting these parent faces, the adjacency does not
-    // interfere with anything.  Also, it might be desirable to
-    // keep this data intact for when the children are collapsed.
-#if false
-    removeAdjacency(lhs.base());
-    removeAdjacency(rhs.base());
-#endif
-
-    // now, update the contained/actual faces that were split.
+    // update the contained/actual faces that were split.
 
     _faces[lhsIndex].child[0] = d;
     _faces[lhsIndex].child[1] = a;
