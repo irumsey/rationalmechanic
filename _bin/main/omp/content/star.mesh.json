@@ -60,8 +60,6 @@
 
 	"geometry" :
 	{
-		"kind" : "GEOMETRY_FIXED",
-
 		"topology" : "TOPOLOGY_TRIANGLE_STRIP",
 
 		"format" :

@@ -136,8 +136,6 @@ void Renderer::render(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t time,
 	_renderContext["time"] = cast(time);
 	_renderContext["interpolant"] = cast(interpolant);
 		
-	_renderContext["lightDirFromOrigin"] = LUCID_MATH::normalize(cast(vector3_t(0, 0, 0) - cameraPosition));
-
 	LUCID_GAL::Matrix4x4 viewMatrix = LUCID_MATH::look(LUCID_GAL::Vector3(0, 0, 0), cast(focusPosition), LUCID_GAL::Vector3(0, 0, 1));
 	LUCID_GAL::Matrix4x4 projMatrix = LUCID_MATH::perspective(fov, _aspect, _znear, _zfar);
 	LUCID_GAL::Matrix4x4 viewProjMatrix = projMatrix * viewMatrix;

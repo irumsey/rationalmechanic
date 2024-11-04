@@ -3,13 +3,26 @@
 	{
 		"Samplers" :
 		[
+			{
+				"name": "theSampler",
+				"Filter": "FILTER_MIN_MAG_MIP_LINEAR",
+				"AddressU": "ADDRESS_WRAP",
+				"AddressV": "ADDRESS_WRAP",
+				"AddressW": "ADDRESS_WRAP",
+				"lodMipBias": 0,
+				"MaxAnisotropy": 0,
+				"Compare": "COMPARISON_ALWAYS",
+				"BorderColor": [ 0, 0, 0, 1 ],
+				"MinLOD": 0,
+				"MaxLOD": 0
+			}
 		],
 
 		"RenderStates" :
 		{
 			"RasterMode" :
 			{
-				"Fill" : "FILL_SOLID",
+				"Fill" : "FILL_WIREFRAME",
 				"Cull" : "CULL_FRONT",
 				"Multisample": false
 			},
@@ -17,7 +30,7 @@
 			"BlendMode" :
 			{
 				"ColorWriteMask" : 15,
-				"Enabled" : true,
+				"Enabled" : false,
 				"SrcBlend" : "BLEND_SRC_ALPHA",
 				"SrcBlendAlpha" : "BLEND_SRC_ALPHA",
 				"DstBlend" : "BLEND_INV_SRC_ALPHA",
@@ -27,7 +40,7 @@
 			"DepthStencilMode" :
 			{
 				"DepthEnabled" : true,
-				"DepthWrite" : "DEPTH_WRITE_DISABLED",
+				"DepthWrite" : "DEPTH_WRITE_ENABLED",
 				"DepthFunction" : "COMPARISON_LESS",
 				"StencilEnabled" : false,
 				"StencilFunction" : "COMPARISON_LESS",
@@ -41,14 +54,12 @@
 
 		},
 
-		"VertexShader" : { "Path" : "content/atmosphere.vertex.cso" },
-		"PixelShader" : { "Path" : "content/atmosphere.pixel.cso" }
+		"VertexShader" : { "Path" : "content/sphere.vertex.cso" },
+		"PixelShader" : { "Path" : "content/sphere.pixel.cso" }
 	},
 
 	"attributes":
 	[
-		{ "name":     "viewProjMatrix",     "query":                  "viewProjMatrix" },
-		{ "name":     "scatterTexture", "texture2d":      "content/scattering.texture" }
+		{ "name":     "viewProjMatrix",     "query":                "viewProjMatrix" }
 	]
-
 }

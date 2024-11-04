@@ -32,6 +32,7 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="Primitive.h" />
     <ClInclude Include="Resources.h" />
+    <ClInclude Include="ROAM.h" />
     <ClInclude Include="Types.h" />
   </ItemGroup>
   <ItemGroup>

@@ -17,9 +17,8 @@ LUCID_CORE_END
 LUCID_GIGL_BEGIN
 
 ///	Heightmap
+///
 /// 
-/// Note: using 8 bit values for height for now, migrate to 16 when
-/// an actual file format is specified.
 class Heightmap
 {
 public:
@@ -52,6 +51,8 @@ public:
 	Heightmap();
 
     Heightmap(size_t width, size_t height, uint16_t value = 0);
+
+    Heightmap(std::string const &path, size_t depth, uint16_t tolerance);
 
     Heightmap(LUCID_CORE::Reader &reader, size_t depth, uint16_t tolerance);
 

@@ -524,39 +524,17 @@ def bootIndexBufferFromFile(srcPath, dstPath):
 #
 #
 def bootGeometry(dst, geometry):
-	kind = {
-		   'GEOMETRY_FIXED' : 0,
-		'GEOMETRY_ADAPTIVE' : 1
-	}
-	
-	bootInteger(dst, kind[geometry['kind']])
-	
-	if kind[geometry['kind']] == 0:
-		bootInteger(dst, topology[geometry['topology']])
+	bootInteger(dst, topology[geometry['topology']])
 		
-		isReference = isinstance(geometry['format'], str)
-		bootBoolean(dst, isReference)
-		if isReference:		
-			bootString(dst, geometry['format'])
-		else:
-			bootVertexFormat(dst, geometry['format'])
-			
-		bootVertexBuffer(dst, geometry['vertices'])
-		bootIndexBuffer(dst, geometry['indices'])
+	isReference = isinstance(geometry['format'], str)
+	bootBoolean(dst, isReference)
+	if isReference:		
+		bootString(dst, geometry['format'])
 	else:
-		bootInteger(dst, geometry['refinement']['vertex maximum'])
-		bootInteger(dst, geometry['refinement']['face maximum'])
-		bootInteger(dst, geometry['refinement']['initial depth'])
-		
-		vertices = geometry['vertices']
-		bootInteger(dst, (int)(len(vertices) / 8))
-		for i in range(len(vertices)):
-			bootFloat(dst, vertices[i])
+		bootVertexFormat(dst, geometry['format'])
 			
-		faces = geometry['faces']
-		bootInteger(dst, (int)(len(faces) / 6))
-		for i in range(len(faces)):
-			bootInteger(dst, faces[i])
+	bootVertexBuffer(dst, geometry['vertices'])
+	bootIndexBuffer(dst, geometry['indices'])
 			
 def bootGeometryFromFile(srcPath, dstPath):
 	bootGeometry(open(dstPath, 'wb'), json.load(open(srcPath)))

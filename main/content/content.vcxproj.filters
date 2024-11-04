@@ -105,6 +105,12 @@
     <FxCompile Include="..\..\_bin\main\omp\content\_010\atmosphere.pixel.hlsl">
       <Filter>omp\_010</Filter>
     </FxCompile>
+    <FxCompile Include="..\..\_bin\main\rnd\content\sphere.pixel.hlsl">
+      <Filter>rnd</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\rnd\content\sphere.vertex.hlsl">
+      <Filter>rnd</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\_bin\main\omp\content\atmosphere.header.hlsl">
@@ -151,6 +157,12 @@
     </None>
     <None Include="..\..\_bin\main\omp\content\instance.header.hlsl">
       <Filter>omp</Filter>
+    </None>
+    <None Include="..\..\_bin\main\rnd\content\sphere.header.hlsl">
+      <Filter>rnd</Filter>
+    </None>
+    <None Include="..\..\_bin\main\rnd\content\instance.header.hlsl">
+      <Filter>rnd</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -49,15 +49,12 @@
 
 		"attributes":
 		[
-		  { "name": "lightDirFromOrigin", "query": "lightDirFromOrigin" },
 			{ "name":     "viewProjMatrix", "query":     "viewProjMatrix" }
 		]
 	},
 
 	"geometry" :
 	{
-		"kind" : "GEOMETRY_FIXED",
-
 		"topology": "TOPOLOGY_TRIANGLE_LIST",
 
 		"format": {

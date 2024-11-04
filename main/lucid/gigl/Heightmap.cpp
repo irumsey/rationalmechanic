@@ -1,4 +1,5 @@
 #include "Heightmap.h"
+#include <lucid/core/FileReader.h>
 #include <lucid/core/Reader.h>
 
 LUCID_GIGL_BEGIN
@@ -10,6 +11,11 @@ Heightmap::Heightmap()
 Heightmap::Heightmap(size_t width, size_t height, uint16_t value)
 {
     initialize(width, height, value);
+}
+
+Heightmap::Heightmap(std::string const &path, size_t depth, uint16_t tolerance)
+{
+    initialize(LUCID_CORE::FileReader(path), depth, tolerance);
 }
 
 Heightmap::Heightmap(LUCID_CORE::Reader &reader, size_t depth, uint16_t tolerance)
@@ -155,7 +161,7 @@ void Heightmap::subdivide(Tile &tile, size_t depth, uint16_t tolerance)
         tile.h[1] = std::max(tile.h[1], child.h[1]);
     }
 
-    if (tile.h[1] == tile.h[0])
+    if (tolerance > (tile.h[1] - tile.h[0]))
     {
         removeChildren(tile.id);
     }

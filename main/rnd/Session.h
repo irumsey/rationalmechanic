@@ -4,11 +4,11 @@
 #include <lucid/gal/Types.h>
 #include <lucid/gigl/Context.h>
 #include <lucid/gigl/Heightmap.h>
-#include <lucid/gigl/Sphere.h>
 #include <rnd/Utility.h>
 
 LUCID_GAL_BEGIN
 
+class VertexFormat;
 class VertexBuffer;
 class IndexBuffer;
 
@@ -16,7 +16,7 @@ LUCID_GAL_END
 
 LUCID_GIGL_BEGIN
 
-class Mesh;
+class Material;
 
 LUCID_GIGL_END
 
@@ -42,16 +42,16 @@ public:
 	void render(float64_t t, float32_t interpolant);
 
 private:
-	enum { INSTANCE_MAXIMUM = 1024 };
-
 	struct Instance
 	{
 		uint32_t                      id = 0;
-		LUCID_GAL::Vector3      position;
-		float32_t                  scale = 0.f;
-		LUCID_GAL::Quaternion   rotation;
-		LUCID_GAL::Color           color;
-		LUCID_GAL::Vector4    parameters;
+		LUCID_GAL::Vector4      position;
+		LUCID_GAL::Vector4      rotation;
+		LUCID_GAL::Vector4 lightPosition;
+		LUCID_GAL::Vector4   compositing;
+		LUCID_GAL::Vector4      channel0;
+		LUCID_GAL::Vector4      channel1;
+		LUCID_GAL::Vector4      channel2;
 	};
 
 	bool _initialized = false; // no state classes (yet)
@@ -59,18 +59,28 @@ private:
 	bool _rotating = false;
 	point2d_t _cursorLocation;
 
+	float32_t const _znear = 10.f;
+	float32_t const _zfar = 1000.f;
+	float32_t const _zmid = 0.5f * (_znear + _zfar);
+
+	LUCID_GAL::Vector3 _lightPosition;
 	LUCID_GAL::Vector3 _viewPosition;
 	LUCID_GAL::Vector3 _viewFocus;
 
 	LUCID_GIGL::Context _context;
 
-	LUCID_GIGL::Mesh *_hemisphere = nullptr;
-	LUCID_GAL::VertexBuffer *_hemisphereInstances = nullptr;
+	LUCID_GAL::VertexBuffer *_instances = nullptr;
 
-	LUCID_GIGL::Mesh *_orbit = nullptr;
-	LUCID_GAL::VertexBuffer *_orbitInstances = nullptr;
+	float32_t const _radius = 75.f;
 
-	LUCID_GIGL::Heightmap _heightmap;
-	LUCID_GIGL::Sphere _sphere;
+	LUCID_GIGL::Material *_material = nullptr;
 
+	/// test {
+	uint32_t _vertexCount = 0;
+	uint32_t _indexCount = 0;
+
+	LUCID_GAL::VertexFormat *_format = nullptr;
+	LUCID_GAL::VertexBuffer *_vertices = nullptr;
+	LUCID_GAL::IndexBuffer *_indices = nullptr;
+	/// } test
 };

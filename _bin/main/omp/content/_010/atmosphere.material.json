@@ -47,7 +47,6 @@
 
 	"attributes":
 	[
-		{ "name": "lightDirFromOrigin",     "query":              "lightDirFromOrigin" },
 		{ "name":     "viewProjMatrix",     "query":                  "viewProjMatrix" },
 		{ "name":     "scatterTexture", "texture2d":      "content/scattering.texture" }
 	]

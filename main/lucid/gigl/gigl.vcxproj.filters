@@ -15,6 +15,7 @@
     <ClInclude Include="Defines.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="Heightmap.h" />
+    <ClInclude Include="ROAM.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Primitive.cpp" />

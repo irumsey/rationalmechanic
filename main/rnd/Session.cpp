@@ -1,11 +1,15 @@
 #include "Session.h"
 #include <lucid/orbit/Utility.h>
-#include <lucid/gigl/Mesh.h>
+#include <lucid/gigl/ROAM.h>
+#include <lucid/gigl/Material.h>
 #include <lucid/gal/IndexBuffer.h>
 #include <lucid/gal/VertexBuffer.h>
+#include <lucid/gal/VertexFormat.h>
 #include <lucid/gal/Pipeline.h>
 #include <lucid/gal/System.h>
+#include <lucid/math/AABB.h>
 #include <lucid/math/Math.h>
+#include <lucid/core/FileReader.h>
 #include <lucid/core/Random.h>
 #include <lucid/core/Numbers.h>
 
@@ -16,9 +20,9 @@
 #	undef min
 #endif
 
-namespace /* anonymous */ {
+namespace roam = ::lucid::gigl::roam;
 
-	typedef LUCID_MATH::AABB<float32_t, 3> Box;
+namespace /* anonymous */ {
 
 	template<class T> inline void safe_delete(T*& ptr)
 	{
@@ -26,61 +30,12 @@ namespace /* anonymous */ {
 		ptr = nullptr;
 	}
 
-	struct Elements
+	struct Vertex
 	{
-		float32_t ecc = 0.f;
-		float32_t   a = 0.f;
-		float32_t  in = 0, f;
-		float32_t  om = 0.f;
-		float32_t   w = 0.f;
+		LUCID_GAL::Vector3 position;
+		float32_t height = 0.f;
+		LUCID_GAL::Vector2 texcoord;
 	};
-
-	Elements const elements[] =
-	{
-		{ 2.056245714593660e-01f, 3.870977359489419e-01f, 7.010973469815249e+00f, 4.845668075886037e+01f, 2.884039888952456e+01f, },
-		{ 6.806965099797136e-03f, 7.233254654407552e-01f, 3.395588902703575e+00f, 7.695887256790466e+01f, 5.436216459969329e+01f, },
-		{ 2.328091526688903e-02f, 1.012010420088377e+00f, 8.324680150329519e-03f, 3.313925658836793e+02f, 1.410705296729917e+02f, },
-		{ 9.320070091096219e-02f, 1.523645757093395e+00f, 1.857831929638693e+00f, 4.985476704371550e+01f, 2.857837022752523e+02f, },
-		{ 4.896352389326375e-02f, 5.201356230578341e+00f, 1.306097293250404e+00f, 1.002776161037401e+02f, 2.736725296584393e+02f, },
-		{ 5.145515520501510e-02f, 9.577378487187870e+00f, 2.482476609146576e+00f, 1.139535214399594e+02f, 3.402542855632196e+02f, },
-		{ 4.893436515749554e-02f, 1.931280009054800e+01f, 7.761534668809078e-01f, 7.401222968515378e+01f, 1.031712356812917e+02f, },
-		{ 5.396631185487585e-03f, 2.995505220270377e+01f, 1.766562768632231e+00f, 1.319008954718431e+02f, 2.562152041746992e+02f, },
-		{ 2.478618527514649e-01f, 3.950092123894740e+01f, 1.716594041052891e+01f, 1.102440726385179e+02f, 1.151532923291780e+02f, },
-		{ 4.085670288166271e-04f, 4.639091756322507e-05f, 2.993383590139660e+01f, 2.447983757684773e+02f, 2.446811656015392e+02f, },
-	};
-
-	inline LUCID_GAL::Vector2 computeConicPoint(float32_t hu, float32_t ecc, float32_t theta)
-	{
-		float32_t c = LUCID_MATH::cos(theta);
-		float32_t s = LUCID_MATH::sin(theta);
-		return LUCID_GAL::Vector2(c, s) * hu / (1.f + ecc * c);
-	}
-
-	inline LUCID_GAL::Vector3 computeConicPosition(Elements const &elmn, float32_t theta)
-	{
-		float32_t hu = elmn.a * (1.f - elmn.ecc * elmn.ecc);
-
-		LUCID_GAL::Matrix3x3 R0 = LUCID_MATH::rotateAboutZ(LUCID_CORE_NUMBERS::pi<float32_t> * elmn.om / 180.f);
-		LUCID_GAL::Matrix3x3 R1 = LUCID_MATH::rotateAboutX(LUCID_CORE_NUMBERS::pi<float32_t> * elmn.in / 180.f);
-		LUCID_GAL::Matrix3x3 R2 = LUCID_MATH::rotateAboutZ(LUCID_CORE_NUMBERS::pi<float32_t> * elmn. w / 180.f);
-
-		return R0 * R1 * R2 * LUCID_GAL::Vector3(computeConicPoint(hu, elmn.ecc, theta), 0.f);
-	}
-
-	LUCID_GAL::Vector3 const orbitPositions[] =
-	{
-		{ 0, 0, 0, },
-		{ 0, 0, 0, },
-		{ 0, 0, 0, },
-		{ 0, 0, 0, },
-		{ 0, 0, 0, },
-		{ 0, 0, 0, },
-		{ 0, 0, 0, },
-		{ 0, 0, 0, },
-		{ 0, 0, 0, },
-		computeConicPosition(elements[2], 0.1f), // this orbit is centered on earth
-	};
-
 }
 
 void Session::initialize()
@@ -90,72 +45,133 @@ void Session::initialize()
 	LUCID_GAL::Quaternion q = LUCID_MATH::rotateUsingAxis(LUCID_GAL::Vector3(1, 0, 0), 0.7f);
 	LUCID_GAL::Vector3 r = LUCID_MATH::matrixFromQuaternion(q) * LUCID_GAL::Vector3(0, 1, 0);
 
-	_viewPosition = orbitPositions[9] + computeConicPosition(elements[9], 0.f);
-	_viewFocus = orbitPositions[9] + computeConicPosition(elements[9], 0.01f);
+	_lightPosition = LUCID_GAL::Vector3(-100, 100, 100);
+	_viewPosition = LUCID_GAL::Vector3(100, 100, 100);
+	_viewFocus = LUCID_GAL::Vector3();
+
+	LUCID_GAL::Vector3 viewDirection = _viewPosition - _viewFocus;
 
 	_context = LUCID_GIGL::Context("content/render.context");
 
-	_hemisphere = LUCID_GIGL::Mesh::create("content/hemisphere.mesh");
-	_hemisphereInstances = LUCID_GAL::VertexBuffer::create(LUCID_GAL::VertexBuffer::USAGE_DYNAMIC, INSTANCE_MAXIMUM, sizeof(Instance));
+	/// test {
 
-	_orbit = LUCID_GIGL::Mesh::create("content/orbit.mesh");
-	_orbitInstances = LUCID_GAL::VertexBuffer::create(LUCID_GAL::VertexBuffer::USAGE_DYNAMIC, INSTANCE_MAXIMUM, sizeof(Instance));
+	LUCID_GIGL::Heightmap heightmap("content/earth.heightmap", 10, 3);
+	
+	roam::Surface<uint32_t> surface;
 
-#if false
-	std::ifstream stream("d:/work/references/earthBedrock.tga", std::ios::binary);
-	LUCID_VALIDATE(stream.is_open(), "unable to open height map for reading");
+	std::vector<Vertex> vertices = {
+		{ {  1,  0,  0, }, 0, { 0.00, 0.50, } },
+		{ {  0,  1,  0, }, 0, { 0.25, 0.50, } },
+		{ { -1,  0,  0, }, 0, { 0.50, 0.50, } },
+		{ {  0, -1,  0, }, 0, { 0.75, 0.50, } },
+		{ {  1,  0,  0, }, 0, { 1.00, 0.50, } },
+		{ {  0,  0,  1, }, 0, { 0.00, 1.00, } },
+		{ {  0,  0, -1, }, 0, { 0.00, 0.00, } },
+	};
 
-	uint8_t header[18];
+	surface.faces = {
+		{ 0, 1, 5, },
+		{ 1, 2, 5, },
+		{ 2, 3, 5, },
+		{ 3, 4, 5, },
+		{ 4, 3, 6, },
+		{ 3, 2, 6, },
+		{ 2, 1, 6, },
+		{ 1, 0, 6, },
+	};
 
-	stream.read((char *)(header), 18);
-	LUCID_VALIDATE(8 == header[16], "invalid pixel depth in height map");
+	roam::initialize(surface);
 
-	size_t width = ((size_t)header[13] << 8) | header[12];
-	size_t height = ((size_t)header[15] << 8) | header[14];
+	auto make_vertex = [&heightmap, &surface, &vertices](size_t faceIndex) -> uint32_t {
+		Vertex vertex;
 
-	_heightmap.initialize(width, height, 0);
-	stream.read((char *)(_heightmap._data), width * height);
-	_heightmap.process(10, 8);
+		Vertex const &v0 = vertices[surface[faceIndex][0]];
+		Vertex const &v1 = vertices[surface[faceIndex][1]];
+		Vertex const &v2 = vertices[surface[faceIndex][2]];
 
-	_sphere.initialize(5);
+		vertex.position = LUCID_MATH::normalize(0.5f * (v1.position + v0.position));
+		
+		float32_t u = LUCID_MATH::atan2(vertex.position.y, vertex.position.x);
+		float32_t v = LUCID_MATH::acos(vertex.position.z);
+
+		u = LUCID_CORE_NUMBERS::inv_two_pi<float32_t> *((u < 0.f) ? u + LUCID_CORE_NUMBERS::two_pi<float32_t> : u );
+		v = LUCID_CORE_NUMBERS::inv_pi<float32_t> * v;
+
+		bool west = (v0.texcoord.x > 0.5f) || (v1.texcoord.x > 0.5f) || (v2.texcoord.x > 0.5f);
+		u = ((0.f == u) && west) ? 1.f : u;
+
+		vertex.texcoord = LUCID_GAL::Vector2(u, v);
+		vertex.height = 100.f * float32_t(heightmap.at(vertex.texcoord)) / 255.f;
+
+		uint32_t vertexIndex = uint32_t(vertices.size());
+		vertices.push_back(vertex);
+		return vertexIndex;
+	};
+
 	size_t first = 0;
-	for (size_t pass = 0; pass < 7; ++pass)
+	for (size_t depth = 0; depth < 8; ++depth)
 	{
-		size_t end = _sphere.faceCount();
-		for (size_t i = first; i < end; ++i)
+		size_t end = surface.faces.size();
+		for (size_t index = first; index < end; ++index)
+			roam::split_face(surface, make_vertex, index);
+		first = end;
+	}
+
+	roam::strip_non_leaves(surface);
+
+	first = 0;
+	for (size_t depth = 0; depth < 6; ++depth)
+	{
+		size_t end = surface.faces.size();
+		for (size_t index = first; index < end; ++index)
 		{
-			LUCID_GIGL::Face face = _sphere.face(i);
-			
-			LUCID_GAL::Vector2 t0 = _sphere.vertex(face[0]).texcoord;
-			LUCID_GAL::Vector2 t1 = _sphere.vertex(face[1]).texcoord;
-			LUCID_GAL::Vector2 t2 = _sphere.vertex(face[2]).texcoord;
+			if (surface.not_leaf(index))
+				continue;
 
-            bool right = (t0.x > 0.5f) || (t1.x > 0.5f) || (t2.x > 0.5f);
+			Vertex const &v0 = vertices[surface[index][0]];
+			Vertex const &v1 = vertices[surface[index][1]];
+			Vertex const &v2 = vertices[surface[index][2]];
 
-            t0.x = (right && (0 == t0.x)) ? 1.f : t0.x;
-            t1.x = (right && (0 == t1.x)) ? 1.f : t1.x;
-            t2.x = (right && (0 == t2.x)) ? 1.f : t2.x;
+			auto area = LUCID_MATH::fit(v0.texcoord, v1.texcoord, v2.texcoord);
+			LUCID_GIGL::Heightmap::Tile const &tile = heightmap.filter(area);
 
-			LUCID_GIGL::Heightmap::Area area = LUCID_MATH::fit(t0, t1, t2);
-			LUCID_GIGL::Heightmap::Tile const &tile = _heightmap.filter(area);
-
-			if (128 < (tile.h[1] - tile.h[0]))
-				_sphere.splitFace(i);
+			uint16_t error = tile.h[1] - tile.h[0];
+			if (error > 128)
+				roam::split_face(surface, make_vertex, index);
 		}
 		first = end;
 	}
-#endif
+
+	roam::strip_non_leaves(surface);
+
+	_vertexCount = vertices.size();
+	size_t faceCount = surface.faces.size();
+	_indexCount = 3 * faceCount;
+
+	_material = LUCID_GIGL::Material::create("content/earth.material");
+	_format = LUCID_GAL::VertexFormat::create(LUCID_CORE::FileReader("content/planet.format"));
+	_vertices = LUCID_GAL::VertexBuffer::create(LUCID_GAL::VertexBuffer::USAGE_STATIC, _vertexCount, sizeof(Vertex));
+	_indices = LUCID_GAL::IndexBuffer::create(LUCID_GAL::IndexBuffer::USAGE_STATIC, LUCID_GAL::IndexBuffer::FORMAT_UINT32, _indexCount);
+	_instances = LUCID_GAL::VertexBuffer::create(LUCID_GAL::VertexBuffer::USAGE_DYNAMIC, 100, sizeof(Instance));
+
+	std::memcpy(_vertices->lock(), &(vertices[0]), _vertexCount * sizeof(Vertex));
+	_vertices->unlock();
+
+	std::memcpy(_indices->lock(), &(surface[0]), faceCount * sizeof(roam::Face<uint32_t>));
+	_indices->unlock();
+
+	/// } test
 
 	_initialized = true;
 }
 
 void Session::shutdown()
 {
-	::safe_delete(_orbitInstances);
-	::safe_delete(_orbit);
-
-	::safe_delete(_hemisphereInstances);
-	::safe_delete(_hemisphere);
+	::safe_delete(_instances);
+	::safe_delete(_indices);
+	::safe_delete(_vertices);
+	::safe_delete(_format);
+	::safe_delete(_material);
 
 	_initialized = false;
 }
@@ -220,7 +236,7 @@ void Session::update(float64_t t, float64_t dt)
 
 	_context["texelSize"] = texelSize;
 
-	_context["lightPosition"] = LUCID_GAL::Vector3(100, -100, 100);
+	_context["lightPosition"] = _lightPosition;
 
 	_context["viewPosition"] = LUCID_GAL::Vector3();
 
@@ -237,55 +253,24 @@ void Session::update(float64_t t, float64_t dt)
 	_context["viewProjMatrix"] = viewProjMatrix;
 	_context["invViewProjMatrix"] = LUCID_MATH::inverse(viewProjMatrix);
 
-#if false
+	Instance instance;
+	
+	LUCID_GAL::Vector3 position = LUCID_GAL::Vector3() - _viewPosition;
+	float32_t const distance = LUCID_MATH::len(position);
 
-	Instance* instances = (Instance*)(_hemisphereInstances->lock());
-	float32_t distance = znear;
-	{
-		Instance& instance = instances[0];
+	instance.id = 1;
+	instance.position = _zmid * LUCID_GAL::Vector4(position / distance, _radius / distance);;
+	instance.rotation = LUCID_GAL::Vector4(0, 0, 0, 1);
+	instance.lightPosition = LUCID_GAL::Vector4(_zmid * _lightPosition / distance, 0);
+	instance.compositing = LUCID_GAL::Vector4(_radius / distance, distance / _zmid, 0, 0);
+	instance.channel0 = LUCID_GAL::Vector4();
+	instance.channel1 = LUCID_GAL::Vector4();
+	instance.channel2 = LUCID_GAL::Vector4();
 
-		float32_t r1 = distance * 0.758112f / (1.f + 0.758112f);
-
-		instance.id = 0;
-		instance.position = LUCID_GAL::Vector3(r1 + distance, 0, 0) - _viewPosition;
-		instance.rotation = LUCID_GAL::Quaternion();
-		instance.scale = r1;
-		instance.color = LUCID_GAL::Color(0, 1, 0, 0.33f);
-		instance.parameters = LUCID_GAL::Vector4();
-
-		distance = distance + r1;
-	}
-	_hemisphereInstances->unlock();
-
-#endif
-
-#if true
-	Instance *instances = _orbitInstances->lock_as<Instance>();
-	for (size_t i = 0; i < 10; ++i)
-	{
-		Instance& instance = instances[i];
-
-		LUCID_GAL::Vector3 r = orbitPositions[i] - _viewPosition;
-		float32_t d0 = LUCID_MATH::len(r);
-		float32_t d1 = 250.f;
-
-		float32_t   a = d1 * elements[i].a / d0;
-		float32_t ecc = elements[i].ecc;
-		float32_t  hu = a * (1.f - ecc * ecc);
-
-		LUCID_GAL::Matrix3x3 R0 = LUCID_MATH::rotateAboutZ(LUCID_CORE_NUMBERS::pi<float32_t> *elements[i].om / 180.f);
-		LUCID_GAL::Matrix3x3 R1 = LUCID_MATH::rotateAboutX(LUCID_CORE_NUMBERS::pi<float32_t> *elements[i].in / 180.f);
-		LUCID_GAL::Matrix3x3 R2 = LUCID_MATH::rotateAboutZ(LUCID_CORE_NUMBERS::pi<float32_t> *elements[i]. w / 180.f);
-
-		instance.id = uint32_t(i);
-		instance.position = d1 * r / d0;
-		instance.rotation = LUCID_MATH::quaternionFromMatrix(R0 * R1 * R2);
-		instance.scale = 4;
-		instance.color = (9 == i) ? LUCID_GAL::Color(0, 1, 0, 1) : LUCID_GAL::Color(0, 0, 1, 1);
-		instance.parameters = LUCID_GAL::Vector4(hu, ecc, 0.f, LUCID_CORE_NUMBERS::two_pi<float32_t>);
-	}
-	_orbitInstances->unlock();
-#endif
+	_instances = LUCID_GAL::VertexBuffer::create(LUCID_GAL::VertexBuffer::USAGE_DYNAMIC, 100, sizeof(Instance));
+	Instance *buffer = _instances->lock_as<Instance>();
+	buffer[0] = instance;
+	_instances->unlock();
 }
 
 void Session::render(float64_t t, float32_t interpolant)
@@ -297,12 +282,18 @@ void Session::render(float64_t t, float32_t interpolant)
 	_context["interpolant"] = float32_t(interpolant);
 
 #if false
-	LUCID_GAL_PIPELINE.setVertexStream(1, _hemisphereInstances);
-	_hemisphere->renderInstanced(_context, 1);
+	_material->begin(_context);
+		LUCID_GAL_PIPELINE.setVertexStream(1, _instances);
+		_geometry->drawInstanced(1);
+	_material->end();
 #endif
 
-#if true
-	LUCID_GAL_PIPELINE.setVertexStream(1, _orbitInstances);
-	_orbit->renderInstanced(_context, 10);
-#endif
+	_material->begin(_context);
+		LUCID_GAL_PIPELINE.beginGeometry(_format);
+			LUCID_GAL_PIPELINE.setVertexStream(0, _vertices);
+			LUCID_GAL_PIPELINE.setVertexStream(1, _instances);
+			LUCID_GAL_PIPELINE.setIndexStream(_indices);
+			LUCID_GAL_PIPELINE.drawInstanced(LUCID_GAL::Pipeline::TOPOLOGY_TRIANGLE_LIST, _vertexCount, _indexCount, 1);
+		LUCID_GAL_PIPELINE.endGeometry(_format);
+	_material->end();
 }

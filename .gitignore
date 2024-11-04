@@ -410,3 +410,10 @@ ModelManifest.xml
 /_bin/main/omp/content/celestialBody.geometry
 /_bin/main/omp/content/_399/earth.geometry
 /_bin/main/omp/content/sphere.format
+/_bin/main/rnd/content/earth.geometry
+/_bin/main/rnd/content/earth.heightmap
+/_bin/main/rnd/content/earth.material
+/_bin/main/rnd/content/sphere.format
+/_bin/main/rnd/content/sphere.pixel.cso
+/_bin/main/rnd/content/sphere.vertex.cso
+/_bin/main/rnd/content/planet.format
