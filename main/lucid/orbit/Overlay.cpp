@@ -38,11 +38,8 @@ void Overlay::initialize(size_t passMaximum, float32_t midRange)
 	_orbitMesh = LUCID_GIGL_RESOURCES.get<LUCID_GIGL::Mesh>("content/orbit.mesh");
 	_batched.createBatch<MeshInstance, mesh_sort_t>(_orbitMesh, _passMaximum, mesh_sort_t());
 
-	_iconDefault = LUCID_GIGL_RESOURCES.get<LUCID_GIGL::Mesh>("content/iconDefault.mesh");
-	_batched.createBatch<IconInstance, icon_sort_t>(_iconDefault, _passMaximum, icon_sort_t());
-
-	_iconSatellite = LUCID_GIGL_RESOURCES.get<LUCID_GIGL::Mesh>("content/iconSatellite.mesh");
-	_batched.createBatch<IconInstance, icon_sort_t>(_iconSatellite, _passMaximum, icon_sort_t());
+	_stdIcons = LUCID_GIGL_RESOURCES.get<LUCID_GIGL::Mesh>("content/stdIcons.mesh");
+	_batched.createBatch<IconInstance, icon_sort_t>(_stdIcons, _passMaximum, icon_sort_t());
 
 	_font = LUCID_GIGL::Resources::get<LUCID_GIGL::Font>("content/OCRa.font");
 	_text.reset(LUCID_GAL::VertexBuffer::create(LUCID_GAL::VertexBuffer::USAGE_DYNAMIC, TEXT_LENGTH_MAXIMUM, sizeof(LUCID_GIGL::Font::Character)));
@@ -55,8 +52,7 @@ void Overlay::shutdown()
 
 	_batched.shutdown();
 
-	_iconDefault.reset();
-	_iconSatellite.reset();
+	_stdIcons.reset();
 
 	_orbitMesh.reset();
 
@@ -188,9 +184,9 @@ void Overlay::batchIcon(OrbitalBody *body)
 	iconInstance.id = Selection(Selection::TYPE_ICON, body->id).token;
 	iconInstance.position = LUCID_GAL::Vector4(_midRange * cast(bodyPosition / bodyDistance), cast(bodyDistance / _midRange));
 	iconInstance.scale = LUCID_GAL::Vector2(24, 24);
-	iconInstance.texcoord = LUCID_GAL::Vector4(0, 0, 1, 1);
+	iconInstance.texcoord = renderProperties.iconParameters;
 	iconInstance.color = LUCID_GAL::Color(1, 1, 1, 1);
-	_batched.addInstance(renderProperties.icon, iconInstance);
+	_batched.addInstance(renderProperties.iconMesh, iconInstance);
 }
 
 LUCID_ORBIT_END

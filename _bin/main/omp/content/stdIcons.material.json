@@ -47,9 +47,9 @@
 
 	"attributes":
 	[
-		{ "name":      "texelSize",     "query":                   "texelSize" },
-		{ "name": "viewProjMatrix",     "query":              "viewProjMatrix" },
-		{ "name":    "depthTarget",     "query":                 "depthTarget" },
-		{ "name":   "iconsTexture", "texture2d": "content/iconDefault.texture" }
+		{ "name":      "texelSize",     "query":                "texelSize" },
+		{ "name": "viewProjMatrix",     "query":           "viewProjMatrix" },
+		{ "name":    "depthTarget",     "query":              "depthTarget" },
+		{ "name":   "iconsTexture", "texture2d": "content/stdIcons.texture" }
 	]
 }

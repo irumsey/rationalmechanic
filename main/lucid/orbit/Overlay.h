@@ -68,8 +68,7 @@ private:
 	vector3_t _cameraPosition;
 
 	std::shared_ptr<LUCID_GIGL::Mesh> _orbitMesh;
-	std::shared_ptr<LUCID_GIGL::Mesh> _iconDefault;
-	std::shared_ptr<LUCID_GIGL::Mesh> _iconSatellite;
+	std::shared_ptr<LUCID_GIGL::Mesh> _stdIcons;
 
 	LUCID_GIGL::Batched _batched;
 

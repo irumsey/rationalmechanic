@@ -57,7 +57,7 @@ void Session::initialize()
 
 	LUCID_GIGL::Heightmap heightmap("content/earth.heightmap", 10, 3);
 	
-	roam::Surface<uint32_t> surface;
+	roam::Geometry<uint32_t> geometry;
 
 	std::vector<Vertex> vertices = {
 		{ {  1,  0,  0, }, 0, { 0.00, 0.50, } },
@@ -69,7 +69,7 @@ void Session::initialize()
 		{ {  0,  0, -1, }, 0, { 0.00, 0.00, } },
 	};
 
-	surface.faces = {
+	geometry.faces = {
 		{ 0, 1, 5, },
 		{ 1, 2, 5, },
 		{ 2, 3, 5, },
@@ -80,28 +80,27 @@ void Session::initialize()
 		{ 1, 0, 6, },
 	};
 
-	roam::initialize(surface);
+	roam::initialize(geometry);
 
-	auto make_vertex = [&heightmap, &surface, &vertices](size_t faceIndex) -> uint32_t {
+	auto split_edge = [&heightmap, &geometry, &vertices](roam::Edge<uint32_t> const &edge) -> uint32_t {
 		Vertex vertex;
 
-		Vertex const &v0 = vertices[surface[faceIndex][0]];
-		Vertex const &v1 = vertices[surface[faceIndex][1]];
-		Vertex const &v2 = vertices[surface[faceIndex][2]];
+		Vertex const &v0 = vertices[edge[0]];
+		Vertex const &v1 = vertices[edge[1]];
 
 		vertex.position = LUCID_MATH::normalize(0.5f * (v1.position + v0.position));
 		
 		float32_t u = LUCID_MATH::atan2(vertex.position.y, vertex.position.x);
 		float32_t v = LUCID_MATH::acos(vertex.position.z);
 
-		u = LUCID_CORE_NUMBERS::inv_two_pi<float32_t> *((u < 0.f) ? u + LUCID_CORE_NUMBERS::two_pi<float32_t> : u );
+		u = LUCID_CORE_NUMBERS::inv_two_pi<float32_t> * ((u < 0.f) ? u + LUCID_CORE_NUMBERS::two_pi<float32_t> : u );
 		v = LUCID_CORE_NUMBERS::inv_pi<float32_t> * v;
 
-		bool west = (v0.texcoord.x > 0.5f) || (v1.texcoord.x > 0.5f) || (v2.texcoord.x > 0.5f);
+		bool west = (v0.texcoord.x > 0.5f) || (v1.texcoord.x > 0.5f);
 		u = ((0.f == u) && west) ? 1.f : u;
 
 		vertex.texcoord = LUCID_GAL::Vector2(u, v);
-		vertex.height = 100.f * float32_t(heightmap.at(vertex.texcoord)) / 255.f;
+		vertex.height = float32_t(heightmap.at(vertex.texcoord));
 
 		uint32_t vertexIndex = uint32_t(vertices.size());
 		vertices.push_back(vertex);
@@ -109,43 +108,145 @@ void Session::initialize()
 	};
 
 	size_t first = 0;
-	for (size_t depth = 0; depth < 8; ++depth)
+	for (size_t depth = 0; depth < 7; ++depth)
 	{
-		size_t end = surface.faces.size();
+		size_t end = geometry.faces.size();
 		for (size_t index = first; index < end; ++index)
-			roam::split_face(surface, make_vertex, index);
+			roam::split_face(geometry, split_edge, index);
 		first = end;
 	}
 
-	roam::strip_non_leaves(surface);
-
 	first = 0;
-	for (size_t depth = 0; depth < 6; ++depth)
+	for (size_t depth = 0; depth < 7; ++depth)
 	{
-		size_t end = surface.faces.size();
+		size_t end = geometry.faces.size();
 		for (size_t index = first; index < end; ++index)
 		{
-			if (surface.not_leaf(index))
+			if (geometry.not_leaf(index))
 				continue;
 
-			Vertex const &v0 = vertices[surface[index][0]];
-			Vertex const &v1 = vertices[surface[index][1]];
-			Vertex const &v2 = vertices[surface[index][2]];
+			Vertex const v0 = vertices[geometry[index][0]];
+			Vertex const v1 = vertices[geometry[index][1]];
+			Vertex const v2 = vertices[geometry[index][2]];
 
 			auto area = LUCID_MATH::fit(v0.texcoord, v1.texcoord, v2.texcoord);
 			LUCID_GIGL::Heightmap::Tile const &tile = heightmap.filter(area);
 
 			uint16_t error = tile.h[1] - tile.h[0];
-			if (error > 128)
-				roam::split_face(surface, make_vertex, index);
+			if (error > 32)
+				roam::split_face(geometry, split_edge, index);
 		}
 		first = end;
 	}
 
-	roam::strip_non_leaves(surface);
+	size_t end = geometry.faces.size();
+	for (size_t index = 0; index < end; ++index)
+	{
+		if (geometry.not_leaf(index))
+			continue;
+
+		roam::Face<uint32_t> const face = geometry[index];
+
+		Vertex &v0 = vertices[face[0]];
+		Vertex &v1 = vertices[face[1]];
+		Vertex &v2 = vertices[face[2]];
+
+		uint16_t h2 = heightmap.at(v2.texcoord);
+		uint16_t h1 = heightmap.at(v1.texcoord);
+		uint16_t h0 = heightmap.at(v0.texcoord);
+
+		uint8_t code = ((h2 > 32) << 2) | ((h1 > 32) << 1) | ((h0 > 32) << 0);
+		code = 0x07 & code;
+
+		/// all land
+		if (7 == code)
+		{
+			v0.height = 1.f;
+			v1.height = 1.f;
+			v2.height = 1.f;
+			continue;
+		}
+
+		geometry.surface[index] = false;
+
+		/// all water
+		if (0 == code)
+			continue;
+
+#if true
+		uint32_t l = split_edge(face. base());
+		uint32_t m = split_edge(face.right());
+		uint32_t n = split_edge(face. left());
+
+		vertices[l].height = 0.5f;
+		vertices[m].height = 0.5f;
+		vertices[n].height = 0.5f;
+
+		typedef roam::Face<uint32_t> face_t;
+
+		switch (code)
+		{
+		case 1:
+			geometry.faces.push_back(face_t(geometry[index][0], l, n));
+			geometry.surface.push_back(true);
+			break;
+		case 2:
+			geometry.faces.push_back(face_t(l, geometry[index][1], m));
+			geometry.surface.push_back(true);
+			break;
+		case 3:
+			geometry.faces.push_back(face_t(geometry[index][0], l, n));
+			geometry.surface.push_back(true);
+			geometry.faces.push_back(face_t(l, m, n));
+			geometry.surface.push_back(true);
+			geometry.faces.push_back(face_t(l, geometry[index][1], m));
+			geometry.surface.push_back(true);
+			break;
+		case 4:
+			geometry.faces.push_back(face_t(n, m, geometry[index][2]));
+			geometry.surface.push_back(true);
+			break;
+		case 5:
+			geometry.faces.push_back(face_t(geometry[index][0], l, n));
+			geometry.surface.push_back(true);
+			geometry.faces.push_back(face_t(l, m, n));
+			geometry.surface.push_back(true);
+			geometry.faces.push_back(face_t(n, m, geometry[index][2]));
+			geometry.surface.push_back(true);
+			break;
+		case 6:
+			geometry.faces.push_back(face_t(l, geometry[index][1], m));
+			geometry.surface.push_back(true);
+			geometry.faces.push_back(face_t(l, m, n));
+			geometry.surface.push_back(true);
+			geometry.faces.push_back(face_t(n, m, geometry[index][2]));
+			geometry.surface.push_back(true);
+			break;
+		default:
+			break;
+		}
+#endif
+	}
+
+    auto face = geometry.  faces.begin();
+    auto leaf = geometry.surface.begin();
+
+    while (face != geometry.faces.end())
+    {
+        if (*leaf)
+        {
+            ++face;
+            ++leaf;
+        }
+        else
+        {
+            face = geometry.  faces.erase(face);
+            leaf = geometry.surface.erase(leaf);
+        }
+    }
 
 	_vertexCount = vertices.size();
-	size_t faceCount = surface.faces.size();
+	size_t faceCount = geometry.faces.size();
 	_indexCount = 3 * faceCount;
 
 	_material = LUCID_GIGL::Material::create("content/earth.material");
@@ -157,7 +258,7 @@ void Session::initialize()
 	std::memcpy(_vertices->lock(), &(vertices[0]), _vertexCount * sizeof(Vertex));
 	_vertices->unlock();
 
-	std::memcpy(_indices->lock(), &(surface[0]), faceCount * sizeof(roam::Face<uint32_t>));
+	std::memcpy(_indices->lock(), &(geometry.faces[0]), faceCount * sizeof(roam::Face<uint32_t>));
 	_indices->unlock();
 
 	/// } test
@@ -280,13 +381,6 @@ void Session::render(float64_t t, float32_t interpolant)
 
 	_context["time"] = float32_t(t);
 	_context["interpolant"] = float32_t(interpolant);
-
-#if false
-	_material->begin(_context);
-		LUCID_GAL_PIPELINE.setVertexStream(1, _instances);
-		_geometry->drawInstanced(1);
-	_material->end();
-#endif
 
 	_material->begin(_context);
 		LUCID_GAL_PIPELINE.beginGeometry(_format);

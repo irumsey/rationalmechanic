@@ -49,11 +49,13 @@ struct RenderProperties
 	bool orbitHighlight = false;				//	used only at runtime to toggle highlighting 
 
 	std::shared_ptr<LUCID_GIGL::Model> model;
-	std::shared_ptr<LUCID_GIGL::Mesh> icon;
+
+	std::shared_ptr<LUCID_GIGL::Mesh> iconMesh;	
+	LUCID_GAL::Vector4 iconParameters;			//	texpos(2) and texsize(2)
 
 	LUCID_GAL::Vector4 channel0;				//	specified in ephemeris
-	LUCID_GAL::Vector4 channel1;				//
-	LUCID_GAL::Vector4 channel2;				//
+	LUCID_GAL::Vector4 channel1;				//	"
+	LUCID_GAL::Vector4 channel2;				//	"
 
 	RenderProperties() = default;
 
@@ -69,7 +71,9 @@ struct RenderProperties
 		showOrbit = reader.read<bool>();
 
 		model.reset(new LUCID_GIGL::Model(reader));
-		icon = LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(reader.read<std::string>());
+
+		iconMesh = LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(reader.read<std::string>());
+		reader.read(&iconParameters, sizeof(LUCID_GAL::Vector4));
 
 		reader.read(&channel0, sizeof(LUCID_GAL::Vector4));
 		reader.read(&channel1, sizeof(LUCID_GAL::Vector4));

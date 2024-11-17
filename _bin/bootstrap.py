@@ -700,7 +700,9 @@ def bootFrameOrbitalBody(dst, frame):
 	for mesh in model:
 		bootString(dst, mesh)			
 	
-	bootString(dst, properties['render']['icon'])
+	bootString(dst, properties['render']['icon']['mesh'])
+	bootVector4(dst, properties['render']['icon']['parameters'])
+	
 	bootVector4(dst, properties['render']['channel0'])
 	bootVector4(dst, properties['render']['channel1'])
 	bootVector4(dst, properties['render']['channel2'])

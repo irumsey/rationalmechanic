@@ -61,8 +61,7 @@ template<typename Ti> struct Edge
 #if defined(_DEBUG)
         assert(
             (vertex[0] != INVALID_INDEX<Ti>) &&
-            (vertex[1] != INVALID_INDEX<Ti>) &&
-            (vertex[2] != INVALID_INDEX<Ti>)
+            (vertex[1] != INVALID_INDEX<Ti>)
         );
 #endif
     }
@@ -180,21 +179,21 @@ template<typename Ti> struct Face
 /// edge neighbor.
 template<typename Ti> using Adjacency = std::unordered_map<Edge<Ti>, size_t, edge_hash<Ti>, edge_equal<Ti> >;
 
-/// Surface
+/// Geometry
 ///
 /// 
-template<typename Ti> struct Surface
+template<typename Ti> struct Geometry
 {
     typedef Edge<Ti> edge_t;
     typedef Face<Ti> face_t;
 
     std::vector<face_t> faces;
-    std::vector<bool> leaves;
+    std::vector<bool> surface;
     Adjacency<Ti> adjacency;
 
-    Surface() = default;
+    Geometry() = default;
 
-    ~Surface() = default;
+    ~Geometry() = default;
 
     Face<Ti> const &operator[](size_t index) const
     {
@@ -210,8 +209,8 @@ template<typename Ti> struct Surface
 
     bool is_leaf(size_t index) const
     {
-        assert((index < leaves.size()) && "index out-of-bounds");
-        return leaves[index];
+        assert((index < surface.size()) && "index out-of-bounds");
+        return surface[index];
     }
 
     bool not_leaf(size_t index) const
@@ -225,8 +224,8 @@ template<typename Ti> struct Surface
         return (adjacency.end() != iter) ? iter->second : INVALID_INDEX<Ti>;
     }
 
-    LUCID_PREVENT_COPY(Surface);
-    LUCID_PREVENT_ASSIGNMENT(Surface);
+    LUCID_PREVENT_COPY(Geometry);
+    LUCID_PREVENT_ASSIGNMENT(Geometry);
 };
 
 /// is_diamond and not_diamond
@@ -246,36 +245,36 @@ template<typename Ti> inline bool not_diamond(Face<Ti> const &A, Face<Ti> const 
 /// create_adjacency
 /// 
 /// 
-template<typename Ti> inline void create_adjacency(Surface<Ti> &surface, Edge<Ti> const &edge, size_t index)
+template<typename Ti> inline void create_adjacency(Geometry<Ti> &geometry, Edge<Ti> const &edge, size_t index)
 {
-    assert((surface.adjacency.end() == surface.adjacency.find(edge)) && "adjacency already exists");
-    surface.adjacency[edge] = index;
+    assert((geometry.adjacency.end() == geometry.adjacency.find(edge)) && "adjacency already exists");
+    geometry.adjacency[edge] = index;
 }
 
 /// update_adjacency
 /// 
 /// 
-template<typename Ti> inline void update_adjacency(Surface<Ti> &surface, Edge<Ti> const &edge, size_t index)
+template<typename Ti> inline void update_adjacency(Geometry<Ti> &geometry, Edge<Ti> const &edge, size_t index)
 {
-    assert((surface.adjacency.end() != surface.adjacency.find(edge)) && "adjacency not defined");
-    surface.adjacency[edge] = index;
+    assert((geometry.adjacency.end() != geometry.adjacency.find(edge)) && "adjacency not defined");
+    geometry.adjacency[edge] = index;
 }
 
 /// 
 /// 
 /// 
-template<typename Ti> inline size_t add_face(Surface<Ti> &surface, Face<Ti> const &face)
+template<typename Ti> inline size_t add_face(Geometry<Ti> &geometry, Face<Ti> const &face)
 {
-    assert((surface.faces.size() == surface.leaves.size()) && "consistency error");
+    assert((geometry.faces.size() == geometry.surface.size()) && "consistency error");
 
-    size_t index = surface.faces.size();
+    size_t index = geometry.faces.size();
 
-    surface.faces.push_back(face);
-    surface.leaves.push_back(true);
+    geometry.faces.push_back(face);
+    geometry.surface.push_back(true);
 
-    update_adjacency(surface, reverse(face. base()), index);
-    create_adjacency(surface, reverse(face.right()), index);
-    create_adjacency(surface, reverse(face. left()), index);
+    update_adjacency(geometry, reverse(face. base()), index);
+    create_adjacency(geometry, reverse(face.right()), index);
+    create_adjacency(geometry, reverse(face. left()), index);
 
     return index;
 }
@@ -283,44 +282,44 @@ template<typename Ti> inline size_t add_face(Surface<Ti> &surface, Face<Ti> cons
 /// split_isolated_face
 ///
 /// 
-template<typename Ti, typename Fn> inline void split_isolated_face(Surface<Ti> &surface, Fn &make_vertex, size_t index)
+template<typename Ti, typename Fn> inline void split_isolated_face(Geometry<Ti> &geometry, Fn &split_edge, size_t index)
 {
-    assert(surface.is_leaf(index) && "attempt to split non-leaf face");
+    assert(geometry.is_leaf(index) && "attempt to split non-leaf face");
 
-    Ti i = surface[index][0];
-    Ti j = surface[index][1];
-    Ti k = surface[index][2];
+    Ti i = geometry[index][0];
+    Ti j = geometry[index][1];
+    Ti k = geometry[index][2];
 
-    Ti l = make_vertex(index);
+    Ti l = split_edge(geometry[index].base());
 
-    add_face(surface, Face<Ti>(k, i, l));
-    add_face(surface, Face<Ti>(j, k, l));
+    add_face(geometry, Face<Ti>(k, i, l));
+    add_face(geometry, Face<Ti>(j, k, l));
 
-    surface.leaves[index] = false;
+    geometry.surface[index] = false;
 }
 
 /// split_diamond
 ///
 /// 
-template<typename Ti, typename Fn> inline void split_diamond(Surface<Ti> &surface, Fn &make_vertex, size_t p, size_t q)
+template<typename Ti, typename Fn> inline void split_diamond(Geometry<Ti> &geometry, Fn &split_edge, size_t p, size_t q)
 {
-    assert(is_diamond(surface[p], surface[q]) && "attempt to split non-diamond configuration");
-    assert((surface.is_leaf(p) && surface.is_leaf(q)) && "attempt to split non-leaf face");
+    assert(is_diamond(geometry[p], geometry[q]) && "attempt to split non-diamond configuration");
+    assert((geometry.is_leaf(p) && geometry.is_leaf(q)) && "attempt to split non-leaf face");
 
-    Ti i = surface[p][0];
-    Ti j = surface[p][1];
-    Ti k = surface[p][2];
-    Ti l = surface[q][2];
+    Ti i = geometry[p][0];
+    Ti j = geometry[p][1];
+    Ti k = geometry[p][2];
+    Ti l = geometry[q][2];
 
-    Ti m = make_vertex(p);
+    Ti m = split_edge(geometry[p].base());
 
-    add_face(surface, Face<Ti>(k, i, m));
-    add_face(surface, Face<Ti>(i, l, m));
-    add_face(surface, Face<Ti>(l, j, m));
-    add_face(surface, Face<Ti>(j, k, m));
+    add_face(geometry, Face<Ti>(k, i, m));
+    add_face(geometry, Face<Ti>(i, l, m));
+    add_face(geometry, Face<Ti>(l, j, m));
+    add_face(geometry, Face<Ti>(j, k, m));
 
-    surface.leaves[p] = false;
-    surface.leaves[q] = false;
+    geometry.surface[p] = false;
+    geometry.surface[q] = false;
 }
 
 /// split_face
@@ -328,41 +327,41 @@ template<typename Ti, typename Fn> inline void split_diamond(Surface<Ti> &surfac
 /// Note: recursive.  if the base neighbor of the specified face does not
 /// also have the specified face as its base neighbor, this method will force
 /// a split of the neighbor.
-template<typename Ti, typename Fn> inline void split_face(Surface<Ti> &surface, Fn &make_vertex, size_t index)
+template<typename Ti, typename Fn> inline void split_face(Geometry<Ti> &geometry, Fn &split_edge, size_t index)
 {
-    if (surface.not_leaf(index))
+    if (geometry.not_leaf(index))
         return;
 
-    size_t baseIndex = surface.neighbor(surface[index].base());
+    size_t baseIndex = geometry.neighbor(geometry[index].base());
     if (INVALID_INDEX<Ti> == baseIndex)
     {
-        split_isolated_face(surface, make_vertex, index);
+        split_isolated_face(geometry, split_edge, index);
     }
     else
     {
-        if (not_diamond(surface[index], surface[baseIndex]))
-            split_face(surface, make_vertex, baseIndex);
-        split_diamond(surface, make_vertex, index, surface.neighbor(surface[index].base()));
+        if (not_diamond(geometry[index], geometry[baseIndex]))
+            split_face(geometry, split_edge, baseIndex);
+        split_diamond(geometry, split_edge, index, geometry.neighbor(geometry[index].base()));
     }
 }
 
 /// initialize
 ///
-/// after filling up the surface's face container, calling this
+/// after filling up the geometry's face container, calling this
 /// will setup leaf flag and adjacency data.
-template<typename Ti> inline void initialize(Surface<Ti> &surface)
+template<typename Ti> inline void initialize(Geometry<Ti> &geometry)
 {
-    size_t count = surface.faces.size();
-    surface.leaves.resize(count, true);
+    size_t count = geometry.faces.size();
+    geometry.surface.resize(count, true);
 
-    surface.adjacency.clear();
+    geometry.adjacency.clear();
     for (size_t i = 0; i < count; ++i)
     {
-        Face<Ti> const &face = surface[i];
+        Face<Ti> const &face = geometry[i];
 
-        create_adjacency(surface, reverse(face. base()), i);
-        create_adjacency(surface, reverse(face.right()), i);
-        create_adjacency(surface, reverse(face. left()), i);
+        create_adjacency(geometry, reverse(face. base()), i);
+        create_adjacency(geometry, reverse(face.right()), i);
+        create_adjacency(geometry, reverse(face. left()), i);
     }
 }
 
@@ -370,15 +369,15 @@ template<typename Ti> inline void initialize(Surface<Ti> &surface)
 ///
 /// helper for creating an initial tesselation, or starting point, for
 /// future refinement.  this preserves all leaf faces then resets
-/// the surface with the remaining faces.
-template<typename Ti> inline void strip_non_leaves(Surface<Ti> &surface)
+/// the geometry with the remaining faces.
+template<typename Ti> inline void strip_non_leaves(Geometry<Ti> &geometry)
 {
-    assert((surface.faces.size() == surface.leaves.size()) && "consistency error");
+    assert((geometry.faces.size() == geometry.surface.size()) && "consistency error");
 
-    auto face = surface. faces.begin();
-    auto leaf = surface.leaves.begin();
+    auto face = geometry. faces.begin();
+    auto leaf = geometry.surface.begin();
 
-    while (face != surface.faces.end())
+    while (face != geometry.faces.end())
     {
         if (*leaf)
         {
@@ -387,12 +386,12 @@ template<typename Ti> inline void strip_non_leaves(Surface<Ti> &surface)
         }
         else
         {
-            face = surface. faces.erase(face);
-            leaf = surface.leaves.erase(leaf);
+            face = geometry. faces.erase(face);
+            leaf = geometry.surface.erase(leaf);
         }
     }
 
-    initialize(surface);
+    initialize(geometry);
 }
 
 ROAM_END

@@ -54,8 +54,8 @@
 
 		},
 
-		"VertexShader" : { "Path" : "content/sphere.vertex.cso" },
-		"PixelShader" : { "Path" : "content/sphere.pixel.cso" }
+		"VertexShader" : { "Path" : "content/planet.vertex.cso" },
+		"PixelShader" : { "Path" : "content/planet.pixel.cso" }
 	},
 
 	"attributes":
