@@ -417,3 +417,7 @@ ModelManifest.xml
 /_bin/main/rnd/content/sphere.pixel.cso
 /_bin/main/rnd/content/sphere.vertex.cso
 /_bin/main/rnd/content/planet.format
+/_bin/main/omp/content/stdIcons.material
+/_bin/main/omp/content/stdIcons.mesh
+/_bin/main/rnd/content/planet.pixel.cso
+/_bin/main/rnd/content/planet.vertex.cso
