@@ -4,7 +4,7 @@
 
 LUCID_XPR_BEGIN
 
-double Evaluate::operator()(Node const *node, Symbols const &symbols_)
+float64_t Evaluate::operator()(Node const *node, Symbols const &symbols_)
 {
 	///	just make a copy of "symbols"
 	symbols = symbols_;

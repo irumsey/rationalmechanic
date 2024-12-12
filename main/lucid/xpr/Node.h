@@ -2,6 +2,7 @@
 
 #include <string>
 #include <lucid/core/Noncopyable.h>
+#include <lucid/core/Types.h>
 #include <lucid/xpr/Defines.h>
 
 LUCID_XPR_BEGIN
@@ -35,9 +36,9 @@ protected:
 class Constant : public Node
 {
 public:
-	double const value;
+	float64_t const value;
 
-	Constant(double const &value);
+	Constant(float64_t const &value);
 
 	virtual ~Constant() = default;
 
@@ -47,7 +48,7 @@ public:
 	LUCID_PREVENT_ASSIGNMENT(Constant);
 };
 
-inline Node const *val(double value)
+inline Node const *val(float64_t value)
 {
 	return new Constant(value);
 }

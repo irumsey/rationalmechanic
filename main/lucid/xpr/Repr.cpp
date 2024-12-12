@@ -3,8 +3,8 @@
 
 LUCID_ANONYMOUS_BEGIN
 
-double const TOL = 1e-12;
-double const TOLSQ = TOL * TOL;
+float64_t const TOL = 1e-12;
+float64_t const TOLSQ = TOL * TOL;
 
 LUCID_ANONYMOUS_END
 
@@ -22,8 +22,8 @@ void Repr::operator()(Node const *node)
 
 void Repr::evaluate(Constant const *node)
 {
-	double diffZero = 0.0 - node->value;
-	double diffOne = 1.0 - node->value;
+	float64_t diffZero = 0.0 - node->value;
+	float64_t diffOne = 1.0 - node->value;
 
 	if ((diffZero * diffZero) < TOLSQ)
 	{

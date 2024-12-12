@@ -14,7 +14,7 @@ LUCID_XPR_BEGIN
 namespace action
 {
 
-	inline double _value(Node const *node)
+	inline float64_t _value(Node const *node)
 	{
 		return static_cast<Constant const *>(node)->value;
 	}
@@ -56,7 +56,7 @@ namespace action
 
 	Node const *compute_neg(Node const *rhs)
 	{
-		double value = _value(rhs);
+		float64_t value = _value(rhs);
 
 		delete rhs;
 
@@ -65,7 +65,7 @@ namespace action
 
 	Node const *compute_ln(Node const *rhs)
 	{
-		double value = ::log(_value(rhs));
+		float64_t value = ::log(_value(rhs));
 
 		delete rhs;
 
@@ -74,7 +74,7 @@ namespace action
 
 	Node const *compute_sin(Node const *rhs)
 	{
-		double value = ::sin(_value(rhs));
+		float64_t value = ::sin(_value(rhs));
 
 		delete rhs;
 
@@ -83,7 +83,7 @@ namespace action
 
 	Node const *compute_cos(Node const *rhs)
 	{
-		double value = ::cos(_value(rhs));
+		float64_t value = ::cos(_value(rhs));
 
 		delete rhs;
 
@@ -92,7 +92,7 @@ namespace action
 
 	Node const *compute_add(Node const *lhs, Node const *rhs)
 	{
-		double value = _value(lhs) + _value(rhs);
+		float64_t value = _value(lhs) + _value(rhs);
 
 		delete lhs;
 		delete rhs;
@@ -102,7 +102,7 @@ namespace action
 
 	Node const *compute_sub(Node const *lhs, Node const *rhs)
 	{
-		double value = _value(lhs) - _value(rhs);
+		float64_t value = _value(lhs) - _value(rhs);
 
 		delete lhs;
 		delete rhs;
@@ -112,7 +112,7 @@ namespace action
 
 	Node const *compute_mul(Node const *lhs, Node const *rhs)
 	{
-		double value = _value(lhs) * _value(rhs);
+		float64_t value = _value(lhs) * _value(rhs);
 
 		delete lhs;
 		delete rhs;
@@ -122,7 +122,7 @@ namespace action
 
 	Node const *compute_div(Node const *lhs, Node const *rhs)
 	{
-		double value = _value(lhs) / _value(rhs);
+		float64_t value = _value(lhs) / _value(rhs);
 
 		delete lhs;
 		delete rhs;
@@ -145,7 +145,7 @@ namespace action
 
 	Node const *compute_pow(Node const *lhs, Node const *rhs)
 	{
-		double value = ::pow(_value(lhs), _value(rhs));
+		float64_t value = ::pow(_value(lhs), _value(rhs));
 
 		delete lhs;
 		delete rhs;

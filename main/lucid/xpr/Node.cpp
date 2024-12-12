@@ -8,7 +8,7 @@ LUCID_XPR_BEGIN
 ///
 ///
 
-Constant::Constant(double const &value)
+Constant::Constant(float64_t const &value)
 	: value(value)
 {
 }
