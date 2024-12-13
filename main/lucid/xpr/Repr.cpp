@@ -3,21 +3,18 @@
 
 LUCID_ANONYMOUS_BEGIN
 
-float64_t const TOL = 1e-12;
+float64_t const TOL = 1e-20;
 float64_t const TOLSQ = TOL * TOL;
 
 LUCID_ANONYMOUS_END
 
 LUCID_XPR_BEGIN
 
-Repr::Repr(std::ostream &stream)
-	: stream(stream)
+std::string const &Repr::operator()(Node const *node)
 {
-}
-
-void Repr::operator()(Node const *node)
-{
+	result.clear();
 	node->apply(this);
+	return result;
 }
 
 void Repr::evaluate(Constant const *node)
@@ -27,21 +24,23 @@ void Repr::evaluate(Constant const *node)
 
 	if ((diffZero * diffZero) < TOLSQ)
 	{
-		stream << "val(0)";
+		result += "val(0)";
 	}
 	else if ((diffOne * diffOne) < TOLSQ)
 	{
-		stream << "val(1)";
+		result += "val(1)";
 	}
 	else
 	{
-		stream << "val(k)";
+		result += "val(k)";
 	}
 }
 
 void Repr::evaluate(Variable const *node)
 {
-	stream << "var(" << node->symbol << ")";
+	result += "var(";
+	result += node->symbol;
+	result += ")";
 }
 
 void Repr::evaluate(Negate const *node)
@@ -91,18 +90,26 @@ void Repr::evaluate(Power const *node)
 
 void Repr::evaluateOperation(std::string const &label, UnaryOperation const *oper)
 {
-	stream << label << "(";
+	result += label;
+	result += "(";
+	
 	oper->rhs->apply(this);
-	stream << ")";
+	
+	result += ")";
 }
 
 void Repr::evaluateOperation(std::string const &label, BinaryOperation const *oper)
 {
-	stream << label << "(";
+	result += label;
+	result += "(";
+
 	oper->lhs->apply(this);
-	stream << ", ";
+	
+	result += ",";
+
 	oper->rhs->apply(this);
-	stream << ")";
+	
+	result += ")";
 }
 
 LUCID_XPR_END

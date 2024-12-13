@@ -16,6 +16,8 @@ bld/
 [Bb]in/
 [Oo]bj/
 
+.vs/
+
 # Roslyn cache directories
 *.ide/
 
@@ -421,3 +423,4 @@ ModelManifest.xml
 /_bin/main/omp/content/stdIcons.mesh
 /_bin/main/rnd/content/planet.pixel.cso
 /_bin/main/rnd/content/planet.vertex.cso
+/.vs/ijrumsey.com/project-colors.json

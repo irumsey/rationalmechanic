@@ -1,8 +1,6 @@
 #pragma once
 
-#include <string>
-#include <sstream>
-#include<lucid/xpr/Defines.h>
+#include <lucid/xpr/Defines.h>
 #include <lucid/xpr/Algorithm.h>
 #include <lucid/xpr/Clone.h>
 #include <lucid/xpr/Repr.h>
@@ -63,25 +61,15 @@ public:
 
 public:
 	Node const *result = nullptr;
+	
 	Clone clone;
-
-	std::string repr(Node const *node) const;
+	Repr repr;
 
 	template<class T> Node const *lhsSimplify(T const *node);
 
 	template<class T> Node const *rhsSimplify(T const *node);
 
 };
-
-inline std::string Simplify::repr(Node const *node) const
-{
-	std::ostringstream stream;
-	Repr repr(stream);
-
-	repr(node);
-
-	return stream.str();
-}
 
 template<class T> inline Node const *Simplify::lhsSimplify(T const *node)
 {

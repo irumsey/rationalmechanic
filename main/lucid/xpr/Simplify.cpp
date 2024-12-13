@@ -54,6 +54,13 @@ namespace action
 		return rhs;
 	}
 
+	Node const *negate_rhs(Node const *lhs, Node const *rhs)
+	{
+		delete lhs;
+
+		return neg(rhs);
+	}
+
 	Node const *compute_neg(Node const *rhs)
 	{
 		float64_t value = _value(rhs);
@@ -267,27 +274,28 @@ protected:
 
 		addRule("cos\\(val\\(.\\)\\)", action::compute_cos);
 
-		addRule("add\\((.*), val\\(0\\)\\)", action::select_lhs);
-		addRule("add\\(val\\(0\\), (.*)\\)", action::select_rhs);
-		addRule("add\\(val\\(.\\), val\\(.\\)\\)", action::compute_add);
+		addRule("add\\((.*),val\\(0\\)\\)", action::select_lhs);
+		addRule("add\\(val\\(0\\),(.*)\\)", action::select_rhs);
+		addRule("add\\(val\\(.\\),val\\(.\\)\\)", action::compute_add);
 
-		addRule("sub\\((.*), val\\(0\\)\\)", action::select_lhs);
-		addRule("sub\\(val\\(.\\), val\\(.\\)\\)", action::compute_sub);
+		addRule("sub\\((.*),val\\(0\\)\\)", action::select_lhs);
+		addRule("sub\\(val\\(0\\),(.*)\\)", action::negate_rhs);
+		addRule("sub\\(val\\(.\\),val\\(.\\)\\)", action::compute_sub);
 
-		addRule("mul\\((.*), val\\(0\\)\\)", action::replace_zero);
-		addRule("mul\\(val\\(0\\), (.*)\\)", action::replace_zero);
-		addRule("mul\\((.*), val\\(1\\)\\)", action::select_lhs);
-		addRule("mul\\(val\\(1\\), (.*)\\)", action::select_rhs);
-		addRule("mul\\(val\\(.\\), val\\(.\\)\\)", action::compute_mul);
+		addRule("mul\\((.*),val\\(0\\)\\)", action::replace_zero);
+		addRule("mul\\(val\\(0\\),(.*)\\)", action::replace_zero);
+		addRule("mul\\((.*),val\\(1\\)\\)", action::select_lhs);
+		addRule("mul\\(val\\(1\\),(.*)\\)", action::select_rhs);
+		addRule("mul\\(val\\(.\\),val\\(.\\)\\)", action::compute_mul);
 
-		addRule("div\\((.*), val\\(1\\)\\)", action::select_lhs);
-		addRule("div\\(val\\(0\\), (.*)\\)", action::replace_zero);
-		addRule("div\\(val\\(.\\), val\\(.\\)\\)", action::compute_div);
-		addRule("div\\(var\\(.\\), var\\(.\\)\\)", action::cancel);
+		addRule("div\\((.*),val\\(1\\)\\)", action::select_lhs);
+		addRule("div\\(val\\(0\\),(.*)\\)", action::replace_zero);
+		addRule("div\\(val\\(.\\),val\\(.\\)\\)", action::compute_div);
+		addRule("div\\(var\\(.\\),var\\(.\\)\\)", action::cancel);
 
-		addRule("pow\\(val\\(.\\), val\\(.\\)\\)", action::compute_pow);
-		addRule("pow\\((.*), val\\(0\\)\\)", action::replace_one);
-		addRule("pow\\((.*), val\\(1\\)\\)", action::select_lhs);
+		addRule("pow\\(val\\(.\\),val\\(.\\)\\)", action::compute_pow);
+		addRule("pow\\((.*),val\\(0\\)\\)", action::replace_one);
+		addRule("pow\\((.*),val\\(1\\)\\)", action::select_lhs);
 
 #if 0
 		///	it is possible to match sub-expressions for more complicated rules.
@@ -320,8 +328,13 @@ private:
 Rules Rules::instance;
 
 ///
-///
-///
+/// In the following, notice that the algorithm "works ahead" of the
+/// current node. This means the argument(s) are simplified first.
+/// Next, a preview representation of the current node is created
+/// using the simplified argument(s). That representation is matched 
+/// against the rules defined above. This allows the system to 
+/// pre-emptively eliminate or otherwise alter the node if required.
+/// 
 
 Node const *Simplify::operator()(Node const *node)
 {
@@ -343,28 +356,44 @@ void Simplify::evaluate(Negate const *node)
 {
 	Node const *rhs = rhsSimplify(node);
 
-	result = Rules::apply("neg(" + repr(rhs) + ")", neg, rhs);
+	std::string simplified = "neg(";
+	simplified += repr(rhs);
+	simplified += ")";
+
+	result = Rules::apply(simplified, neg, rhs);
 }
 
 void Simplify::evaluate(NaturalLogarithm const *node)
 {
 	Node const *rhs = rhsSimplify(node);
 
-	result = Rules::apply("ln(" + repr(rhs) + ")", ln, rhs);
+	std::string simplified = "ln(";
+	simplified += repr(rhs);
+	simplified += ")";
+
+	result = Rules::apply(simplified, ln, rhs);
 }
 
 void Simplify::evaluate(Sine const *node)
 {
 	Node const *rhs = rhsSimplify(node);
 
-	result = Rules::apply("sin(" + repr(rhs) + ")", sin, rhs);
+	std::string simplified = "sin(";
+	simplified += repr(rhs);
+	simplified += ")";
+
+	result = Rules::apply(simplified, sin, rhs);
 }
 
 void Simplify::evaluate(Cosine const *node)
 {
 	Node const *rhs = rhsSimplify(node);
 
-	result = Rules::apply("cos(" + repr(rhs) + ")", cos, rhs);
+	std::string simplified = "cos(";
+	simplified += repr(rhs);
+	simplified += ")";
+
+	result = Rules::apply(simplified, cos, rhs);
 }
 
 void Simplify::evaluate(Add const *node)
@@ -372,7 +401,13 @@ void Simplify::evaluate(Add const *node)
 	Node const *lhs = lhsSimplify(node);
 	Node const *rhs = rhsSimplify(node);
 
-	result = Rules::apply("add(" + repr(lhs) + ", " + repr(rhs) + ")", add, lhs, rhs);
+	std::string simplified = "add(";
+	simplified += repr(lhs);
+	simplified += ",";
+	simplified += repr(rhs);
+	simplified += ")";
+
+	result = Rules::apply(simplified, add, lhs, rhs);
 }
 
 void Simplify::evaluate(Subtract const *node)
@@ -380,7 +415,13 @@ void Simplify::evaluate(Subtract const *node)
 	Node const *lhs = lhsSimplify(node);
 	Node const *rhs = rhsSimplify(node);
 
-	result = Rules::apply("sub(" + repr(lhs) + ", " + repr(rhs) + ")", sub, lhs, rhs);
+	std::string simplified = "sub(";
+	simplified += repr(lhs);
+	simplified += ",";
+	simplified += repr(rhs);
+	simplified += ")";
+
+	result = Rules::apply(simplified, sub, lhs, rhs);
 }
 
 void Simplify::evaluate(Multiply const *node)
@@ -388,7 +429,13 @@ void Simplify::evaluate(Multiply const *node)
 	Node const *lhs = lhsSimplify(node);
 	Node const *rhs = rhsSimplify(node);
 
-	result = Rules::apply("mul(" + repr(lhs) + ", " + repr(rhs) + ")", mul, lhs, rhs);
+	std::string simplified = "mul(";
+	simplified += repr(lhs);
+	simplified += ",";
+	simplified += repr(rhs);
+	simplified += ")";
+
+	result = Rules::apply(simplified, mul, lhs, rhs);
 }
 
 void Simplify::evaluate(Divide const *node)
@@ -396,7 +443,13 @@ void Simplify::evaluate(Divide const *node)
 	Node const *lhs = lhsSimplify(node);
 	Node const *rhs = rhsSimplify(node);
 
-	result = Rules::apply("div(" + repr(lhs) + ", " + repr(rhs) + ")", div, lhs, rhs);
+	std::string simplified = "div(";
+	simplified += repr(lhs);
+	simplified += ",";
+	simplified += repr(rhs);
+	simplified += ")";
+
+	result = Rules::apply(simplified, div, lhs, rhs);
 }
 
 void Simplify::evaluate(Power const *node)
@@ -404,7 +457,13 @@ void Simplify::evaluate(Power const *node)
 	Node const *lhs = lhsSimplify(node);
 	Node const *rhs = rhsSimplify(node);
 
-	result = Rules::apply("pow(" + repr(lhs) + ", " + repr(rhs) + ")", pow, lhs, rhs);
+	std::string simplified = "pow(";
+	simplified += repr(lhs);
+	simplified += ",";
+	simplified += repr(rhs);
+	simplified += ")";
+
+	result = Rules::apply(simplified, pow, lhs, rhs);
 }
 
 LUCID_XPR_END

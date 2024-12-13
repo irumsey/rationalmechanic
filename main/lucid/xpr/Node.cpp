@@ -52,8 +52,7 @@ UnaryOperation::~UnaryOperation()
 ///
 
 BinaryOperation::BinaryOperation(Node const *lhs, Node const *rhs)
-	: lhs(lhs)
-	, rhs(rhs)
+	: lhs(lhs) , rhs(rhs)
 {
 	assert(nullptr != lhs);
 	assert(nullptr != rhs);

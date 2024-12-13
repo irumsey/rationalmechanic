@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ostream>
+#include <string>
 #include <lucid/xpr/Defines.h>
 #include <lucid/xpr/Algorithm.h>
 
@@ -24,11 +24,11 @@ class BinaryOperation;
 class Repr : public Algorithm
 {
 public:
-	Repr(std::ostream &stream);
+	Repr() = default;
 
 	virtual ~Repr() = default;
 
-	void operator()(Node const *node);
+	std::string const &operator()(Node const *node);
 
 	virtual void evaluate(Constant const *node) override;
 
@@ -53,7 +53,7 @@ public:
 	virtual void evaluate(Power const *node) override;
 
 private:
-	std::ostream &stream;
+	std::string result;
 
 	void evaluateOperation(std::string const &label, UnaryOperation const *oper);
 

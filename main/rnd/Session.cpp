@@ -245,9 +245,9 @@ void Session::initialize()
         }
     }
 
-	_vertexCount = vertices.size();
+	_vertexCount = uint32_t(vertices.size());
 	size_t faceCount = geometry.faces.size();
-	_indexCount = 3 * faceCount;
+	_indexCount = uint32_t(3 * faceCount);
 
 	_material = LUCID_GIGL::Material::create("content/earth.material");
 	_format = LUCID_GAL::VertexFormat::create(LUCID_CORE::FileReader("content/planet.format"));
