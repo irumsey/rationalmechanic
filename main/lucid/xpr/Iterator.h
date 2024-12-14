@@ -18,9 +18,7 @@ public:
 
 	Iterator(Iterator const &) = default;
 
-	explicit Iterator(Node const *node);
-
-	explicit operator Node const *() const;
+	Iterator(Node const *node);
 
 	virtual ~Iterator() = default;
 
@@ -31,6 +29,14 @@ public:
 	Iterator &operator++();
 
 	Iterator operator++(int);
+
+	Node const &operator*() const;
+
+	Node const *operator->() const;
+
+	bool equ(Node const *node) const;
+
+	bool neq(Node const *node) const;
 
 	virtual void evaluate(Any const *node) override;
 
@@ -56,6 +62,8 @@ public:
 
 	virtual void evaluate(Power const *node) override;
 
+	void skip();
+
 private:
 	Node const *_current = nullptr;
 	std::vector<Node const *> _stack;
@@ -72,12 +80,9 @@ private:
 
 	void set(Node const *node);
 
-};
+	void pop();
 
-inline Iterator::operator Node const *() const
-{
-	return _current;
-}
+};
 
 inline Iterator &Iterator::operator=(Node const *node)
 {
@@ -89,6 +94,28 @@ inline Iterator &Iterator::operator++()
 {
 	_current->apply(this);
 	return *this;
+}
+
+inline Node const &Iterator::operator*() const
+{
+	assert(nullptr != _current);
+	return *_current;
+}
+
+inline Node const *Iterator::operator->() const
+{
+	assert(nullptr != _current);
+	return _current;
+}
+
+inline bool Iterator::equ(Node const *node) const
+{
+	return node == _current;
+}
+
+inline bool Iterator::neq(Node const *node) const
+{
+	return node != _current;
 }
 
 inline void Iterator::evaluate(Any const *node)
@@ -151,6 +178,11 @@ inline void Iterator::evaluate(Power const *node)
 	evaluate_binary(node);
 }
 
+inline void Iterator::skip()
+{
+	pop();
+}
+
 template<typename T> inline Node const *Iterator::lhs(T const *node)
 {
 	assert(nullptr != node->lhs);
@@ -165,10 +197,7 @@ template<typename T> inline Node const *Iterator::rhs(T const *node)
 
 inline void Iterator::evaluate_leaf(Node const *node)
 {
-	assert(0 != _stack.size());
-
-	_current = _stack.back();
-	_stack.pop_back();
+	pop();
 }
 
 inline void Iterator::evaluate_unary(UnaryOperation const *node)
@@ -190,4 +219,32 @@ inline void Iterator::set(Node const *node)
 	_current = node;
 }
 
+inline void Iterator::pop()
+{
+	assert(0 != _stack.size());
+
+	_current = _stack.back();
+	_stack.pop_back();
+}
+
 LUCID_XPR_END
+
+inline bool operator==(LUCID_XPR::Node const *lhs, LUCID_XPR::Iterator const &rhs)
+{
+	return rhs.equ(lhs);
+}
+
+inline bool operator==(LUCID_XPR::Iterator const &lhs, LUCID_XPR::Node const *rhs)
+{
+	return lhs.equ(rhs);
+}
+
+inline bool operator!=(LUCID_XPR::Node const *lhs, LUCID_XPR::Iterator const &rhs)
+{
+	return rhs.neq(lhs);
+}
+
+inline bool operator!=(LUCID_XPR::Iterator const &lhs, LUCID_XPR::Node const *rhs)
+{
+	return lhs.neq(rhs);
+}
