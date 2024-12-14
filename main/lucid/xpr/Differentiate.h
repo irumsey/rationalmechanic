@@ -24,6 +24,8 @@ public:
 
 	Node const *operator()(Node const *node, std::string const &symbol);
 
+	virtual void evaluate(Any const *node) override;
+
 	virtual void evaluate(Constant const *node) override;
 
 	virtual void evaluate(Variable const *node) override;

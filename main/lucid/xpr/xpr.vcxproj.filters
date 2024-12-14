@@ -10,6 +10,7 @@
     <ClInclude Include="Simplify.h" />
     <ClInclude Include="Symbols.h" />
     <ClInclude Include="Defines.h" />
+    <ClInclude Include="Iterator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Clone.cpp" />
@@ -18,5 +19,6 @@
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="Repr.cpp" />
     <ClCompile Include="Simplify.cpp" />
+    <ClCompile Include="Iterator.cpp" />
   </ItemGroup>
 </Project>

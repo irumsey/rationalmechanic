@@ -11,6 +11,11 @@ Node const *Differentiate::operator()(Node const *node, std::string const &symbo
 	return result;
 }
 
+void Differentiate::evaluate(Any const *node)
+{
+	// TBD: for now treat a wild card node as a NOP...
+}
+
 void Differentiate::evaluate(Constant const *node)
 {
 	result = val(0.0);

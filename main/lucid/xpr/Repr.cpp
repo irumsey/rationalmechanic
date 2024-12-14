@@ -17,6 +17,11 @@ std::string const &Repr::operator()(Node const *node)
 	return result;
 }
 
+void Repr::evaluate(Any const *node)
+{
+	result += "*";
+}
+
 void Repr::evaluate(Constant const *node)
 {
 	float64_t diffZero = 0.0 - node->value;
