@@ -12,11 +12,6 @@ float64_t Evaluate::operator()(Node const *node, Symbols const &symbols_)
 	return result;
 }
 
-void Evaluate::evaluate(Any const *)
-{
-	// TBD: for now, treat a wild card node as a NOP...
-}
-
 void Evaluate::evaluate(Constant const *node)
 {
 	result = node->value;

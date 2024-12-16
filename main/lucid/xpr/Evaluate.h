@@ -28,8 +28,6 @@ public:
 
 	float64_t operator()(Node const *node, Symbols const &symbols);
 
-	virtual void evaluate(Any const *node) override;
-
 	virtual void evaluate(Constant const *node) override;
 
 	virtual void evaluate(Variable const *node) override;

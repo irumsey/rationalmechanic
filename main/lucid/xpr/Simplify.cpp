@@ -342,11 +342,6 @@ Node const *Simplify::operator()(Node const *node)
 	return result;
 }
 
-void Simplify::evaluate(Any const *node)
-{
-	// TBD: for now, treat wild card node as NOP...
-}
-
 void Simplify::evaluate(Constant const *node)
 {
 	result = clone(node);

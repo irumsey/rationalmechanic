@@ -3,7 +3,6 @@
 namespace lucid {
 namespace xpr {
 
-	class Any;
 	class Constant;
 	class Variable;
 	class Negate;
@@ -31,8 +30,6 @@ namespace xpr {
 	{
 	public:
 		virtual ~Algorithm() = default;
-
-		virtual void evaluate(Any const *node) = 0;
 
 		virtual void evaluate(Constant const *node) = 0;
 

@@ -9,11 +9,6 @@ Node const *Clone::operator()(Node const *node)
 	return result;
 }
 
-void Clone::evaluate(Any const *node)
-{
-	result = any();
-}
-
 void Clone::evaluate(Constant const *node)
 {
 	result = val(node->value);

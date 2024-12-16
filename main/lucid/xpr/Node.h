@@ -19,41 +19,16 @@ class Algorithm;
 class Node
 {
 public:
-	size_t const tid = -1;
-
 	virtual ~Node() = default;
 
 	virtual void apply(Algorithm *algorithm) const = 0;
 
 protected:
-	Node(size_t tid);
+	Node() = default;
 
 	LUCID_PREVENT_COPY(Node);
 	LUCID_PREVENT_ASSIGNMENT(Node);
 };
-
-///	Any
-///
-///
-class Any : public Node
-{
-public:
-	static size_t TID();
-
-	Any();
-
-	virtual ~Any() = default;
-
-	virtual void apply(Algorithm *algorithm) const override;
-
-	LUCID_PREVENT_COPY(Any);
-	LUCID_PREVENT_ASSIGNMENT(Any);
-};
-
-inline Node const *any()
-{
-	return new Any();
-}
 
 ///	Constant
 ///
@@ -61,8 +36,6 @@ inline Node const *any()
 class Constant : public Node
 {
 public:
-	static size_t TID();
-
 	float64_t const value;
 
 	Constant(float64_t const &value);
@@ -86,8 +59,6 @@ inline Node const *val(float64_t value)
 class Variable : public Node
 {
 public:
-	static size_t TID();
-
 	std::string const symbol;
 
 	Variable(std::string const &symbol);
@@ -116,7 +87,7 @@ public:
 	virtual ~UnaryOperation();
 
 protected:
-	UnaryOperation(size_t tid, Node const *rhs);
+	UnaryOperation(Node const *rhs);
 
 	LUCID_PREVENT_COPY(UnaryOperation);
 	LUCID_PREVENT_ASSIGNMENT(UnaryOperation);
@@ -134,7 +105,7 @@ public:
 	virtual ~BinaryOperation();
 
 protected:
-	BinaryOperation(size_t tid, Node const *lhs, Node const *rhs);
+	BinaryOperation(Node const *lhs, Node const *rhs);
 
 	LUCID_PREVENT_COPY(BinaryOperation);
 	LUCID_PREVENT_ASSIGNMENT(BinaryOperation);
@@ -146,8 +117,6 @@ protected:
 class Negate : public UnaryOperation
 {
 public:
-	static size_t TID();
-
 	Negate(Node const *rhs);
 
 	virtual ~Negate() = default;
@@ -169,8 +138,6 @@ inline Node const *neg(Node const *rhs)
 class NaturalLogarithm : public UnaryOperation
 {
 public:
-	static size_t TID();
-
 	NaturalLogarithm(Node const *rhs);
 
 	virtual ~NaturalLogarithm() = default;
@@ -192,8 +159,6 @@ inline Node const *ln(Node const *rhs)
 class Sine : public UnaryOperation
 {
 public:
-	static size_t TID();
-
 	Sine(Node const *rhs);
 
 	virtual ~Sine() = default;
@@ -215,8 +180,6 @@ inline Node const *sin(Node const *rhs)
 class Cosine : public UnaryOperation
 {
 public:
-	static size_t TID();
-
 	Cosine(Node const *rhs);
 
 	virtual ~Cosine() = default;
@@ -238,8 +201,6 @@ inline Node const *cos(Node const *rhs)
 class Add : public BinaryOperation
 {
 public:
-	static size_t TID();
-
 	Add(Node const *lhs, Node const *rhs);
 
 	virtual ~Add() = default;
@@ -261,8 +222,6 @@ inline Node const *add(Node const *lhs, Node const *rhs)
 class Subtract : public BinaryOperation
 {
 public:
-	static size_t TID();
-
 	Subtract(Node const *lhs, Node const *rhs);
 
 	virtual ~Subtract() = default;
@@ -284,8 +243,6 @@ inline Node const *sub(Node const *lhs, Node const *rhs)
 class Multiply : public BinaryOperation
 {
 public:
-	static size_t TID();
-
 	Multiply(Node const *lhs, Node const *rhs);
 
 	virtual ~Multiply() = default;
@@ -307,8 +264,6 @@ inline Node const *mul(Node const *lhs, Node const *rhs)
 class Divide : public BinaryOperation
 {
 public:
-	static size_t TID();
-
 	Divide(Node const *lhs, Node const *rhs);
 
 	virtual ~Divide() = default;
@@ -330,8 +285,6 @@ inline Node const *div(Node const *lhs, Node const *rhs)
 class Power : public BinaryOperation
 {
 public:
-	static size_t TID();
-
 	Power(Node const *lhs, Node const *rhs);
 
 	virtual ~Power() = default;

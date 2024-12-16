@@ -34,12 +34,6 @@ public:
 
 	Node const *operator->() const;
 
-	bool equ(Node const *node) const;
-
-	bool neq(Node const *node) const;
-
-	virtual void evaluate(Any const *node) override;
-
 	virtual void evaluate(Constant const *node) override;
 
 	virtual void evaluate(Variable const *node) override;
@@ -63,6 +57,10 @@ public:
 	virtual void evaluate(Power const *node) override;
 
 	void skip();
+
+	bool equ(Node const *node) const;
+
+	bool neq(Node const *node) const;
 
 private:
 	Node const *_current = nullptr;
@@ -106,21 +104,6 @@ inline Node const *Iterator::operator->() const
 {
 	assert(nullptr != _current);
 	return _current;
-}
-
-inline bool Iterator::equ(Node const *node) const
-{
-	return node == _current;
-}
-
-inline bool Iterator::neq(Node const *node) const
-{
-	return node != _current;
-}
-
-inline void Iterator::evaluate(Any const *node)
-{
-	evaluate_leaf(node);
 }
 
 inline void Iterator::evaluate(Constant const *node)
@@ -181,6 +164,16 @@ inline void Iterator::evaluate(Power const *node)
 inline void Iterator::skip()
 {
 	pop();
+}
+
+inline bool Iterator::equ(Node const *node) const
+{
+	return node == _current;
+}
+
+inline bool Iterator::neq(Node const *node) const
+{
+	return node != _current;
 }
 
 template<typename T> inline Node const *Iterator::lhs(T const *node)
