@@ -6,8 +6,6 @@
 LUCID_XPR_BEGIN
 
 class Node;
-class UnaryOperation;
-class BinaryOperation;
 
 ///	Clone
 ///
@@ -27,12 +25,6 @@ public:
 
 	virtual void evaluate(Negate const *node) override;
 
-	virtual void evaluate(NaturalLogarithm const *node) override;
-
-	virtual void evaluate(Sine const *node) override;
-
-	virtual void evaluate(Cosine const *node) override;
-
 	virtual void evaluate(Add const *node) override;
 
 	virtual void evaluate(Subtract const *node) override;
@@ -41,7 +33,13 @@ public:
 
 	virtual void evaluate(Divide const *node) override;
 
-	virtual void evaluate(Power const *node) override;
+	virtual void evaluate(Sine const *node) override;
+
+	virtual void evaluate(Cosine const *node) override;
+
+	virtual void evaluate(Exponential const *node) override;
+
+	virtual void evaluate(Logarithm const *node) override;
 
 private:
 	Node const *result = nullptr;

@@ -24,16 +24,19 @@
     <ClInclude Include="Defines.h" />
     <ClInclude Include="Differentiate.h" />
     <ClInclude Include="Evaluate.h" />
+    <ClInclude Include="Hasher.h" />
     <ClInclude Include="Iterator.h" />
     <ClInclude Include="Node.h" />
+    <ClInclude Include="Registry.h" />
     <ClInclude Include="Repr.h" />
+    <ClInclude Include="Rule.h" />
     <ClInclude Include="Simplify.h" />
-    <ClInclude Include="Symbols.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Clone.cpp" />
     <ClCompile Include="Differentiate.cpp" />
     <ClCompile Include="Evaluate.cpp" />
+    <ClCompile Include="Hasher.cpp" />
     <ClCompile Include="Iterator.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="Repr.cpp" />

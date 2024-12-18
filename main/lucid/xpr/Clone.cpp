@@ -16,27 +16,12 @@ void Clone::evaluate(Constant const *node)
 
 void Clone::evaluate(Variable const *node)
 {
-	result = var(node->symbol);
+	result = var(node->index);
 }
 
 void Clone::evaluate(Negate const *node)
 {
 	result = neg(rhs(node));
-}
-
-void Clone::evaluate(NaturalLogarithm const *node)
-{
-	result = ln(rhs(node));
-}
-
-void Clone::evaluate(Sine const *node)
-{
-	result = sin(rhs(node));
-}
-
-void Clone::evaluate(Cosine const *node)
-{
-	result = cos(rhs(node));
 }
 
 void Clone::evaluate(Add const *node)
@@ -59,9 +44,24 @@ void Clone::evaluate(Divide const *node)
 	result = div(lhs(node), rhs(node));
 }
 
-void Clone::evaluate(Power const *node)
+void Clone::evaluate(Sine const *node)
 {
-	result = pow(lhs(node), rhs(node));
+	result = sin(rhs(node));
+}
+
+void Clone::evaluate(Cosine const *node)
+{
+	result = cos(rhs(node));
+}
+
+void Clone::evaluate(Exponential const *node)
+{
+	result = exp(rhs(node));
+}
+
+void Clone::evaluate(Logarithm const *node)
+{
+	result = log(rhs(node));
 }
 
 LUCID_XPR_END

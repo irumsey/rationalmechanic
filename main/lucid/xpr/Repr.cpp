@@ -1,66 +1,48 @@
 #include "Repr.h"
 #include "Node.h"
+#include <sstream>
 
 LUCID_ANONYMOUS_BEGIN
-
-float64_t const TOL = 1e-20;
-float64_t const TOLSQ = TOL * TOL;
 
 LUCID_ANONYMOUS_END
 
 LUCID_XPR_BEGIN
 
+Repr::Repr(Node const *node)
+{
+	repr(node);
+}
+
 std::string const &Repr::operator()(Node const *node)
+{
+	return repr(node);
+}
+
+std::string const &Repr::repr(Node const *node)
 {
 	result.clear();
 	node->apply(this);
+	
 	return result;
 }
 
 void Repr::evaluate(Constant const *node)
 {
-	float64_t diffZero = 0.0 - node->value;
-	float64_t diffOne = 1.0 - node->value;
-
-	if ((diffZero * diffZero) < TOLSQ)
-	{
-		result += "val(0)";
-	}
-	else if ((diffOne * diffOne) < TOLSQ)
-	{
-		result += "val(1)";
-	}
-	else
-	{
-		result += "val(k)";
-	}
+	std::ostringstream stream;
+	stream << "val[" << node->value << "]";
+	result += stream.str();
 }
 
 void Repr::evaluate(Variable const *node)
 {
-	result += "var(";
-	result += node->symbol;
-	result += ")";
+	std::ostringstream stream;
+	stream << "var[" << node->index << "]";
+	result += stream.str();
 }
 
 void Repr::evaluate(Negate const *node)
 {
 	evaluateOperation("neg", node);
-}
-
-void Repr::evaluate(NaturalLogarithm const *node)
-{
-	evaluateOperation("ln", node);
-}
-
-void Repr::evaluate(Sine const *node)
-{
-	evaluateOperation("sin", node);
-}
-
-void Repr::evaluate(Cosine const *node)
-{
-	evaluateOperation("cos", node);
 }
 
 void Repr::evaluate(Add const *node)
@@ -83,9 +65,24 @@ void Repr::evaluate(Divide const *node)
 	evaluateOperation("div", node);
 }
 
-void Repr::evaluate(Power const *node)
+void Repr::evaluate(Sine const *node)
 {
-	evaluateOperation("pow", node);
+	evaluateOperation("sin", node);
+}
+
+void Repr::evaluate(Cosine const *node)
+{
+	evaluateOperation("cos", node);
+}
+
+void Repr::evaluate(Exponential const *node)
+{
+	evaluateOperation("exp", node);
+}
+
+void Repr::evaluate(Logarithm const *node)
+{
+	evaluateOperation("log", node);
 }
 
 void Repr::evaluateOperation(std::string const &label, UnaryOperation const *oper)

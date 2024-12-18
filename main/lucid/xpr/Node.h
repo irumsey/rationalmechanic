@@ -19,12 +19,14 @@ class Algorithm;
 class Node
 {
 public:
-	virtual ~Node() = default;
+	virtual ~Node() { --instances; }
 
 	virtual void apply(Algorithm *algorithm) const = 0;
 
 protected:
-	Node() = default;
+	Node() { ++instances; }
+
+	static size_t instances;
 
 	LUCID_PREVENT_COPY(Node);
 	LUCID_PREVENT_ASSIGNMENT(Node);
@@ -36,7 +38,7 @@ protected:
 class Constant : public Node
 {
 public:
-	float64_t const value;
+	float64_t const value = 0.0;
 
 	Constant(float64_t const &value);
 
@@ -59,9 +61,9 @@ inline Node const *val(float64_t value)
 class Variable : public Node
 {
 public:
-	std::string const symbol;
+	uint64_t index = -1;
 
-	Variable(std::string const &symbol);
+	Variable(uint64_t index);
 
 	virtual ~Variable() = default;
 
@@ -71,9 +73,9 @@ public:
 	LUCID_PREVENT_ASSIGNMENT(Variable);
 };
 
-inline Node const *var(std::string const &symbol)
+inline Node const *var(uint64_t index)
 {
-	return new Variable(symbol);
+	return new Variable(index);
 }
 
 ///	UnaryOperation
@@ -127,72 +129,9 @@ public:
 	LUCID_PREVENT_ASSIGNMENT(Negate);
 };
 
-inline Node const *neg(Node const *rhs)
+inline UnaryOperation const *neg(Node const *rhs)
 {
 	return new Negate(rhs);
-}
-
-///	NaturalLogarithm
-///
-///
-class NaturalLogarithm : public UnaryOperation
-{
-public:
-	NaturalLogarithm(Node const *rhs);
-
-	virtual ~NaturalLogarithm() = default;
-
-	virtual void apply(Algorithm *algorithm) const override;
-
-	LUCID_PREVENT_COPY(NaturalLogarithm);
-	LUCID_PREVENT_ASSIGNMENT(NaturalLogarithm);
-};
-
-inline Node const *ln(Node const *rhs)
-{
-	return new NaturalLogarithm(rhs);
-}
-
-///	Sine
-///
-///
-class Sine : public UnaryOperation
-{
-public:
-	Sine(Node const *rhs);
-
-	virtual ~Sine() = default;
-
-	virtual void apply(Algorithm *algorithm) const override;
-
-	LUCID_PREVENT_COPY(Sine);
-	LUCID_PREVENT_ASSIGNMENT(Sine);
-};
-
-inline Node const *sin(Node const *rhs)
-{
-	return new Sine(rhs);
-}
-
-///	Cosine
-///
-///
-class Cosine : public UnaryOperation
-{
-public:
-	Cosine(Node const *rhs);
-
-	virtual ~Cosine() = default;
-
-	virtual void apply(Algorithm *algorithm) const override;
-
-	LUCID_PREVENT_COPY(Cosine);
-	LUCID_PREVENT_ASSIGNMENT(Cosine);
-};
-
-inline Node const *cos(Node const *rhs)
-{
-	return new Cosine(rhs);
 }
 
 ///	Add
@@ -211,7 +150,7 @@ public:
 	LUCID_PREVENT_ASSIGNMENT(Add);
 };
 
-inline Node const *add(Node const *lhs, Node const *rhs)
+inline BinaryOperation const *add(Node const *lhs, Node const *rhs)
 {
 	return new Add(lhs, rhs);
 }
@@ -232,7 +171,7 @@ public:
 	LUCID_PREVENT_ASSIGNMENT(Subtract);
 };
 
-inline Node const *sub(Node const *lhs, Node const *rhs)
+inline BinaryOperation const *sub(Node const *lhs, Node const *rhs)
 {
 	return new Subtract(lhs, rhs);
 }
@@ -253,7 +192,7 @@ public:
 	LUCID_PREVENT_ASSIGNMENT(Multiply);
 };
 
-inline Node const *mul(Node const *lhs, Node const *rhs)
+inline BinaryOperation const *mul(Node const *lhs, Node const *rhs)
 {
 	return new Multiply(lhs, rhs);
 }
@@ -274,30 +213,122 @@ public:
 	LUCID_PREVENT_ASSIGNMENT(Divide);
 };
 
-inline Node const *div(Node const *lhs, Node const *rhs)
+inline BinaryOperation const *div(Node const *lhs, Node const *rhs)
 {
 	return new Divide(lhs, rhs);
 }
 
-///	Power
+///	Sine
 ///
 ///
-class Power : public BinaryOperation
+class Sine : public UnaryOperation
 {
 public:
-	Power(Node const *lhs, Node const *rhs);
+	Sine(Node const *rhs);
 
-	virtual ~Power() = default;
+	virtual ~Sine() = default;
 
 	virtual void apply(Algorithm *algorithm) const override;
 
-	LUCID_PREVENT_COPY(Power);
-	LUCID_PREVENT_ASSIGNMENT(Power);
+	LUCID_PREVENT_COPY(Sine);
+	LUCID_PREVENT_ASSIGNMENT(Sine);
 };
 
-inline Node const *pow(Node const *lhs, Node const *rhs)
+inline UnaryOperation const *sin(Node const *rhs)
 {
-	return new Power(lhs, rhs);
+	return new Sine(rhs);
+}
+
+///	Cosine
+///
+///
+class Cosine : public UnaryOperation
+{
+public:
+	Cosine(Node const *rhs);
+
+	virtual ~Cosine() = default;
+
+	virtual void apply(Algorithm *algorithm) const override;
+
+	LUCID_PREVENT_COPY(Cosine);
+	LUCID_PREVENT_ASSIGNMENT(Cosine);
+};
+
+inline UnaryOperation const *cos(Node const *rhs)
+{
+	return new Cosine(rhs);
+}
+
+///	Exponential
+///
+/// 
+class Exponential : public UnaryOperation
+{
+public:
+	Exponential(Node const *rhs);
+
+	virtual ~Exponential() = default;
+
+	virtual void apply(Algorithm *algorithm) const override;
+
+	LUCID_PREVENT_COPY(Exponential);
+	LUCID_PREVENT_ASSIGNMENT(Exponential);
+};
+
+inline UnaryOperation const *exp(Node const *rhs)
+{
+	return new Exponential(rhs);
+}
+
+///	Logarithm
+///
+///	natural logarithm
+class Logarithm : public UnaryOperation
+{
+public:
+	Logarithm(Node const *rhs);
+
+	virtual ~Logarithm() = default;
+
+	virtual void apply(Algorithm *algorithm) const override;
+
+	LUCID_PREVENT_COPY(Logarithm);
+	LUCID_PREVENT_ASSIGNMENT(Logarithm);
+};
+
+inline UnaryOperation const *log(Node const *rhs)
+{
+	return new Logarithm(rhs);
+}
+
+/// 
+///	derived
+/// 
+
+inline BinaryOperation const *tan(Node const *rhs)
+{
+	return div(sin(rhs), cos(rhs));
+}
+
+inline BinaryOperation const *csc(Node const *rhs)
+{
+	return div(val(1.0), sin(rhs));
+}
+
+inline BinaryOperation const *sec(Node const *rhs)
+{
+	return div(val(1.0), cos(rhs));
+}
+
+inline BinaryOperation const *cot(Node const *rhs)
+{
+	return div(cos(rhs), sin(rhs));
+}
+
+inline UnaryOperation const *pow(Node const *lhs, Node const *rhs)
+{
+	return exp(mul(rhs, log(lhs)));
 }
 
 LUCID_XPR_END

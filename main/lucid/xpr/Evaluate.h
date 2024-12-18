@@ -4,14 +4,12 @@
 #include <unordered_map>
 #include <lucid/core/Types.h>
 #include <lucid/xpr/Defines.h>
-#include <lucid/xpr/Symbols.h>
 #include <lucid/xpr/Algorithm.h>
 
 LUCID_XPR_BEGIN
 
 class Node;
-class UnaryOperation;
-class BinaryOperation;
+class Registry;
 
 ///	Evaluate
 ///
@@ -26,19 +24,13 @@ public:
 
 	virtual ~Evaluate() = default;
 
-	float64_t operator()(Node const *node, Symbols const &symbols);
+	float64_t operator()(Node const *node, Registry const &registry);
 
 	virtual void evaluate(Constant const *node) override;
 
 	virtual void evaluate(Variable const *node) override;
 
 	virtual void evaluate(Negate const *node) override;
-
-	virtual void evaluate(NaturalLogarithm const *node) override;
-
-	virtual void evaluate(Sine const *node) override;
-
-	virtual void evaluate(Cosine const *node) override;
 
 	virtual void evaluate(Add const *node) override;
 
@@ -48,11 +40,17 @@ public:
 
 	virtual void evaluate(Divide const *node) override;
 
-	virtual void evaluate(Power const *node) override;
+	virtual void evaluate(Sine const *node) override;
+
+	virtual void evaluate(Cosine const *node) override;
+
+	virtual void evaluate(Exponential const *node) override;
+
+	virtual void evaluate(Logarithm const *node) override;
 
 private:
-	Symbols symbols;
-	double result = 0.0;
+	Registry const *registry = nullptr;
+	float64_t result = 0.0;
 
 	template<class T> float64_t lhs(T const *node);
 

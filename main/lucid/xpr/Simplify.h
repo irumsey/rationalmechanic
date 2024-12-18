@@ -1,19 +1,22 @@
 #pragma once
 
+#include <vector>
+#include <lucid/core/Types.h>
 #include <lucid/xpr/Defines.h>
 #include <lucid/xpr/Algorithm.h>
 #include <lucid/xpr/Clone.h>
-#include <lucid/xpr/Repr.h>
+#include <lucid/xpr/Hasher.h>
+#include <lucid/xpr/Rule.h>
 
 LUCID_XPR_BEGIN
 
 class Node;
+class UnaryOperation;
+class BinaryOperation;
 
 ///	Simplify
 ///
-///	algebraic simplification.  while this can be used
-///	to create a "pretty" simplification, its main purpose
-///	is to reduce "trivial" operations.
+///	algebraic simplification.
 ///
 /// for example:
 ///		x + 0 -> x
@@ -24,14 +27,10 @@ class Node;
 ///		a + b -> c  (constant + constant -> constant)
 ///		etc...
 ///
-///	NOTE: applies rules containing regular expressions
-///	which are to match the output of Repr.
-///
-///	SEE ALSO: Repr
 class Simplify : public Algorithm
 {
 public:
-	Simplify() = default;
+	Simplify();
 
 	virtual ~Simplify() = default;
 
@@ -43,12 +42,6 @@ public:
 
 	virtual void evaluate(Negate const *node) override;
 
-	virtual void evaluate(NaturalLogarithm const *node) override;
-
-	virtual void evaluate(Sine const *node) override;
-
-	virtual void evaluate(Cosine const *node) override;
-
 	virtual void evaluate(Add const *node) override;
 
 	virtual void evaluate(Subtract const *node) override;
@@ -57,30 +50,70 @@ public:
 
 	virtual void evaluate(Divide const *node) override;
 
-	virtual void evaluate(Power const *node) override;
+	virtual void evaluate(Sine const *node) override;
+
+	virtual void evaluate(Cosine const *node) override;
+
+	virtual void evaluate(Exponential const *node) override;
+
+	virtual void evaluate(Logarithm const *node) override;
 
 public:
-	Node const *result = nullptr;
-	
 	Clone clone;
-	Repr repr;
+	Hasher hash;
 
-	template<class T> Node const *lhsSimplify(T const *node);
+	std::vector<Rule<UnaryOperation> > unaryRules;
+	std::vector<Rule<BinaryOperation> > binaryRules;
 
-	template<class T> Node const *rhsSimplify(T const *node);
+	Node const *simplified = nullptr;
+
+	bool matches(Pattern const &pattern, Node const *ndoe);
+
+	void addRule(Rule<UnaryOperation> const &rule);
+
+	void addRule(Rule<BinaryOperation> const &rule);
+
+	template<typename T> Node const *apply(std::vector<Rule<T> > const &rules, T const *node);
+
+	template<typename T> Node const *lhs(T const *node);
+
+	template<typename T> Node const *rhs(T const *node);
 
 };
 
-template<class T> inline Node const *Simplify::lhsSimplify(T const *node)
+inline void Simplify::addRule(Rule<UnaryOperation> const &rule)
 {
-	node->lhs->apply(this);
-	return result;
+	unaryRules.push_back(rule);
 }
 
-template<class T> inline Node const *Simplify::rhsSimplify(T const *node)
+inline void Simplify::addRule(Rule<BinaryOperation> const &rule)
+{
+	binaryRules.push_back(rule);
+}
+
+template<typename T> inline Node const *Simplify::apply(std::vector<Rule<T> > const &rules, T const *node)
+{
+	simplified = node;
+
+	for (Rule<T> const &rule : rules)
+	{
+		if (matches(rule.pattern, simplified))
+			simplified = rule.action(node);
+	}
+
+	return simplified;
+}
+
+template<typename T> inline Node const *Simplify::lhs(T const *node)
+{
+	node->lhs->apply(this);
+	return simplified;
+}
+
+template<typename T> inline Node const *Simplify::rhs(T const *node)
 {
 	node->rhs->apply(this);
-	return result;
+	return simplified;
 }
 
 LUCID_XPR_END

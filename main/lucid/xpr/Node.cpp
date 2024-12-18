@@ -8,6 +8,12 @@ LUCID_XPR_BEGIN
 ///
 ///
 
+size_t Node::instances = 0;
+
+///
+///
+///
+
 Constant::Constant(float64_t const &value)
 	: value(value)
 {
@@ -22,8 +28,8 @@ void Constant::apply(Algorithm *algorithm) const
 ///
 ///
 
-Variable::Variable(std::string const &symbol)
-	: symbol(symbol)
+Variable::Variable(uint64_t index)
+	: index(index)
 {
 }
 
@@ -82,48 +88,6 @@ void Negate::apply(Algorithm *algorithm) const
 ///
 ///
 
-NaturalLogarithm::NaturalLogarithm(Node const *rhs)
-	: UnaryOperation(rhs)
-{
-}
-
-void NaturalLogarithm::apply(Algorithm *algorithm) const
-{
-	algorithm->evaluate(this);
-}
-
-///
-///
-///
-
-Sine::Sine(Node const *rhs)
-	: UnaryOperation(rhs)
-{
-}
-
-void Sine::apply(Algorithm *algorithm) const
-{
-	algorithm->evaluate(this);
-}
-
-///
-///
-///
-
-Cosine::Cosine(Node const *rhs)
-	: UnaryOperation(rhs)
-{
-}
-
-void Cosine::apply(Algorithm *algorithm) const
-{
-	algorithm->evaluate(this);
-}
-
-///
-///
-///
-
 Add::Add(Node const *lhs, Node const *rhs)
 	: BinaryOperation(lhs, rhs)
 {
@@ -162,7 +126,6 @@ void Multiply::apply(Algorithm *algorithm) const
 	algorithm->evaluate(this);
 }
 
-
 ///
 ///
 ///
@@ -181,12 +144,54 @@ void Divide::apply(Algorithm *algorithm) const
 ///
 ///
 
-Power::Power(Node const *lhs, Node const *rhs)
-	: BinaryOperation(lhs, rhs)
+Sine::Sine(Node const *rhs)
+	: UnaryOperation(rhs)
 {
 }
 
-void Power::apply(Algorithm *algorithm) const
+void Sine::apply(Algorithm *algorithm) const
+{
+	algorithm->evaluate(this);
+}
+
+///
+///
+///
+
+Cosine::Cosine(Node const *rhs)
+	: UnaryOperation(rhs)
+{
+}
+
+void Cosine::apply(Algorithm *algorithm) const
+{
+	algorithm->evaluate(this);
+}
+
+///
+///
+///
+
+Exponential::Exponential(Node const *rhs)
+	: UnaryOperation(rhs)
+{
+}
+
+void Exponential::apply(Algorithm *algorithm) const
+{
+	algorithm->evaluate(this);
+}
+
+///
+///
+///
+
+Logarithm::Logarithm(Node const *rhs)
+	: UnaryOperation(rhs)
+{
+}
+
+void Logarithm::apply(Algorithm *algorithm) const
 {
 	algorithm->evaluate(this);
 }

@@ -34,17 +34,15 @@ public:
 
 	Node const *operator->() const;
 
+	Node const &ref() const;
+
+	Node const *ptr() const;
+
 	virtual void evaluate(Constant const *node) override;
 
 	virtual void evaluate(Variable const *node) override;
 
 	virtual void evaluate(Negate const *node) override;
-
-	virtual void evaluate(NaturalLogarithm const *node) override;
-
-	virtual void evaluate(Sine const *node) override;
-
-	virtual void evaluate(Cosine const *node) override;
 
 	virtual void evaluate(Add const *node) override;
 
@@ -54,7 +52,13 @@ public:
 
 	virtual void evaluate(Divide const *node) override;
 
-	virtual void evaluate(Power const *node) override;
+	virtual void evaluate(Sine const *node) override;
+
+	virtual void evaluate(Cosine const *node) override;
+
+	virtual void evaluate(Exponential const *node) override;
+
+	virtual void evaluate(Logarithm const *node) override;
 
 	void skip();
 
@@ -63,8 +67,8 @@ public:
 	bool neq(Node const *node) const;
 
 private:
-	Node const *_current = nullptr;
 	std::vector<Node const *> _stack;
+	Node const *_current = nullptr;
 
 	template<typename T> Node const *lhs(T const *node);
 
@@ -72,9 +76,9 @@ private:
 
 	void evaluate_leaf(Node const *node);
 
-	void evaluate_unary(UnaryOperation const *node);
+	void evaluateOperation(UnaryOperation const *node);
 
-	void evaluate_binary(BinaryOperation const *node);
+	void evaluateOperation(BinaryOperation const *node);
 
 	void set(Node const *node);
 
@@ -94,13 +98,30 @@ inline Iterator &Iterator::operator++()
 	return *this;
 }
 
+inline Iterator Iterator::operator++(int)
+{
+	Iterator temp = *this;
+	_current->apply(this);
+	return temp;
+}
+
 inline Node const &Iterator::operator*() const
+{
+	return ref();
+}
+
+inline Node const *Iterator::operator->() const
+{
+	return ptr();
+}
+
+inline Node const &Iterator::ref() const
 {
 	assert(nullptr != _current);
 	return *_current;
 }
 
-inline Node const *Iterator::operator->() const
+inline Node const *Iterator::ptr() const
 {
 	assert(nullptr != _current);
 	return _current;
@@ -118,47 +139,47 @@ inline void Iterator::evaluate(Variable const *node)
 
 inline void Iterator::evaluate(Negate const *node)
 {
-	evaluate_unary(node);
-}
-
-inline void Iterator::evaluate(NaturalLogarithm const *node)
-{
-	evaluate_unary(node);
-}
-
-inline void Iterator::evaluate(Sine const *node)
-{
-	evaluate_unary(node);
-}
-
-inline void Iterator::evaluate(Cosine const *node)
-{
-	evaluate_unary(node);
+	evaluateOperation(node);
 }
 
 inline void Iterator::evaluate(Add const *node)
 {
-	evaluate_binary(node);
+	evaluateOperation(node);
 }
 
 inline void Iterator::evaluate(Subtract const *node)
 {
-	evaluate_binary(node);
+	evaluateOperation(node);
 }
 
 inline void Iterator::evaluate(Multiply const *node)
 {
-	evaluate_binary(node);
+	evaluateOperation(node);
 }
 
 inline void Iterator::evaluate(Divide const *node)
 {
-	evaluate_binary(node);
+	evaluateOperation(node);
 }
 
-inline void Iterator::evaluate(Power const *node)
+inline void Iterator::evaluate(Sine const *node)
 {
-	evaluate_binary(node);
+	evaluateOperation(node);
+}
+
+inline void Iterator::evaluate(Cosine const *node)
+{
+	evaluateOperation(node);
+}
+
+inline void Iterator::evaluate(Exponential const *node)
+{
+	evaluateOperation(node);
+}
+
+inline void Iterator::evaluate(Logarithm const *node)
+{
+	evaluateOperation(node);
 }
 
 inline void Iterator::skip()
@@ -193,12 +214,12 @@ inline void Iterator::evaluate_leaf(Node const *node)
 	pop();
 }
 
-inline void Iterator::evaluate_unary(UnaryOperation const *node)
+inline void Iterator::evaluateOperation(UnaryOperation const *node)
 {
 	_current = rhs(node);
 }
 
-inline void Iterator::evaluate_binary(BinaryOperation const *node)
+inline void Iterator::evaluateOperation(BinaryOperation const *node)
 {
 	_current = lhs(node);
 	_stack.push_back(rhs(node));

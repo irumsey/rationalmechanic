@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <ostream>
 #include <lucid/xpr/Defines.h>
 #include <lucid/xpr/Algorithm.h>
 
@@ -26,21 +27,21 @@ class Repr : public Algorithm
 public:
 	Repr() = default;
 
+	Repr(Node const *node);
+
 	virtual ~Repr() = default;
 
 	std::string const &operator()(Node const *node);
+
+	std::string const &repr(Node const *node);
+
+	std::string const &str() const;
 
 	virtual void evaluate(Constant const *node) override;
 
 	virtual void evaluate(Variable const *node) override;
 
 	virtual void evaluate(Negate const *node) override;
-
-	virtual void evaluate(NaturalLogarithm const *node) override;
-
-	virtual void evaluate(Sine const *node) override;
-
-	virtual void evaluate(Cosine const *node) override;
 
 	virtual void evaluate(Add const *node) override;
 
@@ -50,7 +51,13 @@ public:
 
 	virtual void evaluate(Divide const *node) override;
 
-	virtual void evaluate(Power const *node) override;
+	virtual void evaluate(Sine const *node) override;
+
+	virtual void evaluate(Cosine const *node) override;
+
+	virtual void evaluate(Exponential const *node) override;
+
+	virtual void evaluate(Logarithm const *node) override;
 
 private:
 	std::string result;
@@ -61,4 +68,15 @@ private:
 
 };
 
+inline std::string const &Repr::str() const
+{
+	return result;
+}
+
 LUCID_XPR_END
+
+inline std::ostream &operator<<(std::ostream &stream, LUCID_XPR::Repr const &repr)
+{
+	stream << repr.str();
+	return stream;
+}

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string>
+#include <lucid/core/Types.h>
 #include <lucid/xpr/Defines.h>
 #include <lucid/xpr/Algorithm.h>
 #include <lucid/xpr/Clone.h>
@@ -22,19 +22,13 @@ public:
 
 	virtual ~Differentiate() = default;
 
-	Node const *operator()(Node const *node, std::string const &symbol);
+	Node const *operator()(Node const *node, uint32_t index);
 
 	virtual void evaluate(Constant const *node) override;
 
 	virtual void evaluate(Variable const *node) override;
 
 	virtual void evaluate(Negate const *node) override;
-
-	virtual void evaluate(NaturalLogarithm const *node) override;
-
-	virtual void evaluate(Sine const *node) override;
-
-	virtual void evaluate(Cosine const *node) override;
 
 	virtual void evaluate(Add const *node) override;
 
@@ -44,25 +38,32 @@ public:
 
 	virtual void evaluate(Divide const *node) override;
 
-	virtual void evaluate(Power const *node) override;
+	virtual void evaluate(Sine const *node) override;
+
+	virtual void evaluate(Cosine const *node) override;
+
+	virtual void evaluate(Exponential const *node) override;
+
+	virtual void evaluate(Logarithm const *node) override;
 
 private:
-	std::string symbol;
+	Clone clone;
+
+	uint32_t index = -1;
 	Node const *result = nullptr;
 
-	template<class T> Node const *u(T const *node) const;
+	template<class T> Node const *u(T const *node);
 
 	template<class T> Node const *du(T const *node);
 
-	template<class T> Node const *v(T const *node) const;
+	template<class T> Node const *v(T const *node);
 
 	template<class T> Node const *dv(T const *node);
 
 };
 
-template<class T> inline Node const *Differentiate::u(T const *node) const
+template<class T> inline Node const *Differentiate::u(T const *node)
 {
-	Clone clone;
 	return clone(node->lhs);
 }
 
@@ -72,9 +73,8 @@ template<class T> inline Node const *Differentiate::du(T const *node)
 	return result;
 }
 
-template<class T> inline Node const *Differentiate::v(T const *node) const
+template<class T> inline Node const *Differentiate::v(T const *node)
 {
-	Clone clone;
 	return clone(node->rhs);
 }
 
