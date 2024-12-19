@@ -1,7 +1,6 @@
 #include "Evaluate.h"
 #include "Registry.h"
 #include "Node.h"
-#include <cassert>
 
 LUCID_XPR_BEGIN
 
@@ -68,6 +67,11 @@ void Evaluate::evaluate(Exponential const *node)
 void Evaluate::evaluate(Logarithm const *node)
 {
 	result = ::log(rhs(node));
+}
+
+void Evaluate::evaluate(Power const *node)
+{
+	result = ::pow(lhs(node), rhs(node));
 }
 
 LUCID_XPR_END

@@ -15,6 +15,7 @@ class Multiply;
 class Divide;
 class Exponential;
 class Logarithm;
+class Power;
 
 ///	Algorithm
 ///
@@ -53,6 +54,8 @@ public:
 	virtual void evaluate(Exponential const *node) = 0;
 
 	virtual void evaluate(Logarithm const *node) = 0;
+
+	virtual void evaluate(Power const *node) = 0;
 
 protected:
 	Algorithm() = default;

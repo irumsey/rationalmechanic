@@ -85,6 +85,11 @@ void Repr::evaluate(Logarithm const *node)
 	evaluateOperation("log", node);
 }
 
+void Repr::evaluate(Power const *node)
+{
+	evaluateOperation("pow", node);
+}
+
 void Repr::evaluateOperation(std::string const &label, UnaryOperation const *oper)
 {
 	result += label;

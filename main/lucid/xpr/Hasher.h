@@ -11,7 +11,8 @@ class Node;
 
 ///	TID
 /// 
-/// 
+/// See: Hasher
+/// See: Simplify
 template<typename T> struct TYPE
 {
 	static size_t ID()
@@ -22,7 +23,15 @@ template<typename T> struct TYPE
 
 ///	Token
 /// 
+/// Hashed value of a node.  Contains a unique
+/// ID for the node type and a value representing
+/// the node's data (if any).
 /// 
+/// Note: uses unsigned integers for type ids and data.
+///       (-1) is a "don't care" or match anything wildcard.
+/// 
+/// See : Hasher
+/// See : Simplify
 struct Token final
 {
 	size_t tid = -1;
@@ -95,6 +104,8 @@ public:
 	virtual void evaluate(Exponential const *node) override;
 
 	virtual void evaluate(Logarithm const *node) override;
+
+	virtual void evaluate(Power const *node) override;
 
 private:
 	Token token;

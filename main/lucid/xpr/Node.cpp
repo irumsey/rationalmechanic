@@ -8,7 +8,9 @@ LUCID_XPR_BEGIN
 ///
 ///
 
-size_t Node::instances = 0;
+#if defined(_DEBUG)
+	size_t Node::instances = 0;
+#endif
 
 ///
 ///
@@ -192,6 +194,20 @@ Logarithm::Logarithm(Node const *rhs)
 }
 
 void Logarithm::apply(Algorithm *algorithm) const
+{
+	algorithm->evaluate(this);
+}
+
+///
+///
+///
+
+Power::Power(Node const *lhs, Node const *rhs)
+	: BinaryOperation(lhs, rhs)
+{
+}
+
+void Power::apply(Algorithm *algorithm) const
 {
 	algorithm->evaluate(this);
 }

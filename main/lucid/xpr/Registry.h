@@ -10,7 +10,7 @@ LUCID_XPR_BEGIN
 
 /// Registry
 ///
-/// associates an index and value to a symbol.
+/// variable name registry.  associates an index and value to a symbol.
 class Registry 
 {
 public:

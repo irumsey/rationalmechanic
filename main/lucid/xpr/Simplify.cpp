@@ -39,9 +39,19 @@ template<typename T> T const *rhs_as(UnaryOperation const *node)
 	return reinterpret_cast<T const *>(node->rhs);
 }
 
+template<typename T> T const *lhs_as(BinaryOperation const *node)
+{
+	return reinterpret_cast<T const *>(node->lhs);
+}
+
+template<typename T> T const *rhs_as(BinaryOperation const *node)
+{
+	return reinterpret_cast<T const *>(node->rhs);
+}
+
 Node const *copy(Node const *node)
 {
-	Clone clone;
+	thread_local static Clone clone;
 	return clone(node);
 }
 
@@ -188,10 +198,10 @@ Simplify::Simplify()
 	addRule(binary_rule_t({ SUB, VAL(0),    ANY, },  negate_rhs));
 
 	addRule(binary_rule_t({ MUL,  VAL(),  VAL(), }, compute_mul));
-	addRule(binary_rule_t({ MUL, VAL(0),    ANY, }, set_to_zero));
 	addRule(binary_rule_t({ MUL,    ANY, VAL(0), }, set_to_zero));
-	addRule(binary_rule_t({ MUL, VAL(1),    ANY, },  select_lhs));
-	addRule(binary_rule_t({ MUL,    ANY, VAL(1), },  select_rhs));
+	addRule(binary_rule_t({ MUL, VAL(0),    ANY, }, set_to_zero));
+	addRule(binary_rule_t({ MUL,    ANY, VAL(1), },  select_lhs));
+	addRule(binary_rule_t({ MUL, VAL(1),    ANY, },  select_rhs));
 
 	addRule(binary_rule_t({ DIV,  VAL(),  VAL(), }, compute_div));
 	addRule(binary_rule_t({ DIV, VAL(0),    ANY, }, set_to_zero));
@@ -266,6 +276,11 @@ void Simplify::evaluate(Exponential const *node)
 void Simplify::evaluate(Logarithm const *node)
 {
 	simplified = apply(unaryRules, log(rhs(node)));
+}
+
+void Simplify::evaluate(Power const *node)
+{
+	simplified = apply(binaryRules, pow(lhs(node), rhs(node)));
 }
 
 bool Simplify::matches(Pattern const &pattern, Node const *node)

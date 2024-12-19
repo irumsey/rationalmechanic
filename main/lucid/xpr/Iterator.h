@@ -10,7 +10,11 @@ LUCID_XPR_BEGIN
 
 ///	Iterator 
 ///
-/// a simple in-order traversal
+/// a simple pre-order traversal used by the simplification
+/// system.  introduces the concept of a "skip subtree" method 
+/// which is used to implement a "wildcard" in pattern matching.
+/// 
+/// See : Simplify
 class Iterator : public Algorithm
 {
 public:
@@ -59,6 +63,8 @@ public:
 	virtual void evaluate(Exponential const *node) override;
 
 	virtual void evaluate(Logarithm const *node) override;
+
+	virtual void evaluate(Power const *node) override;
 
 	void skip();
 
@@ -178,6 +184,11 @@ inline void Iterator::evaluate(Exponential const *node)
 }
 
 inline void Iterator::evaluate(Logarithm const *node)
+{
+	evaluateOperation(node);
+}
+
+inline void Iterator::evaluate(Power const *node)
 {
 	evaluateOperation(node);
 }

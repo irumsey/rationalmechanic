@@ -1,6 +1,5 @@
 #pragma once
 
-#include <string>
 #include <lucid/core/Noncopyable.h>
 #include <lucid/core/Types.h>
 #include <lucid/xpr/Defines.h>
@@ -19,12 +18,20 @@ class Algorithm;
 class Node
 {
 public:
+#if defined(_DEBUG)
 	virtual ~Node() { --instances; }
+#else
+	virtual ~Node() = default;	
+#endif
 
 	virtual void apply(Algorithm *algorithm) const = 0;
 
 protected:
+#if defined(_DEBUG)
 	Node() { ++instances; }
+#else
+	Node() = default;
+#endif
 
 	static size_t instances;
 
@@ -302,6 +309,27 @@ inline UnaryOperation const *log(Node const *rhs)
 	return new Logarithm(rhs);
 }
 
+///
+///
+/// 
+class Power : public BinaryOperation
+{
+public:
+	Power(Node const *lhs, Node const *rhs);
+
+	virtual ~Power() = default;
+
+	virtual void apply(Algorithm *algorithm) const override;
+
+	LUCID_PREVENT_COPY(Power);
+	LUCID_PREVENT_ASSIGNMENT(Power);
+};
+
+inline BinaryOperation const *pow(Node const *lhs, Node const *rhs)
+{
+	return new Power(lhs, rhs);
+}
+
 /// 
 ///	derived
 /// 
@@ -324,11 +352,6 @@ inline BinaryOperation const *sec(Node const *rhs)
 inline BinaryOperation const *cot(Node const *rhs)
 {
 	return div(cos(rhs), sin(rhs));
-}
-
-inline UnaryOperation const *pow(Node const *lhs, Node const *rhs)
-{
-	return exp(mul(rhs, log(lhs)));
 }
 
 LUCID_XPR_END

@@ -65,4 +65,9 @@ void Differentiate::evaluate(Logarithm const *node)
 	result = div(dv(node), v(node));
 }
 
+void Differentiate::evaluate(Power const *node)
+{
+	result = mul(pow(u(node), v(node)), add(mul(du(node), div(v(node), u(node))), mul(dv(node), log(u(node)))));
+}
+
 LUCID_XPR_END

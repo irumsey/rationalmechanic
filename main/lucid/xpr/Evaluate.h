@@ -1,7 +1,5 @@
 #pragma once
 
-#include <string>
-#include <unordered_map>
 #include <lucid/core/Types.h>
 #include <lucid/xpr/Defines.h>
 #include <lucid/xpr/Algorithm.h>
@@ -47,6 +45,8 @@ public:
 	virtual void evaluate(Exponential const *node) override;
 
 	virtual void evaluate(Logarithm const *node) override;
+
+	virtual void evaluate(Power const *node) override;
 
 private:
 	Registry const *registry = nullptr;
