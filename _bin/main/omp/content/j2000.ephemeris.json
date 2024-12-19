@@ -44,7 +44,8 @@
           "radius": 6.96340000e08
         },
         "render": {
-          "orbit": false,
+          "show orbit": false,
+          "show icon": false,
           "model": [ "content/_010/sun.mesh", "content/_010/atmosphere.mesh" ],
           "icon": {
             "mesh": "content/stdIcons.mesh",
@@ -127,7 +128,8 @@
           "radius": 2.440000e06
         },
         "render": {
-          "orbit": true,
+          "show orbit": false,
+          "show icon": false,
           "model": [ "content/sphere.mesh" ],
           "icon": {
             "mesh": "content/stdIcons.mesh",
@@ -210,7 +212,8 @@
           "radius": 6.051840e06
         },
         "render": {
-          "orbit": true,
+          "show orbit": false,
+          "show icon": false,
           "model": [ "content/sphere.mesh" ],
           "icon": {
             "mesh": "content/stdIcons.mesh",
@@ -293,7 +296,8 @@
           "radius": 6.37101e06
         },
         "render": {
-          "orbit": true,
+          "show orbit": false,
+          "show icon": false,
           "model": [ "content/_399/earth.mesh", "content/atmosphere.mesh" ],
           "icon": {
             "mesh": "content/stdIcons.mesh",
@@ -376,7 +380,8 @@
           "radius": 1.737530e06
         },
         "render": {
-          "orbit": true,
+          "show orbit": false,
+          "show icon": false,
           "model": [ "content/_301/moon.mesh" ],
           "icon": {
             "mesh": "content/stdIcons.mesh",
@@ -421,7 +426,8 @@
           "radius": 3.38992e06
         },
         "render": {
-          "orbit": true,
+          "show orbit": false,
+          "show icon": false,
           "model": [ "content/_499/mars.mesh", "content/atmosphere.mesh" ],
           "icon": {
             "mesh": "content/stdIcons.mesh",
@@ -504,7 +510,8 @@
           "radius": 6.991100e07
         },
         "render": {
-          "orbit": true,
+          "show orbit": false,
+          "show icon": false,
           "model": [ "content/sphere.mesh" ],
           "icon": {
             "mesh": "content/stdIcons.mesh",
@@ -587,7 +594,8 @@
           "radius": 6.0268e07
         },
         "render": {
-          "orbit": true,
+          "show orbit": false,
+          "show icon": false,
           "model": [ "content/sphere.mesh" ],
           "icon": {
             "mesh": "content/stdIcons.mesh",
@@ -670,7 +678,8 @@
           "radius": 2.5362e07
         },
         "render": {
-          "orbit": true,
+          "show orbit": false,
+          "show icon": false,
           "model": [ "content/sphere.mesh" ],
           "icon": {
             "mesh": "content/stdIcons.mesh",
@@ -753,7 +762,8 @@
           "radius": 2.4624e07
         },
         "render": {
-          "orbit": true,
+          "show orbit": false,
+          "show icon": false,
           "model": [ "content/sphere.mesh" ],
           "icon": {
             "mesh": "content/stdIcons.mesh",
@@ -836,7 +846,8 @@
           "radius": 1.1883e06
         },
         "render": {
-          "orbit": true,
+          "show orbit": false,
+          "show icon": false,
           "model": [ "content/sphere.mesh" ],
           "icon": {
             "mesh": "content/stdIcons.mesh",
@@ -922,7 +933,8 @@
           "radius": 112.3
         },
         "render": {
-          "orbit": true,
+          "show orbit": false,
+          "show icon": false,
           "model": [ "content/cuboid.mesh" ],
           "icon": {
             "mesh": "content/stdIcons.mesh",
@@ -984,7 +996,8 @@
           "radius": 122.5
         },
         "render": {
-          "orbit": true,
+          "show orbit": false,
+          "show icon": false,
           "model": [ "content/cuboid.mesh" ],
           "icon": {
             "mesh": "content/stdIcons.mesh",
@@ -1046,7 +1059,8 @@
           "radius": 4.17
         },
         "render": {
-          "orbit": true,
+          "show orbit": false,
+          "show icon": false,
           "model": [ "content/cuboid.mesh" ],
           "icon": {
             "mesh": "content/stdIcons.mesh",
@@ -1111,7 +1125,8 @@
           "radius": 113.6
         },
         "render": {
-          "orbit": true,
+          "show orbit": false,
+          "show icon": false,
           "model": [ "content/cuboid.mesh" ],
           "icon": {
             "mesh": "content/stdIcons.mesh",

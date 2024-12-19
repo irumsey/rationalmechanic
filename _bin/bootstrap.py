@@ -693,7 +693,8 @@ def bootFrameOrbitalBody(dst, frame):
 
 	properties = frame['properties']
 
-	bootBoolean(dst, properties['render']['orbit'])
+	bootBoolean(dst, properties['render']['show orbit'])
+	bootBoolean(dst, properties['render']['show icon'])
 
 	model = properties['render']['model']
 	bootUnsigned(dst, len(model))

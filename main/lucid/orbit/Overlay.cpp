@@ -177,6 +177,9 @@ void Overlay::batchIcon(OrbitalBody *body)
 
 	RenderProperties const &renderProperties = body->renderProperties;
 
+	if (!renderProperties.showIcon)
+		return;
+
 	vector3_t bodyPosition = LUCID_MATH::lerp(_interpolant, body->absolutePosition[0], body->absolutePosition[1]) - _cameraPosition;
 	scalar_t bodyDistance = LUCID_MATH::len(bodyPosition);
 

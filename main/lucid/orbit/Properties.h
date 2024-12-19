@@ -45,8 +45,9 @@ struct PhysicalProperties
 struct RenderProperties
 {
 	bool showOrbit = false;						//	the default is provided by the ephemeris
+	bool showIcon = false;						//	ditto above
 	bool bodyHighlight = false;					//	used only at runtime to toggle highlighting
-	bool orbitHighlight = false;				//	used only at runtime to toggle highlighting 
+	bool orbitHighlight = false;				//	ditto above 
 
 	std::shared_ptr<LUCID_GIGL::Model> model;
 
@@ -69,6 +70,7 @@ struct RenderProperties
 	void read(LUCID_CORE::Reader &reader)
 	{
 		showOrbit = reader.read<bool>();
+		showIcon = reader.read<bool>();
 
 		model.reset(new LUCID_GIGL::Model(reader));
 
