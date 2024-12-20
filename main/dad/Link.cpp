@@ -26,4 +26,5 @@
 #pragma comment (lib,  "core.win." PLATFORM CONFIG ".lib")
 #pragma comment (lib, "gal.d3d11." PLATFORM CONFIG ".lib")
 #pragma comment (lib,      "gigl." PLATFORM CONFIG ".lib")
+#pragma comment (lib,       "xpr." PLATFORM CONFIG ".lib")
 #pragma comment (lib,     "orbit." PLATFORM CONFIG ".lib")

@@ -12,6 +12,7 @@
     <ClCompile Include="Utility.cpp" />
     <ClCompile Include="OrbitTest.cpp" />
     <ClCompile Include="UnitsTest.cpp" />
+    <ClCompile Include="XprTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Session.h" />
@@ -25,5 +26,6 @@
     <ClInclude Include="CoreTest.h" />
     <ClInclude Include="OrbitTest.h" />
     <ClInclude Include="UnitsTest.h" />
+    <ClInclude Include="XprTest.h" />
   </ItemGroup>
 </Project>

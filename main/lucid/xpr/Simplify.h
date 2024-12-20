@@ -1,11 +1,10 @@
 #pragma once
 
 #include <vector>
+#include <lucid/core/Noncopyable.h>
 #include <lucid/core/Types.h>
 #include <lucid/xpr/Defines.h>
 #include <lucid/xpr/Algorithm.h>
-#include <lucid/xpr/Clone.h>
-#include <lucid/xpr/Hasher.h>
 #include <lucid/xpr/Rule.h>
 
 LUCID_XPR_BEGIN
@@ -61,19 +60,14 @@ public:
 	virtual void evaluate(Power const *node) override;
 
 public:
-	Clone clone;
-	Hasher hash;
-
 	std::vector<Rule<UnaryOperation> > unaryRules;
 	std::vector<Rule<BinaryOperation> > binaryRules;
 
 	Node const *simplified = nullptr;
 
+	template<typename T> void addRule(std::vector<T> &rules, T const &rule);
+
 	bool matches(Pattern const &pattern, Node const *ndoe);
-
-	void addRule(Rule<UnaryOperation> const &rule);
-
-	void addRule(Rule<BinaryOperation> const &rule);
 
 	template<typename T> Node const *apply(std::vector<Rule<T> > const &rules, T const *node);
 
@@ -81,16 +75,13 @@ public:
 
 	template<typename T> Node const *rhs(T const *node);
 
+	LUCID_PREVENT_COPY(Simplify);
+	LUCID_PREVENT_ASSIGNMENT(Simplify);
 };
 
-inline void Simplify::addRule(Rule<UnaryOperation> const &rule)
+template<typename T> inline void Simplify::addRule(std::vector<T> &rules, T const &rule)
 {
-	unaryRules.push_back(rule);
-}
-
-inline void Simplify::addRule(Rule<BinaryOperation> const &rule)
-{
-	binaryRules.push_back(rule);
+	rules.push_back(rule);
 }
 
 template<typename T> inline Node const *Simplify::apply(std::vector<Rule<T> > const &rules, T const *node)

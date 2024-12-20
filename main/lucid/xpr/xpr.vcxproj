@@ -26,11 +26,13 @@
     <ClInclude Include="Evaluate.h" />
     <ClInclude Include="Hasher.h" />
     <ClInclude Include="Iterator.h" />
+    <ClInclude Include="LaTeX.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="Registry.h" />
     <ClInclude Include="Repr.h" />
     <ClInclude Include="Rule.h" />
     <ClInclude Include="Simplify.h" />
+    <ClInclude Include="xpr.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Clone.cpp" />
@@ -38,6 +40,7 @@
     <ClCompile Include="Evaluate.cpp" />
     <ClCompile Include="Hasher.cpp" />
     <ClCompile Include="Iterator.cpp" />
+    <ClCompile Include="LaTeX.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="Repr.cpp" />
     <ClCompile Include="Simplify.cpp" />

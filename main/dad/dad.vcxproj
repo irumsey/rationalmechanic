@@ -181,6 +181,7 @@
     <ClCompile Include="Tests.cpp" />
     <ClCompile Include="UnitsTest.cpp" />
     <ClCompile Include="Utility.cpp" />
+    <ClCompile Include="XprTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CoreTest.h" />
@@ -194,6 +195,7 @@
     <ClInclude Include="UnitsTest.h" />
     <ClInclude Include="UserInput.h" />
     <ClInclude Include="Utility.h" />
+    <ClInclude Include="XprTest.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

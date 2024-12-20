@@ -13,6 +13,8 @@
     <ClInclude Include="Registry.h" />
     <ClInclude Include="Rule.h" />
     <ClInclude Include="Hasher.h" />
+    <ClInclude Include="LaTeX.h" />
+    <ClInclude Include="xpr.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Clone.cpp" />
@@ -23,5 +25,6 @@
     <ClCompile Include="Simplify.cpp" />
     <ClCompile Include="Iterator.cpp" />
     <ClCompile Include="Hasher.cpp" />
+    <ClCompile Include="LaTeX.cpp" />
   </ItemGroup>
 </Project>

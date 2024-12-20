@@ -1,28 +1,34 @@
 #pragma once
 
-#include <lucid/core/Types.h>
+#include <string>
+#include <ostream>
 #include <lucid/xpr/Defines.h>
 #include <lucid/xpr/Algorithm.h>
 
 LUCID_XPR_BEGIN
 
 class Node;
+class UnaryOperation;
+class BinaryOperation;
 class Registry;
 
-///	Evaluate
+///	LaTeX
 ///
-///	evaluates the supplied expression using the
-///	supplied symbol substitutions.
-///
-///	SEE ALSO: Symbols
-class Evaluate : public Algorithm
+/// 
+class LaTeX : public Algorithm
 {
 public:
-	Evaluate() = default;
+	LaTeX() = default;
 
-	virtual ~Evaluate() = default;
+	LaTeX(Node const *node, Registry const &registry);
 
-	float64_t operator()(Node const *node, Registry const &registry);
+	virtual ~LaTeX() = default;
+
+	std::string const &operator()(Node const *node, Registry const &registry);
+
+	std::string const &format(Node const *node, Registry const &registry);
+
+	std::string const &str() const;
 
 	virtual void evaluate(Constant const *node) override;
 
@@ -50,24 +56,23 @@ public:
 
 private:
 	Registry const *symbols = nullptr;
-	float64_t result = 0.0;
+	std::string result;
 
-	template<class T> float64_t lhs(T const *node);
+	void evaluateOperation(std::string const &label, UnaryOperation const *oper);
 
-	template<class T> float64_t rhs(T const *node);
+	void evaluateOperation(std::string const &label, BinaryOperation const *oper);
 
 };
 
-template<class T> inline float64_t Evaluate::lhs(T const *node)
+inline std::string const &LaTeX::str() const
 {
-	node->lhs->apply(this);
-	return result;
-}
-
-template<class T> inline float64_t Evaluate::rhs(T const *node)
-{
-	node->rhs->apply(this);
 	return result;
 }
 
 LUCID_XPR_END
+
+inline std::ostream &operator<<(std::ostream &stream, LUCID_XPR::LaTeX const &repr)
+{
+	stream << repr.str();
+	return stream;
+}

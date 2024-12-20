@@ -4,13 +4,13 @@
 
 LUCID_XPR_BEGIN
 
-float64_t Evaluate::operator()(Node const *node, Registry const &reg)
+float64_t Evaluate::operator()(Node const *node, Registry const &registry)
 {
-	registry = &reg;
+	symbols = &registry;
 
 	node->apply(this);
 	
-	registry = nullptr;
+	symbols = nullptr;
 	return result;
 }
 
@@ -21,7 +21,7 @@ void Evaluate::evaluate(Constant const *node)
 
 void Evaluate::evaluate(Variable const *node)
 {
-	result = registry->value_of(node->index);
+	result = symbols->value_of(node->index);
 }
 
 void Evaluate::evaluate(Negate const *node)
