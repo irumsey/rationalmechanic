@@ -76,12 +76,12 @@ void LaTeX::evaluate(Divide const *node)
 
 void LaTeX::evaluate(Sine const *node)
 {
-	evaluateOperation("sin", node);
+	evaluateOperation("\\sin", node);
 }
 
 void LaTeX::evaluate(Cosine const *node)
 {
-	evaluateOperation("cos", node);
+	evaluateOperation("\\cos", node);
 }
 
 void LaTeX::evaluate(Exponential const *node)
@@ -109,9 +109,7 @@ void LaTeX::evaluateOperation(std::string const &label, UnaryOperation const *op
 {
 	result += label;
 	result += "(";
-	
 	oper->rhs->apply(this);
-	
 	result += ")";
 }
 

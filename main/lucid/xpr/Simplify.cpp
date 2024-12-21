@@ -25,6 +25,8 @@ Token const POW = Token(TYPE<      Power>::ID());
 
 Token VAL()                { return Token(TYPE<Constant>::ID()       ); }
 Token VAL(float64_t value) { return Token(TYPE<Constant>::ID(), value); }
+
+Token VAR()                { return Token(TYPE<Variable>::ID()       ); }
 Token VAR( uint64_t index) { return Token(TYPE<Variable>::ID(), index); }
 
 ///
@@ -33,42 +35,43 @@ Token VAR( uint64_t index) { return Token(TYPE<Variable>::ID(), index); }
 
 Simplify::Simplify()
 {
-	addRule(Rule( { NEG, VAL(0),         },  action::zero));
+	addRule(Rule( { NEG, VAL(0),         }, action::             zero));
 	addRule(Rule( { NEG,    NEG,    ANY, }, action::collapse_identity));
 
-	addRule(Rule( { ADD,    ANY, VAL(0), },   action::select_lhs));
-	addRule(Rule( { ADD, VAL(0),    ANY, },   action::select_rhs));
+	addRule(Rule( { ADD,    ANY, VAL(0), }, action::       select_lhs));
+	addRule(Rule( { ADD, VAL(0),    ANY, }, action::       select_rhs));
+	addRule(Rule( { ADD,    ANY,    ANY, }, action::     factor_terms));
 
-	addRule(Rule( { SUB,    ANY, VAL(0), },   action::select_lhs));
-	addRule(Rule( { SUB, VAL(0),    ANY, },  action::negate_rhs));
-	addRule(Rule( { SUB,    ANY,    ANY, },   action::sub_cancel));
+	addRule(Rule( { SUB,    ANY, VAL(0), }, action::       select_lhs));
+	addRule(Rule( { SUB, VAL(0),    ANY, }, action::       negate_rhs));
+	addRule(Rule( { SUB,    ANY,    ANY, }, action::       sub_cancel));
 
-	addRule(Rule( { MUL,    ANY, VAL(0), },  action::zero));
-	addRule(Rule( { MUL, VAL(0),    ANY, },  action::zero));
-	addRule(Rule( { MUL,    ANY, VAL(1), },   action::select_lhs));
-	addRule(Rule( { MUL, VAL(1),    ANY, },   action::select_rhs));
+	addRule(Rule( { MUL,    ANY, VAL(0), }, action::             zero));
+	addRule(Rule( { MUL, VAL(0),    ANY, }, action::             zero));
+	addRule(Rule( { MUL,    ANY, VAL(1), }, action::       select_lhs));
+	addRule(Rule( { MUL, VAL(1),    ANY, }, action::       select_rhs));
 
-	addRule(Rule( { DIV,    ANY,    ANY, }, action::div_cancel));
-	addRule(Rule( { DIV, VAL(0),    ANY, },  action::zero));
-	addRule(Rule( { DIV,    ANY, VAL(1), },   action::select_lhs));
+	addRule(Rule( { DIV,    ANY,    ANY, }, action::       div_cancel));
+	addRule(Rule( { DIV, VAL(0),    ANY, }, action::             zero));
+	addRule(Rule( { DIV,    ANY, VAL(1), }, action::       select_lhs));
 
 	addRule(Rule( { EXP,    LOG,    ANY, }, action::collapse_identity));
 	addRule(Rule( { LOG,    EXP,    ANY, }, action::collapse_identity));
 
-	addRule(Rule( { POW,    ANY, VAL(0), },  action::one));
-	addRule(Rule( { POW,    ANY, VAL(1), },  action::select_lhs));
+	addRule(Rule( { POW,    ANY, VAL(0), }, action::              one));
+	addRule(Rule( { POW,    ANY, VAL(1), }, action::       select_lhs));
 
 	addRule(Rule( { DIV,    POW,    ANY,    ANY,    ANY, }, action::div_pow_cancel)); 
 
-	addRule(Rule( { NEG,  VAL(),         },  action::compute_neg));
-	addRule(Rule( { SIN,  VAL(),         },  action::compute_sin));
-	addRule(Rule( { COS,  VAL(),         },  action::compute_cos));
-	addRule(Rule( { EXP,  VAL(),         },  action::compute_exp));
-	addRule(Rule( { LOG,  VAL(),         },  action::compute_log));
-	addRule(Rule( { ADD,  VAL(),  VAL(), },  action::compute_add));
-	addRule(Rule( { SUB,  VAL(),  VAL(), },  action::compute_sub));
-	addRule(Rule( { MUL,  VAL(),  VAL(), },  action::compute_mul));
-	addRule(Rule( { DIV,  VAL(),  VAL(), },  action::compute_div));
+	addRule(Rule( { NEG,  VAL(),         }, action::      compute_neg));
+	addRule(Rule( { SIN,  VAL(),         }, action::      compute_sin));
+	addRule(Rule( { COS,  VAL(),         }, action::      compute_cos));
+	addRule(Rule( { EXP,  VAL(),         }, action::      compute_exp));
+	addRule(Rule( { LOG,  VAL(),         }, action::      compute_log));
+	addRule(Rule( { ADD,  VAL(),  VAL(), }, action::      compute_add));
+	addRule(Rule( { SUB,  VAL(),  VAL(), }, action::      compute_sub));
+	addRule(Rule( { MUL,  VAL(),  VAL(), }, action::      compute_mul));
+	addRule(Rule( { DIV,  VAL(),  VAL(), }, action::      compute_div));
 }								
 
 Node const *Simplify::operator()(Node const *node, size_t passes)
@@ -207,24 +210,6 @@ bool Simplify::matches(std::vector<Token> const &pattern, Node const *node) cons
 	}
 
 	return ((pattern.end() == lhs) && (nullptr == rhs));
-}
-
-void Simplify::addRule(Rule const &rule)
-{
-	rules.push_back(rule);
-}
-
-Node const *Simplify::applyRules(Node const *node)
-{
-	simplified = node;
-
-	for (Rule const &rule : rules)
-	{
-		if (matches(rule.pattern, simplified))
-			simplified = rule.action(node);
-	}
-
-	return simplified;
 }
 
 LUCID_XPR_END

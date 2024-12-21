@@ -130,6 +130,17 @@ namespace action
 		return neg(copied);
 	}
 
+	Node const *factor_terms(Node const *node)
+	{
+		if (not_equal(lhs(node), rhs(node)))
+			return node;
+
+		Node const *result = mul(val(2), copy(lhs(node)));
+		delete node;
+
+		return result;
+	}
+
 	Node const *sub_cancel(Node const *node)
 	{
 		if (not_equal(lhs(node), rhs(node)))

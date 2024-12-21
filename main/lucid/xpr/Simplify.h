@@ -76,4 +76,22 @@ public:
 	LUCID_PREVENT_ASSIGNMENT(Simplify);
 };
 
+inline void Simplify::addRule(Rule const &rule)
+{
+	rules.push_back(rule);
+}
+
+inline Node const *Simplify::applyRules(Node const *node)
+{
+	simplified = node;
+
+	for (Rule const &rule : rules)
+	{
+		if (matches(rule.pattern, simplified))
+			simplified = rule.action(node);
+	}
+
+	return simplified;
+}
+
 LUCID_XPR_END

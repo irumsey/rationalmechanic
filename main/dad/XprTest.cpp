@@ -36,14 +36,12 @@ bool XprTest::update(float64_t t, float64_t dt)
     symbols.add("x", 2.0);
     symbols.add("y", 1.0);
 
-	Node const *_1 = div(pow(var(0),val(3)), var(0));
+	Node const *_1 = add(sin(var(0)), sin(var(0)));
 	Node const *_2 = simplify(_1);
-    Node const *_3 = sub(add(var(0), var(1)), add(val(1), var(1)));
 
-	std::string const &repred = repr(_3);
-    std::string const &formatted = format(_3, symbols);
+	std::string const &repred = repr(_1);
+    std::string const &formatted = format(_2, symbols);
 
-    delete _3;
 	delete _2;
 	delete _1;
 

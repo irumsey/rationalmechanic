@@ -27,6 +27,8 @@ namespace action
 
 	Node const *negate_rhs(Node const *node);
 
+	Node const *factor_terms(Node const *node);
+
 	Node const *sub_cancel(Node const *node);
 
 	Node const *compute_neg(Node const *node);
