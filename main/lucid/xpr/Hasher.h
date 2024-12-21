@@ -1,6 +1,5 @@
 #pragma once
 
-#include <vector>
 #include <lucid/core/Types.h>
 #include <lucid/xpr/Defines.h>
 #include <lucid/xpr/Algorithm.h>
@@ -8,6 +7,7 @@
 LUCID_XPR_BEGIN
 
 class Node;
+class Iterator;
 
 ///	TID
 /// 
@@ -64,11 +64,6 @@ struct Token final
 
 };
 
-///	Pattern
-/// 
-/// 
-typedef std::vector<Token> Pattern;
-
 ///	Hasher
 ///
 /// 
@@ -79,7 +74,11 @@ public:
 
 	virtual ~Hasher() = default;
 
+	Token operator()(Iterator const &iter);
+
 	Token operator()(Node const *node);
+
+	Token hash(Iterator const &iter);
 
 	Token hash(Node const *node);
 
@@ -111,6 +110,11 @@ private:
 	Token token;
 
 };
+
+inline Token Hasher::operator()(Iterator const &iter)
+{
+	return hash(iter);
+}
 
 inline Token Hasher::operator()(Node const *node)
 {

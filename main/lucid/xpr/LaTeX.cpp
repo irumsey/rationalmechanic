@@ -118,13 +118,9 @@ void LaTeX::evaluateOperation(std::string const &label, UnaryOperation const *op
 void LaTeX::evaluateOperation(std::string const &label, BinaryOperation const *oper)
 {
 	result += "(";
-
 	oper->lhs->apply(this);
-	
 	result += label;
-
 	oper->rhs->apply(this);
-	
 	result += ")";
 }
 

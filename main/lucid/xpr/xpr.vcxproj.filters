@@ -15,6 +15,7 @@
     <ClInclude Include="Hasher.h" />
     <ClInclude Include="LaTeX.h" />
     <ClInclude Include="xpr.h" />
+    <ClInclude Include="Action.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Clone.cpp" />
@@ -26,5 +27,6 @@
     <ClCompile Include="Iterator.cpp" />
     <ClCompile Include="Hasher.cpp" />
     <ClCompile Include="LaTeX.cpp" />
+    <ClCompile Include="Action.cpp" />
   </ItemGroup>
 </Project>

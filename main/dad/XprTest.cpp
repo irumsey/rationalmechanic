@@ -4,9 +4,8 @@
 #include <lucid/gal/Pipeline.h>
 #include <lucid/gal/Types.h>
 #include <lucid/core/Profiler.h>
-#include <memory>
 
-namespace xpr = ::lucid::xpr;
+using namespace ::lucid::xpr;
 
 ///
 ///
@@ -29,15 +28,24 @@ bool XprTest::update(float64_t t, float64_t dt)
 {
 	_passed = true;
 
-	xpr::Simplify simplify;
-	xpr::Repr repr;
+	Simplify simplify;
+    Registry symbols;
+    LaTeX format;
+	Repr repr;
 
-	std::unique_ptr<xpr::Node const> function(
-		xpr::div(xpr::pow(xpr::var(0),xpr::val(1)), xpr::var(0))
-	);
-	std::unique_ptr<xpr::Node const> simplified(simplify(function.get()));
+    symbols.add("x", 2.0);
+    symbols.add("y", 1.0);
 
-	std::string const &repred = repr(simplified.get());
+	Node const *_1 = div(pow(var(0),val(3)), var(0));
+	Node const *_2 = simplify(_1);
+    Node const *_3 = sub(add(var(0), var(1)), add(val(1), var(1)));
+
+	std::string const &repred = repr(_3);
+    std::string const &formatted = format(_3, symbols);
+
+    delete _3;
+	delete _2;
+	delete _1;
 
 	return true;
 }

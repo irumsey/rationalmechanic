@@ -1,11 +1,15 @@
 #include "Simplify.h"
-#include "Hasher.h"
 #include "Clone.h"
 #include "Iterator.h"
+#include "Action.h"
 #include "Node.h"
 #include <cassert>
 
 LUCID_XPR_BEGIN
+
+///
+///
+///
 
 Token const ANY	= Token(             size_t(-1));
 Token const NEG = Token(TYPE<     Negate>::ID());
@@ -27,323 +31,157 @@ Token VAR( uint64_t index) { return Token(TYPE<Variable>::ID(), index); }
 ///
 ///
 
-bool are_identical(Node const *lhs, Node const *rhs)
+Simplify::Simplify()
 {
-	thread_local static Hasher hash;
+	addRule(Rule( { NEG, VAL(0),         },  action::zero));
+	addRule(Rule( { NEG,    NEG,    ANY, }, action::collapse_identity));
 
-	Iterator lhsIter = lhs;
-	Iterator rhsIter = rhs;
+	addRule(Rule( { ADD,    ANY, VAL(0), },   action::select_lhs));
+	addRule(Rule( { ADD, VAL(0),    ANY, },   action::select_rhs));
 
-	while ((nullptr != lhsIter) && (nullptr != rhsIter))
+	addRule(Rule( { SUB,    ANY, VAL(0), },   action::select_lhs));
+	addRule(Rule( { SUB, VAL(0),    ANY, },  action::negate_rhs));
+	addRule(Rule( { SUB,    ANY,    ANY, },   action::sub_cancel));
+
+	addRule(Rule( { MUL,    ANY, VAL(0), },  action::zero));
+	addRule(Rule( { MUL, VAL(0),    ANY, },  action::zero));
+	addRule(Rule( { MUL,    ANY, VAL(1), },   action::select_lhs));
+	addRule(Rule( { MUL, VAL(1),    ANY, },   action::select_rhs));
+
+	addRule(Rule( { DIV,    ANY,    ANY, }, action::div_cancel));
+	addRule(Rule( { DIV, VAL(0),    ANY, },  action::zero));
+	addRule(Rule( { DIV,    ANY, VAL(1), },   action::select_lhs));
+
+	addRule(Rule( { EXP,    LOG,    ANY, }, action::collapse_identity));
+	addRule(Rule( { LOG,    EXP,    ANY, }, action::collapse_identity));
+
+	addRule(Rule( { POW,    ANY, VAL(0), },  action::one));
+	addRule(Rule( { POW,    ANY, VAL(1), },  action::select_lhs));
+
+	addRule(Rule( { DIV,    POW,    ANY,    ANY,    ANY, }, action::div_pow_cancel)); 
+
+	addRule(Rule( { NEG,  VAL(),         },  action::compute_neg));
+	addRule(Rule( { SIN,  VAL(),         },  action::compute_sin));
+	addRule(Rule( { COS,  VAL(),         },  action::compute_cos));
+	addRule(Rule( { EXP,  VAL(),         },  action::compute_exp));
+	addRule(Rule( { LOG,  VAL(),         },  action::compute_log));
+	addRule(Rule( { ADD,  VAL(),  VAL(), },  action::compute_add));
+	addRule(Rule( { SUB,  VAL(),  VAL(), },  action::compute_sub));
+	addRule(Rule( { MUL,  VAL(),  VAL(), },  action::compute_mul));
+	addRule(Rule( { DIV,  VAL(),  VAL(), },  action::compute_div));
+}								
+
+Node const *Simplify::operator()(Node const *node, size_t passes)
+{
+	Node const *result = simplify(node); 
+	for (size_t pass = 1; pass < passes; ++pass)
 	{
-		if (hash(lhsIter.ptr()) != hash(rhsIter.ptr()))
-			return false;
-		++lhsIter;
-		++rhsIter;
+		Node const *tmp = simplify(result);
+		delete result;
+
+		result = tmp;
 	}
-
-	return ((nullptr == lhsIter) && (nullptr == rhsIter));
+	return result;
 }
 
-bool are_not_identical(Node const *lhs, Node const *rhs)
+void Simplify::evaluate(Constant const *node)
 {
-	return !are_identical(lhs, rhs);
+	simplified = copy(node);
 }
 
-Node const *copy(Node const *node)
+void Simplify::evaluate(Variable const *node)
+{
+	simplified = copy(node);
+}
+
+void Simplify::evaluate(Negate const *node)
+{
+	Node const *rhs = simplify(node->rhs);
+
+	simplified = applyRules(neg(rhs));
+}
+
+void Simplify::evaluate(Add const *node)
+{
+	Node const *lhs = simplify(node->lhs);
+	Node const *rhs = simplify(node->rhs);
+
+	simplified = applyRules(add(lhs, rhs));
+}
+
+void Simplify::evaluate(Subtract const *node)
+{
+	Node const *lhs = simplify(node->lhs);
+	Node const *rhs = simplify(node->rhs);
+
+	simplified = applyRules(sub(lhs, rhs));
+}
+
+void Simplify::evaluate(Multiply const *node)
+{
+	Node const *lhs = simplify(node->lhs);
+	Node const *rhs = simplify(node->rhs);
+
+	simplified = applyRules(mul(lhs, rhs));
+}
+
+void Simplify::evaluate(Divide const *node)
+{
+	Node const *lhs = simplify(node->lhs);
+	Node const *rhs = simplify(node->rhs);
+
+	simplified = applyRules(div(lhs, rhs));
+}
+
+void Simplify::evaluate(Sine const *node)
+{
+	Node const *rhs = simplify(node->rhs);
+
+	simplified = applyRules(sin(rhs));
+}
+
+void Simplify::evaluate(Cosine const *node)
+{
+	Node const *rhs = simplify(node->rhs);
+
+	simplified = applyRules(cos(rhs));
+}
+
+void Simplify::evaluate(Exponential const *node)
+{
+	Node const *rhs = simplify(node->rhs);
+
+	simplified = applyRules(exp(rhs));
+}
+
+void Simplify::evaluate(Logarithm const *node)
+{
+	Node const *rhs = simplify(node->rhs);
+
+	simplified = applyRules(log(rhs));
+}
+
+void Simplify::evaluate(Power const *node)
+{
+	Node const *lhs = simplify(node->lhs);
+	Node const *rhs = simplify(node->rhs);
+
+	simplified = applyRules(pow(lhs, rhs));
+}
+
+Node const *Simplify::copy(Node const *node)
 {
 	thread_local static Clone clone;
 	return clone(node);
 }
 
-float64_t value(Node const *node)
+Node const *Simplify::simplify(Node const *node)
 {
-	return reinterpret_cast<Constant const *>(node)->value;
-}
-
-uint64_t index(Node const *node)
-{
-	return reinterpret_cast<Variable const *>(node)->index;
-}
-
-template<typename T> T const *rhs_as(UnaryOperation const *node)
-{
-	return reinterpret_cast<T const *>(node->rhs);
-}
-
-template<typename T> T const *lhs_as(BinaryOperation const *node)
-{
-	return reinterpret_cast<T const *>(node->lhs);
-}
-
-template<typename T> T const *rhs_as(BinaryOperation const *node)
-{
-	return reinterpret_cast<T const *>(node->rhs);
-}
-
-Node const *set_to_zero(UnaryOperation const *node)
-{
-	delete node;
-	return val(0);
-}
-
-Node const *set_to_zero(BinaryOperation const *node)
-{
-	delete node;
-	return val(0);
-}
-
-Node const *set_to_one(BinaryOperation const *node)
-{
-	delete node;
-	return val(1);
-}
-
-Node const *select_lhs(BinaryOperation const *node)
-{
-	Node const *copied = copy(node->lhs);
-	delete node;
-
-	return copied;
-}
-
-Node const *select_rhs(BinaryOperation const *node)
-{
-	Node const *copied = copy(node->rhs);
-	delete node;
-
-	return copied;
-}
-
-Node const *negate_rhs(BinaryOperation const *node)
-{
-	Node const *copied = copy(node->rhs);
-	delete node;
-
-	return neg(copied);
-}
-
-Node const *compute_neg(UnaryOperation const *node)
-{
-	float64_t result = -value(node->rhs);
-	delete node;
-
-	return val(result);
-}
-
-Node const *compute_add(BinaryOperation const *node)
-{
-	float64_t result = value(node->lhs) + value(node->rhs);
-	delete node;
-
-	return val(result);
-}
-
-Node const *compute_sub(BinaryOperation const *node)
-{
-	float64_t result = value(node->lhs) - value(node->rhs);
-	delete node;
-
-	return val(result);
-}
-
-Node const *compute_mul(BinaryOperation const *node)
-{
-	float64_t result = value(node->lhs) * value(node->rhs);
-	delete node;
-
-	return val(result);
-}
-
-Node const *compute_div(BinaryOperation const *node)
-{
-	float64_t result = value(node->lhs) / value(node->rhs);
-	delete node;
-
-	return val(result);
-}
-
-Node const *compute_sin(UnaryOperation const *node)
-{
-	float64_t result = ::sin(value(node->rhs));
-	delete node;
-
-	return val(result);
-}
-
-Node const *compute_cos(UnaryOperation const *node)
-{
-	float64_t result = ::cos(value(node->rhs));
-	delete node;
-
-	return val(result);
-}
-
-Node const *compute_exp(UnaryOperation const *node)
-{
-	float64_t result = ::exp(value(node->rhs));
-	delete node;
-
-	return val(result);
-}
-
-Node const *compute_log(UnaryOperation const *node)
-{
-	float64_t result = ::log(value(node->rhs));
-	delete node;
-
-	return val(result);
-}
-
-Node const *collapse_identity(UnaryOperation const *node)
-{
-	Node const *copied = copy(rhs_as<Node>(rhs_as<UnaryOperation>(node)));
-	delete node;
-
-	return copied;
-}
-
-Node const *cancel_terms(BinaryOperation const *node)
-{
-	if (are_not_identical(node->lhs, node->rhs))
-		return node;
-	delete node;
-
-	return val(1);
-}
-
-Node const *cancel_power_terms(BinaryOperation const *node)
-{
-	Node const *x = lhs_as<Node>(lhs_as<BinaryOperation>(node));
-	Node const *y = rhs_as<Node>(node);
-
-	if (are_not_identical(x, y))
-		return node;
-
-	Node const *n = rhs_as<Node>(lhs_as<BinaryOperation>(node));
-	Node const *canceled = pow(copy(x), sub(copy(n), val(1)));
-	delete node;
-
-	return canceled;
-}
-
-///
-///
-///
-
-Simplify::Simplify()
-{
-	typedef Rule< UnaryOperation>  unary_rule_t;
-	typedef Rule<BinaryOperation> binary_rule_t;
-
-	addRule( unaryRules,  unary_rule_t( { NEG, VAL(0),         },  set_to_zero));
-	addRule( unaryRules,  unary_rule_t( { NEG,    NEG,    ANY, }, collapse_identity));
-
-	addRule(binaryRules, binary_rule_t( { ADD,    ANY, VAL(0), },   select_lhs));
-	addRule(binaryRules, binary_rule_t( { ADD, VAL(0),    ANY, },   select_rhs));
-
-	addRule(binaryRules, binary_rule_t( { SUB,    ANY, VAL(0), },   select_lhs));
-	addRule(binaryRules, binary_rule_t( { SUB, VAL(0),    ANY, },   negate_rhs));
-
-	addRule(binaryRules, binary_rule_t( { MUL,    ANY, VAL(0), },  set_to_zero));
-	addRule(binaryRules, binary_rule_t( { MUL, VAL(0),    ANY, },  set_to_zero));
-	addRule(binaryRules, binary_rule_t( { MUL,    ANY, VAL(1), },   select_lhs));
-	addRule(binaryRules, binary_rule_t( { MUL, VAL(1),    ANY, },   select_rhs));
-
-	addRule(binaryRules, binary_rule_t( { DIV,    ANY,    ANY, }, cancel_terms));
-	addRule(binaryRules, binary_rule_t( { DIV, VAL(0),    ANY, },  set_to_zero));
-	addRule(binaryRules, binary_rule_t( { DIV,    ANY, VAL(1), },   select_lhs));
-
-	addRule( unaryRules,  unary_rule_t( { EXP,    LOG,    ANY, }, collapse_identity));
-	addRule( unaryRules,  unary_rule_t( { LOG,    EXP,    ANY, }, collapse_identity));
-
-	addRule(binaryRules, binary_rule_t( { POW,    ANY, VAL(0), },  set_to_one));
-	addRule(binaryRules, binary_rule_t( { POW,    ANY, VAL(1), },  select_lhs));
-
-	addRule(binaryRules, binary_rule_t( { DIV,    POW,    ANY,    ANY,    ANY, }, cancel_power_terms)); 
-
-	addRule( unaryRules,  unary_rule_t( { NEG,  VAL(),         },  compute_neg));
-	addRule( unaryRules,  unary_rule_t( { SIN,  VAL(),         },  compute_sin));
-	addRule( unaryRules,  unary_rule_t( { COS,  VAL(),         },  compute_cos));
-	addRule( unaryRules,  unary_rule_t( { EXP,  VAL(),         },  compute_exp));
-	addRule( unaryRules,  unary_rule_t( { LOG,  VAL(),         },  compute_log));
-	addRule(binaryRules, binary_rule_t( { ADD,  VAL(),  VAL(), },  compute_add));
-	addRule(binaryRules, binary_rule_t( { SUB,  VAL(),  VAL(), },  compute_sub));
-	addRule(binaryRules, binary_rule_t( { MUL,  VAL(),  VAL(), },  compute_mul));
-	addRule(binaryRules, binary_rule_t( { DIV,  VAL(),  VAL(), },  compute_div));
-}			
-
-Node const *Simplify::operator()(Node const *node)
-{
-	simplified = node;
-	simplified->apply(this);
-	simplified->apply(this);
+	node->apply(this);
 	return simplified;
 }
 
-void Simplify::evaluate(Constant const *node)
-{
-	thread_local static Clone clone;
-	simplified = clone(node);
-}
-
-void Simplify::evaluate(Variable const *node)
-{
-	thread_local static Clone clone;
-	simplified = clone(node);
-}
-
-void Simplify::evaluate(Negate const *node)
-{
-	simplified = apply(unaryRules, neg(rhs(node)));
-}
-
-void Simplify::evaluate(Add const *node)
-{
-	simplified = apply(binaryRules, add(lhs(node), rhs(node)));
-}
-
-void Simplify::evaluate(Subtract const *node)
-{
-	simplified = apply(binaryRules, sub(lhs(node), rhs(node)));
-}
-
-void Simplify::evaluate(Multiply const *node)
-{
-	simplified = apply(binaryRules, mul(lhs(node), rhs(node)));
-}
-
-void Simplify::evaluate(Divide const *node)
-{
-	simplified = apply(binaryRules, div(lhs(node), rhs(node)));
-}
-
-void Simplify::evaluate(Sine const *node)
-{
-	simplified = apply(unaryRules, sin(rhs(node)));
-}
-
-void Simplify::evaluate(Cosine const *node)
-{
-	simplified = apply(unaryRules, cos(rhs(node)));
-}
-
-void Simplify::evaluate(Exponential const *node)
-{
-	simplified = apply(unaryRules, exp(rhs(node)));
-}
-
-void Simplify::evaluate(Logarithm const *node)
-{
-	simplified = apply(unaryRules, log(rhs(node)));
-}
-
-void Simplify::evaluate(Power const *node)
-{
-	simplified = apply(binaryRules, pow(lhs(node), rhs(node)));
-}
-
-bool Simplify::matches(Pattern const &pattern, Node const *node)
+bool Simplify::matches(std::vector<Token> const &pattern, Node const *node) const
 {
 	thread_local static Hasher hash;
 
@@ -369,6 +207,24 @@ bool Simplify::matches(Pattern const &pattern, Node const *node)
 	}
 
 	return ((pattern.end() == lhs) && (nullptr == rhs));
+}
+
+void Simplify::addRule(Rule const &rule)
+{
+	rules.push_back(rule);
+}
+
+Node const *Simplify::applyRules(Node const *node)
+{
+	simplified = node;
+
+	for (Rule const &rule : rules)
+	{
+		if (matches(rule.pattern, simplified))
+			simplified = rule.action(node);
+	}
+
+	return simplified;
 }
 
 LUCID_XPR_END

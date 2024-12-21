@@ -5,13 +5,12 @@
 #include <lucid/core/Types.h>
 #include <lucid/xpr/Defines.h>
 #include <lucid/xpr/Algorithm.h>
+#include <lucid/xpr/Hasher.h>
 #include <lucid/xpr/Rule.h>
 
 LUCID_XPR_BEGIN
 
 class Node;
-class UnaryOperation;
-class BinaryOperation;
 
 ///	Simplify
 ///
@@ -33,7 +32,7 @@ public:
 
 	virtual ~Simplify() = default;
 
-	Node const *operator()(Node const *node);
+	Node const *operator()(Node const *node, size_t passes = 2);
 
 	virtual void evaluate(Constant const *node) override;
 
@@ -60,53 +59,21 @@ public:
 	virtual void evaluate(Power const *node) override;
 
 public:
-	std::vector<Rule<UnaryOperation> > unaryRules;
-	std::vector<Rule<BinaryOperation> > binaryRules;
-
+	std::vector<Rule> rules;
 	Node const *simplified = nullptr;
 
-	template<typename T> void addRule(std::vector<T> &rules, T const &rule);
+	Node const *copy(Node const *node);
 
-	bool matches(Pattern const &pattern, Node const *ndoe);
+	Node const *simplify(Node const *node);
 
-	template<typename T> Node const *apply(std::vector<Rule<T> > const &rules, T const *node);
+	bool matches(std::vector<Token> const &pattern, Node const *node) const;
 
-	template<typename T> Node const *lhs(T const *node);
+	void addRule(Rule const &rule);
 
-	template<typename T> Node const *rhs(T const *node);
+	Node const *applyRules(Node const *node);
 
 	LUCID_PREVENT_COPY(Simplify);
 	LUCID_PREVENT_ASSIGNMENT(Simplify);
 };
-
-template<typename T> inline void Simplify::addRule(std::vector<T> &rules, T const &rule)
-{
-	rules.push_back(rule);
-}
-
-template<typename T> inline Node const *Simplify::apply(std::vector<Rule<T> > const &rules, T const *node)
-{
-	simplified = node;
-
-	for (Rule<T> const &rule : rules)
-	{
-		if (matches(rule.pattern, simplified))
-			simplified = rule.action(node);
-	}
-
-	return simplified;
-}
-
-template<typename T> inline Node const *Simplify::lhs(T const *node)
-{
-	node->lhs->apply(this);
-	return simplified;
-}
-
-template<typename T> inline Node const *Simplify::rhs(T const *node)
-{
-	node->rhs->apply(this);
-	return simplified;
-}
 
 LUCID_XPR_END

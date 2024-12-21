@@ -2,6 +2,7 @@
 
 #include <lucid/xpr/Defines.h>
 #include <lucid/xpr/Hasher.h>
+#include <lucid/xpr/Action.h>
 
 LUCID_XPR_BEGIN
 
@@ -10,19 +11,16 @@ class Node;
 ///	Rule
 ///
 /// 
-template<typename T> struct Rule final
+struct Rule final
 {
-	typedef Node const *(*Action)(T const *);
-	static Node const *nop(T const *node) { return node; };
-
-	Pattern pattern;
-	Action action = nop;
+	std::vector<Token> pattern;
+	action_type action = action::nop;
 
 	Rule() = delete;
 
 	Rule(Rule const &) = default;
 
-	Rule(Pattern const &pattern, Action action)
+	Rule(std::vector<Token> const &pattern, action_type action)
 		: pattern(pattern)
 		, action(action)
 	{

@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Action.h" />
     <ClInclude Include="Algorithm.h" />
     <ClInclude Include="Clone.h" />
     <ClInclude Include="Defines.h" />
@@ -35,6 +36,7 @@
     <ClInclude Include="xpr.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Action.cpp" />
     <ClCompile Include="Clone.cpp" />
     <ClCompile Include="Differentiate.cpp" />
     <ClCompile Include="Evaluate.cpp" />

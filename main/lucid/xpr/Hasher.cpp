@@ -1,7 +1,13 @@
 #include "Hasher.h"
+#include "Iterator.h"
 #include "Node.h"
 
 LUCID_XPR_BEGIN
+
+Token Hasher::hash(Iterator const &iter)
+{
+	return hash(iter.ptr());
+}
 
 Token Hasher::hash(Node const *node)
 {
