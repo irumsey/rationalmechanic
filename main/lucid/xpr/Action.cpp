@@ -10,6 +10,8 @@ LUCID_XPR_BEGIN
 namespace action
 {
 
+	typedef BinaryOperation const *(*binary_func_t)(Node const *, Node const *);
+
 	/// 
 	/// utility methods
 	/// 
@@ -77,6 +79,22 @@ namespace action
 		return cast<BinaryOperation>(node)->rhs;
 	}
 
+	Node const *swap(binary_func_t func, Node const *node)
+	{
+		Node const *x = copy(lhs(node));
+		Node const *y = copy(rhs(node));
+		delete node;
+
+		return func(y, x);
+	}
+
+	Node const *sort(binary_func_t func, Node const *node)
+	{
+		if (index(rhs(node)) < index(lhs(node)))
+			return swap(func, node);
+		return node;
+	}
+
 	/// 
 	/// the actions
 	/// 
@@ -130,6 +148,36 @@ namespace action
 		return neg(copied);
 	}
 
+	Node const *swap_add_args(Node const *node)
+	{
+		return swap(add, node);
+	}
+
+	Node const *sort_add_args(Node const *node)
+	{
+		return sort(add, node);
+	}
+
+	Node const *swap_mul_args(Node const *node)
+	{
+		return swap(mul, node);
+	}
+
+	Node const *sort_mul_args(Node const *node)
+	{
+		return sort(mul, node);
+	}
+
+	Node const *inv_and_mul(Node const *node)
+	{
+		Node const *x = copy(lhs(node));
+		Node const *y = copy(lhs(rhs(node)));
+		Node const *z = copy(rhs(rhs(node)));
+		delete node;
+
+		return mul(x, div(z, y));
+	}
+
 	Node const *factor_terms(Node const *node)
 	{
 		if (not_equal(lhs(node), rhs(node)))
@@ -166,6 +214,16 @@ namespace action
 		return val(result);
 	}
 
+	Node const *collapse_addition(Node const *node)
+	{
+		Node const *x = copy (lhs(lhs(node)));
+		float64_t   a = value(rhs(lhs(node)));
+		float64_t   b = value(rhs(node));
+		delete node;
+
+		return add(x, val(a + b));
+	}
+
 	Node const *compute_sub(Node const *node)
 	{
 		float64_t result = value(lhs(node)) - value(rhs(node));
@@ -180,6 +238,34 @@ namespace action
 		delete node;
 
 		return val(result);
+	}
+
+	Node const *mul_combine_const(Node const *node)
+	{
+		float64_t k = value(lhs(lhs(node))) * value(rhs(node));
+		Node const *D = copy(rhs(lhs(node)));
+		delete node;
+
+		return div(val(k), D);
+	}
+
+	Node const *div_combine_const(Node const *node)
+	{
+		float64_t k = value(rhs(lhs(node))) / value(rhs(node));
+		Node const *x = copy(lhs(lhs(node)));
+		delete node;
+
+		return mul(x, val(k));
+	}
+
+	Node const *collapse_multiplication(Node const *node)
+	{
+		Node const *x = copy (lhs(lhs(node)));
+		float64_t   a = value(rhs(lhs(node)));
+		float64_t   b = value(rhs(node));
+		delete node;
+
+		return mul(x, val(a * b));
 	}
 
 	Node const *compute_div(Node const *node)

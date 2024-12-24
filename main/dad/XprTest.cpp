@@ -28,20 +28,21 @@ bool XprTest::update(float64_t t, float64_t dt)
 {
 	_passed = true;
 
+	Differentiate differentiate;
 	Simplify simplify;
     Registry symbols;
     LaTeX format;
-	Repr repr;
 
     symbols.add("x", 2.0);
     symbols.add("y", 1.0);
 
-	Node const *_1 = add(sin(var(0)), sin(var(0)));
-	Node const *_2 = simplify(_1);
+	Node const *_1 = mul(val(3), div(val(2), var(1)));
+	Node const *_2 = differentiate(_1, symbols.index_of("x"));
+	Node const *_3 = simplify(_1);
 
-	std::string const &repred = repr(_1);
-    std::string const &formatted = format(_2, symbols);
-
+    std::string const &formatted = format(_3, symbols);
+	 
+	delete _3;
 	delete _2;
 	delete _1;
 

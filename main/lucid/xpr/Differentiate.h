@@ -22,7 +22,7 @@ public:
 
 	virtual ~Differentiate() = default;
 
-	Node const *operator()(Node const *node, uint32_t index);
+	Node const *operator()(Node const *node, uint64_t index);
 
 	virtual void evaluate(Constant const *node) override;
 
@@ -51,7 +51,7 @@ public:
 private:
 	Clone clone;
 
-	uint32_t index = -1;
+	uint64_t index = -1;
 	Node const *result = nullptr;
 
 	template<class T> Node const *u(T const *node);

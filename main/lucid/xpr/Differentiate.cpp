@@ -3,7 +3,7 @@
 
 LUCID_XPR_BEGIN
 
-Node const *Differentiate::operator()(Node const *node, uint32_t wrt)
+Node const *Differentiate::operator()(Node const *node, uint64_t wrt)
 {
 	index = wrt;
 	node->apply(this);

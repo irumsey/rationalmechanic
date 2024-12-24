@@ -26,7 +26,7 @@ std::string const &LaTeX::format(Node const *node, Registry const &registry)
 
 	result += "\\[";
 	node->apply(this);
-	result += "}\\]";
+	result += "\\]";
 
 	return result;
 }

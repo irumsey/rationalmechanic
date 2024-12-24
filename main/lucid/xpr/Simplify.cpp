@@ -35,11 +35,31 @@ Token VAR( uint64_t index) { return Token(TYPE<Variable>::ID(), index); }
 
 Simplify::Simplify()
 {
+	///
+	/// for the following, order matters.  for example: moving constants
+	/// to the right, when possible, means following rules only need to
+	/// test for right hand constants.
+	/// 
+
+	///
+	///	traversal of the tree is left node first, therefore, move constants
+	/// to the right. this accomplishes two things:
+	///		first, differs computation allowing for constants to accumulate.
+	///		second, reduces the total number of rules.
+	/// 
+	addRule(Rule( { ADD,  VAL(),    ANY, }, action::    swap_add_args));
+	addRule(Rule( { MUL,  VAL(),    ANY, }, action::    swap_mul_args));
+
+	///
+	///	sort variables in an attempt to accumulate like terms.
+	/// 
+	addRule(Rule( { ADD,  VAR(),  VAR(), }, action::    sort_add_args));
+	addRule(Rule( { MUL,  VAR(),  VAR(), }, action::    sort_mul_args));
+
 	addRule(Rule( { NEG, VAL(0),         }, action::             zero));
 	addRule(Rule( { NEG,    NEG,    ANY, }, action::collapse_identity));
 
 	addRule(Rule( { ADD,    ANY, VAL(0), }, action::       select_lhs));
-	addRule(Rule( { ADD, VAL(0),    ANY, }, action::       select_rhs));
 	addRule(Rule( { ADD,    ANY,    ANY, }, action::     factor_terms));
 
 	addRule(Rule( { SUB,    ANY, VAL(0), }, action::       select_lhs));
@@ -47,13 +67,13 @@ Simplify::Simplify()
 	addRule(Rule( { SUB,    ANY,    ANY, }, action::       sub_cancel));
 
 	addRule(Rule( { MUL,    ANY, VAL(0), }, action::             zero));
-	addRule(Rule( { MUL, VAL(0),    ANY, }, action::             zero));
 	addRule(Rule( { MUL,    ANY, VAL(1), }, action::       select_lhs));
-	addRule(Rule( { MUL, VAL(1),    ANY, }, action::       select_rhs));
 
 	addRule(Rule( { DIV,    ANY,    ANY, }, action::       div_cancel));
 	addRule(Rule( { DIV, VAL(0),    ANY, }, action::             zero));
 	addRule(Rule( { DIV,    ANY, VAL(1), }, action::       select_lhs));
+
+	addRule(Rule( { DIV,    ANY,    DIV,    ANY,    ANY, }, action::inv_and_mul));
 
 	addRule(Rule( { EXP,    LOG,    ANY, }, action::collapse_identity));
 	addRule(Rule( { LOG,    EXP,    ANY, }, action::collapse_identity));
@@ -62,6 +82,12 @@ Simplify::Simplify()
 	addRule(Rule( { POW,    ANY, VAL(1), }, action::       select_lhs));
 
 	addRule(Rule( { DIV,    POW,    ANY,    ANY,    ANY, }, action::div_pow_cancel)); 
+
+	///
+	///	lastly, compute everthing containing constants (if possible).
+	/// 
+	addRule(Rule( { MUL,    DIV,  VAL(),    ANY,  VAL(), }, action::mul_combine_const));
+	addRule(Rule( { DIV,    MUL,    ANY,  VAL(),  VAL(), }, action::div_combine_const));
 
 	addRule(Rule( { NEG,  VAL(),         }, action::      compute_neg));
 	addRule(Rule( { SIN,  VAL(),         }, action::      compute_sin));
@@ -72,6 +98,10 @@ Simplify::Simplify()
 	addRule(Rule( { SUB,  VAL(),  VAL(), }, action::      compute_sub));
 	addRule(Rule( { MUL,  VAL(),  VAL(), }, action::      compute_mul));
 	addRule(Rule( { DIV,  VAL(),  VAL(), }, action::      compute_div));
+
+	/// the ANYs should not be a constant (since it would have been computed above).
+	addRule(Rule( { ADD,    ADD,    ANY,  VAL(),  VAL(), }, action::collapse_addition));
+	addRule(Rule( { MUL,    MUL,    ANY,  VAL(),  VAL(), }, action::collapse_multiplication));
 }								
 
 Node const *Simplify::operator()(Node const *node, size_t passes)
@@ -81,7 +111,6 @@ Node const *Simplify::operator()(Node const *node, size_t passes)
 	{
 		Node const *tmp = simplify(result);
 		delete result;
-
 		result = tmp;
 	}
 	return result;

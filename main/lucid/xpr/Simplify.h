@@ -88,7 +88,7 @@ inline Node const *Simplify::applyRules(Node const *node)
 	for (Rule const &rule : rules)
 	{
 		if (matches(rule.pattern, simplified))
-			simplified = rule.action(node);
+			simplified = rule.action(simplified);
 	}
 
 	return simplified;

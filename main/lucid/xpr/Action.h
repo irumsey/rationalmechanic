@@ -27,6 +27,16 @@ namespace action
 
 	Node const *negate_rhs(Node const *node);
 
+	Node const *swap_add_args(Node const *node);
+
+	Node const *sort_add_args(Node const *node);
+
+	Node const *swap_mul_args(Node const *node);
+
+	Node const *sort_mul_args(Node const *node);
+
+	Node const *inv_and_mul(Node const *node);
+
 	Node const *factor_terms(Node const *node);
 
 	Node const *sub_cancel(Node const *node);
@@ -35,9 +45,17 @@ namespace action
 
 	Node const *compute_add(Node const *node);
 
+	Node const *collapse_addition(Node const *node);
+
 	Node const *compute_sub(Node const *node);
 
 	Node const *compute_mul(Node const *node);
+
+	Node const *mul_combine_const(Node const *node);
+
+	Node const *div_combine_const(Node const *node);
+
+	Node const *collapse_multiplication(Node const *node);
 
 	Node const *compute_div(Node const *node);
 
