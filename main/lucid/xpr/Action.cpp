@@ -200,7 +200,7 @@ namespace action
 
 	Node const *compute_neg(Node const *node)
 	{
-		float64_t result = -value(rhs(node));
+		float64_t result = -value(arg(node));
 		delete node;
 
 		return val(result);
