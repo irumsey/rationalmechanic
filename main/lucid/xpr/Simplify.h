@@ -10,6 +10,7 @@
 
 LUCID_XPR_BEGIN
 
+class Registry;
 class Node;
 
 ///	Simplify
@@ -25,6 +26,11 @@ class Node;
 ///		a + b -> c  (constant + constant -> constant)
 ///		etc...
 ///
+/// note: if a symbol registry is supplied, the simplification
+///       operation also includes variable substitution.
+/// note: if a symbol registry is supplied, all variables must
+///       have a value assigned.  user defined functions remain
+///       in symbolic form.
 class Simplify : public Algorithm
 {
 public:
@@ -34,9 +40,15 @@ public:
 
 	Node const *operator()(Node const *node, size_t passes = 2);
 
+	Node const *operator()(Node const *node, Registry const &registry, size_t passes = 2);
+
 	virtual void evaluate(Constant const *node) override;
 
 	virtual void evaluate(Variable const *node) override;
+
+	virtual void evaluate(Function const *node) override;
+
+	virtual void evaluate(Derivative const *node) override;
 
 	virtual void evaluate(Negate const *node) override;
 
@@ -59,10 +71,14 @@ public:
 	virtual void evaluate(Power const *node) override;
 
 public:
+	Registry const *symbols = nullptr;
+
 	std::vector<Rule> rules;
 	Node const *simplified = nullptr;
 
 	Node const *copy(Node const *node);
+
+	Node const *simplify(Node const *node, Registry const *registry, size_t passes);
 
 	Node const *simplify(Node const *node);
 

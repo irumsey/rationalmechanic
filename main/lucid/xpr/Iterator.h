@@ -46,6 +46,10 @@ public:
 
 	virtual void evaluate(Variable const *node) override;
 
+	virtual void evaluate(Function const *node) override;
+
+	virtual void evaluate(Derivative const *node) override;
+
 	virtual void evaluate(Negate const *node) override;
 
 	virtual void evaluate(Add const *node) override;
@@ -141,6 +145,16 @@ inline void Iterator::evaluate(Constant const *node)
 inline void Iterator::evaluate(Variable const *node)
 {
 	evaluate_leaf(node);
+}
+
+inline void Iterator::evaluate(Function const *node)
+{
+	evaluate_leaf(node);
+}
+
+inline void Iterator::evaluate(Derivative const *node)
+{
+	evaluateOperation(node);
 }
 
 inline void Iterator::evaluate(Negate const *node)

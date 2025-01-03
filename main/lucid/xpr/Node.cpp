@@ -44,6 +44,22 @@ void Variable::apply(Algorithm *algorithm) const
 ///
 ///
 
+Function::Function(uint64_t index, Signature const &signature)
+	: index(index)
+	, signature(signature)
+{
+	assert(0 != signature.size());
+}
+
+void Function::apply(Algorithm *algorithm) const
+{
+	algorithm->evaluate(this);
+}
+
+///
+///
+///
+
 UnaryOperation::UnaryOperation(Node const *rhs)
 	: rhs(rhs)
 {
@@ -76,8 +92,23 @@ BinaryOperation::~BinaryOperation()
 ///
 ///
 
-Negate::Negate(Node const *rhs)
-	: UnaryOperation(rhs)
+Derivative::Derivative(Node const *arg, uint64_t index)
+	: UnaryOperation(arg)
+	, index(index)
+{
+}
+
+void Derivative::apply(Algorithm *algorithm) const
+{
+	algorithm->evaluate(this);
+}
+
+///
+///
+///
+
+Negate::Negate(Node const *arg)
+	: UnaryOperation(arg)
 {
 }
 
@@ -146,8 +177,8 @@ void Divide::apply(Algorithm *algorithm) const
 ///
 ///
 
-Sine::Sine(Node const *rhs)
-	: UnaryOperation(rhs)
+Sine::Sine(Node const *arg)
+	: UnaryOperation(arg)
 {
 }
 
@@ -160,8 +191,8 @@ void Sine::apply(Algorithm *algorithm) const
 ///
 ///
 
-Cosine::Cosine(Node const *rhs)
-	: UnaryOperation(rhs)
+Cosine::Cosine(Node const *arg)
+	: UnaryOperation(arg)
 {
 }
 
@@ -174,8 +205,8 @@ void Cosine::apply(Algorithm *algorithm) const
 ///
 ///
 
-Exponential::Exponential(Node const *rhs)
-	: UnaryOperation(rhs)
+Exponential::Exponential(Node const *arg)
+	: UnaryOperation(arg)
 {
 }
 
@@ -188,8 +219,8 @@ void Exponential::apply(Algorithm *algorithm) const
 ///
 ///
 
-Logarithm::Logarithm(Node const *rhs)
-	: UnaryOperation(rhs)
+Logarithm::Logarithm(Node const *arg)
+	: UnaryOperation(arg)
 {
 }
 

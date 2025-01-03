@@ -28,6 +28,10 @@ public:
 
 	virtual void evaluate(Variable const *node) override;
 
+	virtual void evaluate(Function const *node) override;
+
+	virtual void evaluate(Derivative const *node) override;
+
 	virtual void evaluate(Negate const *node) override;
 
 	virtual void evaluate(Add const *node) override;
@@ -54,33 +58,33 @@ private:
 	uint64_t index = -1;
 	Node const *result = nullptr;
 
-	template<class T> Node const *u(T const *node);
+	template<typename T> Node const *u(T const *node);
 
-	template<class T> Node const *du(T const *node);
+	template<typename T> Node const *du(T const *node);
 
-	template<class T> Node const *v(T const *node);
+	template<typename T> Node const *v(T const *node);
 
-	template<class T> Node const *dv(T const *node);
+	template<typename T> Node const *dv(T const *node);
 
 };
 
-template<class T> inline Node const *Differentiate::u(T const *node)
+template<typename T> inline Node const *Differentiate::u(T const *node)
 {
 	return clone(node->lhs);
 }
 
-template<class T> inline Node const *Differentiate::du(T const *node)
+template<typename T> inline Node const *Differentiate::du(T const *node)
 {
 	node->lhs->apply(this);
 	return result;
 }
 
-template<class T> inline Node const *Differentiate::v(T const *node)
+template<typename T> inline Node const *Differentiate::v(T const *node)
 {
 	return clone(node->rhs);
 }
 
-template<class T> inline Node const *Differentiate::dv(T const *node)
+template<typename T> inline Node const *Differentiate::dv(T const *node)
 {
 	node->rhs->apply(this);
 	return result;

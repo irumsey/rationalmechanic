@@ -20,6 +20,16 @@ void Differentiate::evaluate(Variable const *node)
 	result = (index == node->index) ? val(1.0) : val(0.0);
 }
 
+void Differentiate::evaluate(Function const *node)
+{
+	result = ddx(clone(node), index);
+}
+
+void Differentiate::evaluate(Derivative const *node)
+{
+	result = ddx(clone(node), index);
+}
+
 void Differentiate::evaluate(Negate const *node)
 {
 	result = neg(dv(node));

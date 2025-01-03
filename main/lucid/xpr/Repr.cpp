@@ -40,6 +40,24 @@ void Repr::evaluate(Variable const *node)
 	result += stream.str();
 }
 
+void Repr::evaluate(Function const *node)
+{
+	std::ostringstream stream;
+
+	stream << "Fn[" << node->index << "](";
+	for (auto const i : node->signature) { stream << i << ","; }
+
+	result += stream.str();
+	result.back() = ')';
+}
+
+void Repr::evaluate(Derivative const *node)
+{
+	std::ostringstream stream;
+	stream << "D_" << node->index;
+	evaluateOperation(stream.str(), node);
+}
+
 void Repr::evaluate(Negate const *node)
 {
 	evaluateOperation("neg", node);

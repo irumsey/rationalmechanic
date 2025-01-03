@@ -240,7 +240,7 @@ namespace action
 		return val(result);
 	}
 
-	Node const *mul_combine_const(Node const *node)
+	Node const *mul_combine_1(Node const *node)
 	{
 		float64_t k = value(lhs(lhs(node))) * value(rhs(node));
 		Node const *D = copy(rhs(lhs(node)));
@@ -249,9 +249,18 @@ namespace action
 		return div(val(k), D);
 	}
 
-	Node const *div_combine_const(Node const *node)
+	Node const *div_combine_1(Node const *node)
 	{
 		float64_t k = value(rhs(lhs(node))) / value(rhs(node));
+		Node const *x = copy(lhs(lhs(node)));
+		delete node;
+
+		return mul(x, val(k));
+	}
+
+	Node const *div_combine_2(Node const *node)
+	{
+		float64_t k = value(rhs(node)) / value(rhs(lhs(node)));
 		Node const *x = copy(lhs(lhs(node)));
 		delete node;
 
@@ -307,6 +316,16 @@ namespace action
 	{
 		float64_t      x = value(arg(node));
 		float64_t result = ::log(x);
+		delete node;
+
+		return val(result);
+	}
+
+	Node const *compute_pow(Node const *node)
+	{
+		float64_t      x = value(lhs(node));
+		float64_t      y = value(rhs(node));
+		float64_t result = ::pow(x, y);
 		delete node;
 
 		return val(result);

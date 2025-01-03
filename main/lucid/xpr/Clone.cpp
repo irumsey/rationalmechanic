@@ -19,6 +19,16 @@ void Clone::evaluate(Variable const *node)
 	result = var(node->index);
 }
 
+void Clone::evaluate(Function const *node)
+{
+	result = fn(node->index, node->signature);
+}
+
+void Clone::evaluate(Derivative const *node)
+{
+	result = ddx(rhs(node), node->index);
+}
+
 void Clone::evaluate(Negate const *node)
 {
 	result = neg(rhs(node));

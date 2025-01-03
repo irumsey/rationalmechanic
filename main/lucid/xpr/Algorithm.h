@@ -6,6 +6,8 @@ LUCID_XPR_BEGIN
 
 class Constant;
 class Variable;
+class Function;
+class Derivative;
 class Negate;
 class Sine;
 class Cosine;
@@ -36,6 +38,10 @@ public:
 	virtual void evaluate(Constant const *node) = 0;
 
 	virtual void evaluate(Variable const *node) = 0;
+
+	virtual void evaluate(Function const *node) = 0;
+
+	virtual void evaluate(Derivative const *node) = 0;
 
 	virtual void evaluate(Negate const *node) = 0;
 

@@ -24,7 +24,6 @@
     <ClInclude Include="Clone.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="Differentiate.h" />
-    <ClInclude Include="Evaluate.h" />
     <ClInclude Include="Hasher.h" />
     <ClInclude Include="Iterator.h" />
     <ClInclude Include="LaTeX.h" />
@@ -39,7 +38,6 @@
     <ClCompile Include="Action.cpp" />
     <ClCompile Include="Clone.cpp" />
     <ClCompile Include="Differentiate.cpp" />
-    <ClCompile Include="Evaluate.cpp" />
     <ClCompile Include="Hasher.cpp" />
     <ClCompile Include="Iterator.cpp" />
     <ClCompile Include="LaTeX.cpp" />

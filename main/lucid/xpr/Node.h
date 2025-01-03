@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include <lucid/core/Noncopyable.h>
 #include <lucid/core/Types.h>
 #include <lucid/xpr/Defines.h>
@@ -85,6 +86,32 @@ inline Node const *var(uint64_t index)
 	return new Variable(index);
 }
 
+///	Function
+///
+///
+class Function : public Node
+{
+public:
+	typedef std::vector<uint64_t> Signature;
+
+	uint64_t index = -1;
+	Signature signature;
+
+	Function(uint64_t index, Signature const &signature);
+
+	virtual ~Function() = default;
+
+	virtual void apply(Algorithm *algorithm) const override;
+
+	LUCID_PREVENT_COPY(Function);
+	LUCID_PREVENT_ASSIGNMENT(Function);
+};
+
+inline Node const *fn(uint64_t index, Function::Signature const &signature)
+{
+	return new Function(index, signature);
+}
+
 ///	UnaryOperation
 ///
 ///	"function" with one input (ie an operation with one child).
@@ -119,6 +146,29 @@ protected:
 	LUCID_PREVENT_COPY(BinaryOperation);
 	LUCID_PREVENT_ASSIGNMENT(BinaryOperation);
 };
+
+///	Derivative
+///
+///
+class Derivative : public UnaryOperation
+{
+public:
+	uint64_t index = -1;
+
+	Derivative(Node const *rhs, uint64_t index);
+
+	virtual ~Derivative() = default;
+
+	virtual void apply(Algorithm *algorithm) const override;
+
+	LUCID_PREVENT_COPY(Derivative);
+	LUCID_PREVENT_ASSIGNMENT(Derivative);
+};
+
+inline Node const *ddx(Node const *rhs, uint64_t index)
+{
+	return new Derivative(rhs, index);
+}
 
 ///	Negate
 ///

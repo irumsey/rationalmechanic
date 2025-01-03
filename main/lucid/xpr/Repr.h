@@ -41,6 +41,10 @@ public:
 
 	virtual void evaluate(Variable const *node) override;
 
+	virtual void evaluate(Function const *node) override;
+
+	virtual void evaluate(Derivative const *node) override;
+
 	virtual void evaluate(Negate const *node) override;
 
 	virtual void evaluate(Add const *node) override;

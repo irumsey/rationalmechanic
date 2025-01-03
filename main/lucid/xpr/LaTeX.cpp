@@ -45,6 +45,24 @@ void LaTeX::evaluate(Variable const *node)
 	result += stream.str();
 }
 
+void LaTeX::evaluate(Function const *node)
+{
+	std::ostringstream stream;
+
+	stream << "\\operatorname{" << symbols->symbol_for(node->index) << "}(";
+	for (auto const i : node->signature) { stream << symbols->symbol_for(i) << ","; }
+
+	result += stream.str();
+	result.back() = ')';
+}
+
+void LaTeX::evaluate(Derivative const *node)
+{
+	std::ostringstream stream;
+	stream << "\\frac{d}{d" << symbols->symbol_for(node->index) << "}";
+	evaluateOperation(stream.str(), node);
+}
+
 void LaTeX::evaluate(Negate const *node)
 {
 	evaluateOperation("-", node);

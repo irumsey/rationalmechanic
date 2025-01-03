@@ -23,6 +23,10 @@ public:
 
 	virtual void evaluate(Variable const *node) override;
 
+	virtual void evaluate(Function const *node) override;
+
+	virtual void evaluate(Derivative const *node) override;
+
 	virtual void evaluate(Negate const *node) override;
 
 	virtual void evaluate(Add const *node) override;
@@ -46,9 +50,9 @@ public:
 private:
 	Node const *result = nullptr;
 
-	template<class T> Node const *lhs(T const *node);
+	template<typename T> Node const *lhs(T const *node);
 
-	template<class T> Node const *rhs(T const *node);
+	template<typename T> Node const *rhs(T const *node);
 
 };
 

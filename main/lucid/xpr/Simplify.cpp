@@ -3,6 +3,7 @@
 #include "Iterator.h"
 #include "Action.h"
 #include "Node.h"
+#include "Registry.h"
 #include <cassert>
 
 LUCID_XPR_BEGIN
@@ -86,8 +87,9 @@ Simplify::Simplify()
 	///
 	///	lastly, compute everthing containing constants (if possible).
 	/// 
-	addRule(Rule( { MUL,    DIV,  VAL(),    ANY,  VAL(), }, action::mul_combine_const));
-	addRule(Rule( { DIV,    MUL,    ANY,  VAL(),  VAL(), }, action::div_combine_const));
+	addRule(Rule( { MUL,    DIV,  VAL(),    ANY,  VAL(), }, action::mul_combine_1));
+	addRule(Rule( { DIV,    MUL,    ANY,  VAL(),  VAL(), }, action::div_combine_1));
+	addRule(Rule( { MUL,    DIV,    ANY,  VAL(),  VAL(), }, action::div_combine_2));
 
 	addRule(Rule( { NEG,  VAL(),         }, action::      compute_neg));
 	addRule(Rule( { SIN,  VAL(),         }, action::      compute_sin));
@@ -98,6 +100,9 @@ Simplify::Simplify()
 	addRule(Rule( { SUB,  VAL(),  VAL(), }, action::      compute_sub));
 	addRule(Rule( { MUL,  VAL(),  VAL(), }, action::      compute_mul));
 	addRule(Rule( { DIV,  VAL(),  VAL(), }, action::      compute_div));
+	addRule(Rule( { EXP,  VAL(),         }, action::      compute_exp));
+	addRule(Rule( { LOG,  VAL(),         }, action::      compute_log));
+	addRule(Rule( { POW,  VAL(),  VAL(), }, action::      compute_pow));
 
 	/// the ANYs should not be a constant (since it would have been computed above).
 	addRule(Rule( { ADD,    ADD,    ANY,  VAL(),  VAL(), }, action::collapse_addition));
@@ -106,14 +111,12 @@ Simplify::Simplify()
 
 Node const *Simplify::operator()(Node const *node, size_t passes)
 {
-	Node const *result = simplify(node); 
-	for (size_t pass = 1; pass < passes; ++pass)
-	{
-		Node const *tmp = simplify(result);
-		delete result;
-		result = tmp;
-	}
-	return result;
+	return simplify(node, nullptr, passes);
+}
+
+Node const *Simplify::operator()(Node const *node, Registry const &registry, size_t passes)
+{
+	return simplify(node, &registry, passes);
 }
 
 void Simplify::evaluate(Constant const *node)
@@ -122,6 +125,16 @@ void Simplify::evaluate(Constant const *node)
 }
 
 void Simplify::evaluate(Variable const *node)
+{
+	simplified = (nullptr != symbols) ? val(symbols->value_of(node->index)) : copy(node);
+}
+
+void Simplify::evaluate(Function const *node)
+{
+	simplified = copy(node);
+}
+
+void Simplify::evaluate(Derivative const *node)
 {
 	simplified = copy(node);
 }
@@ -205,6 +218,23 @@ Node const *Simplify::copy(Node const *node)
 {
 	thread_local static Clone clone;
 	return clone(node);
+}
+
+Node const *Simplify::simplify(Node const *node, Registry const *registry, size_t passes)
+{
+	symbols = registry;
+
+	Node const *result = simplify(node); 
+	for (size_t pass = 1; pass < passes; ++pass)
+	{
+		Node const *tmp = simplify(result);
+		delete result;
+		result = tmp;
+	}
+	
+	symbols = nullptr;
+
+	return result;
 }
 
 Node const *Simplify::simplify(Node const *node)

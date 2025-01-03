@@ -296,7 +296,7 @@
           "radius": 6.37101e06
         },
         "render": {
-          "show orbit": false,
+          "show orbit": true,
           "show icon": false,
           "model": [ "content/_399/earth.mesh", "content/atmosphere.mesh" ],
           "icon": {
@@ -380,8 +380,8 @@
           "radius": 1.737530e06
         },
         "render": {
-          "show orbit": false,
-          "show icon": false,
+          "show orbit": true,
+          "show icon": true,
           "model": [ "content/_301/moon.mesh" ],
           "icon": {
             "mesh": "content/stdIcons.mesh",
@@ -426,7 +426,7 @@
           "radius": 3.38992e06
         },
         "render": {
-          "show orbit": false,
+          "show orbit": true,
           "show icon": false,
           "model": [ "content/_499/mars.mesh", "content/atmosphere.mesh" ],
           "icon": {
@@ -1059,8 +1059,8 @@
           "radius": 4.17
         },
         "render": {
-          "show orbit": false,
-          "show icon": false,
+          "show orbit": true,
+          "show icon": true,
           "model": [ "content/cuboid.mesh" ],
           "icon": {
             "mesh": "content/stdIcons.mesh",

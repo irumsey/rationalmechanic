@@ -28,6 +28,18 @@ void Hasher::evaluate(Variable const *node)
 	token.index = node->index;
 }
 
+void Hasher::evaluate(Function const *node)
+{
+	token.tid = TYPE<Function>::ID();
+	token.index = node->index;
+}
+
+void Hasher::evaluate(Derivative const *node)
+{
+	token.tid = TYPE<Derivative>::ID();
+	token.index = node->index;
+}
+
 void Hasher::evaluate(Negate const *node)
 {
 	token.tid = TYPE<Negate>::ID();

@@ -5,7 +5,6 @@
 #include <lucid/xpr/Node.h>
 #include <lucid/xpr/Registry.h>
 #include <lucid/xpr/Clone.h>
-#include <lucid/xpr/Evaluate.h>
 #include <lucid/xpr/Differentiate.h>
 #include <lucid/xpr/Simplify.h>
 #include <lucid/xpr/Repr.h>

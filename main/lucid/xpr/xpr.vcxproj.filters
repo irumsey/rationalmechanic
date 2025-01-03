@@ -4,7 +4,6 @@
     <ClInclude Include="Algorithm.h" />
     <ClInclude Include="Clone.h" />
     <ClInclude Include="Differentiate.h" />
-    <ClInclude Include="Evaluate.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="Repr.h" />
     <ClInclude Include="Simplify.h" />
@@ -20,7 +19,6 @@
   <ItemGroup>
     <ClCompile Include="Clone.cpp" />
     <ClCompile Include="Differentiate.cpp" />
-    <ClCompile Include="Evaluate.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="Repr.cpp" />
     <ClCompile Include="Simplify.cpp" />

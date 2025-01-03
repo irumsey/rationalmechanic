@@ -51,9 +51,11 @@ namespace action
 
 	Node const *compute_mul(Node const *node);
 
-	Node const *mul_combine_const(Node const *node);
+	Node const *mul_combine_1(Node const *node);
 
-	Node const *div_combine_const(Node const *node);
+	Node const *div_combine_1(Node const *node);
+
+	Node const *div_combine_2(Node const *node);
 
 	Node const *collapse_multiplication(Node const *node);
 
@@ -66,6 +68,8 @@ namespace action
 	Node const *compute_exp(Node const *node);
 
 	Node const *compute_log(Node const *node);
+
+	Node const *compute_pow(Node const *node);
 
 	Node const *collapse_identity(Node const *node);
 
