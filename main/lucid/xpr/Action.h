@@ -12,7 +12,9 @@ typedef Node const *(*action_type)(Node const *);
 /// Actions
 /// 
 /// Note: actions to perform when a particular condition
-/// is met.  
+/// is met.
+/// 
+/// See: Rule, Simplify, LaTex
 namespace action
 {
 

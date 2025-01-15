@@ -54,7 +54,7 @@ void Repr::evaluate(Function const *node)
 void Repr::evaluate(Derivative const *node)
 {
 	std::ostringstream stream;
-	stream << "dd" << node->index;
+	stream << "dd[" << node->index << "]";
 	evaluateOperation(stream.str(), node);
 }
 

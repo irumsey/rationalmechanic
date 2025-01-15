@@ -74,8 +74,6 @@ public:
 	std::vector<Rule> rules;
 	Node const *simplified = nullptr;
 
-	Node const *copy(Node const *node);
-
 	Node const *simplify(Node const *node, Registry const *registry, size_t passes);
 
 	Node const *simplify(Node const *node);
