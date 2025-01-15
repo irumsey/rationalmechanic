@@ -44,7 +44,7 @@ void Repr::evaluate(Function const *node)
 {
 	std::ostringstream stream;
 
-	stream << "Fn[" << node->index << "](";
+	stream << "fn[" << node->index << "](";
 	for (auto const i : node->signature) { stream << i << ","; }
 
 	result += stream.str();
@@ -54,7 +54,7 @@ void Repr::evaluate(Function const *node)
 void Repr::evaluate(Derivative const *node)
 {
 	std::ostringstream stream;
-	stream << "D_" << node->index;
+	stream << "dd" << node->index;
 	evaluateOperation(stream.str(), node);
 }
 
@@ -101,11 +101,6 @@ void Repr::evaluate(Exponential const *node)
 void Repr::evaluate(Logarithm const *node)
 {
 	evaluateOperation("log", node);
-}
-
-void Repr::evaluate(Power const *node)
-{
-	evaluateOperation("pow", node);
 }
 
 void Repr::evaluateOperation(std::string const &label, UnaryOperation const *oper)

@@ -359,49 +359,24 @@ inline UnaryOperation const *log(Node const *rhs)
 	return new Logarithm(rhs);
 }
 
-///
-///
-/// 
-class Power : public BinaryOperation
-{
-public:
-	Power(Node const *lhs, Node const *rhs);
-
-	virtual ~Power() = default;
-
-	virtual void apply(Algorithm *algorithm) const override;
-
-	LUCID_PREVENT_COPY(Power);
-	LUCID_PREVENT_ASSIGNMENT(Power);
-};
-
-inline BinaryOperation const *pow(Node const *lhs, Node const *rhs)
-{
-	return new Power(lhs, rhs);
-}
-
 /// 
 ///	derived
 /// 
+/// Note: some of the following may seem strange.  the function may
+/// take, say, one argument but return a binary operation.  this is
+/// because of what the function results in, not how many arguments
+/// it takes.  for example, tan(theta) results in a binary operation
+/// of division (ie sine(theta) / cosine(theta)).
+/// 
 
-inline BinaryOperation const *tan(Node const *rhs)
-{
-	return div(sin(rhs), cos(rhs));
-}
+UnaryOperation const *pow(Node const *lhs, Node const *rhs);
 
-inline BinaryOperation const *csc(Node const *rhs)
-{
-	return div(val(1.0), sin(rhs));
-}
+BinaryOperation const *tan(Node const *arg);
 
-inline BinaryOperation const *sec(Node const *rhs)
-{
-	return div(val(1.0), cos(rhs));
-}
+BinaryOperation const *csc(Node const *arg);
 
-inline BinaryOperation const *cot(Node const *rhs)
-{
-	return div(cos(rhs), sin(rhs));
-}
+BinaryOperation const *sec(Node const *arg);
+
+BinaryOperation const *cot(Node const *arg);
 
 LUCID_XPR_END

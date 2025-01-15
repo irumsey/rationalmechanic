@@ -63,8 +63,6 @@ public:
 
 	virtual void evaluate(Logarithm const *node) override;
 
-	virtual void evaluate(Power const *node) override;
-
 private:
 	std::string result;
 

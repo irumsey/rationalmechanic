@@ -9,10 +9,13 @@ class Node;
 typedef Node const *(*action_type)(Node const *);
 
 /// 
+/// Actions
 /// 
-/// 
+/// Note: actions to perform when a particular condition
+/// is met.  
 namespace action
 {
+
 	Node const *nop(Node const *node);
 
 	Node const *zero(Node const *node);

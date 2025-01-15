@@ -45,8 +45,6 @@ public:
 
 	virtual void evaluate(Logarithm const *node) override;
 
-	virtual void evaluate(Power const *node) override;
-
 private:
 	Node const *result = nullptr;
 
@@ -66,6 +64,12 @@ template<class T> inline Node const *Clone::rhs(T const *node)
 {
 	node->rhs->apply(this);
 	return result;
+}
+
+inline Node const *clone(Node const *node)
+{
+	thread_local static Clone deepCopy;
+	return deepCopy(node);
 }
 
 LUCID_XPR_END

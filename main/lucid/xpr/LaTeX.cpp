@@ -111,16 +111,7 @@ void LaTeX::evaluate(Exponential const *node)
 
 void LaTeX::evaluate(Logarithm const *node)
 {
-	evaluateOperation("ln", node);
-}
-
-void LaTeX::evaluate(Power const *node)
-{
-	result += "{";
-	node->lhs->apply(this);
-	result += "}^{";
-	node->rhs->apply(this);
-	result += "}";
+	evaluateOperation("\\ln", node);
 }
 
 void LaTeX::evaluateOperation(std::string const &label, UnaryOperation const *oper)

@@ -85,9 +85,4 @@ void Hasher::evaluate(Logarithm const *node)
 	token.tid = TYPE<Logarithm>::ID();
 }
 
-void Hasher::evaluate(Power const *node)
-{
-	token.tid = TYPE<Power>::ID();
-}
-
 LUCID_XPR_END

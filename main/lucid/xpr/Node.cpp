@@ -1,4 +1,5 @@
 #include "Node.h"
+#include "Clone.h"
 #include "Algorithm.h"
 #include <cassert>
 
@@ -231,16 +232,35 @@ void Logarithm::apply(Algorithm *algorithm) const
 
 ///
 ///
-///
+/// 
 
-Power::Power(Node const *lhs, Node const *rhs)
-	: BinaryOperation(lhs, rhs)
+UnaryOperation const *pow(Node const *lhs, Node const *rhs)
 {
+	return exp(mul(rhs, log(lhs)));
 }
 
-void Power::apply(Algorithm *algorithm) const
+BinaryOperation const *tan(Node const *arg)
 {
-	algorithm->evaluate(this);
+	/// Note: making one clone of arg to avoid
+	/// it from having two parents.
+	return div(sin(arg), cos(clone(arg)));
+}
+
+BinaryOperation const *csc(Node const *arg)
+{
+	return div(val(1.0), sin(arg));
+}
+
+BinaryOperation const *sec(Node const *arg)
+{
+	return div(val(1.0), cos(arg));
+}
+
+BinaryOperation const *cot(Node const *arg)
+{
+	/// Note: making one clone of arg to avoid
+	/// it from having two parents.
+	return div(cos(arg), sin(clone(arg)));
 }
 
 LUCID_XPR_END

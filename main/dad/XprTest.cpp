@@ -37,9 +37,9 @@ bool XprTest::update(float64_t t, float64_t dt)
     symbols.add("y", 1.0);
 	symbols.add("g");
 
-	Node const *_1 = mul(val(3), div(fn(2, { 0, 1, }), var(symbols.index_of("x"))));
+	Node const *_1 = pow(var(symbols.index_of("x")), var(symbols.index_of("y")));
 	Node const *_2 = differentiate(_1, symbols.index_of("x"));
-	Node const *_3 = simplify(_2, symbols);
+	Node const *_3 = simplify(_2);
 
     std::string const &formatted = format(_3, symbols);
 	 

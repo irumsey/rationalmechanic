@@ -74,9 +74,4 @@ void Clone::evaluate(Logarithm const *node)
 	result = log(rhs(node));
 }
 
-void Clone::evaluate(Power const *node)
-{
-	result = pow(lhs(node), rhs(node));
-}
-
 LUCID_XPR_END

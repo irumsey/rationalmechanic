@@ -68,8 +68,6 @@ public:
 
 	virtual void evaluate(Logarithm const *node) override;
 
-	virtual void evaluate(Power const *node) override;
-
 	void skip();
 
 	bool equ(Node const *node) const;
@@ -198,11 +196,6 @@ inline void Iterator::evaluate(Exponential const *node)
 }
 
 inline void Iterator::evaluate(Logarithm const *node)
-{
-	evaluateOperation(node);
-}
-
-inline void Iterator::evaluate(Power const *node)
 {
 	evaluateOperation(node);
 }

@@ -22,7 +22,6 @@ Token const SIN = Token(TYPE<       Sine>::ID());
 Token const COS = Token(TYPE<     Cosine>::ID());
 Token const EXP = Token(TYPE<Exponential>::ID());
 Token const LOG = Token(TYPE<  Logarithm>::ID());
-Token const POW = Token(TYPE<      Power>::ID());
 
 Token VAL()                { return Token(TYPE<Constant>::ID()       ); }
 Token VAL(float64_t value) { return Token(TYPE<Constant>::ID(), value); }
@@ -79,11 +78,6 @@ Simplify::Simplify()
 	addRule(Rule( { EXP,    LOG,    ANY, }, action::collapse_identity));
 	addRule(Rule( { LOG,    EXP,    ANY, }, action::collapse_identity));
 
-	addRule(Rule( { POW,    ANY, VAL(0), }, action::              one));
-	addRule(Rule( { POW,    ANY, VAL(1), }, action::       select_lhs));
-
-	addRule(Rule( { DIV,    POW,    ANY,    ANY,    ANY, }, action::div_pow_cancel)); 
-
 	///
 	///	lastly, compute everthing containing constants (if possible).
 	/// 
@@ -102,7 +96,6 @@ Simplify::Simplify()
 	addRule(Rule( { DIV,  VAL(),  VAL(), }, action::      compute_div));
 	addRule(Rule( { EXP,  VAL(),         }, action::      compute_exp));
 	addRule(Rule( { LOG,  VAL(),         }, action::      compute_log));
-	addRule(Rule( { POW,  VAL(),  VAL(), }, action::      compute_pow));
 
 	/// the ANYs should not be a constant (since it would have been computed above).
 	addRule(Rule( { ADD,    ADD,    ANY,  VAL(),  VAL(), }, action::collapse_addition));
@@ -121,22 +114,22 @@ Node const *Simplify::operator()(Node const *node, Registry const &registry, siz
 
 void Simplify::evaluate(Constant const *node)
 {
-	simplified = copy(node);
+	simplified = clone(node);
 }
 
 void Simplify::evaluate(Variable const *node)
 {
-	simplified = (nullptr != symbols) ? val(symbols->value_of(node->index)) : copy(node);
+	simplified = (nullptr != symbols) ? val(symbols->value_of(node->index)) : clone(node);
 }
 
 void Simplify::evaluate(Function const *node)
 {
-	simplified = copy(node);
+	simplified = clone(node);
 }
 
 void Simplify::evaluate(Derivative const *node)
 {
-	simplified = copy(node);
+	simplified = clone(node);
 }
 
 void Simplify::evaluate(Negate const *node)
@@ -204,20 +197,6 @@ void Simplify::evaluate(Logarithm const *node)
 	Node const *rhs = simplify(node->rhs);
 
 	simplified = applyRules(log(rhs));
-}
-
-void Simplify::evaluate(Power const *node)
-{
-	Node const *lhs = simplify(node->lhs);
-	Node const *rhs = simplify(node->rhs);
-
-	simplified = applyRules(pow(lhs, rhs));
-}
-
-Node const *Simplify::copy(Node const *node)
-{
-	thread_local static Clone clone;
-	return clone(node);
 }
 
 Node const *Simplify::simplify(Node const *node, Registry const *registry, size_t passes)

@@ -68,8 +68,6 @@ public:
 
 	virtual void evaluate(Logarithm const *node) override;
 
-	virtual void evaluate(Power const *node) override;
-
 public:
 	Registry const *symbols = nullptr;
 

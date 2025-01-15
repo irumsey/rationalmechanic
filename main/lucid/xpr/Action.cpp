@@ -43,12 +43,6 @@ namespace action
 		return ((nullptr == lhsIter) && (nullptr == rhsIter));
 	}
 
-	Node const *copy(Node const *node)
-	{
-		thread_local static Clone clone;
-		return clone(node);
-	}
-
 	bool not_equal(Node const *lhs, Node const *rhs)
 	{
 		return !equal(lhs, rhs);
@@ -81,8 +75,8 @@ namespace action
 
 	Node const *swap(binary_func_t func, Node const *node)
 	{
-		Node const *x = copy(lhs(node));
-		Node const *y = copy(rhs(node));
+		Node const *x = clone(lhs(node));
+		Node const *y = clone(rhs(node));
 		delete node;
 
 		return func(y, x);
@@ -118,7 +112,7 @@ namespace action
 
 	Node const *select_arg(Node const *node)
 	{
-		Node const *copied = copy(arg(node));
+		Node const *copied = clone(arg(node));
 		delete node;
 
 		return copied;
@@ -126,7 +120,7 @@ namespace action
 
 	Node const *select_lhs(Node const *node)
 	{
-		Node const *copied = copy(lhs(node));
+		Node const *copied = clone(lhs(node));
 		delete node;
 
 		return copied;
@@ -134,7 +128,7 @@ namespace action
 
 	Node const *select_rhs(Node const *node)
 	{
-		Node const *copied = copy(rhs(node));
+		Node const *copied = clone(rhs(node));
 		delete node;
 
 		return copied;
@@ -142,7 +136,7 @@ namespace action
 
 	Node const *negate_rhs(Node const *node)
 	{
-		Node const *copied = copy(rhs(node));
+		Node const *copied = clone(rhs(node));
 		delete node;
 
 		return neg(copied);
@@ -170,9 +164,9 @@ namespace action
 
 	Node const *inv_and_mul(Node const *node)
 	{
-		Node const *x = copy(lhs(node));
-		Node const *y = copy(lhs(rhs(node)));
-		Node const *z = copy(rhs(rhs(node)));
+		Node const *x = clone(lhs(node));
+		Node const *y = clone(lhs(rhs(node)));
+		Node const *z = clone(rhs(rhs(node)));
 		delete node;
 
 		return mul(x, div(z, y));
@@ -183,7 +177,7 @@ namespace action
 		if (not_equal(lhs(node), rhs(node)))
 			return node;
 
-		Node const *result = mul(val(2), copy(lhs(node)));
+		Node const *result = mul(val(2), clone(lhs(node)));
 		delete node;
 
 		return result;
@@ -216,7 +210,7 @@ namespace action
 
 	Node const *collapse_addition(Node const *node)
 	{
-		Node const *x = copy (lhs(lhs(node)));
+		Node const *x = clone (lhs(lhs(node)));
 		float64_t   a = value(rhs(lhs(node)));
 		float64_t   b = value(rhs(node));
 		delete node;
@@ -243,7 +237,7 @@ namespace action
 	Node const *mul_combine_1(Node const *node)
 	{
 		float64_t k = value(lhs(lhs(node))) * value(rhs(node));
-		Node const *D = copy(rhs(lhs(node)));
+		Node const *D = clone(rhs(lhs(node)));
 		delete node;
 
 		return div(val(k), D);
@@ -252,7 +246,7 @@ namespace action
 	Node const *div_combine_1(Node const *node)
 	{
 		float64_t k = value(rhs(lhs(node))) / value(rhs(node));
-		Node const *x = copy(lhs(lhs(node)));
+		Node const *x = clone(lhs(lhs(node)));
 		delete node;
 
 		return mul(x, val(k));
@@ -261,7 +255,7 @@ namespace action
 	Node const *div_combine_2(Node const *node)
 	{
 		float64_t k = value(rhs(node)) / value(rhs(lhs(node)));
-		Node const *x = copy(lhs(lhs(node)));
+		Node const *x = clone(lhs(lhs(node)));
 		delete node;
 
 		return mul(x, val(k));
@@ -269,7 +263,7 @@ namespace action
 
 	Node const *collapse_multiplication(Node const *node)
 	{
-		Node const *x = copy (lhs(lhs(node)));
+		Node const *x = clone (lhs(lhs(node)));
 		float64_t   a = value(rhs(lhs(node)));
 		float64_t   b = value(rhs(node));
 		delete node;
@@ -333,7 +327,7 @@ namespace action
 
 	Node const *collapse_identity(Node const *node)
 	{
-		Node const *copied = copy(arg(arg(node)));
+		Node const *copied = clone(arg(arg(node)));
 		delete node;
 
 		return copied;
@@ -357,7 +351,7 @@ namespace action
 			return node;
 
 		Node const *e = rhs(lhs(node));
-		Node const *canceled = pow(copy(x), sub(copy(e), val(1)));
+		Node const *canceled = pow(clone(x), sub(clone(e), val(1)));
 		delete node;
 
 		return canceled;
