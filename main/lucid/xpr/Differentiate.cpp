@@ -22,12 +22,12 @@ void Differentiate::evaluate(Variable const *node)
 
 void Differentiate::evaluate(Function const *node)
 {
-	result = ddx(clone(node), index);
+	result = ddx(_clone(node), index);
 }
 
 void Differentiate::evaluate(Derivative const *node)
 {
-	result = ddx(clone(node), index);
+	result = ddx(_clone(node), index);
 }
 
 void Differentiate::evaluate(Negate const *node)
@@ -67,7 +67,7 @@ void Differentiate::evaluate(Cosine const *node)
 
 void Differentiate::evaluate(Exponential const *node)
 {
-	result = mul(clone(node), dv(node)); 
+	result = mul(_clone(node), dv(node)); 
 }
 
 void Differentiate::evaluate(Logarithm const *node)

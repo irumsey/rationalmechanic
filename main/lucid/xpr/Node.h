@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <vector>
 #include <lucid/core/Noncopyable.h>
 #include <lucid/core/Types.h>
@@ -369,7 +370,7 @@ inline UnaryOperation const *log(Node const *rhs)
 /// of division (ie sine(theta) / cosine(theta)).
 /// 
 
-UnaryOperation const *pow(Node const *lhs, Node const *rhs);
+UnaryOperation  const *pow(Node const *lhs, Node const *rhs);
 
 BinaryOperation const *tan(Node const *arg);
 
@@ -378,5 +379,49 @@ BinaryOperation const *csc(Node const *arg);
 BinaryOperation const *sec(Node const *arg);
 
 BinaryOperation const *cot(Node const *arg);
+
+/// 
+///
+/// 
+
+template<typename T> inline T const *_cast(Node const *node)
+{
+	T const *result = reinterpret_cast<T const *>(node);
+	assert(nullptr != result);
+	return result;
+}
+
+bool _equal(Node const *lhs, Node const *rhs);
+
+inline float64_t _value(Node const *node)
+{
+	return _cast<Constant>(node)->value;
+}
+
+inline uint64_t _index(Node const *node)
+{
+	return _cast<Variable>(node)->index;
+}
+
+inline Node const *_arg(Node const *node)
+{
+	return _cast<UnaryOperation>(node)->rhs;
+}
+
+inline Node const *_lhs(Node const *node)
+{
+	return _cast<BinaryOperation>(node)->lhs;
+}
+
+inline Node const *_rhs(Node const *node)
+{
+	return _cast<BinaryOperation>(node)->rhs;
+}
+
+typedef BinaryOperation const *(*binary_func_t)(Node const *, Node const *);
+
+Node const *_swap(binary_func_t func, Node const *node);
+
+Node const *_sort(binary_func_t func, Node const *node);
 
 LUCID_XPR_END

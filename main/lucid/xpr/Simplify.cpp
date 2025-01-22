@@ -1,33 +1,15 @@
 #include "Simplify.h"
 #include "Clone.h"
 #include "Iterator.h"
-#include "Action.h"
 #include "Node.h"
 #include "Registry.h"
 #include <cassert>
 
+LUCID_ANONYMOUS_BEGIN
+
+LUCID_ANONYMOUS_END
+
 LUCID_XPR_BEGIN
-
-///
-///
-///
-
-Token const ANY	= Token(             size_t(-1));
-Token const NEG = Token(TYPE<     Negate>::ID());
-Token const ADD = Token(TYPE<        Add>::ID());
-Token const SUB	= Token(TYPE<   Subtract>::ID());
-Token const MUL = Token(TYPE<   Multiply>::ID());
-Token const DIV = Token(TYPE<     Divide>::ID());
-Token const SIN = Token(TYPE<       Sine>::ID());
-Token const COS = Token(TYPE<     Cosine>::ID());
-Token const EXP = Token(TYPE<Exponential>::ID());
-Token const LOG = Token(TYPE<  Logarithm>::ID());
-
-Token VAL()                { return Token(TYPE<Constant>::ID()       ); }
-Token VAL(float64_t value) { return Token(TYPE<Constant>::ID(), value); }
-
-Token VAR()                { return Token(TYPE<Variable>::ID()       ); }
-Token VAR( uint64_t index) { return Token(TYPE<Variable>::ID(), index); }
 
 ///
 ///
@@ -47,59 +29,62 @@ Simplify::Simplify()
 	///		first, differs computation allowing for constants to accumulate.
 	///		second, reduces the total number of rules.
 	/// 
-	addRule(Rule( { ADD,  VAL(),    ANY, }, action::    swap_add_args));
-	addRule(Rule( { MUL,  VAL(),    ANY, }, action::    swap_mul_args));
+	addRule(rule_t( { Token::ADD,  Token::VAL(),    Token::ANY, },     &Simplify::swap_add_args));
+	addRule(rule_t( { Token::MUL,  Token::VAL(),    Token::ANY, },     &Simplify::swap_mul_args));
 
 	///
 	///	sort variables in an attempt to accumulate like terms.
 	/// 
-	addRule(Rule( { ADD,  VAR(),  VAR(), }, action::    sort_add_args));
-	addRule(Rule( { MUL,  VAR(),  VAR(), }, action::    sort_mul_args));
+	addRule(rule_t( { Token::ADD,  Token::VAR(),  Token::VAR(), },     &Simplify::sort_add_args));
+	addRule(rule_t( { Token::MUL,  Token::VAR(),  Token::VAR(), },     &Simplify::sort_mul_args));
 
-	addRule(Rule( { NEG, VAL(0),         }, action::             zero));
-	addRule(Rule( { NEG,    NEG,    ANY, }, action::collapse_identity));
+	addRule(rule_t( { Token::NEG, Token::VAL(0),         },                     &Simplify::zero));
+	addRule(rule_t( { Token::NEG,    Token::NEG,    Token::ANY, }, &Simplify::collapse_identity));
 
-	addRule(Rule( { ADD,    ANY, VAL(0), }, action::       select_lhs));
-	addRule(Rule( { ADD,    ANY,    ANY, }, action::     factor_terms));
+	addRule(rule_t( { Token::ADD,    Token::ANY, Token::VAL(0), },        &Simplify::select_lhs));
+	addRule(rule_t( { Token::ADD,    Token::ANY,    Token::ANY, },      &Simplify::factor_terms));
 
-	addRule(Rule( { SUB,    ANY, VAL(0), }, action::       select_lhs));
-	addRule(Rule( { SUB, VAL(0),    ANY, }, action::       negate_rhs));
-	addRule(Rule( { SUB,    ANY,    ANY, }, action::       sub_cancel));
+	addRule(rule_t( { Token::SUB,    Token::ANY, Token::VAL(0), },        &Simplify::select_lhs));
+	addRule(rule_t( { Token::SUB, Token::VAL(0),    Token::ANY, },        &Simplify::negate_rhs));
+	addRule(rule_t( { Token::SUB,    Token::ANY,    Token::ANY, },        &Simplify::sub_cancel));
 
-	addRule(Rule( { MUL,    ANY, VAL(0), }, action::             zero));
-	addRule(Rule( { MUL,    ANY, VAL(1), }, action::       select_lhs));
+	addRule(rule_t( { Token::MUL,    Token::ANY, Token::VAL(0), },              &Simplify::zero));
+	addRule(rule_t( { Token::MUL,    Token::ANY, Token::VAL(1), },        &Simplify::select_lhs));
 
-	addRule(Rule( { DIV,    ANY,    ANY, }, action::       div_cancel));
-	addRule(Rule( { DIV, VAL(0),    ANY, }, action::             zero));
-	addRule(Rule( { DIV,    ANY, VAL(1), }, action::       select_lhs));
+	addRule(rule_t( { Token::DIV,    Token::ANY,    Token::ANY, },        &Simplify::div_cancel));
+	addRule(rule_t( { Token::DIV, Token::VAL(0),    Token::ANY, },              &Simplify::zero));
+	addRule(rule_t( { Token::DIV,    Token::ANY, Token::VAL(1), },        &Simplify::select_lhs));
 
-	addRule(Rule( { DIV,    ANY,    DIV,    ANY,    ANY, }, action::inv_and_mul));
+	addRule(rule_t( { Token::DIV,    Token::ANY,    Token::DIV,    Token::ANY,    Token::ANY, }, &Simplify::inv_and_mul));
 
-	addRule(Rule( { EXP,    LOG,    ANY, }, action::collapse_identity));
-	addRule(Rule( { LOG,    EXP,    ANY, }, action::collapse_identity));
+	addRule(rule_t( { Token::EXP,    Token::LOG,    Token::ANY, }, &Simplify::collapse_identity));
+	addRule(rule_t( { Token::LOG,    Token::EXP,    Token::ANY, }, &Simplify::collapse_identity));
+
+	addRule(rule_t( { Token::DDX,  Token::VAL(),                },              &Simplify::zero));
+	addRule(rule_t( { Token::DDX,  Token::   FN,                },      &Simplify::ddx_function));
 
 	///
 	///	lastly, compute everthing containing constants (if possible).
 	/// 
-	addRule(Rule( { MUL,    DIV,  VAL(),    ANY,  VAL(), }, action::mul_combine_1));
-	addRule(Rule( { DIV,    MUL,    ANY,  VAL(),  VAL(), }, action::div_combine_1));
-	addRule(Rule( { MUL,    DIV,    ANY,  VAL(),  VAL(), }, action::div_combine_2));
+	addRule(rule_t( { Token::MUL,    Token::DIV,  Token::VAL(),    Token::ANY,  Token::VAL(), }, &Simplify::mul_combine_1));
+	addRule(rule_t( { Token::DIV,    Token::MUL,    Token::ANY,  Token::VAL(),  Token::VAL(), }, &Simplify::div_combine_1));
+	addRule(rule_t( { Token::MUL,    Token::DIV,    Token::ANY,  Token::VAL(),  Token::VAL(), }, &Simplify::div_combine_2));
 
-	addRule(Rule( { NEG,  VAL(),         }, action::      compute_neg));
-	addRule(Rule( { SIN,  VAL(),         }, action::      compute_sin));
-	addRule(Rule( { COS,  VAL(),         }, action::      compute_cos));
-	addRule(Rule( { EXP,  VAL(),         }, action::      compute_exp));
-	addRule(Rule( { LOG,  VAL(),         }, action::      compute_log));
-	addRule(Rule( { ADD,  VAL(),  VAL(), }, action::      compute_add));
-	addRule(Rule( { SUB,  VAL(),  VAL(), }, action::      compute_sub));
-	addRule(Rule( { MUL,  VAL(),  VAL(), }, action::      compute_mul));
-	addRule(Rule( { DIV,  VAL(),  VAL(), }, action::      compute_div));
-	addRule(Rule( { EXP,  VAL(),         }, action::      compute_exp));
-	addRule(Rule( { LOG,  VAL(),         }, action::      compute_log));
-
+	addRule(rule_t( { Token::NEG,  Token::VAL(),                },       &Simplify::compute_neg));
+	addRule(rule_t( { Token::SIN,  Token::VAL(),                },       &Simplify::compute_sin));
+	addRule(rule_t( { Token::COS,  Token::VAL(),                },       &Simplify::compute_cos));
+	addRule(rule_t( { Token::EXP,  Token::VAL(),                },       &Simplify::compute_exp));
+	addRule(rule_t( { Token::LOG,  Token::VAL(),                },       &Simplify::compute_log));
+	addRule(rule_t( { Token::ADD,  Token::VAL(),  Token::VAL(), },       &Simplify::compute_add));
+	addRule(rule_t( { Token::SUB,  Token::VAL(),  Token::VAL(), },       &Simplify::compute_sub));
+	addRule(rule_t( { Token::MUL,  Token::VAL(),  Token::VAL(), },       &Simplify::compute_mul));
+	addRule(rule_t( { Token::DIV,  Token::VAL(),  Token::VAL(), },       &Simplify::compute_div));
+	addRule(rule_t( { Token::EXP,  Token::VAL(),                },       &Simplify::compute_exp));
+	addRule(rule_t( { Token::LOG,  Token::VAL(),                },       &Simplify::compute_log));
+													        
 	/// the ANYs should not be a constant (since it would have been computed above).
-	addRule(Rule( { ADD,    ADD,    ANY,  VAL(),  VAL(), }, action::collapse_addition));
-	addRule(Rule( { MUL,    MUL,    ANY,  VAL(),  VAL(), }, action::collapse_multiplication));
+	addRule(rule_t( { Token::ADD,    Token::ADD,    Token::ANY,  Token::VAL(),  Token::VAL(), }, &Simplify::collapse_addition));
+	addRule(rule_t( { Token::MUL,    Token::MUL,    Token::ANY,  Token::VAL(),  Token::VAL(), }, &Simplify::collapse_multiplication));
 }								
 
 Node const *Simplify::operator()(Node const *node, size_t passes)
@@ -114,22 +99,22 @@ Node const *Simplify::operator()(Node const *node, Registry const &registry, siz
 
 void Simplify::evaluate(Constant const *node)
 {
-	simplified = clone(node);
+	simplified = _clone(node);
 }
 
 void Simplify::evaluate(Variable const *node)
 {
-	simplified = (nullptr != symbols) ? val(symbols->value_of(node->index)) : clone(node);
+	simplified = (nullptr != symbols) ? val(symbols->value_of(node->index)) : _clone(node);
 }
 
 void Simplify::evaluate(Function const *node)
 {
-	simplified = clone(node);
+	simplified = _clone(node);
 }
 
 void Simplify::evaluate(Derivative const *node)
 {
-	simplified = clone(node);
+	simplified = _clone(node);
 }
 
 void Simplify::evaluate(Negate const *node)
@@ -222,32 +207,278 @@ Node const *Simplify::simplify(Node const *node)
 	return simplified;
 }
 
-bool Simplify::matches(std::vector<Token> const &pattern, Node const *node) const
+/// 
+/// 
+/// 
+
+Node const *Simplify::nop(Node const *node)
 {
-	thread_local static Hasher hash;
+	return node;
+}
 
-	auto lhs = pattern.begin();
-	Iterator rhs = node;
+Node const *Simplify::zero(Node const *node)
+{
+	delete node;
+	return val(0);
+}
 
-	while ((pattern.end() != lhs) && (nullptr != rhs))
-	{
-		if (ANY == *lhs)
-		{
-			++lhs;
-			rhs.skip();
-			continue;
-		}
+Node const *Simplify::one(Node const *node)
+{
+	delete node;
+	return val(1);
+}
 
-		if (*lhs != hash(rhs.ptr()))
-		{
-			return false;
-		}
+Node const *Simplify::select_arg(Node const *node)
+{
+	Node const *copied = _clone(_arg(node));
+	delete node;
 
-		++lhs;
-		++rhs;
-	}
+	return copied;
+}
 
-	return ((pattern.end() == lhs) && (nullptr == rhs));
+Node const *Simplify::select_lhs(Node const *node)
+{
+	Node const *copied = _clone(_lhs(node));
+	delete node;
+
+	return copied;
+}
+
+Node const *Simplify::select_rhs(Node const *node)
+{
+	Node const *copied = _clone(_rhs(node));
+	delete node;
+
+	return copied;
+}
+
+Node const *Simplify::negate_rhs(Node const *node)
+{
+	Node const *copied = _clone(_rhs(node));
+	delete node;
+
+	return neg(copied);
+}
+
+Node const *Simplify::swap_add_args(Node const *node)
+{
+	return _swap(add, node);
+}
+
+Node const *Simplify::sort_add_args(Node const *node)
+{
+	return _sort(add, node);
+}
+
+Node const *Simplify::swap_mul_args(Node const *node)
+{
+	return _swap(mul, node);
+}
+
+Node const *Simplify::sort_mul_args(Node const *node)
+{
+	return _sort(mul, node);
+}
+
+Node const *Simplify::inv_and_mul(Node const *node)
+{
+	Node const *x = _clone(_lhs(node));
+	Node const *y = _clone(_lhs(_rhs(node)));
+	Node const *z = _clone(_rhs(_rhs(node)));
+	delete node;
+
+	return mul(x, div(z, y));
+}
+
+Node const *Simplify::factor_terms(Node const *node)
+{
+	if (!_equal(_lhs(node), _rhs(node)))
+		return node;
+
+	Node const *result = mul(val(2), _clone(_lhs(node)));
+	delete node;
+
+	return result;
+}
+
+Node const *Simplify::sub_cancel(Node const *node)
+{
+	if (!_equal(_lhs(node), _rhs(node)))
+		return node;
+	delete node;
+
+	return val(0);
+}
+
+Node const *Simplify::compute_neg(Node const *node)
+{
+	float64_t result = -_value(_arg(node));
+	delete node;
+
+	return val(result);
+}
+
+Node const *Simplify::compute_add(Node const *node)
+{
+	float64_t result = _value(_lhs(node)) + _value(_rhs(node));
+	delete node;
+
+	return val(result);
+}
+
+Node const *Simplify::collapse_addition(Node const *node)
+{
+	Node const *x = _clone (_lhs(_lhs(node)));
+	float64_t   a = _value(_rhs(_lhs(node)));
+	float64_t   b = _value(_rhs(node));
+	delete node;
+
+	return add(x, val(a + b));
+}
+
+Node const *Simplify::compute_sub(Node const *node)
+{
+	float64_t result = _value(_lhs(node)) - _value(_rhs(node));
+	delete node;
+
+	return val(result);
+}
+
+Node const *Simplify::compute_mul(Node const *node)
+{
+	float64_t result = _value(_lhs(node)) * _value(_rhs(node));
+	delete node;
+
+	return val(result);
+}
+
+Node const *Simplify::mul_combine_1(Node const *node)
+{
+	float64_t k = _value(_lhs(_lhs(node))) * _value(_rhs(node));
+	Node const *D = _clone(_rhs(_lhs(node)));
+	delete node;
+
+	return div(val(k), D);
+}
+
+Node const *Simplify::div_combine_1(Node const *node)
+{
+	float64_t k = _value(_rhs(_lhs(node))) / _value(_rhs(node));
+	Node const *x = _clone(_lhs(_lhs(node)));
+	delete node;
+
+	return mul(x, val(k));
+}
+
+Node const *Simplify::div_combine_2(Node const *node)
+{
+	float64_t k = _value(_rhs(node)) / _value(_rhs(_lhs(node)));
+	Node const *x = _clone(_lhs(_lhs(node)));
+	delete node;
+
+	return mul(x, val(k));
+}
+
+Node const *Simplify::collapse_multiplication(Node const *node)
+{
+	Node const *x = _clone (_lhs(_lhs(node)));
+	float64_t   a = _value(_rhs(_lhs(node)));
+	float64_t   b = _value(_rhs(node));
+	delete node;
+
+	return mul(x, val(a * b));
+}
+
+Node const *Simplify::compute_div(Node const *node)
+{
+	float64_t result = _value(_lhs(node)) / _value(_rhs(node));
+	delete node;
+
+	return val(result);
+}
+
+Node const *Simplify::compute_sin(Node const *node)
+{
+	float64_t  theta = _value(_arg(node));
+	float64_t result = ::sin(theta);
+	delete node;
+
+	return val(result);
+}
+
+Node const *Simplify::compute_cos(Node const *node)
+{
+	float64_t  theta = _value(_arg(node));
+	float64_t result = ::cos(theta);
+	delete node;
+
+	return val(result);
+}
+
+Node const *Simplify::compute_exp(Node const *node)
+{
+	float64_t      x = _value(_arg(node));
+	float64_t result = ::exp(x);
+	delete node;
+
+	return val(result);
+}
+
+Node const *Simplify::compute_log(Node const *node)
+{
+	float64_t      x = _value(_arg(node));
+	float64_t result = ::log(x);
+	delete node;
+
+	return val(result);
+}
+
+Node const *Simplify::compute_pow(Node const *node)
+{
+	float64_t      x = _value(_lhs(node));
+	float64_t      y = _value(_rhs(node));
+	float64_t result = ::pow(x, y);
+	delete node;
+
+	return val(result);
+}
+
+Node const *Simplify::collapse_identity(Node const *node)
+{
+	Node const *copied = _clone(_arg(_arg(node)));
+	delete node;
+
+	return copied;
+}
+
+Node const *Simplify::div_cancel(Node const *node)
+{
+	if (!_equal(_lhs(node), _rhs(node)))
+		return node;
+	delete node;
+
+	return val(1);
+}
+
+Node const *Simplify::div_pow_cancel(Node const *node)
+{
+	Node const *x = _lhs(_lhs(node));
+	Node const *y = _rhs(node);
+
+	if (!_equal(x, y))
+		return node;
+
+	Node const *e = _rhs(_lhs(node));
+	Node const *canceled = pow(_clone(x), sub(_clone(e), val(1)));
+	delete node;
+
+	return canceled;
+}
+
+Node const *Simplify::ddx_function(Node const *node)
+{
+	/// TBD: ???
+	return _clone(node);
 }
 
 LUCID_XPR_END

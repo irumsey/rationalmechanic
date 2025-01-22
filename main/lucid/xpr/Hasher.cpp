@@ -4,6 +4,33 @@
 
 LUCID_XPR_BEGIN
 
+///
+///
+/// 
+
+Token const Token::ANY = Token(             size_t(-1));
+Token const Token:: FN = Token(TYPE<   Function>::ID());
+Token const Token::DDX = Token(TYPE< Derivative>::ID());
+Token const Token::NEG = Token(TYPE<     Negate>::ID());
+Token const Token::ADD = Token(TYPE<        Add>::ID());
+Token const Token::SUB = Token(TYPE<   Subtract>::ID());
+Token const Token::MUL = Token(TYPE<   Multiply>::ID());
+Token const Token::DIV = Token(TYPE<     Divide>::ID());
+Token const Token::SIN = Token(TYPE<       Sine>::ID());
+Token const Token::COS = Token(TYPE<     Cosine>::ID());
+Token const Token::EXP = Token(TYPE<Exponential>::ID());
+Token const Token::LOG = Token(TYPE<  Logarithm>::ID());
+
+Token Token::VAL()                { return Token(TYPE<Constant>::ID()       ); }
+Token Token::VAL(float64_t value) { return Token(TYPE<Constant>::ID(), value); }
+
+Token Token::VAR()                { return Token(TYPE<Variable>::ID()       ); }
+Token Token::VAR( uint64_t index) { return Token(TYPE<Variable>::ID(), index); }
+
+/// 
+/// 
+/// 
+
 Token Hasher::hash(Iterator const &iter)
 {
 	return hash(iter.ptr());

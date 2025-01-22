@@ -4,9 +4,12 @@
 #include <vector>
 #include <lucid/xpr/Defines.h>
 #include <lucid/xpr/Algorithm.h>
-#include <lucid/xpr/Node.h>
 
 LUCID_XPR_BEGIN
+
+class Node;
+class UnaryOperation;
+class BinaryOperation;
 
 ///	Iterator 
 ///
@@ -75,14 +78,10 @@ public:
 	bool neq(Node const *node) const;
 
 private:
-	std::vector<Node const *> _stack;
-	Node const *_current = nullptr;
+	std::vector<Node const *> stack;
+	Node const *current = nullptr;
 
-	template<typename T> Node const *lhs(T const *node);
-
-	template<typename T> Node const *rhs(T const *node);
-
-	void evaluate_leaf(Node const *node);
+	void evaluateLeaf(Node const *node);
 
 	void evaluateOperation(UnaryOperation const *node);
 
@@ -100,19 +99,6 @@ inline Iterator &Iterator::operator=(Node const *node)
 	return *this;
 }
 
-inline Iterator &Iterator::operator++()
-{
-	_current->apply(this);
-	return *this;
-}
-
-inline Iterator Iterator::operator++(int)
-{
-	Iterator temp = *this;
-	_current->apply(this);
-	return temp;
-}
-
 inline Node const &Iterator::operator*() const
 {
 	return ref();
@@ -125,79 +111,14 @@ inline Node const *Iterator::operator->() const
 
 inline Node const &Iterator::ref() const
 {
-	assert(nullptr != _current);
-	return *_current;
+	assert(nullptr != current);
+	return *current;
 }
 
 inline Node const *Iterator::ptr() const
 {
-	assert(nullptr != _current);
-	return _current;
-}
-
-inline void Iterator::evaluate(Constant const *node)
-{
-	evaluate_leaf(node);
-}
-
-inline void Iterator::evaluate(Variable const *node)
-{
-	evaluate_leaf(node);
-}
-
-inline void Iterator::evaluate(Function const *node)
-{
-	evaluate_leaf(node);
-}
-
-inline void Iterator::evaluate(Derivative const *node)
-{
-	evaluateOperation(node);
-}
-
-inline void Iterator::evaluate(Negate const *node)
-{
-	evaluateOperation(node);
-}
-
-inline void Iterator::evaluate(Add const *node)
-{
-	evaluateOperation(node);
-}
-
-inline void Iterator::evaluate(Subtract const *node)
-{
-	evaluateOperation(node);
-}
-
-inline void Iterator::evaluate(Multiply const *node)
-{
-	evaluateOperation(node);
-}
-
-inline void Iterator::evaluate(Divide const *node)
-{
-	evaluateOperation(node);
-}
-
-inline void Iterator::evaluate(Sine const *node)
-{
-	evaluateOperation(node);
-}
-
-inline void Iterator::evaluate(Cosine const *node)
-{
-	evaluateOperation(node);
-}
-
-inline void Iterator::evaluate(Exponential const *node)
-{
-	evaluateOperation(node);
-}
-
-inline void Iterator::evaluate(Logarithm const *node)
-{
-	evaluateOperation(node);
+	assert(nullptr != current);
+	return current;
 }
 
 inline void Iterator::skip()
@@ -207,56 +128,28 @@ inline void Iterator::skip()
 
 inline bool Iterator::equ(Node const *node) const
 {
-	return node == _current;
+	return node == current;
 }
 
 inline bool Iterator::neq(Node const *node) const
 {
-	return node != _current;
-}
-
-template<typename T> inline Node const *Iterator::lhs(T const *node)
-{
-	assert(nullptr != node->lhs);
-	return node->lhs;
-}
-
-template<typename T> inline Node const *Iterator::rhs(T const *node)
-{
-	assert(nullptr != node->rhs);
-	return node->rhs;
-}
-
-inline void Iterator::evaluate_leaf(Node const *node)
-{
-	pop();
-}
-
-inline void Iterator::evaluateOperation(UnaryOperation const *node)
-{
-	_current = rhs(node);
-}
-
-inline void Iterator::evaluateOperation(BinaryOperation const *node)
-{
-	_current = lhs(node);
-	_stack.push_back(rhs(node));
+	return node != current;
 }
 
 inline void Iterator::set(Node const *node)
 {
-	_stack.clear();
-	_stack.push_back(nullptr);
+	stack.clear();
+	stack.push_back(nullptr);
 
-	_current = node;
+	current = node;
 }
 
 inline void Iterator::pop()
 {
-	assert(0 != _stack.size());
+	assert(0 != stack.size());
 
-	_current = _stack.back();
-	_stack.pop_back();
+	current = stack.back();
+	stack.pop_back();
 }
 
 LUCID_XPR_END

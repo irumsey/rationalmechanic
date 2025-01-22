@@ -1,4 +1,6 @@
 #include "Node.h"
+#include "Hasher.h"
+#include "Iterator.h"
 #include "Clone.h"
 #include "Algorithm.h"
 #include <cassert>
@@ -49,7 +51,6 @@ Function::Function(uint64_t index, Signature const &signature)
 	: index(index)
 	, signature(signature)
 {
-	assert(0 != signature.size());
 }
 
 void Function::apply(Algorithm *algorithm) const
@@ -241,9 +242,9 @@ UnaryOperation const *pow(Node const *lhs, Node const *rhs)
 
 BinaryOperation const *tan(Node const *arg)
 {
-	/// Note: making one clone of arg to avoid
+	/// Note: making one _clone of arg to avoid
 	/// it from having two parents.
-	return div(sin(arg), cos(clone(arg)));
+	return div(sin(arg), cos(_clone(arg)));
 }
 
 BinaryOperation const *csc(Node const *arg)
@@ -258,9 +259,41 @@ BinaryOperation const *sec(Node const *arg)
 
 BinaryOperation const *cot(Node const *arg)
 {
-	/// Note: making one clone of arg to avoid
+	/// Note: making one _clone of arg to avoid
 	/// it from having two parents.
-	return div(cos(arg), sin(clone(arg)));
+	return div(cos(arg), sin(_clone(arg)));
+}
+
+bool _equal(Node const *lhs, Node const *rhs)
+{
+	Iterator lhsIter = lhs;
+	Iterator rhsIter = rhs;
+
+	while ((nullptr != lhsIter) && (nullptr != rhsIter))
+	{
+		if (_hash(lhsIter) != _hash(rhsIter))
+			return false;
+		++lhsIter;
+		++rhsIter;
+	}
+
+	return ((nullptr == lhsIter) && (nullptr == rhsIter));
+}
+
+Node const *_swap(binary_func_t func, Node const *node)
+{
+	Node const *x = _clone(_lhs(node));
+	Node const *y = _clone(_rhs(node));
+	delete node;
+
+	return func(y, x);
+}
+
+Node const *_sort(binary_func_t func, Node const *node)
+{
+	if (_index(_rhs(node)) < _index(_lhs(node)))
+		return _swap(func, node);
+	return node;
 }
 
 LUCID_XPR_END

@@ -69,26 +69,97 @@ public:
 	virtual void evaluate(Logarithm const *node) override;
 
 public:
+	typedef Node const *(Simplify::*action_t)(Node const *);
+	typedef Rule<action_t> rule_t;
+
 	Registry const *symbols = nullptr;
 
-	std::vector<Rule> rules;
+	std::vector<rule_t> rules;
 	Node const *simplified = nullptr;
 
 	Node const *simplify(Node const *node, Registry const *registry, size_t passes);
 
 	Node const *simplify(Node const *node);
 
-	bool matches(std::vector<Token> const &pattern, Node const *node) const;
-
-	void addRule(Rule const &rule);
+	void addRule(rule_t const &rule);
 
 	Node const *applyRules(Node const *node);
+
+	/// 
+	///	actions
+	/// 
+
+	Node const *nop(Node const *node);
+
+	Node const *zero(Node const *node);
+
+	Node const *one(Node const *node);
+
+	Node const *select_arg(Node const *node);
+
+	Node const *select_lhs(Node const *node);
+
+	Node const *select_rhs(Node const *node);
+
+	Node const *negate_rhs(Node const *node);
+
+	Node const *swap_add_args(Node const *node);
+
+	Node const *sort_add_args(Node const *node);
+
+	Node const *swap_mul_args(Node const *node);
+
+	Node const *sort_mul_args(Node const *node);
+
+	Node const *inv_and_mul(Node const *node);
+
+	Node const *factor_terms(Node const *node);
+
+	Node const *sub_cancel(Node const *node);
+
+	Node const *compute_neg(Node const *node);
+
+	Node const *compute_add(Node const *node);
+
+	Node const *collapse_addition(Node const *node);
+
+	Node const *compute_sub(Node const *node);
+
+	Node const *compute_mul(Node const *node);
+
+	Node const *mul_combine_1(Node const *node);
+
+	Node const *div_combine_1(Node const *node);
+
+	Node const *div_combine_2(Node const *node);
+
+	Node const *collapse_multiplication(Node const *node);
+
+	Node const *compute_div(Node const *node);
+
+	Node const *compute_sin(Node const *node);
+
+	Node const *compute_cos(Node const *node);
+
+	Node const *compute_exp(Node const *node);
+
+	Node const *compute_log(Node const *node);
+
+	Node const *compute_pow(Node const *node);
+
+	Node const *collapse_identity(Node const *node);
+
+	Node const *div_cancel(Node const *node);
+
+	Node const *div_pow_cancel(Node const *node);
+
+	Node const *ddx_function(Node const *node);
 
 	LUCID_PREVENT_COPY(Simplify);
 	LUCID_PREVENT_ASSIGNMENT(Simplify);
 };
 
-inline void Simplify::addRule(Rule const &rule)
+inline void Simplify::addRule(rule_t const &rule)
 {
 	rules.push_back(rule);
 }
@@ -97,13 +168,22 @@ inline Node const *Simplify::applyRules(Node const *node)
 {
 	simplified = node;
 
-	for (Rule const &rule : rules)
+	for (rule_t const &rule : rules)
 	{
-		if (matches(rule.pattern, simplified))
-			simplified = rule.action(simplified);
+		if (rule.matches(simplified))
+		{
+			action_t action = rule.action;
+			simplified = (this->*action)(simplified);
+		}
 	}
 
 	return simplified;
+}
+
+inline Node const *_simplify(Node const *node, size_t passes = 2)
+{
+	thread_local static Simplify simplify;
+	return simplify(node, passes);
 }
 
 LUCID_XPR_END

@@ -66,10 +66,10 @@ template<class T> inline Node const *Clone::rhs(T const *node)
 	return result;
 }
 
-inline Node const *clone(Node const *node)
+inline Node const *_clone(Node const *node)
 {
-	thread_local static Clone deepCopy;
-	return deepCopy(node);
+	thread_local static Clone clone;
+	return clone(node);
 }
 
 LUCID_XPR_END

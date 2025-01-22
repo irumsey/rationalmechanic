@@ -62,6 +62,24 @@ struct Token final
 
 	~Token() = default;
 
+	static Token const ANY;
+	static Token const  FN;
+	static Token const DDX;
+	static Token const NEG;
+	static Token const ADD;
+	static Token const SUB;
+	static Token const MUL;
+	static Token const DIV;
+	static Token const SIN;
+	static Token const COS;
+	static Token const EXP;
+	static Token const LOG;
+	
+	static Token VAL();
+	static Token VAL(float64_t value);
+
+	static Token VAR();
+	static Token VAR( uint64_t index);
 };
 
 ///	Hasher
@@ -121,6 +139,18 @@ inline Token Hasher::operator()(Iterator const &iter)
 inline Token Hasher::operator()(Node const *node)
 {
 	return hash(node);
+}
+
+inline Token _hash(Node const *node)
+{
+	thread_local static Hasher theHasher;
+	return theHasher.hash(node);
+}
+
+inline Token _hash(Iterator const &iter)
+{
+	thread_local static Hasher hash;
+	return hash(iter);
 }
 
 LUCID_XPR_END

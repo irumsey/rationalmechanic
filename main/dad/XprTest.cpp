@@ -28,23 +28,17 @@ bool XprTest::update(float64_t t, float64_t dt)
 {
 	_passed = true;
 
-	Differentiate differentiate;
-	Simplify simplify;
-    Registry symbols;
-    LaTeX format;
+	Registry symbols;
 
     symbols.add("x", 2.0);
     symbols.add("y", 1.0);
+	symbols.add("\\theta");
 	symbols.add("g");
 
-	Node const *_1 = add(mul(val(3), fn(symbols.index_of("g"), { 0, 1, })), var(1));
-	Node const *_2 = differentiate(_1, symbols.index_of("x"));
-	Node const *_3 = simplify(_2);
+	Node const *_1 = mul(val(3.0), fn(3, { } ));
 
-    std::string const &formatted = format(_1, symbols);
+    std::string formatted = _LaTeX(_1, symbols);
 	 
-	delete _3;
-	delete _2;
 	delete _1;
 
 	return true;

@@ -1,9 +1,12 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include <ostream>
+#include <sstream>
 #include <lucid/xpr/Defines.h>
 #include <lucid/xpr/Algorithm.h>
+#include <lucid/xpr/Rule.h>
 
 LUCID_XPR_BEGIN
 
@@ -18,17 +21,17 @@ class Registry;
 class LaTeX : public Algorithm
 {
 public:
-	LaTeX() = default;
+	LaTeX();
 
 	LaTeX(Node const *node, Registry const &registry);
 
 	virtual ~LaTeX() = default;
 
-	std::string const &operator()(Node const *node, Registry const &registry);
+	std::string operator()(Node const *node, Registry const &registry);
 
-	std::string const &format(Node const *node, Registry const &registry);
+	std::string format(Node const *node, Registry const &registry);
 
-	std::string const &str() const;
+	std::string str() const;
 
 	virtual void evaluate(Constant const *node) override;
 
@@ -57,18 +60,72 @@ public:
 	virtual void evaluate(Logarithm const *node) override;
 
 private:
+	typedef void (LaTeX::*action_t)(Node const *);
+	typedef Rule<action_t> rule_t;
+
 	Registry const *symbols = nullptr;
-	std::string result;
+	std::vector<rule_t> rules;
 
-	void evaluateOperation(std::string const &label, UnaryOperation const *oper);
+	std::ostringstream stream;
 
-	void evaluateOperation(std::string const &label, BinaryOperation const *oper);
+	void initialize();
+
+	void addRule(rule_t const &rule);
+
+	void applyRules(Node const *node);
+
+	/// 
+	/// actions
+	/// 
+
+	void format_neg(Node const *node);
+
+	void format_neg_default(Node const *node);
+
+	void format_mul_0(Node const *node);
+
+	void format_mul_1(Node const *node);
+
+	void format_mul_2(Node const *node);
+
+	void format_mul_default(Node const *node);
+
+	void format_ddx(Node const *node);
+
+	void format_ddx_default(Node const *node);
 
 };
 
-inline std::string const &LaTeX::str() const
+inline std::string LaTeX::str() const
 {
-	return result;
+	return stream.str();
+}
+
+inline void LaTeX::addRule(rule_t const &rule)
+{
+	rules.push_back(rule);
+}
+
+inline void LaTeX::applyRules(Node const *node)
+{
+	for (rule_t const &rule : rules)
+	{
+		if (rule.matches(node))
+		{
+			action_t action = rule.action;
+			(this->*action)(node);
+			return;
+		}
+	}
+
+	/// TBD: should not get here...
+	assert(false);
+}
+
+inline std::string _LaTeX(Node const *node, Registry const &registry)
+{
+	thread_local static LaTeX format;
+	return format(node, registry);
 }
 
 LUCID_XPR_END

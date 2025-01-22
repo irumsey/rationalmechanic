@@ -2,6 +2,7 @@
 
 #include <string>
 #include <ostream>
+#include <sstream>
 #include <lucid/xpr/Defines.h>
 #include <lucid/xpr/Algorithm.h>
 
@@ -10,6 +11,7 @@ LUCID_XPR_BEGIN
 class Node;
 class UnaryOperation;
 class BinaryOperation;
+class Registry;
 
 ///	Repr
 ///
@@ -27,15 +29,15 @@ class Repr : public Algorithm
 public:
 	Repr() = default;
 
-	Repr(Node const *node);
+	Repr(Node const *node, Registry const &registry);
 
 	virtual ~Repr() = default;
 
-	std::string const &operator()(Node const *node);
+	std::string operator()(Node const *node, Registry const &registry);
 
-	std::string const &repr(Node const *node);
+	std::string repr(Node const *node, Registry const &registry);
 
-	std::string const &str() const;
+	std::string str() const;
 
 	virtual void evaluate(Constant const *node) override;
 
@@ -64,17 +66,21 @@ public:
 	virtual void evaluate(Logarithm const *node) override;
 
 private:
-	std::string result;
+	Registry const *symbols = nullptr;
 
-	void evaluateOperation(std::string const &label, UnaryOperation const *oper);
-
-	void evaluateOperation(std::string const &label, BinaryOperation const *oper);
+	std::ostringstream stream;
 
 };
 
-inline std::string const &Repr::str() const
+inline std::string Repr::str() const
 {
-	return result;
+	return stream.str();
+}
+
+inline std::string _repr(Node const *node, Registry const &registry)
+{
+	thread_local static Repr repr;
+	return repr(node, registry);
 }
 
 LUCID_XPR_END

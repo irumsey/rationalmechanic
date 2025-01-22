@@ -66,7 +66,7 @@ private:
 
 template<typename T> inline Node const *Differentiate::u(T const *node)
 {
-	return clone(node->lhs);
+	return _clone(node->lhs);
 }
 
 template<typename T> inline Node const *Differentiate::du(T const *node)
@@ -77,13 +77,19 @@ template<typename T> inline Node const *Differentiate::du(T const *node)
 
 template<typename T> inline Node const *Differentiate::v(T const *node)
 {
-	return clone(node->rhs);
+	return _clone(node->rhs);
 }
 
 template<typename T> inline Node const *Differentiate::dv(T const *node)
 {
 	node->rhs->apply(this);
 	return result;
+}
+
+inline Node const *_differentiate(Node const *node, uint64_t index)
+{
+	thread_local static Differentiate differentiate;
+	return differentiate(node, index);
 }
 
 LUCID_XPR_END
