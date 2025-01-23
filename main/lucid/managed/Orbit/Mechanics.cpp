@@ -74,7 +74,16 @@ namespace Orbit {
 
 	void Mechanics::Attach(Frame ^center, Frame ^frame)
 	{
-		_internal->attach(center->ptr, frame->ptr);
+		try
+		{
+			_internal->attach(center->ptr, frame->ptr);
+		}
+		catch (LUCID_CORE::Error const &error)
+		{
+			LUCID_CORE::log("ERR", error.what());
+			Shutdown();
+			throw;
+		}
 	}
 
 	void Mechanics::Detach(Frame ^frame)

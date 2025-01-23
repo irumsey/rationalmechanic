@@ -2,6 +2,7 @@
 import optparse
 import re
 import http.client
+import urllib.parse
 
 HOST = 'horizons.jpl.nasa.gov'
 
@@ -9,34 +10,41 @@ HOST = 'horizons.jpl.nasa.gov'
 #
 #
 def extractElements(fileName, target, center, dateStart, dateStop, stepSize, units, refPlane):
-    URL = (
-        "https://ssd.jpl.nasa.gov/api/horizons.api?format=text" + "&" +
-        "COMMAND='" + target + "'&" +
-        "CENTER='" + center + "'&" +
-        "MAKE_EPHEM='YES'" + "&" +
-        "EPHEM_TYPE='ELEMENTS'" + "&" +
-        "START_TIME='" + dateStart + "'&" +
-        "STOP_TIME='" + dateStop + "'&" +
-        "STEP_SIZE='" + stepSize + "'&" +
-        "QUANTITIES='A'" + "&" +
-        "ELEM_LABELS='NO'" + "&" +
-        "OBJ_DATA='NO'" + "&" +
-        "REF_PLANE='" + refPlane + "'&" +
-        "OUT_UNITS='" + units + "'&" +
-        "CSV_FORMAT='YES'" + "&" +
-        "CAL_FORMAT='JD'"
-    )
+    params = urllib.parse.urlencode({
+        'format': 'text',
+        'COMMAND': target,
+        'CENTER': center,
+        'MAKE_EPHEM': 'YES',
+        'EPHEM_TYPE': 'ELEMENTS',
+        'START_TIME': dateStart,
+        'STOP_TIME': dateStop,
+        'STEP_SIZE': stepSize,
+        'QUANTITIES': 'A',
+        'ELEM_LABELS': 'NO',
+        'OBJ_DATA': 'NO',
+        'REF_PLANE': 'ECLIPTIC',
+        'OUT_UNITS': 'AU-D',
+        'CSV_FORMAT': 'YES',
+        'CAL_FORMAT': 'JD'
+        })
+    URL = f"https://ssd.jpl.nasa.gov/api/horizons.api?{params}"    
+    
+    print(URL)
     
     connection = http.client.HTTPSConnection(HOST, timeout = 10)
     connection.request("GET", URL)
     response = connection.getresponse()
 
+    if 301 == response.status:
+        print(response.getheader('Location'))
+        quit()
+
     if 200 != response.status:
         print(response.reason)
         quit()
-
+        
     decoded = response.read().decode("ascii")
-
+    
     firstIndex = decoded.find("$$SOE") + 6
     lastIndex = decoded.find("$$EOE") - 1
 

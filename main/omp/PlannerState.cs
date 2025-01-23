@@ -108,10 +108,15 @@ namespace omp
 
                 planner.aspectRatio = (float)clientSize.Width / (float)clientSize.Height;
 
-                planner.cameraFrame = new Lucid.Orbit.CameraFrame(1001, "camera", "");
+                planner.cameraFrame = new Lucid.Orbit.CameraFrame(-1, "camera", "");
                 planner.cameraFrame.RelativePosition = new Lucid.Math.Vector3(0, 0, 6.37101e010f);
-                planner.cameraFrame.Focus = planner.orbitalMechainics.Root;
-                planner.orbitalMechainics.Attach(planner.orbitalMechainics.Root, planner.cameraFrame);
+
+                Frame focusFrame = planner.orbitalMechainics[399];
+                planner.cameraFrame.Focus = focusFrame;
+                planner.orbitalMechainics.Attach(focusFrame, planner.cameraFrame);
+
+                float distance = (float)((focusFrame as OrbitalBody).PhysicalProps.Radius);
+                planner.cameraFrame.RelativePosition = new Lucid.Math.Vector3(distance, distance, 10.0f * distance);
 
                 planner.setMainMenuDefaults();
                 planner.changeState(Editing.Instance);
