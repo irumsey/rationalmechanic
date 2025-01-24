@@ -5,9 +5,11 @@
     <ClCompile Include="Link.cpp" />
     <ClCompile Include="Utility.cpp" />
     <ClCompile Include="Session.cpp" />
+    <ClCompile Include="State.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Utility.h" />
     <ClInclude Include="Session.h" />
+    <ClInclude Include="State.h" />
   </ItemGroup>
 </Project>

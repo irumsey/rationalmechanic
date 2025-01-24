@@ -9,12 +9,16 @@ namespace core = ::lucid::core;
 ///	profile dumping
 ///
 
+LUCID_ANONYMOUS_BEGIN
+
 size_t const    SAMPLE_COLUMN_WIDTH = 40;
 size_t const     COUNT_COLUMN_WIDTH = 15;
 size_t const RECURSION_COLUMN_WIDTH = 15;
 size_t const      TIME_COLUMN_WIDTH = 22;
 size_t const              TAB_WIDTH =  2;
 size_t const          SPACING_WIDTH =  2;
+
+LUCID_ANONYMOUS_END
 
 void dumpProfileHeader(std::ofstream &stream)
 {

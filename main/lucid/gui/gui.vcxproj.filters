@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="Frame.h" />
+    <ClInclude Include="Defines.h" />
+    <ClInclude Include="Types.h" />
+    <ClInclude Include="Label.h" />
+    <ClInclude Include="Panel.h" />
+    <ClInclude Include="Button.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Frame.cpp" />
+    <ClCompile Include="Label.cpp" />
+    <ClCompile Include="Panel.cpp" />
+    <ClCompile Include="Button.cpp" />
+  </ItemGroup>
+</Project>

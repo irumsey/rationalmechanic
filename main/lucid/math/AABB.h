@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <lucid/math/Defines.h>
 #include <lucid/math/Vector.h>
 #include <lucid/math/Sphere.h>

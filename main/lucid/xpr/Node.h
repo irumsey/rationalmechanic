@@ -30,12 +30,11 @@ public:
 
 protected:
 #if defined(_DEBUG)
+	static size_t instances;
 	Node() { ++instances; }
 #else
 	Node() = default;
 #endif
-
-	static size_t instances;
 
 	LUCID_PREVENT_COPY(Node);
 	LUCID_PREVENT_ASSIGNMENT(Node);

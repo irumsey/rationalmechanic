@@ -3,7 +3,6 @@
 ///
 #include <windows.h>
 #include <windowsx.h>
-
 #include <lucid/gal/Pipeline.h>
 #include <lucid/gal/System.h>
 #include <lucid/core/Profiler.h>
@@ -12,26 +11,36 @@
 #include <lucid/core/Error.h>
 #include <lucid/core/Types.h>
 #include <sstream>
-#include "Utility.h"
 #include "Session.h"
+#include "State.h"
+#include "Utility.h"
+
+/// 
+/// 
+/// 
+LUCID_ANONYMOUS_BEGIN
 
 ///
 ///	Constants...
-///
-int32_t   const SCREEN_WIDTH = 1280;
-int32_t   const SCREEN_HEIGHT = 720;
-float64_t const TIME_STEP = 0.1;
-float64_t const TIME_LIMIT = 0.3;
+///	TBD: move to Session
+int32_t   const  SCREEN_WIDTH = 1280;
+int32_t   const SCREEN_HEIGHT =  720;
+float32_t const     TIME_STEP = 0.1f;
+float64_t const    TIME_LIMIT = 0.30;
 
 ///
-///	Globals (sigh)...
-///
-int32_t   frameCount = 0;
-float64_t simTime = 0;
-float64_t wallTime = 0;
+///	Globals...
+///	TBD: move to Session
+///      the issue is the message pump and sim loop
+///      which will require moving as well.
+int32_t         frameCount = 0;
+float64_t          simTime = 0;
+float64_t         wallTime = 0;
 float32_t frameInterpolant = 0;
 
 Session session;
+
+LUCID_ANONYMOUS_END
 
 ///	onUpdate
 ///
@@ -39,9 +48,7 @@ Session session;
 void onUpdate()
 {
 	LUCID_PROFILE_BEGIN("Update");
-
 	session.update(simTime, TIME_STEP);
-
 	LUCID_PROFILE_END();
 }
 
@@ -53,10 +60,7 @@ void onRender()
 	LUCID_PROFILE_BEGIN("Render");
 
 	LUCID_GAL_PIPELINE.beginScene();
-	LUCID_GAL_PIPELINE.clear(true, true, true, LUCID_GAL::Color(0, 0, 0, 1), 1.f);
-
 	session.render(wallTime, frameInterpolant);
-
 	LUCID_GAL_PIPELINE.endScene();
 
 	LUCID_PROFILE_END();
@@ -65,30 +69,24 @@ void onRender()
 ///
 /// 
 /// 
-void onMouseMiddleButton(bool btnDown, point2d_t const &point)
+void onMouseMiddleButton(bool dwn, point2d_t const &pnt)
 {
 	LUCID_PROFILE_BEGIN("Middle Mouse Button");
-
-	session.onMouseMiddleButton(btnDown, point);
-
+	session.onMouseButton(MOUSE_BUTTON_MIDDLE, dwn, pnt);
 	LUCID_PROFILE_END();
 }
 
 void onMouseWheel(int32_t delta)
 {
 	LUCID_PROFILE_BEGIN("Mouse Wheel");
-
 	session.onMouseWheel(delta);
-
 	LUCID_PROFILE_END();
 }
 
 void onMouseMove(point2d_t const &point)
 {
 	LUCID_PROFILE_BEGIN("Mouse Move");
-
 	session.onMouseMove(point);
-
 	LUCID_PROFILE_END();
 }
 
@@ -100,6 +98,7 @@ LRESULT WINAPI onMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	switch (msg)
 	{
 	case WM_DESTROY:
+		session.shutdown();
 		::PostQuitMessage(0);
 		return 0;
 		break;
@@ -113,6 +112,7 @@ LRESULT WINAPI onMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_KEYDOWN:
 		if (VK_ESCAPE == wParam)
 		{
+			session.shutdown();
 			::PostQuitMessage(0);
 			return 0;
 		}
