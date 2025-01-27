@@ -32,7 +32,7 @@ float64_t const    TIME_LIMIT = 0.30;
 ///	Globals...
 ///	TBD: move to Session
 ///      the issue is the message pump and sim loop
-///      which will require moving as well.
+///      will require moving as well.
 int32_t         frameCount = 0;
 float64_t          simTime = 0;
 float64_t         wallTime = 0;
@@ -69,24 +69,50 @@ void onRender()
 ///
 /// 
 /// 
-void onMouseMiddleButton(bool dwn, point2d_t const &pnt)
+
+void onMouseLeftButton(bool down, LUCID_GUI::Point const &position)
 {
 	LUCID_PROFILE_BEGIN("Middle Mouse Button");
-	session.onMouseButton(MOUSE_BUTTON_MIDDLE, dwn, pnt);
+	LUCID_GUI::MouseEvent::KIND kind = down ? LUCID_GUI::MouseEvent::KIND_BUTTON_DOWN : LUCID_GUI::MouseEvent::KIND_BUTTON_UP;
+	LUCID_GUI::MouseEvent::BUTTON button = LUCID_GUI::MouseEvent::BUTTON_LEFT;
+	session.onEvent(LUCID_GUI::MouseEvent(kind, button, 0, position));
+	LUCID_PROFILE_END();
+}
+
+void onMouseMiddleButton(bool down, LUCID_GUI::Point const &position)
+{
+	LUCID_PROFILE_BEGIN("Middle Mouse Button");
+	LUCID_GUI::MouseEvent::KIND kind = down ? LUCID_GUI::MouseEvent::KIND_BUTTON_DOWN : LUCID_GUI::MouseEvent::KIND_BUTTON_UP;
+	LUCID_GUI::MouseEvent::BUTTON button = LUCID_GUI::MouseEvent::BUTTON_MIDDLE;
+	session.onEvent(LUCID_GUI::MouseEvent(kind, button, 0, position));
 	LUCID_PROFILE_END();
 }
 
 void onMouseWheel(int32_t delta)
 {
 	LUCID_PROFILE_BEGIN("Mouse Wheel");
-	session.onMouseWheel(delta);
+	LUCID_GUI::MouseEvent::KIND kind = LUCID_GUI::MouseEvent::KIND_WHEEL_MOVE;
+	LUCID_GUI::MouseEvent::BUTTON button = LUCID_GUI::MouseEvent::BUTTON_MIDDLE;
+	LUCID_GUI::Point position = { 0, 0, };
+	session.onEvent(LUCID_GUI::MouseEvent(kind, button, delta, position));
 	LUCID_PROFILE_END();
 }
 
-void onMouseMove(point2d_t const &point)
+void onMouseRightButton(bool down, LUCID_GUI::Point const &position)
+{
+	LUCID_PROFILE_BEGIN("Middle Mouse Button");
+	LUCID_GUI::MouseEvent::KIND kind = down ? LUCID_GUI::MouseEvent::KIND_BUTTON_DOWN : LUCID_GUI::MouseEvent::KIND_BUTTON_UP;
+	LUCID_GUI::MouseEvent::BUTTON button = LUCID_GUI::MouseEvent::BUTTON_RIGHT;
+	session.onEvent(LUCID_GUI::MouseEvent(kind, button, 0, position));
+	LUCID_PROFILE_END();
+}
+
+void onMouseMove(LUCID_GUI::Point const &position)
 {
 	LUCID_PROFILE_BEGIN("Mouse Move");
-	session.onMouseMove(point);
+	LUCID_GUI::MouseEvent::KIND kind = LUCID_GUI::MouseEvent::KIND_POINTER_MOVE;
+	LUCID_GUI::MouseEvent::BUTTON button = LUCID_GUI::MouseEvent::BUTTON_NONE;
+	session.onEvent(LUCID_GUI::MouseEvent(kind, button, 0, position));
 	LUCID_PROFILE_END();
 }
 
@@ -98,7 +124,6 @@ LRESULT WINAPI onMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	switch (msg)
 	{
 	case WM_DESTROY:
-		session.shutdown();
 		::PostQuitMessage(0);
 		return 0;
 		break;
@@ -112,18 +137,25 @@ LRESULT WINAPI onMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_KEYDOWN:
 		if (VK_ESCAPE == wParam)
 		{
-			session.shutdown();
 			::PostQuitMessage(0);
 			return 0;
 		}
 		break;
 
+	case WM_LBUTTONDOWN:
+		::onMouseLeftButton(true, LUCID_GUI::Point(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)));
+		break;
+
+	case WM_LBUTTONUP:
+		::onMouseLeftButton(false, LUCID_GUI::Point(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)));
+		break;
+
 	case WM_MBUTTONDOWN:
-		::onMouseMiddleButton(true, point2d_t(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)));
+		::onMouseMiddleButton(true, LUCID_GUI::Point(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)));
 		break;
 
 	case WM_MBUTTONUP:
-		::onMouseMiddleButton(false, point2d_t(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)));
+		::onMouseMiddleButton(false, LUCID_GUI::Point(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)));
 		break;
 
 	case WM_MOUSEWHEEL:
@@ -131,7 +163,15 @@ LRESULT WINAPI onMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case WM_MOUSEMOVE:
-		::onMouseMove(point2d_t(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)));
+		::onMouseMove(LUCID_GUI::Point(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)));
+		break;
+
+	case WM_RBUTTONDOWN:
+		::onMouseRightButton(true, LUCID_GUI::Point(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)));
+		break;
+
+	case WM_RBUTTONUP:
+		::onMouseRightButton(false, LUCID_GUI::Point(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)));
 		break;
 
 	case WM_INPUT:
@@ -256,8 +296,6 @@ INT WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR cmdln, _In_ IN
 			}
 		}
 
-		session.shutdown();
-
 		::dumpProfileData("profile.log");
 	}
 	catch (LUCID_CORE::Error const &error)
@@ -272,13 +310,12 @@ INT WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR cmdln, _In_ IN
 	}
 
 	///	Shutdown...
+	session.shutdown();
 	LUCID_GAL_SYSTEM.shutdown();
-
-	///	Stop watching
-	coreLogger.removeListener(&coreFileLog);
-
-	///	Done
 	LUCID_PROFILER_SHUTDOWN();
+
+	///	Stop listening...
+	coreLogger.removeListener(&coreFileLog);
 
 	return exitCode;
 }

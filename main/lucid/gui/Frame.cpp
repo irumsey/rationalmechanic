@@ -15,21 +15,21 @@ extern anchor_action_func computeRectangle[Frame::ANCHOR_ACTION_COUNT];
 //
 
 Frame::Frame(ANCHOR anchor, int32_t width, int32_t height)
-	: anchor(anchor)
-	, width(width), height(height)
+	: _anchor(anchor)
+	, _width(width), _height(height)
 {
 }
 
 Frame::~Frame()
 {
-	delete firstChild;
-	delete nextSibling;
+	delete _firstChild;
+	delete _nextSibling;
 }
 
 inline void Frame::onEvent(SizeEvent const &event)
 {
-	rectangle = computeRectangle[anchor](event.rectangle, width, height);
-	dispatch(SizeEvent(rectangle));
+	_rectangle = computeRectangle[_anchor](event.rectangle, _width, _height);
+	dispatch(SizeEvent(_rectangle));
 }
 
 //

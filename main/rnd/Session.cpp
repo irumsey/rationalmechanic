@@ -1,5 +1,6 @@
 #include "Session.h"
 #include "State.h"
+#include <lucid/gui/Frame.h>
 #include <cassert>
 
 #ifdef min
@@ -8,60 +9,44 @@
 
 Session::Session()
 {
-	state = Stopped::instance();
+	_state = Stopped::instance();
+	_state->onEnter(ref());
 }
 
 void Session::initialize()
 {
-	shutdown();
 	changeState(Starting::instance());
 }
 
 void Session::shutdown()
 {
-	changeState(Stopped::instance());
+	changeState(Stopping::instance());
 }
 
-void Session::onMouseButton(MOUSE_BUTTON button, bool down, point2d_t const &point)
+void Session::onEvent(LUCID_GUI::MouseEvent const &event)
 {
-	assert(nullptr != state);
-
-	state->onMouseButton(ref(), button, down, point);
-}
-
-void Session::onMouseWheel(int32_t delta)
-{
-	assert(nullptr != state);
-
-	state->onMouseWheel(ref(), delta);
-}
-
-void Session::onMouseMove(point2d_t const &point)
-{
-	assert(nullptr != state);
-
-	state->onMouseMove(ref(), point);
+	assert(nullptr != _state);
+	_state->onEvent(ref(), event);
 }
 
 void Session::update(float64_t t, float32_t dt)
 {
-	assert(nullptr != state);
-
-	state->update(ref(), t, dt);
+	assert(nullptr != _state);
+	_state->update(ref(), t, dt);
 }
 
 void Session::render(float64_t t, float32_t interpolant)
 {
-	assert(nullptr != state);
-
-	state->render(ref(), t, interpolant);
+	assert(nullptr != _state);
+	_state->render(ref(), t, interpolant);
 }
 
-inline void Session::changeState(State const *newState)
+inline void Session::changeState(State const *state)
 {
-	assert(nullptr != state);
+	assert(nullptr != _state);
+	assert(nullptr !=  state);
 
-	state->onLeave(ref());
-	state = newState;
-	state->onEnter(ref());
+	_state->onLeave(ref());
+	_state = state;
+	_state->onEnter(ref());
 }

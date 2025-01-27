@@ -6,23 +6,6 @@
 #include <lucid/math/Vector.h>
 
 ///
-/// 
-/// 
-
-enum MOUSE_BUTTON
-{	
-	MOUSE_BUTTON_LEFT = 0,
-	MOUSE_BUTTON_MIDDLE,
-	MOUSE_BUTTON_RIGHT,
-};
-
-///
-/// 
-/// 
-
-typedef LUCID_MATH::Vector<int32_t, 2> point2d_t;
-
-///
 ///
 ///
 

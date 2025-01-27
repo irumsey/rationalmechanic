@@ -13,12 +13,11 @@ LUCID_GUI_BEGIN
 class Label final : public Frame
 {
 public:
-	Label(ANCHOR anchor, int32_t width, int32_t height, std::string const &text);
+	Label(ANCHOR anchor, int32_t width, int32_t height);
 
 	virtual ~Label() = default;
 
 private:
-	std::string text;
 
 	LUCID_PREVENT_COPY(Label);
 	LUCID_PREVENT_ASSIGNMENT(Label);

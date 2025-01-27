@@ -7,6 +7,7 @@
     <ClInclude Include="Label.h" />
     <ClInclude Include="Panel.h" />
     <ClInclude Include="Button.h" />
+    <ClInclude Include="Events.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Frame.cpp" />

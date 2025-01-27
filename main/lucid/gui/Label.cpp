@@ -2,9 +2,8 @@
 
 LUCID_GUI_BEGIN
 
-Label::Label(ANCHOR anchor, int32_t width, int32_t height, std::string const &text)
+Label::Label(ANCHOR anchor, int32_t width, int32_t height)
 	: Frame(anchor, width, height)
-	, text(text)
 {
 }
 

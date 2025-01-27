@@ -1,8 +1,15 @@
 #pragma once
 
 #include <lucid/core/Noncopyable.h>
-#include <lucid/gui/Frame.h>
+#include <lucid/gui/Types.h>
+#include <lucid/gui/Events.h>
 #include <rnd/Utility.h>
+
+LUCID_GUI_BEGIN
+
+class Frame;
+
+LUCID_GUI_END
 
 class State;
 
@@ -20,11 +27,7 @@ public:
 
 	void shutdown();
 
-	void onMouseButton(MOUSE_BUTTON button, bool down, point2d_t const &point);
-
-	void onMouseWheel(int32_t delta);
-
-	void onMouseMove(point2d_t const &point);
+	void onEvent(LUCID_GUI::MouseEvent const &event);
 
 	void update(float64_t t, float32_t dt);
 
@@ -33,12 +36,14 @@ public:
 private:
 	friend class Stopped;
 	friend class Starting;
-	friend class Simulating;
+	friend class Stopping;
+	friend class Configuring;
+	friend class Running;
 
-	State const *state = nullptr;
-	void changeState(State const *newState);
+	State const *_state = nullptr;
+	void changeState(State const *state);
 
-	LUCID_GUI::Frame *gui = nullptr;
+	LUCID_GUI::Frame *_gui = nullptr;
 
 	Session &ref();
 

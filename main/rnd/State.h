@@ -1,5 +1,7 @@
 #pragma once
 
+#include <lucid/gui/Types.h>
+#include <lucid/gui/Events.h>
 #include <rnd/Utility.h>
 
 class Session;
@@ -16,11 +18,7 @@ public:
 
 	virtual void onLeave(Session &session) const = 0;
 
-	virtual void onMouseButton(Session &session, MOUSE_BUTTON button, bool down, point2d_t const &point) const = 0;
-
-	virtual void onMouseWheel(Session &session, int32_t delta) const = 0;
-
-	virtual void onMouseMove(Session &session, point2d_t const &point) const = 0;
+	virtual void onEvent(Session &session, LUCID_GUI::MouseEvent const &event) const = 0;
 
 	virtual void update(Session &session, float64_t t, float32_t dt) const = 0;
 
@@ -33,7 +31,7 @@ protected:
 
 ///	Stopped
 ///
-///	upon enter, this state will clean up the session
+///	default, inert, state
 class Stopped final : public State
 {
 public:
@@ -45,11 +43,7 @@ public:
 
 	virtual void onLeave(Session &session) const override;
 
-	virtual void onMouseButton(Session &session, MOUSE_BUTTON button, bool down, point2d_t const &point) const override;
-
-	virtual void onMouseWheel(Session &session, int32_t delta) const override;
-
-	virtual void onMouseMove(Session &session, point2d_t const &point) const override;
+	virtual void onEvent(Session &session, LUCID_GUI::MouseEvent const &event) const override;
 
 	virtual void update(Session &session, float64_t t, float32_t dt) const override;
 
@@ -73,11 +67,7 @@ public:
 
 	virtual void onLeave(Session &session) const override;
 
-	virtual void onMouseButton(Session &session, MOUSE_BUTTON button, bool down, point2d_t const &point) const override;
-
-	virtual void onMouseWheel(Session &session, int32_t delta) const override;
-
-	virtual void onMouseMove(Session &session, point2d_t const &point) const override;
+	virtual void onEvent(Session &session, LUCID_GUI::MouseEvent const &event) const override;
 
 	virtual void update(Session &session, float64_t t, float32_t dt) const override;
 
@@ -87,30 +77,73 @@ public:
 
 };
 
-///	Simulating
+///	Stopping
 ///
-/// upon enter, this state will begin simulating
-class Simulating final : public State
+///	upon enter, this state will clean up the session
+class Stopping final : public State
 {
 public:
-	Simulating() = default;
+	Stopping() = default;
 
-	virtual ~Simulating() = default;
+	virtual ~Stopping() = default;
 
 	virtual void onEnter(Session &session) const override;
 
 	virtual void onLeave(Session &session) const override;
 
-	virtual void onMouseButton(Session &session, MOUSE_BUTTON button, bool down, point2d_t const &point) const override;
-
-	virtual void onMouseWheel(Session &session, int32_t delta) const override;
-
-	virtual void onMouseMove(Session &session, point2d_t const &point) const override;
+	virtual void onEvent(Session &session, LUCID_GUI::MouseEvent const &event) const override;
 
 	virtual void update(Session &session, float64_t t, float32_t dt) const override;
 
 	virtual void render(Session &session, float64_t t, float32_t interpolant) const override;
 
-	static Simulating const *instance();
+	static Stopping const *instance();
+
+};
+
+///
+/// 
+/// 
+class Configuring final : public State
+{
+public:
+	Configuring() = default;
+
+	virtual ~Configuring() = default;
+
+	virtual void onEnter(Session &session) const override;
+
+	virtual void onLeave(Session &session) const override;
+
+	virtual void onEvent(Session &session, LUCID_GUI::MouseEvent const &event) const override;
+
+	virtual void update(Session &session, float64_t t, float32_t dt) const override;
+
+	virtual void render(Session &session, float64_t t, float32_t interpolant) const override;
+
+	static Configuring const *instance();
+};
+
+///	Running
+///
+/// upon enter, this state will begin simulating
+class Running final : public State
+{
+public:
+	Running() = default;
+
+	virtual ~Running() = default;
+
+	virtual void onEnter(Session &session) const override;
+
+	virtual void onLeave(Session &session) const override;
+
+	virtual void onEvent(Session &session, LUCID_GUI::MouseEvent const &event) const override;
+
+	virtual void update(Session &session, float64_t t, float32_t dt) const override;
+
+	virtual void render(Session &session, float64_t t, float32_t interpolant) const override;
+
+	static Running const *instance();
 
 };

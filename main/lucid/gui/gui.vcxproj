@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="Button.h" />
     <ClInclude Include="Defines.h" />
+    <ClInclude Include="Events.h" />
     <ClInclude Include="Frame.h" />
     <ClInclude Include="Label.h" />
     <ClInclude Include="Panel.h" />
