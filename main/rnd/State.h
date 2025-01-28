@@ -1,8 +1,15 @@
 #pragma once
 
-#include <lucid/gui/Types.h>
-#include <lucid/gui/Events.h>
+#include <lucid/gui/Defines.h>
 #include <rnd/Utility.h>
+
+LUCID_GUI_BEGIN
+
+struct SizeEvent;
+struct MouseEvent;
+class Button;
+
+LUCID_GUI_END
 
 class Session;
 
@@ -14,15 +21,19 @@ class State abstract
 public:
 	virtual ~State() = default;
 
-	virtual void onEnter(Session &session) const = 0;
+	virtual void onEnter(Session *session) const = 0;
 
-	virtual void onLeave(Session &session) const = 0;
+	virtual void onLeave(Session *session) const = 0;
 
-	virtual void onEvent(Session &session, LUCID_GUI::MouseEvent const &event) const = 0;
+	virtual void onEvent(Session *session, LUCID_GUI::SizeEvent const &event) const { /* nop */ }
 
-	virtual void update(Session &session, float64_t t, float32_t dt) const = 0;
+	virtual void onEvent(Session *session, LUCID_GUI::MouseEvent const &event) const { /* nop */ }
 
-	virtual void render(Session &session, float64_t t, float32_t interpolant) const = 0;
+	virtual void onButtonPress(Session *session, LUCID_GUI::Button *button) const { /* nop */ }
+
+	virtual void update(Session *session, float64_t t, float32_t dt) const { /* nop */ }
+
+	virtual void render(Session *session, float64_t t, float32_t interpolant) const { /* nop */ }
 
 protected:
 	State() = default;
@@ -39,15 +50,9 @@ public:
 
 	virtual ~Stopped() = default;
 
-	virtual void onEnter(Session &session) const override;
+	virtual void onEnter(Session *session) const override;
 
-	virtual void onLeave(Session &session) const override;
-
-	virtual void onEvent(Session &session, LUCID_GUI::MouseEvent const &event) const override;
-
-	virtual void update(Session &session, float64_t t, float32_t dt) const override;
-
-	virtual void render(Session &session, float64_t t, float32_t interpolant) const override;
+	virtual void onLeave(Session *session) const override;
 
 	static Stopped const *instance();
 
@@ -63,15 +68,9 @@ public:
 
 	virtual ~Starting() = default;
 
-	virtual void onEnter(Session &session) const override;
+	virtual void onEnter(Session *session) const override;
 
-	virtual void onLeave(Session &session) const override;
-
-	virtual void onEvent(Session &session, LUCID_GUI::MouseEvent const &event) const override;
-
-	virtual void update(Session &session, float64_t t, float32_t dt) const override;
-
-	virtual void render(Session &session, float64_t t, float32_t interpolant) const override;
+	virtual void onLeave(Session *session) const override;
 
 	static Starting const *instance();
 
@@ -87,15 +86,9 @@ public:
 
 	virtual ~Stopping() = default;
 
-	virtual void onEnter(Session &session) const override;
+	virtual void onEnter(Session *session) const override;
 
-	virtual void onLeave(Session &session) const override;
-
-	virtual void onEvent(Session &session, LUCID_GUI::MouseEvent const &event) const override;
-
-	virtual void update(Session &session, float64_t t, float32_t dt) const override;
-
-	virtual void render(Session &session, float64_t t, float32_t interpolant) const override;
+	virtual void onLeave(Session *session) const override;
 
 	static Stopping const *instance();
 
@@ -111,15 +104,19 @@ public:
 
 	virtual ~Configuring() = default;
 
-	virtual void onEnter(Session &session) const override;
+	virtual void onEnter(Session *session) const override;
 
-	virtual void onLeave(Session &session) const override;
+	virtual void onLeave(Session *session) const override;
 
-	virtual void onEvent(Session &session, LUCID_GUI::MouseEvent const &event) const override;
+	virtual void onEvent(Session *session, LUCID_GUI::SizeEvent const &event) const override;
 
-	virtual void update(Session &session, float64_t t, float32_t dt) const override;
+	virtual void onEvent(Session *session, LUCID_GUI::MouseEvent const &event) const override;
 
-	virtual void render(Session &session, float64_t t, float32_t interpolant) const override;
+	virtual void onButtonPress(Session *session, LUCID_GUI::Button *button) const override;
+
+	virtual void update(Session *session, float64_t t, float32_t dt) const override;
+
+	virtual void render(Session *session, float64_t t, float32_t interpolant) const override;
 
 	static Configuring const *instance();
 };
@@ -134,15 +131,19 @@ public:
 
 	virtual ~Running() = default;
 
-	virtual void onEnter(Session &session) const override;
+	virtual void onEnter(Session *session) const override;
 
-	virtual void onLeave(Session &session) const override;
+	virtual void onLeave(Session *session) const override;
 
-	virtual void onEvent(Session &session, LUCID_GUI::MouseEvent const &event) const override;
+	virtual void onEvent(Session *session, LUCID_GUI::SizeEvent const &event) const override;
 
-	virtual void update(Session &session, float64_t t, float32_t dt) const override;
+	virtual void onEvent(Session *session, LUCID_GUI::MouseEvent const &event) const override;
 
-	virtual void render(Session &session, float64_t t, float32_t interpolant) const override;
+	virtual void onButtonPress(Session *session, LUCID_GUI::Button *button) const override;
+
+	virtual void update(Session *session, float64_t t, float32_t dt) const override;
+
+	virtual void render(Session *session, float64_t t, float32_t interpolant) const override;
 
 	static Running const *instance();
 

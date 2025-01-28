@@ -14,8 +14,9 @@ extern anchor_action_func computeRectangle[Frame::ANCHOR_ACTION_COUNT];
 //
 //
 
-Frame::Frame(ANCHOR anchor, int32_t width, int32_t height)
-	: _anchor(anchor)
+Frame::Frame(size_t id, ANCHOR anchor, int32_t width, int32_t height)
+	: _id(id)
+	, _anchor(anchor)
 	, _width(width), _height(height)
 {
 }

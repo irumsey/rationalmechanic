@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cassert>
-#include <string>
 #include <lucid/core/Noncopyable.h>
 #include <lucid/gui/Defines.h>
 #include <lucid/gui/Types.h>
@@ -32,6 +31,12 @@ public:
 
 	virtual ~Frame();
 
+	Frame const *firstChild() const;
+
+	Frame const *nextSibling() const;
+
+	size_t id() const;
+
 	ANCHOR anchor() const;
 
 	int32_t width() const;
@@ -40,9 +45,9 @@ public:
 
 	Rectangle const &rectangle() const;
 
-	Frame const *firstChild() const;
+	bool isHit(LUCID_GUI::Point const &position) const;
 
-	Frame const *nextSibling() const;
+	bool notHit(LUCID_GUI::Point const &position) const;
 
 	virtual void addChild(Frame *frame);
 
@@ -55,12 +60,13 @@ public:
 	virtual void onEvent(MouseEvent const &event) override;
 
 protected:
-	Frame(ANCHOR anchor, int32_t width, int32_t height);
+	Frame(size_t id, ANCHOR anchor, int32_t width, int32_t height);
 
 private:
 	Frame *_firstChild = nullptr;
 	Frame *_nextSibling = nullptr;
 
+	size_t _id = -1;
 	ANCHOR _anchor = ANCHOR_FILL;
 	int32_t _width = 0;
 	int32_t _height = 0;
@@ -72,6 +78,21 @@ private:
 	LUCID_PREVENT_COPY(Frame);
 	LUCID_PREVENT_ASSIGNMENT(Frame);
 };
+
+inline Frame const *Frame::firstChild() const
+{
+	return _firstChild;
+}
+
+inline Frame const *Frame::nextSibling() const
+{
+	return _nextSibling;
+}
+
+inline size_t Frame::id() const
+{
+	return _id;
+}
 
 inline Frame::ANCHOR Frame::anchor() const
 {
@@ -93,14 +114,14 @@ inline Rectangle const &Frame::rectangle() const
 	return _rectangle;
 }
 
-inline Frame const *Frame::firstChild() const
+inline bool Frame::isHit(LUCID_GUI::Point const &position) const
 {
-	return _firstChild;
+	return LUCID_MATH::contains(_rectangle, position);
 }
 
-inline Frame const *Frame::nextSibling() const
+inline bool Frame::notHit(LUCID_GUI::Point const &position) const
 {
-	return _nextSibling;
+	return !isHit(position);
 }
 
 inline void Frame::addChild(Frame *frame)
@@ -123,7 +144,8 @@ inline void Frame::onEvent(KeyboardEvent const &event)
 
 inline void Frame::onEvent(MouseEvent const &event)
 {
-	dispatch(event);
+	if (isHit(event.position))
+		dispatch(event);
 }
 
 template<typename E> inline void Frame::dispatch(E const &event)

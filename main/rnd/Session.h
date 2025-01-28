@@ -3,11 +3,13 @@
 #include <lucid/core/Noncopyable.h>
 #include <lucid/gui/Types.h>
 #include <lucid/gui/Events.h>
+
 #include <rnd/Utility.h>
 
 LUCID_GUI_BEGIN
 
 class Frame;
+class Button;
 
 LUCID_GUI_END
 
@@ -23,11 +25,15 @@ public:
 
 	virtual ~Session() = default;
 
-	void initialize();
+	void initialize(LUCID_GUI::Rectangle const &rectangle);
 
 	void shutdown();
 
+	void onEvent(LUCID_GUI::SizeEvent const &event);
+
 	void onEvent(LUCID_GUI::MouseEvent const &event);
+
+	void onButtonPress(LUCID_GUI::Button *button);
 
 	void update(float64_t t, float32_t dt);
 
@@ -43,7 +49,10 @@ private:
 	State const *_state = nullptr;
 	void changeState(State const *state);
 
-	LUCID_GUI::Frame *_gui = nullptr;
+	LUCID_GUI::Rectangle _rectangle;
+
+	LUCID_GUI::Frame *_guiConfiguring = nullptr;
+	LUCID_GUI::Frame *_guiRunning = nullptr;
 
 	Session &ref();
 

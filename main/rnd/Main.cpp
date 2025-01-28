@@ -42,6 +42,20 @@ Session session;
 
 LUCID_ANONYMOUS_END
 
+///
+///
+/// 
+LUCID_GUI::Rectangle getWindowRectangle(HWND hWindow)
+{
+	RECT rect;
+	::GetClientRect(hWindow, &rect);
+
+	int32_t width = rect.right - rect.left;
+	int32_t height = rect.bottom - rect.top;
+
+	return LUCID_GUI::Rectangle(LUCID_GUI::Point(0, 0), LUCID_GUI::Point(width, height));
+}
+
 ///	onUpdate
 ///
 ///
@@ -69,6 +83,18 @@ void onRender()
 ///
 /// 
 /// 
+
+void onResize(HWND hWindow)
+{
+	LUCID_PROFILE_BEGIN("Resize");
+
+	LUCID_GUI::Rectangle rectangle = ::getWindowRectangle(hWindow);
+
+	LUCID_GAL_SYSTEM.resize(rectangle.max.x, rectangle.max.y);
+	session.onEvent(LUCID_GUI::SizeEvent(rectangle));
+
+	LUCID_PROFILE_END();
+}
 
 void onMouseLeftButton(bool down, LUCID_GUI::Point const &position)
 {
@@ -140,6 +166,10 @@ LRESULT WINAPI onMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			::PostQuitMessage(0);
 			return 0;
 		}
+		break;
+
+	case WM_EXITSIZEMOVE:
+		::onResize(hWnd);
 		break;
 
 	case WM_LBUTTONDOWN:
@@ -227,7 +257,7 @@ INT WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR cmdln, _In_ IN
 			(
 				L"RND",
 				L"R&D!",
-				WS_OVERLAPPEDWINDOW,
+				WS_OVERLAPPEDWINDOW | WS_THICKFRAME,
 				0, 16,
 				SCREEN_WIDTH, SCREEN_HEIGHT,
 				::GetDesktopWindow(),
@@ -239,10 +269,9 @@ INT WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR cmdln, _In_ IN
 		///
 		///	Initialize...
 		///
-		RECT rect;
-		::GetClientRect(hWindow, &rect);
+		LUCID_GUI::Rectangle rectangle = ::getWindowRectangle(hWindow);
 
-		LUCID_GAL_SYSTEM.initialize(true, rect.right - rect.left, rect.bottom - rect.top, 1, hWindow);
+		LUCID_GAL_SYSTEM.initialize(true, rectangle.max.x, rectangle.max.y, 1, hWindow);
 		::ShowWindow(hWindow, SW_SHOW);
 
 		///
@@ -258,7 +287,7 @@ INT WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR cmdln, _In_ IN
 		float64_t wallTimeLast = wallTime;
 		float64_t wallTimeAccum = 0.f;
 
-		session.initialize();
+		session.initialize(rectangle);
 
 		///
 		///	Message pump

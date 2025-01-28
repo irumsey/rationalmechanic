@@ -2,8 +2,8 @@
 
 LUCID_GUI_BEGIN
 
-Label::Label(ANCHOR anchor, int32_t width, int32_t height)
-	: Frame(anchor, width, height)
+Label::Label(size_t id, ANCHOR anchor, int32_t width, int32_t height)
+	: Frame(id, anchor, width, height)
 {
 }
 

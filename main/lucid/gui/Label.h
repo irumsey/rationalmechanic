@@ -1,6 +1,5 @@
 #pragma once
 
-#include <string>
 #include <lucid/core/Noncopyable.h>
 #include <lucid/gui/Defines.h>
 #include <lucid/gui/Frame.h>
@@ -13,7 +12,7 @@ LUCID_GUI_BEGIN
 class Label final : public Frame
 {
 public:
-	Label(ANCHOR anchor, int32_t width, int32_t height);
+	Label(size_t id, ANCHOR anchor, int32_t width, int32_t height);
 
 	virtual ~Label() = default;
 
