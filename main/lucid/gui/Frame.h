@@ -8,6 +8,8 @@
 
 LUCID_GUI_BEGIN
 
+class Renderer;
+
 //	Frame
 //
 //
@@ -58,6 +60,8 @@ public:
 	virtual void onEvent(KeyboardEvent const &event) override;
 
 	virtual void onEvent(MouseEvent const &event) override;
+
+	virtual void accept(Renderer *renderer) const = 0;
 
 protected:
 	Frame(size_t id, ANCHOR anchor, int32_t width, int32_t height);

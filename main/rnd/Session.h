@@ -3,7 +3,7 @@
 #include <lucid/core/Noncopyable.h>
 #include <lucid/gui/Types.h>
 #include <lucid/gui/Events.h>
-
+#include <lucid/gui/Renderer.h>
 #include <rnd/Utility.h>
 
 LUCID_GUI_BEGIN
@@ -51,6 +51,7 @@ private:
 
 	LUCID_GUI::Rectangle _rectangle;
 
+	LUCID_GUI::Renderer _guiRender;
 	LUCID_GUI::Frame *_guiConfiguring = nullptr;
 	LUCID_GUI::Frame *_guiRunning = nullptr;
 

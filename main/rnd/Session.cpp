@@ -16,12 +16,16 @@ Session::Session()
 void Session::initialize(LUCID_GUI::Rectangle const &rectangle)
 {
 	_rectangle = rectangle;
+	_guiRender.initialize();
+
 	changeState(Starting::instance());
 }
 
 void Session::shutdown()
 {
 	changeState(Stopping::instance());
+
+	_guiRender.shutdown();
 }
 
 void Session::onEvent(LUCID_GUI::SizeEvent const &event)

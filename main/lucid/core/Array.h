@@ -12,7 +12,7 @@ LUCID_CORE_BEGIN
 
 ///	Array
 ///
-///	Fixed size array.
+/// Note: or just use std::array<>
 template<size_t N, typename T> class Array
 {
 public:

@@ -24,12 +24,6 @@ namespace /* anonymous */ {
 		CID_LBL_SELECT	= 0x206,
 	};
 
-	template<typename P> inline void safe_delete(P *&ptr)
-	{
-		delete ptr;
-		ptr = nullptr;
-	}
-
 };
 
 /// 
@@ -60,13 +54,22 @@ void Starting::onEnter(Session *session) const
 	int32_t width = rectangle.max.x;
 	int32_t height = rectangle.max.y;
 
+	// test {
+	LUCID_GUI::Button::Tiles tiles = {
+		LUCID_GAL::Vector4(0.f, 0.f, 1.f, 1.f),
+		LUCID_GAL::Vector4(0.f, 0.f, 1.f, 1.f),
+		LUCID_GAL::Vector4(0.f, 0.f, 1.f, 1.f),
+		LUCID_GAL::Vector4(0.f, 0.f, 1.f, 1.f),
+	};
+	// } test
+
 	//
 	//	setup the "configuring" user interface
 	// 
 	{
 		LUCID_GUI::Panel *mainPanel = new LUCID_GUI::Panel(CID_NONE, LUCID_GUI::Frame::ANCHOR_FILL, width, height);
 
-		LUCID_GUI::Button *startButton = new LUCID_GUI::Button(CID_BTN_START, LUCID_GUI::Frame::ANCHOR_SOUTH, 128, 128);
+		LUCID_GUI::Button *startButton = new LUCID_GUI::Button(CID_BTN_START, LUCID_GUI::Frame::ANCHOR_SOUTH, 128, 128, tiles);
 		mainPanel->addChild(startButton);
 		startButton->set(std::bind(&Session::onButtonPress, session, std::placeholders::_1));
 		startButton->enable();
@@ -81,7 +84,7 @@ void Starting::onEnter(Session *session) const
 	{
 		LUCID_GUI::Panel *mainPanel = new LUCID_GUI::Panel(CID_NONE, LUCID_GUI::Frame::ANCHOR_FILL, width, height);
 		
-		LUCID_GUI::Button *stopButton = new LUCID_GUI::Button(CID_BTN_STOP, LUCID_GUI::Frame::ANCHOR_NORTH_EAST, 64, 64);
+		LUCID_GUI::Button *stopButton = new LUCID_GUI::Button(CID_BTN_STOP, LUCID_GUI::Frame::ANCHOR_NORTH_EAST, 64, 64, tiles);
 		mainPanel->addChild(stopButton);
 		stopButton->set(std::bind(&Session::onButtonPress, session, std::placeholders::_1));
 		stopButton->enable();
@@ -95,17 +98,17 @@ void Starting::onEnter(Session *session) const
 		LUCID_GUI::Label *timeLabel = new LUCID_GUI::Label(CID_LBL_TIME, LUCID_GUI::Frame::ANCHOR_SOUTH_WEST, 128, 16);
 		mainPanel->addChild(timeLabel);
 		
-		LUCID_GUI::Button *fastButton = new LUCID_GUI::Button(CID_BTN_FASTER, LUCID_GUI::Frame::ANCHOR_EAST, 64, 64);
+		LUCID_GUI::Button *fastButton = new LUCID_GUI::Button(CID_BTN_FASTER, LUCID_GUI::Frame::ANCHOR_EAST, 64, 64, tiles);
 		ctrlPanel->addChild(fastButton);
 		fastButton->set(std::bind(&Session::onButtonPress, session, std::placeholders::_1));
 		fastButton->enable();
 
-		LUCID_GUI::Button *playButton = new LUCID_GUI::Button(CID_BTN_PLAY, LUCID_GUI::Frame::ANCHOR_SOUTH, 128, 64);
+		LUCID_GUI::Button *playButton = new LUCID_GUI::Button(CID_BTN_PLAY, LUCID_GUI::Frame::ANCHOR_SOUTH, 128, 64, tiles);
 		ctrlPanel->addChild(playButton);
 		playButton->set(std::bind(&Session::onButtonPress, session, std::placeholders::_1));
 		playButton->enable();
 
-		LUCID_GUI::Button *slowButton = new LUCID_GUI::Button(CID_BTN_SLOWER, LUCID_GUI::Frame::ANCHOR_WEST, 64, 64);
+		LUCID_GUI::Button *slowButton = new LUCID_GUI::Button(CID_BTN_SLOWER, LUCID_GUI::Frame::ANCHOR_WEST, 64, 64, tiles);
 		ctrlPanel->addChild(slowButton);
 		slowButton->set(std::bind(&Session::onButtonPress, session, std::placeholders::_1));
 		slowButton->enable();
@@ -189,6 +192,7 @@ void Configuring::update(Session *session, float64_t t, float32_t dt) const
 void Configuring::render(Session *session, float64_t t, float32_t interpolant) const
 {
 	LUCID_GAL_PIPELINE.clear(true, true, true, LUCID_GAL::Color(0, 1, 0, 1), 1.f, 0x00);
+	session->_guiRender(session->_guiConfiguring);
 }
 
 Configuring const *Configuring::instance()
@@ -233,6 +237,7 @@ void Running::update(Session *session, float64_t t, float32_t dt) const
 void Running::render(Session *session, float64_t t, float32_t interpolant) const
 {
 	LUCID_GAL_PIPELINE.clear(true, true, true, LUCID_GAL::Color(0, 0, 0, 1), 1.f, 0x00);
+	session->_guiRender(session->_guiRunning);
 }
 
 Running const *Running::instance()

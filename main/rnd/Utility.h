@@ -6,6 +6,16 @@
 #include <lucid/math/Vector.h>
 
 ///
+/// 
+/// 
+
+template<typename P> inline void safe_delete(P *&ptr)
+{
+	delete ptr;
+	ptr = nullptr;
+}
+
+///
 ///
 ///
 

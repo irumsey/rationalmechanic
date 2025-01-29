@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <functional>
 #include <lucid/core/Noncopyable.h>
 #include <lucid/gui/Defines.h>
@@ -20,9 +21,13 @@ public:
 		STATE_DISABLED = 0,
 		STATE_ENABLED,
 		STATE_FOCUSED,
+		STATE_PRESSED,
 	};
+	enum { STATE_COUNT = STATE_PRESSED + 1 };
 
-	Button(size_t id, ANCHOR anchor, int32_t width, int32_t height);
+	typedef std::array<LUCID_GAL::Vector4, STATE_COUNT> Tiles;
+
+	Button(size_t id, ANCHOR anchor, int32_t width, int32_t height, Tiles const &tiles);
 
 	virtual ~Button() = default;
 
@@ -38,8 +43,12 @@ public:
 
 	virtual void onEvent(MouseEvent const &event) override;
 
+	virtual void accept(Renderer *renderer) const override;
+
 private:
 	STATE _state = STATE_DISABLED;
+	Tiles _tiles;
+
 	Callback _callback;
 
 	LUCID_PREVENT_COPY(Button);

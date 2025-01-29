@@ -25,6 +25,7 @@
     <ClInclude Include="Frame.h" />
     <ClInclude Include="Label.h" />
     <ClInclude Include="Panel.h" />
+    <ClInclude Include="Renderer.h" />
     <ClInclude Include="Types.h" />
   </ItemGroup>
   <ItemGroup>
@@ -32,6 +33,7 @@
     <ClCompile Include="Frame.cpp" />
     <ClCompile Include="Label.cpp" />
     <ClCompile Include="Panel.cpp" />
+    <ClCompile Include="Renderer.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

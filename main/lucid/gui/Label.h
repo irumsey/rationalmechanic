@@ -16,6 +16,8 @@ public:
 
 	virtual ~Label() = default;
 
+	virtual void accept(Renderer *renderer) const override;
+
 private:
 
 	LUCID_PREVENT_COPY(Label);

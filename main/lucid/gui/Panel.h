@@ -16,6 +16,8 @@ public:
 
 	virtual ~Panel() = default;
 
+	virtual void accept(Renderer *renderer) const override;
+
 	LUCID_PREVENT_COPY(Panel);
 	LUCID_PREVENT_ASSIGNMENT(Panel);
 };

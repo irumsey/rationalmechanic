@@ -8,11 +8,13 @@
     <ClInclude Include="Panel.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Events.h" />
+    <ClInclude Include="Renderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Frame.cpp" />
     <ClCompile Include="Label.cpp" />
     <ClCompile Include="Panel.cpp" />
     <ClCompile Include="Button.cpp" />
+    <ClCompile Include="Renderer.cpp" />
   </ItemGroup>
 </Project>
