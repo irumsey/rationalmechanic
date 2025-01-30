@@ -29,11 +29,35 @@ enum ID
 };
 
 // test {
-gui::Button::Tiles const tiles = {
-	LUCID_GAL::Vector4( 672.f, 1024.f - 896.f, 992.f, 1024.f - 1024.f) / 1024.f,
-	LUCID_GAL::Vector4( 672.f, 1024.f - 896.f, 992.f, 1024.f - 1024.f) / 1024.f,
-	LUCID_GAL::Vector4( 672.f, 1024.f - 896.f, 992.f, 1024.f - 1024.f) / 1024.f,
-	LUCID_GAL::Vector4( 672.f, 1024.f - 896.f, 992.f, 1024.f - 1024.f) / 1024.f,
+gui::Button::Tiles const playTiles = {
+	LUCID_GAL::Vector4( 0.f,   0.f, 96.f,  96.f) / 1024.f,
+	LUCID_GAL::Vector4( 0.f,  96.f, 96.f, 192.f) / 1024.f,
+	LUCID_GAL::Vector4( 0.f, 192.f, 96.f, 288.f) / 1024.f,
+	LUCID_GAL::Vector4( 0.f, 288.f, 96.f, 384.f) / 1024.f,
+};
+gui::Button::Tiles const pauseTiles = {
+	LUCID_GAL::Vector4( 96.f,   0.f, 192.f,  96.f) / 1024.f,
+	LUCID_GAL::Vector4( 96.f,  96.f, 192.f, 192.f) / 1024.f,
+	LUCID_GAL::Vector4( 96.f, 192.f, 192.f, 288.f) / 1024.f,
+	LUCID_GAL::Vector4( 96.f, 288.f, 192.f, 384.f) / 1024.f,
+};
+gui::Button::Tiles const stopTiles = {
+	LUCID_GAL::Vector4( 192.f,   0.f, 288.f,  96.f) / 1024.f,
+	LUCID_GAL::Vector4( 192.f,  96.f, 288.f, 192.f) / 1024.f,
+	LUCID_GAL::Vector4( 192.f, 192.f, 288.f, 288.f) / 1024.f,
+	LUCID_GAL::Vector4( 192.f, 288.f, 288.f, 384.f) / 1024.f,
+};
+gui::Button::Tiles const fasterTiles = {
+	LUCID_GAL::Vector4( 288.f,   0.f, 384.f,  96.f) / 1024.f,
+	LUCID_GAL::Vector4( 288.f,  96.f, 384.f, 192.f) / 1024.f,
+	LUCID_GAL::Vector4( 288.f, 192.f, 384.f, 288.f) / 1024.f,
+	LUCID_GAL::Vector4( 288.f, 288.f, 384.f, 384.f) / 1024.f,
+};
+gui::Button::Tiles const slowerTiles = {
+	LUCID_GAL::Vector4( 384.f,   0.f, 480.f,  96.f) / 1024.f,
+	LUCID_GAL::Vector4( 384.f,  96.f, 480.f, 192.f) / 1024.f,
+	LUCID_GAL::Vector4( 384.f, 192.f, 480.f, 288.f) / 1024.f,
+	LUCID_GAL::Vector4( 384.f, 288.f, 480.f, 384.f) / 1024.f,
 };
 // } test
 
@@ -86,7 +110,7 @@ void Starting::onEnter(Session *session) const
 	{
 		gui::Panel *mainPanel = new gui::Panel(ID_NONE, gui::ANCHOR_FILL, width, height);
 
-		gui::Button *startButton = new gui::Button(ID_BTN_START, gui::ANCHOR_SOUTH, 128, 128, handler, tiles);
+		gui::Button *startButton = new gui::Button(ID_BTN_START, gui::ANCHOR_SOUTH, 42, 42, handler, playTiles);
 		mainPanel->addChild(startButton);
 		startButton->enable();
 
@@ -100,29 +124,35 @@ void Starting::onEnter(Session *session) const
 	{
 		gui::Panel *mainPanel = new gui::Panel(ID_NONE, gui::ANCHOR_FILL, width, height);
 		
-		gui::Button *stopButton = new gui::Button(ID_BTN_STOP, gui::ANCHOR_NORTH_EAST, 64, 64, handler, tiles);
-		mainPanel->addChild(stopButton);
-		stopButton->enable();
+		gui::Label *timeLabel = new gui::Label(ID_LBL_TIME, gui::ANCHOR_SOUTH_WEST, 128, 16);
+		mainPanel->addChild(timeLabel);
 
 		gui::Label *slctLabel = new gui::Label(ID_LBL_SELECT, gui::ANCHOR_SOUTH_EAST, 128, 16);
 		mainPanel->addChild(slctLabel);
 
-		gui::Panel *ctrlPanel = new gui::Panel(ID_NONE, gui::ANCHOR_SOUTH, 256, 64);
-		mainPanel->addChild(ctrlPanel);
+		gui::Panel *mainSouthPanel = new gui::Panel(ID_NONE, gui::ANCHOR_SOUTH, 168, 128);
+		mainPanel->addChild(mainSouthPanel);
 		
-		gui::Label *timeLabel = new gui::Label(ID_LBL_TIME, gui::ANCHOR_SOUTH_WEST, 128, 16);
-		mainPanel->addChild(timeLabel);
-		
-		gui::Button *fastButton = new gui::Button(ID_BTN_FASTER, gui::ANCHOR_EAST, 64, 64, handler, tiles);
-		ctrlPanel->addChild(fastButton);
+		gui::Panel *ctrlWestPanel = new gui::Panel(ID_NONE, gui::ANCHOR_WEST, 84, 128);
+		mainSouthPanel->addChild(ctrlWestPanel);
+
+		gui::Panel *ctrlEastPanel = new gui::Panel(ID_NONE, gui::ANCHOR_EAST, 84, 128);
+		mainSouthPanel->addChild(ctrlEastPanel);
+
+		gui::Button *fastButton = new gui::Button(ID_BTN_FASTER, gui::ANCHOR_EAST, 42, 42, handler, fasterTiles);
+		ctrlEastPanel->addChild(fastButton);
 		fastButton->enable();
 
-		gui::Button *playButton = new gui::Button(ID_BTN_PLAY, gui::ANCHOR_SOUTH, 128, 64, handler, tiles);
-		ctrlPanel->addChild(playButton);
+		gui::Button *stopButton = new gui::Button(ID_BTN_STOP, gui::ANCHOR_WEST, 42, 42, handler, stopTiles);
+		ctrlEastPanel->addChild(stopButton);
+		stopButton->enable();
+
+		gui::Button *playButton = new gui::Button(ID_BTN_PLAY, gui::ANCHOR_EAST, 42, 42, handler, playTiles);
+		ctrlWestPanel->addChild(playButton);
 		playButton->enable();
 
-		gui::Button *slowButton = new gui::Button(ID_BTN_SLOWER, gui::ANCHOR_WEST, 64, 64, handler, tiles);
-		ctrlPanel->addChild(slowButton);
+		gui::Button *slowButton = new gui::Button(ID_BTN_SLOWER, gui::ANCHOR_WEST, 42, 42, handler, slowerTiles);
+		ctrlWestPanel->addChild(slowButton);
 		slowButton->enable();
 
 		session->_guiRunning = mainPanel;

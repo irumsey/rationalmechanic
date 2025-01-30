@@ -27,7 +27,7 @@ Frame::~Frame()
 	delete _nextSibling;
 }
 
-inline void Frame::onEvent(SizeEvent const &event)
+void Frame::onEvent(SizeEvent const &event)
 {
 	_rectangle = computeRectangle[_anchor](event.rectangle, _width, _height);
 	dispatch(SizeEvent(_rectangle));

@@ -62,6 +62,8 @@ private:
 
 	Rectangle _rectangle;
 
+	bool _hasFocus = false;
+
 	template<typename E> void dispatch(E const &event);
 
 	LUCID_PREVENT_COPY(Frame);
@@ -128,12 +130,19 @@ inline void Frame::onEvent(TimerEvent const &event)
 
 inline void Frame::onEvent(KeyboardEvent const &event)
 {
-	dispatch(event);
+	if (_hasFocus)
+		dispatch(event);
 }
 
 inline void Frame::onEvent(MouseEvent const &event)
 {
-	if (isHit(event.position))
+	// children will usually share edges with its parent.
+	// if a child had focus but the parent does not, the
+	// child needs to know.
+	bool hadFocus = _hasFocus;
+	_hasFocus = isHit(event.position);
+
+	if (_hasFocus || hadFocus)
 		dispatch(event);
 }
 
