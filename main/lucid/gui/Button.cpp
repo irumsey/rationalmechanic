@@ -1,17 +1,11 @@
 #include "Button.h"
 #include "Renderer.h"
 
-LUCID_ANONYMOUS_BEGIN
-
-void ignore(LUCID_GUI::Button *) {}
-
-LUCID_ANONYMOUS_END
-
 LUCID_GUI_BEGIN
 
-Button::Button(size_t id, ANCHOR anchor, int32_t width, int32_t height, Tiles const &tiles)
+Button::Button(size_t id, ANCHOR anchor, int32_t width, int32_t height, Callback const &callback, Tiles const &tiles)
 	: Frame(id, anchor, width, height)
-	, _callback(ignore)
+	, _callback(callback)
 	, _tiles(tiles)
 {
 }

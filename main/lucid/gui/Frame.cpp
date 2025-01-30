@@ -8,7 +8,7 @@ LUCID_GUI_BEGIN
 // 
 
 typedef Rectangle (*anchor_action_func)(Rectangle const &, int32_t, int32_t);
-extern anchor_action_func computeRectangle[Frame::ANCHOR_ACTION_COUNT];
+extern anchor_action_func computeRectangle[ANCHOR_ACTION_COUNT];
 
 //
 //
@@ -135,7 +135,7 @@ Rectangle anchorNorthWest(Rectangle const &frame, int32_t width, int32_t height)
 	return Rectangle(Point(xmin, ymin), Point(xmax, ymax));
 }
 
-anchor_action_func computeRectangle[Frame::ANCHOR_ACTION_COUNT] =
+anchor_action_func computeRectangle[ANCHOR_ACTION_COUNT] =
 {
 	anchorFill,
 	anchorCenter,

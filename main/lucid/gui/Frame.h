@@ -16,21 +16,6 @@ class Renderer;
 class Frame : public EventHandler
 {
 public:
-	enum ANCHOR
-	{
-		ANCHOR_FILL = 0,
-		ANCHOR_CENTER,
-		ANCHOR_NORTH,
-		ANCHOR_NORTH_EAST,
-		ANCHOR_EAST,
-		ANCHOR_SOUTH_EAST,
-		ANCHOR_SOUTH,
-		ANCHOR_SOUTH_WEST,
-		ANCHOR_WEST,
-		ANCHOR_NORTH_WEST,
-	};
-	enum { ANCHOR_ACTION_COUNT = ANCHOR_NORTH_WEST + 1 };
-
 	virtual ~Frame();
 
 	Frame const *firstChild() const;
@@ -98,7 +83,7 @@ inline size_t Frame::id() const
 	return _id;
 }
 
-inline Frame::ANCHOR Frame::anchor() const
+inline ANCHOR Frame::anchor() const
 {
 	return _anchor;
 }

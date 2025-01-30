@@ -114,7 +114,7 @@ inline std::shared_ptr<LUCID_GAL::Program> Material::program() const
 
 inline Primitive const &Material::attribute(std::string const &name) const
 {
-	auto const &iter = _attributes.find(name);
+	auto const iter = _attributes.find(name);
 	LUCID_VALIDATE(iter != _attributes.end(), "unknown material attribute '" + name + "' specified");
 
 	return iter->second.value;
@@ -122,7 +122,7 @@ inline Primitive const &Material::attribute(std::string const &name) const
 
 inline Primitive &Material::attribute(std::string const &name)
 {
-	auto &iter = _attributes.find(name);
+	auto iter = _attributes.find(name);
 	LUCID_VALIDATE(iter != _attributes.end(), "unknown material attribute '" + name + "' specified");
 
 	return iter->second.value;

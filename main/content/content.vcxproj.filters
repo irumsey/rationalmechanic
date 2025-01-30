@@ -75,18 +75,6 @@
     <FxCompile Include="..\..\_bin\main\omp\content\fonts.vertex.hlsl">
       <Filter>omp</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\_bin\main\rnd\content\hemisphere.vertex.hlsl">
-      <Filter>rnd</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\_bin\main\rnd\content\hemisphere.pixel.hlsl">
-      <Filter>rnd</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\_bin\main\rnd\content\orbit.vertex.hlsl">
-      <Filter>rnd</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\_bin\main\rnd\content\orbit.pixel.hlsl">
-      <Filter>rnd</Filter>
-    </FxCompile>
     <FxCompile Include="..\..\_bin\main\omp\content\sphere.pixel.hlsl">
       <Filter>omp</Filter>
     </FxCompile>
@@ -105,16 +93,10 @@
     <FxCompile Include="..\..\_bin\main\omp\content\_010\atmosphere.pixel.hlsl">
       <Filter>omp\_010</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\_bin\main\rnd\content\sphere.pixel.hlsl">
+    <FxCompile Include="..\..\_bin\main\rnd\content\gui.vertex.hlsl">
       <Filter>rnd</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\_bin\main\rnd\content\sphere.vertex.hlsl">
-      <Filter>rnd</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\_bin\main\rnd\content\planet.pixel.hlsl">
-      <Filter>rnd</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\_bin\main\rnd\content\planet.vertex.hlsl">
+    <FxCompile Include="..\..\_bin\main\rnd\content\gui.pixel.hlsl">
       <Filter>rnd</Filter>
     </FxCompile>
   </ItemGroup>
@@ -146,15 +128,6 @@
     <None Include="..\..\_bin\main\omp\content\fonts.header.hlsl">
       <Filter>omp</Filter>
     </None>
-    <None Include="..\..\_bin\main\rnd\content\hemisphere.header.hlsl">
-      <Filter>rnd</Filter>
-    </None>
-    <None Include="..\..\_bin\main\rnd\content\orbit.header.hlsl">
-      <Filter>rnd</Filter>
-    </None>
-    <None Include="..\..\_bin\main\rnd\content\utility.header.hlsl">
-      <Filter>rnd</Filter>
-    </None>
     <None Include="..\..\_bin\main\omp\content\sphere.header.hlsl">
       <Filter>omp</Filter>
     </None>
@@ -164,13 +137,7 @@
     <None Include="..\..\_bin\main\omp\content\instance.header.hlsl">
       <Filter>omp</Filter>
     </None>
-    <None Include="..\..\_bin\main\rnd\content\sphere.header.hlsl">
-      <Filter>rnd</Filter>
-    </None>
-    <None Include="..\..\_bin\main\rnd\content\instance.header.hlsl">
-      <Filter>rnd</Filter>
-    </None>
-    <None Include="..\..\_bin\main\rnd\content\planet.header.hlsl">
+    <None Include="..\..\_bin\main\rnd\content\gui.header.hlsl">
       <Filter>rnd</Filter>
     </None>
   </ItemGroup>

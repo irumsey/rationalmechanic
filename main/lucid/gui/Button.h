@@ -27,15 +27,13 @@ public:
 
 	typedef std::array<LUCID_GAL::Vector4, STATE_COUNT> Tiles;
 
-	Button(size_t id, ANCHOR anchor, int32_t width, int32_t height, Tiles const &tiles);
+	Button(size_t id, ANCHOR anchor, int32_t width, int32_t height, Callback const &callback, Tiles const &tiles);
 
 	virtual ~Button() = default;
 
 	STATE state() const;
 
 	void enable(bool enabled = true);
-
-	void set(Callback const &callback);
 
 	virtual void onEvent(TimerEvent const &event) override;
 
@@ -63,11 +61,6 @@ inline Button::STATE Button::state() const
 inline void Button::enable(bool enabled)
 {
 	_state = enabled ? STATE_ENABLED : STATE_DISABLED;
-}
-
-inline void Button::set(Callback const &callback)
-{
-	_callback = callback;
 }
 
 LUCID_GUI_END

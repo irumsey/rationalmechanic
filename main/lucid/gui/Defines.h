@@ -1,6 +1,8 @@
 #pragma once
 
 #include <lucid/core/Defines.h>
+#include <lucid/math/Defines.h>
+#include <lucid/gigl/Defines.h>
 
 #define LUCID_GUI ::lucid::gui
 

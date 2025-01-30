@@ -1,6 +1,7 @@
 #pragma once
 
 #include <lucid/core/Noncopyable.h>
+#include <lucid/gigl/Context.h>
 #include <lucid/gui/Types.h>
 #include <lucid/gui/Events.h>
 #include <lucid/gui/Renderer.h>
@@ -54,6 +55,8 @@ private:
 	LUCID_GUI::Renderer _guiRender;
 	LUCID_GUI::Frame *_guiConfiguring = nullptr;
 	LUCID_GUI::Frame *_guiRunning = nullptr;
+
+	LUCID_GIGL::Context _renderContext;
 
 	Session &ref();
 

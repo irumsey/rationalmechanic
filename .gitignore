@@ -427,3 +427,6 @@ ModelManifest.xml
 /main/dad/writeReadTest.bin
 /_bin/output.txt
 /_lib/gui.64d.idb
+/_bin/main/rnd/content/gui.pixel.cso
+/_bin/main/rnd/content/gui.vertex.cso
+/_bin/main/rnd/content/gui.material
