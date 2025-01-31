@@ -1,5 +1,6 @@
 #include "State.h"
 #include "Session.h"
+#include <lucid/gui/Checkbox.h>
 #include <lucid/gui/Button.h>
 #include <lucid/gui/Label.h>
 #include <lucid/gui/Panel.h>
@@ -29,17 +30,21 @@ enum ID
 };
 
 // test {
-gui::Button::Tiles const playTiles = {
+gui::Button::Tiles const startTiles = {
 	LUCID_GAL::Vector4( 0.f,   0.f, 96.f,  96.f) / 1024.f,
 	LUCID_GAL::Vector4( 0.f,  96.f, 96.f, 192.f) / 1024.f,
 	LUCID_GAL::Vector4( 0.f, 192.f, 96.f, 288.f) / 1024.f,
 	LUCID_GAL::Vector4( 0.f, 288.f, 96.f, 384.f) / 1024.f,
 };
-gui::Button::Tiles const pauseTiles = {
+gui::Checkbox::Tiles const playPauseTiles = {
+	LUCID_GAL::Vector4(  0.f,   0.f,  96.f,  96.f) / 1024.f,
+	LUCID_GAL::Vector4(  0.f,  96.f,  96.f, 192.f) / 1024.f,
+	LUCID_GAL::Vector4(  0.f,   0.f,  96.f,  96.f) / 1024.f,
+	LUCID_GAL::Vector4(  0.f, 192.f,  96.f, 288.f) / 1024.f,
 	LUCID_GAL::Vector4( 96.f,   0.f, 192.f,  96.f) / 1024.f,
 	LUCID_GAL::Vector4( 96.f,  96.f, 192.f, 192.f) / 1024.f,
+	LUCID_GAL::Vector4( 96.f,   0.f, 192.f,  96.f) / 1024.f,
 	LUCID_GAL::Vector4( 96.f, 192.f, 192.f, 288.f) / 1024.f,
-	LUCID_GAL::Vector4( 96.f, 288.f, 192.f, 384.f) / 1024.f,
 };
 gui::Button::Tiles const stopTiles = {
 	LUCID_GAL::Vector4( 192.f,   0.f, 288.f,  96.f) / 1024.f,
@@ -102,7 +107,8 @@ void Starting::onEnter(Session *session) const
 
 	session->_renderContext = LUCID_GIGL::Context("content/render.context");
 
-	auto handler = std::bind(&Session::onButtonPress, session, std::placeholders::_1);
+	auto btnHandler = std::bind(&Session::onButtonPress, session, std::placeholders::_1);
+	auto cbxHandler = std::bind(&Session::onCheckboxPress, session, std::placeholders::_1);
 
 	//
 	//	setup the "configuring" user interface
@@ -110,9 +116,9 @@ void Starting::onEnter(Session *session) const
 	{
 		gui::Panel *mainPanel = new gui::Panel(ID_NONE, gui::ANCHOR_FILL, width, height);
 
-		gui::Button *startButton = new gui::Button(ID_BTN_START, gui::ANCHOR_SOUTH, 42, 42, handler, playTiles);
+		gui::Button *startButton = new gui::Button(ID_BTN_START, gui::ANCHOR_SOUTH, 42, 42, btnHandler, startTiles);
 		mainPanel->addChild(startButton);
-		startButton->enable();
+		startButton->setEnabled();
 
 		session->_guiConfiguring = mainPanel;
 		mainPanel->onEvent(gui::SizeEvent(rectangle));
@@ -139,21 +145,21 @@ void Starting::onEnter(Session *session) const
 		gui::Panel *ctrlEastPanel = new gui::Panel(ID_NONE, gui::ANCHOR_EAST, 84, 128);
 		mainSouthPanel->addChild(ctrlEastPanel);
 
-		gui::Button *fastButton = new gui::Button(ID_BTN_FASTER, gui::ANCHOR_EAST, 42, 42, handler, fasterTiles);
+		gui::Button *fastButton = new gui::Button(ID_BTN_FASTER, gui::ANCHOR_EAST, 42, 42, btnHandler, fasterTiles);
 		ctrlEastPanel->addChild(fastButton);
-		fastButton->enable();
+		fastButton->setEnabled();
 
-		gui::Button *stopButton = new gui::Button(ID_BTN_STOP, gui::ANCHOR_WEST, 42, 42, handler, stopTiles);
+		gui::Button *stopButton = new gui::Button(ID_BTN_STOP, gui::ANCHOR_WEST, 42, 42, btnHandler, stopTiles);
 		ctrlEastPanel->addChild(stopButton);
-		stopButton->enable();
+		stopButton->setEnabled();
 
-		gui::Button *playButton = new gui::Button(ID_BTN_PLAY, gui::ANCHOR_EAST, 42, 42, handler, playTiles);
-		ctrlWestPanel->addChild(playButton);
-		playButton->enable();
+		gui::Checkbox *playPauseButton = new gui::Checkbox(ID_BTN_PLAY, gui::ANCHOR_EAST, 42, 42, cbxHandler, playPauseTiles);
+		ctrlWestPanel->addChild(playPauseButton);
+		playPauseButton->setEnabled();
 
-		gui::Button *slowButton = new gui::Button(ID_BTN_SLOWER, gui::ANCHOR_WEST, 42, 42, handler, slowerTiles);
+		gui::Button *slowButton = new gui::Button(ID_BTN_SLOWER, gui::ANCHOR_WEST, 42, 42, btnHandler, slowerTiles);
 		ctrlWestPanel->addChild(slowButton);
-		slowButton->enable();
+		slowButton->setEnabled();
 
 		session->_guiRunning = mainPanel;
 		mainPanel->onEvent(gui::SizeEvent(rectangle));
@@ -274,6 +280,10 @@ void Running::onButtonPress(Session *session, gui::Button *button) const
 {
 	if (ID_BTN_STOP == button->id())
 		session->changeState(Configuring::instance());
+}
+
+void Running::onCheckboxPress(Session *session, gui::Checkbox *button) const
+{
 }
 
 void Running::update(Session *session, float64_t t, float32_t dt) const

@@ -31,9 +31,13 @@ public:
 
 	virtual ~Button() = default;
 
+	void setState(STATE state);
+
 	STATE state() const;
 
-	void enable(bool enabled = true);
+	void setEnabled(bool enabled = true);
+
+	bool isEnabled() const;
 
 	virtual void onEvent(TimerEvent const &event) override;
 
@@ -53,14 +57,24 @@ private:
 	LUCID_PREVENT_ASSIGNMENT(Button);
 };
 
+inline void Button::setState(STATE state)
+{
+	_state = state;
+}
+
 inline Button::STATE Button::state() const
 {
 	return _state;
 }
 
-inline void Button::enable(bool enabled)
+inline void Button::setEnabled(bool enabled)
 {
 	_state = enabled ? STATE_ENABLED : STATE_DISABLED;
+}
+
+inline bool Button::isEnabled() const
+{
+	return STATE_DISABLED != _state;
 }
 
 LUCID_GUI_END

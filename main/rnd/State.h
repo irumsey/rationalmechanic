@@ -7,7 +7,9 @@ LUCID_GUI_BEGIN
 
 struct SizeEvent;
 struct MouseEvent;
+
 class Button;
+class Checkbox;
 
 LUCID_GUI_END
 
@@ -30,6 +32,8 @@ public:
 	virtual void onEvent(Session *session, LUCID_GUI::MouseEvent const &event) const { /* nop */ }
 
 	virtual void onButtonPress(Session *session, LUCID_GUI::Button *button) const { /* nop */ }
+
+	virtual void onCheckboxPress(Session *session, LUCID_GUI::Checkbox *button) const { /* nop */ }
 
 	virtual void update(Session *session, float64_t t, float32_t dt) const { /* nop */ }
 
@@ -140,6 +144,8 @@ public:
 	virtual void onEvent(Session *session, LUCID_GUI::MouseEvent const &event) const override;
 
 	virtual void onButtonPress(Session *session, LUCID_GUI::Button *button) const override;
+
+	virtual void onCheckboxPress(Session *session, LUCID_GUI::Checkbox *button) const override;
 
 	virtual void update(Session *session, float64_t t, float32_t dt) const override;
 

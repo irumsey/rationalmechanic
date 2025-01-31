@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Button.h" />
+    <ClInclude Include="Checkbox.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="Events.h" />
     <ClInclude Include="Frame.h" />
@@ -30,6 +31,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Button.cpp" />
+    <ClCompile Include="Checkbox.cpp" />
     <ClCompile Include="Frame.cpp" />
     <ClCompile Include="Label.cpp" />
     <ClCompile Include="Panel.cpp" />

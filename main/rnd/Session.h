@@ -11,6 +11,7 @@ LUCID_GUI_BEGIN
 
 class Frame;
 class Button;
+class Checkbox;
 
 LUCID_GUI_END
 
@@ -35,6 +36,8 @@ public:
 	void onEvent(LUCID_GUI::MouseEvent const &event);
 
 	void onButtonPress(LUCID_GUI::Button *button);
+
+	void onCheckboxPress(LUCID_GUI::Checkbox *button);
 
 	void update(float64_t t, float32_t dt);
 

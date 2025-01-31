@@ -20,20 +20,20 @@ void Button::onEvent(KeyboardEvent const &event)
 
 void Button::onEvent(MouseEvent const &event)
 {
-	if (STATE_DISABLED == _state)
+	if (!isEnabled())
 	{
 		return;
 	}
 
 	if (notHit(event.position))
 	{
-		_state = STATE_ENABLED;
+		setEnabled();
 		return;
 	}
 
 	if (MouseEvent::KIND_POINTER_MOVE == event.kind)
 	{
-		_state = STATE_FOCUSED;
+		_state = (STATE_PRESSED == _state) ? _state : STATE_FOCUSED;
 		return;
 	}
 

@@ -53,6 +53,13 @@ void Session::onButtonPress(LUCID_GUI::Button *button)
 	_state->onButtonPress(this, button);
 }
 
+void Session::onCheckboxPress(LUCID_GUI::Checkbox *button)
+{
+	assert(nullptr != _state);
+
+	_state->onCheckboxPress(this, button);
+}
+
 void Session::update(float64_t t, float32_t dt)
 {
 	assert(nullptr != _state);
