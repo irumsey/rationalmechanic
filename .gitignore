@@ -430,3 +430,7 @@ ModelManifest.xml
 /_bin/main/rnd/content/gui.pixel.cso
 /_bin/main/rnd/content/gui.vertex.cso
 /_bin/main/rnd/content/gui.material
+/_bin/main/rnd/content/font.mesh
+/_bin/main/rnd/content/font.pixel.cso
+/_bin/main/rnd/content/font.vertex.cso
+/_bin/main/rnd/content/OCRa.font

@@ -16,7 +16,7 @@ Session::Session()
 void Session::initialize(LUCID_GUI::Rectangle const &rectangle)
 {
 	_rectangle = rectangle;
-	_guiRender.initialize("content/gui.material");
+	_guiRender.initialize("content/OCRa.font", "content/gui.material");
 
 	changeState(Starting::instance());
 }

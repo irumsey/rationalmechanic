@@ -209,7 +209,7 @@ void Mechanics::render(CameraFrame *cameraFrame, bool useFXAA)
 	std::ostringstream stream;
 	stream << std::fixed << std::setprecision(1) << "JDN: " << _dayNumber[1];
 
-	_renderer.print(LUCID_GAL::Vector2(10, 10), LUCID_GAL::Vector2(32, 32), stream.str(), LUCID_GAL::Color(0, 1, 0, 1));
+	_renderer.print(LUCID_GAL::Vector2(10, 10), 16, stream.str(), LUCID_GAL::Color(0, 1, 0, 1));
 
 	// here, pass in the wall time not the sim time.  wall time is simply for rendering effects
 	// which are not part of the simulation (ie particle effects, etc).  the frame interpolant

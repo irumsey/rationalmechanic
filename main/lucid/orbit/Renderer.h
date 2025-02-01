@@ -49,7 +49,7 @@ public:
 
 	void shutdown();
 
-	void print(LUCID_GAL::Vector2 const &position, LUCID_GAL::Vector2 const &size, std::string const &text, LUCID_GAL::Color const &color = LUCID_GAL::Color(1, 1, 1, 1));
+	void print(LUCID_GAL::Vector2 const &position, float32_t size, std::string const &text, LUCID_GAL::Color const &color = LUCID_GAL::Color(1, 1, 1, 1));
 
 	void render(Frame *rootFrame, CameraFrame *cameraFrame, scalar_t time, scalar_t interpolant, bool useFXAA = false);
 

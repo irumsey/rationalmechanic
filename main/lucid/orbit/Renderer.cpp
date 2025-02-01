@@ -108,7 +108,7 @@ void Renderer::shutdown()
 	_renderContext = LUCID_GIGL::Context();
 }
 
-void Renderer::print(LUCID_GAL::Vector2 const &position, LUCID_GAL::Vector2 const &size, std::string const &text, LUCID_GAL::Color const &color)
+void Renderer::print(LUCID_GAL::Vector2 const &position, float32_t size, std::string const &text, LUCID_GAL::Color const &color)
 {
 	_overlay.print(position, size, text, color);
 }

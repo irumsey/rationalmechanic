@@ -14,10 +14,10 @@ extern anchor_action_func computeRectangle[ANCHOR_ACTION_COUNT];
 //
 //
 
-Frame::Frame(size_t id, ANCHOR anchor, int32_t width, int32_t height)
+Frame::Frame(size_t id, ANCHOR anchor, Size const &size)
 	: _id(id)
 	, _anchor(anchor)
-	, _width(width), _height(height)
+	, _size(size)
 {
 }
 
@@ -29,7 +29,7 @@ Frame::~Frame()
 
 void Frame::onEvent(SizeEvent const &event)
 {
-	_rectangle = computeRectangle[_anchor](event.rectangle, _width, _height);
+	_rectangle = computeRectangle[_anchor](event.rectangle, _size.width, _size.height);
 	dispatch(SizeEvent(_rectangle));
 }
 

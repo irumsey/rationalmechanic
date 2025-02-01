@@ -26,9 +26,7 @@ public:
 
 	ANCHOR anchor() const;
 
-	int32_t width() const;
-
-	int32_t height() const;
+	Size const &size() const;
 
 	Rectangle const &rectangle() const;
 
@@ -49,7 +47,7 @@ public:
 	virtual void accept(Renderer *renderer) const = 0;
 
 protected:
-	Frame(size_t id, ANCHOR anchor, int32_t width, int32_t height);
+	Frame(size_t id, ANCHOR anchor, Size const &size);
 
 private:
 	Frame *_firstChild = nullptr;
@@ -57,8 +55,7 @@ private:
 
 	size_t _id = -1;
 	ANCHOR _anchor = ANCHOR_FILL;
-	int32_t _width = 0;
-	int32_t _height = 0;
+	Size _size;
 
 	Rectangle _rectangle;
 
@@ -90,14 +87,9 @@ inline ANCHOR Frame::anchor() const
 	return _anchor;
 }
 
-inline int32_t Frame::width() const
+inline Size const &Frame::size() const
 {
-	return _width;
-}
-
-inline int32_t Frame::height() const
-{
-	return _height;
+	return _size;
 }
 
 inline Rectangle const &Frame::rectangle() const

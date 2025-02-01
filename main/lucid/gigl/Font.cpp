@@ -34,21 +34,32 @@ Font::~Font()
 	shutdown();
 }
 
-size_t Font::typeset(Character *buffer, LUCID_GAL::Vector2 const &position, LUCID_GAL::Vector2 const &size, std::string const &text, LUCID_GAL::Color const &color)
+size_t Font::typeset(Character *buffer, ALIGNMENT align, LUCID_GAL::Vector2 const &position, float32_t size, std::string const &text, LUCID_GAL::Color const &color)
 {
+	size_t const count = text.size();
+
 	uint8_t prevCode = 0;
+	float32_t textWidth = 0.f;
 	float32_t x = position.x;
 
-	size_t const count = text.size();
+	if (ALIGN_LEFT != align)
+	{
+		for (size_t i = 0; i < count; ++i)
+			textWidth += size * spacing(prevCode, text[i]);
+		x = (ALIGN_RIGHT == align) ? x - textWidth : x - 0.5f * textWidth;
+	}
+
+	prevCode = 0;
+
 	for (size_t i = 0; i < count; ++i)
 	{
 		Glyph const &glyph = lookup(text[i]);
 		Character &character = buffer[i];
 
-		float32_t dx = (0 == i) ? 0.f : size.y * spacing(prevCode, glyph.code);
+		float32_t dx = (0 == i) ? 0.f : size * spacing(prevCode, glyph.code);
 		x = x + dx;
 
-		character.position = LUCID_GAL::Vector4(x, position.y, size.x, size.y);
+		character.position = LUCID_GAL::Vector4(x, position.y, size, size);
 		character.texcoord = LUCID_GAL::Vector4(glyph.texcoord.x, glyph.texcoord.y, glyph.texsize.x, glyph.texsize.y);
 		character. channel = glyph.channel;
 		character.   color = color;
@@ -56,7 +67,6 @@ size_t Font::typeset(Character *buffer, LUCID_GAL::Vector2 const &position, LUCI
 		prevCode = glyph.code;
 	}
 
-	/// for now, just "printing" all characters
 	return count;
 }
 

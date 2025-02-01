@@ -9,6 +9,7 @@
 LUCID_GIGL_BEGIN
 
 class Context;
+class Font;
 class Material;
 
 LUCID_GIGL_END
@@ -35,7 +36,7 @@ public:
 
 	virtual ~Renderer() = default;
 
-	void initialize(std::string const &path);
+	void initialize(std::string const &font, std::string const &material);
 
 	void shutdown();
 	
@@ -43,12 +44,19 @@ public:
 
 	void render(LUCID_GIGL::Context const &context, Frame const *frame);
 
+	void add(ALIGNMENT align, Point const &point, float32_t size, std::string const &text, Color const &color);
+
 	void add(Icon const &icon);
 
 private:
-	enum { BATCH_MAXIMUM = 2048 };
+	enum { ICON_DRAW_MAXIMUM = 2048 };
+	enum { TEXT_DRAW_MAXIMUM = 4096 };
 
+	std::vector<Character> _text;
 	std::vector<Icon> _icons;
+
+	LUCID_GIGL::Font *_font = nullptr;
+	LUCID_GAL::VertexBuffer *_characters = nullptr;
 
 	LUCID_GIGL::Material *_material = nullptr;
 
@@ -59,6 +67,10 @@ private:
 	LUCID_GAL::VertexBuffer *_instances = nullptr;
 
 	void process(Frame const *frame);
+
+	void renderIcons(LUCID_GIGL::Context const &context);
+
+	void renderText(LUCID_GIGL::Context const &context);
 
 	LUCID_PREVENT_COPY(Renderer);
 	LUCID_PREVENT_ASSIGNMENT(Renderer);

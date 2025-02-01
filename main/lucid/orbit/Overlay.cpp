@@ -60,11 +60,11 @@ void Overlay::shutdown()
 	_passMaximum = 0;
 }
 
-void Overlay::print(LUCID_GAL::Vector2 const &position, LUCID_GAL::Vector2 const &size, std::string const &text, LUCID_GAL::Color const &color)
+void Overlay::print(LUCID_GAL::Vector2 const &position, float32_t size, std::string const &text, LUCID_GAL::Color const &color)
 {
 	int32_t count = int32_t(text.size());
 
-	_font->typeset(_text->lock_as<LUCID_GIGL::Font::Character>(_textCount, count), position, size, text, color);
+	_font->typeset(_text->lock_as<LUCID_GIGL::Font::Character>(_textCount, count), LUCID_GIGL::Font::ALIGN_LEFT , position, size, text, color);
 	_text->unlock();
 
 	_textCount = _textCount + count;

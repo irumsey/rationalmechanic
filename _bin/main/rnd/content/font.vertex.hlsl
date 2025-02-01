@@ -1,4 +1,4 @@
-#include "fonts.header.hlsl"
+#include "font.header.hlsl"
 
 OutputVertex main(InputVertex input)
 {

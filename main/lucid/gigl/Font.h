@@ -24,27 +24,25 @@ class RenderContext;
 /// Font
 /// 
 ///	TBD: change such that the glyph code/index is larger (more flexible)
+///      for now, just ascii
 class Font
 {
 public:
-#	pragma pack(push)
-#	pragma pack(1)
-
 	/// 
 	/// 
 	/// 
-	struct Glyph
+	enum ALIGNMENT
 	{
-		uint8_t code = 0;				// glyph's code
-
-		LUCID_GAL::Vector2 texcoord;	// location in texture
-		LUCID_GAL::Vector2  texsize;	// width and height, in pixels, of glyph in texture
-		LUCID_GAL::Color    channel;	// used to select the proper color channel (ex: dot(texel, channel) -> glyph pixel)
+		ALIGN_LEFT = 0,
+		ALIGN_CENTER,
+		ALIGN_RIGHT,
 	};
 
 	/// 
 	/// 
 	/// 
+#	pragma pack(push)
+#	pragma pack(8)
 	struct Character
 	{
 		LUCID_GAL::Vector4 position;	// position and size
@@ -52,7 +50,6 @@ public:
 		LUCID_GAL::Color    channel;	// the color channel glyph resides
 		LUCID_GAL::Color      color;	// color of character instance
 	};
-
 #	pragma pack(pop)
 
 	Font() = delete;
@@ -66,7 +63,7 @@ public:
 	std::string const &name() const;
 
 	/// Note: caller ensures buffer is large enough for the text specified
-	size_t typeset(Character *buffer, LUCID_GAL::Vector2 const &position, LUCID_GAL::Vector2 const &size, std::string const &text, LUCID_GAL::Color const &color);
+	size_t typeset(Character *buffer, ALIGNMENT align, LUCID_GAL::Vector2 const &position, float32_t size, std::string const &text, LUCID_GAL::Color const &color);
 
 	///	this assumes the per-instance stream(s) are already set.
 	void renderInstanced(Context const &context, int32_t count) const;
@@ -79,6 +76,21 @@ public:
 	static Font *create(LUCID_CORE::Reader &reader);
 
 private:
+	/// 
+	/// 
+	/// 
+#	pragma pack(push)
+#	pragma pack(1)						// reading binary data from file
+	struct Glyph
+	{
+		uint8_t code = 0;				// glyph's code
+
+		LUCID_GAL::Vector2 texcoord;	// location in texture
+		LUCID_GAL::Vector2  texsize;	// width and height, in pixels, of glyph in texture
+		LUCID_GAL::Color    channel;	// used to select the proper color channel (ex: dot(texel, channel) -> glyph pixel)
+	};
+#pragma pack(pop)
+
 	LUCID_CORE::Identity _id;
 	std::string _name;
 

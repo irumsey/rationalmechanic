@@ -99,6 +99,12 @@
     <FxCompile Include="..\..\_bin\main\rnd\content\gui.pixel.hlsl">
       <Filter>rnd</Filter>
     </FxCompile>
+    <FxCompile Include="..\..\_bin\main\rnd\content\font.pixel.hlsl">
+      <Filter>rnd</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\rnd\content\font.vertex.hlsl">
+      <Filter>rnd</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\_bin\main\omp\content\atmosphere.header.hlsl">
@@ -138,6 +144,9 @@
       <Filter>omp</Filter>
     </None>
     <None Include="..\..\_bin\main\rnd\content\gui.header.hlsl">
+      <Filter>rnd</Filter>
+    </None>
+    <None Include="..\..\_bin\main\rnd\content\font.header.hlsl">
       <Filter>rnd</Filter>
     </None>
   </ItemGroup>

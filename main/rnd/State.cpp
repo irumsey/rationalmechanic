@@ -114,10 +114,13 @@ void Starting::onEnter(Session *session) const
 	//	setup the "configuring" user interface
 	// 
 	{
-		gui::Panel *mainPanel = new gui::Panel(ID_NONE, gui::ANCHOR_FILL, width, height);
+		gui::Panel *mainPanel = new gui::Panel(ID_NONE, gui::ANCHOR_FILL, gui::Size(width, height));
 
-		gui::Button *startButton = new gui::Button(ID_BTN_START, gui::ANCHOR_SOUTH, 42, 42, btnHandler, startTiles);
-		mainPanel->addChild(startButton);
+		gui::Panel *ctrlPanel = new gui::Panel(ID_NONE, gui::ANCHOR_SOUTH, gui::Size(128, 104));
+		mainPanel->addChild(ctrlPanel);
+
+		gui::Button *startButton = new gui::Button(ID_BTN_START, gui::ANCHOR_NORTH, gui::Size(42, 42), startTiles, btnHandler);
+		ctrlPanel->addChild(startButton);
 		startButton->setEnabled();
 
 		session->_guiConfiguring = mainPanel;
@@ -128,37 +131,40 @@ void Starting::onEnter(Session *session) const
 	//	setup the "running" user interface
 	//
 	{
-		gui::Panel *mainPanel = new gui::Panel(ID_NONE, gui::ANCHOR_FILL, width, height);
+		gui::Panel *mainPanel = new gui::Panel(ID_NONE, gui::ANCHOR_FILL, gui::Size(width, height));
 		
-		gui::Label *timeLabel = new gui::Label(ID_LBL_TIME, gui::ANCHOR_SOUTH_WEST, 128, 16);
-		mainPanel->addChild(timeLabel);
-
-		gui::Label *slctLabel = new gui::Label(ID_LBL_SELECT, gui::ANCHOR_SOUTH_EAST, 128, 16);
+		gui::Label *slctLabel = new gui::Label(ID_LBL_SELECT, gui::ANCHOR_SOUTH_WEST, gui::Size(512, 16), gui::ALIGNMENT::ALIGN_LEFT, "selection: <none>", gui::Color(0, 0.7f, 0, 1));
 		mainPanel->addChild(slctLabel);
 
-		gui::Panel *mainSouthPanel = new gui::Panel(ID_NONE, gui::ANCHOR_SOUTH, 168, 128);
+		gui::Panel *mainSouthPanel = new gui::Panel(ID_NONE, gui::ANCHOR_SOUTH, gui::Size(168, 128));
 		mainPanel->addChild(mainSouthPanel);
 		
-		gui::Panel *ctrlWestPanel = new gui::Panel(ID_NONE, gui::ANCHOR_WEST, 84, 128);
-		mainSouthPanel->addChild(ctrlWestPanel);
+		gui::Panel *ctrlPanel = new gui::Panel(ID_NONE, gui::ANCHOR_NORTH, gui::Size(168, 58));
+		mainSouthPanel->addChild(ctrlPanel);
 
-		gui::Panel *ctrlEastPanel = new gui::Panel(ID_NONE, gui::ANCHOR_EAST, 84, 128);
-		mainSouthPanel->addChild(ctrlEastPanel);
+		gui::Label *timeLabel = new gui::Label(ID_LBL_TIME, gui::ANCHOR_NORTH, gui::Size(168, 16), gui::ALIGNMENT::ALIGN_CENTER, "2460707.00001", gui::Color(0, 0.7f, 0, 1));
+		ctrlPanel->addChild(timeLabel);
 
-		gui::Button *fastButton = new gui::Button(ID_BTN_FASTER, gui::ANCHOR_EAST, 42, 42, btnHandler, fasterTiles);
-		ctrlEastPanel->addChild(fastButton);
+		gui::Panel *ctrlSouthWestPanel = new gui::Panel(ID_NONE, gui::ANCHOR_SOUTH_WEST, gui::Size(84, 42));
+		ctrlPanel->addChild(ctrlSouthWestPanel);
+
+		gui::Panel *ctrlSouthEastPanel = new gui::Panel(ID_NONE, gui::ANCHOR_SOUTH_EAST, gui::Size(84, 42));
+		ctrlPanel->addChild(ctrlSouthEastPanel);
+
+		gui::Button *fastButton = new gui::Button(ID_BTN_FASTER, gui::ANCHOR_EAST, gui::Size(42, 42), fasterTiles, btnHandler);
+		ctrlSouthEastPanel->addChild(fastButton);
 		fastButton->setEnabled();
 
-		gui::Button *stopButton = new gui::Button(ID_BTN_STOP, gui::ANCHOR_WEST, 42, 42, btnHandler, stopTiles);
-		ctrlEastPanel->addChild(stopButton);
+		gui::Button *stopButton = new gui::Button(ID_BTN_STOP, gui::ANCHOR_WEST, gui::Size(42, 42), stopTiles, btnHandler);
+		ctrlSouthEastPanel->addChild(stopButton);
 		stopButton->setEnabled();
 
-		gui::Checkbox *playPauseButton = new gui::Checkbox(ID_BTN_PLAY, gui::ANCHOR_EAST, 42, 42, cbxHandler, playPauseTiles);
-		ctrlWestPanel->addChild(playPauseButton);
+		gui::Checkbox *playPauseButton = new gui::Checkbox(ID_BTN_PLAY, gui::ANCHOR_EAST, gui::Size(42, 42), playPauseTiles, cbxHandler);
+		ctrlSouthWestPanel->addChild(playPauseButton);
 		playPauseButton->setEnabled();
 
-		gui::Button *slowButton = new gui::Button(ID_BTN_SLOWER, gui::ANCHOR_WEST, 42, 42, btnHandler, slowerTiles);
-		ctrlWestPanel->addChild(slowButton);
+		gui::Button *slowButton = new gui::Button(ID_BTN_SLOWER, gui::ANCHOR_WEST, gui::Size(42, 42), slowerTiles, btnHandler);
+		ctrlSouthWestPanel->addChild(slowButton);
 		slowButton->setEnabled();
 
 		session->_guiRunning = mainPanel;

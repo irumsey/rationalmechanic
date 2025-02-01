@@ -44,7 +44,7 @@ public:
 
 	void shutdown();
 
-	void print(LUCID_GAL::Vector2 const &position, LUCID_GAL::Vector2 const &size, std::string const &text, LUCID_GAL::Color const &color);
+	void print(LUCID_GAL::Vector2 const &position, float32_t size, std::string const &text, LUCID_GAL::Color const &color);
 
 	void process(Frame *frame, CameraFrame *cameraFrame, scalar_t interpolant);
 

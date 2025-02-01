@@ -3,10 +3,10 @@
 
 LUCID_GUI_BEGIN
 
-Button::Button(size_t id, ANCHOR anchor, int32_t width, int32_t height, Callback const &callback, Tiles const &tiles)
-	: Frame(id, anchor, width, height)
-	, _callback(callback)
+Button::Button(size_t id, ANCHOR anchor, Size const &size, Tiles const &tiles, Callback const &callback)
+	: Frame(id, anchor, size)
 	, _tiles(tiles)
+	, _callback(callback)
 {
 }
 
