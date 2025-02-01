@@ -11,22 +11,30 @@
 #include <lucid/gal/Pipeline.h>
 #include <lucid/gal/System.h>
 
+// test {
+#include <sstream>
+#include <iomanip>
+
+float64_t const SECONDS_PER_DAY = 24.0 * 3600.0;
+float64_t const DAYS_PER_SECOND = 1.0 / SECONDS_PER_DAY;
+// } test
+
 namespace /* anonymous */ {
 
 namespace gui = LUCID_GUI;
 
 enum ID
 {
-	ID_NONE			=    -1,
+	ID_NONE				=    -1,
 		
-	ID_BTN_START	= 0x101,
+	ID_BTN_START		= 0x101,
 
-	ID_BTN_STOP		= 0x201,
-	ID_BTN_SLOWER	= 0x202,
-	ID_BTN_PLAY		= 0x203,
-	ID_BTN_FASTER	= 0x204,
-	ID_LBL_TIME		= 0x205,
-	ID_LBL_SELECT	= 0x206,
+	ID_BTN_STOP			= 0x201,
+	ID_BTN_SLOWER		= 0x202,
+	ID_BTN_PLAYPAUSE	= 0x203,
+	ID_BTN_FASTER		= 0x204,
+	ID_LBL_TIME			= 0x205,
+	ID_LBL_SELECT		= 0x206,
 };
 
 // test {
@@ -76,6 +84,16 @@ void setup(LUCID_GIGL::Context &context)
 }
 
 }	// anonymous
+
+///
+/// 
+/// 
+
+void State::onEvent(Session *session, gui::SizeEvent const &event) const 
+{
+	session->_guiConfiguring->onEvent(event);
+	session->_guiRunning->onEvent(event);
+}
 
 /// 
 /// 
@@ -133,8 +151,8 @@ void Starting::onEnter(Session *session) const
 	{
 		gui::Panel *mainPanel = new gui::Panel(ID_NONE, gui::ANCHOR_FILL, gui::Size(width, height));
 		
-		gui::Label *slctLabel = new gui::Label(ID_LBL_SELECT, gui::ANCHOR_SOUTH_WEST, gui::Size(512, 16), gui::ALIGNMENT::ALIGN_LEFT, "selection: <none>", gui::Color(0, 0.7f, 0, 1));
-		mainPanel->addChild(slctLabel);
+		session->_guiCurrentSelection = new gui::Label(ID_LBL_SELECT, gui::ANCHOR_SOUTH_WEST, gui::Size(512, 16), gui::ALIGNMENT::ALIGN_LEFT, "selection: <none>", gui::Color(0, 0.7f, 0, 1));
+		mainPanel->addChild(session->_guiCurrentSelection);
 
 		gui::Panel *mainSouthPanel = new gui::Panel(ID_NONE, gui::ANCHOR_SOUTH, gui::Size(168, 128));
 		mainPanel->addChild(mainSouthPanel);
@@ -142,8 +160,8 @@ void Starting::onEnter(Session *session) const
 		gui::Panel *ctrlPanel = new gui::Panel(ID_NONE, gui::ANCHOR_NORTH, gui::Size(168, 58));
 		mainSouthPanel->addChild(ctrlPanel);
 
-		gui::Label *timeLabel = new gui::Label(ID_LBL_TIME, gui::ANCHOR_NORTH, gui::Size(168, 16), gui::ALIGNMENT::ALIGN_CENTER, "2460707.00001", gui::Color(0, 0.7f, 0, 1));
-		ctrlPanel->addChild(timeLabel);
+		session->_guiTimeDisplay = new gui::Label(ID_LBL_TIME, gui::ANCHOR_NORTH, gui::Size(168, 16), gui::ALIGNMENT::ALIGN_CENTER, "-------.-----", gui::Color(0, 0.7f, 0, 1));
+		ctrlPanel->addChild(session->_guiTimeDisplay);
 
 		gui::Panel *ctrlSouthWestPanel = new gui::Panel(ID_NONE, gui::ANCHOR_SOUTH_WEST, gui::Size(84, 42));
 		ctrlPanel->addChild(ctrlSouthWestPanel);
@@ -159,7 +177,7 @@ void Starting::onEnter(Session *session) const
 		ctrlSouthEastPanel->addChild(stopButton);
 		stopButton->setEnabled();
 
-		gui::Checkbox *playPauseButton = new gui::Checkbox(ID_BTN_PLAY, gui::ANCHOR_EAST, gui::Size(42, 42), playPauseTiles, cbxHandler);
+		gui::Checkbox *playPauseButton = new gui::Checkbox(ID_BTN_PLAYPAUSE, gui::ANCHOR_EAST, gui::Size(42, 42), playPauseTiles, cbxHandler);
 		ctrlSouthWestPanel->addChild(playPauseButton);
 		playPauseButton->setEnabled();
 
@@ -224,10 +242,9 @@ void Configuring::onLeave(Session *session) const
 {
 }
 
-void Configuring::onEvent(Session *session, gui::SizeEvent const &event) const
+void Configuring::onEvent(Session *session, LUCID_GUI::TimerEvent const &event) const
 {
-	session->_guiConfiguring->onEvent(event);
-	session->_guiRunning->onEvent(event);
+
 }
 
 void Configuring::onEvent(Session *session, gui::MouseEvent const &event) const
@@ -241,11 +258,7 @@ void Configuring::onButtonPress(Session *session, gui::Button *button) const
 		session->changeState(Running::instance());
 }
 
-void Configuring::update(Session *session, float64_t t, float32_t dt) const
-{
-}
-
-void Configuring::render(Session *session, float64_t t, float32_t interpolant) const
+void Configuring::render(Session *session, float64_t t) const
 {
 	::setup(session->_renderContext);
 
@@ -265,16 +278,22 @@ Configuring const *Configuring::instance()
 
 void Running::onEnter(Session *session) const
 {
+	session->_simulator.initialize(2460707.500000);
 }
 
 void Running::onLeave(Session *session) const
 {
 }
 
-void Running::onEvent(Session *session, gui::SizeEvent const &event) const
+void Running::onEvent(Session *session, LUCID_GUI::TimerEvent const &event) const
 {
-	session->_guiConfiguring->onEvent(event);
-	session->_guiRunning->onEvent(event);
+	session->_simulator.update(DAYS_PER_SECOND * event.dt);
+
+	// test {
+	std::ostringstream stream;
+	stream << std::fixed << std::setprecision(6) << session->_simulator.time();
+	session->_guiTimeDisplay->text(stream.str());
+	// } test
 }
 
 void Running::onEvent(Session *session, gui::MouseEvent const &event) const
@@ -285,18 +304,23 @@ void Running::onEvent(Session *session, gui::MouseEvent const &event) const
 void Running::onButtonPress(Session *session, gui::Button *button) const
 {
 	if (ID_BTN_STOP == button->id())
+	{
 		session->changeState(Configuring::instance());
+	}
 }
 
 void Running::onCheckboxPress(Session *session, gui::Checkbox *button) const
 {
+	if (ID_BTN_PLAYPAUSE == button->id())
+	{
+		if (button->isChecked())
+			session->_simulator.start();
+		else
+			session->_simulator.pause();
+	}
 }
 
-void Running::update(Session *session, float64_t t, float32_t dt) const
-{
-}
-
-void Running::render(Session *session, float64_t t, float32_t interpolant) const
+void Running::render(Session *session, float64_t t) const
 {
 	::setup(session->_renderContext);
 

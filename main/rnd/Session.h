@@ -6,10 +6,12 @@
 #include <lucid/gui/Events.h>
 #include <lucid/gui/Renderer.h>
 #include <rnd/Utility.h>
+#include <rnd/DummySimulator.h>
 
 LUCID_GUI_BEGIN
 
 class Frame;
+class Label;
 class Button;
 class Checkbox;
 
@@ -31,6 +33,8 @@ public:
 
 	void shutdown();
 
+	void onEvent(LUCID_GUI::TimerEvent const &event);
+
 	void onEvent(LUCID_GUI::SizeEvent const &event);
 
 	void onEvent(LUCID_GUI::MouseEvent const &event);
@@ -39,11 +43,10 @@ public:
 
 	void onCheckboxPress(LUCID_GUI::Checkbox *button);
 
-	void update(float64_t t, float32_t dt);
-
-	void render(float64_t t, float32_t interpolant);
+	void render(float64_t t);
 
 private:
+	friend class State;
 	friend class Stopped;
 	friend class Starting;
 	friend class Stopping;
@@ -58,8 +61,12 @@ private:
 	LUCID_GUI::Renderer _guiRender;
 	LUCID_GUI::Frame *_guiConfiguring = nullptr;
 	LUCID_GUI::Frame *_guiRunning = nullptr;
+	LUCID_GUI::Label *_guiTimeDisplay = nullptr;
+	LUCID_GUI::Label *_guiCurrentSelection = nullptr;
 
 	LUCID_GIGL::Context _renderContext;
+
+	DummySimulator _simulator;
 
 	Session &ref();
 

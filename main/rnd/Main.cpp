@@ -26,17 +26,13 @@ LUCID_ANONYMOUS_BEGIN
 int32_t   const  SCREEN_WIDTH = 1280;
 int32_t   const SCREEN_HEIGHT =  720;
 float32_t const     TIME_STEP = 0.1f;
-float64_t const    TIME_LIMIT = 0.30;
+float64_t const    TIME_LIMIT = 1.00;
 
 ///
 ///	Globals...
-///	TBD: move to Session
-///      the issue is the message pump and sim loop
-///      will require moving as well.
-int32_t         frameCount = 0;
-float64_t          simTime = 0;
-float64_t         wallTime = 0;
-float32_t frameInterpolant = 0;
+/// 
+float64_t wallTime = 0;
+float64_t  appTime = 0;
 
 Session session;
 
@@ -62,7 +58,7 @@ LUCID_GUI::Rectangle getWindowRectangle(HWND hWindow)
 void onUpdate()
 {
 	LUCID_PROFILE_BEGIN("Update");
-	session.update(simTime, TIME_STEP);
+	session.onEvent(LUCID_GUI::TimerEvent(appTime, TIME_STEP));
 	LUCID_PROFILE_END();
 }
 
@@ -74,7 +70,7 @@ void onRender()
 	LUCID_PROFILE_BEGIN("Render");
 
 	LUCID_GAL_PIPELINE.beginScene();
-	session.render(wallTime, frameInterpolant);
+	session.render(wallTime);
 	LUCID_GAL_PIPELINE.endScene();
 
 	LUCID_PROFILE_END();
@@ -279,10 +275,9 @@ INT WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR cmdln, _In_ IN
 		///
 		std::auto_ptr<LUCID_CORE::Clock> wallClock(LUCID_CORE::Clock::create());
 
-		simTime = 0.f;
+		appTime = 0.f;
 
 		wallTime = wallClock->time();
-		frameInterpolant = 0.f;
 
 		float64_t wallTimeLast = wallTime;
 		float64_t wallTimeAccum = 0.f;
@@ -309,15 +304,14 @@ INT WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR cmdln, _In_ IN
 				float64_t wallTimeElapsed = wallTime - wallTimeLast;
 				wallTimeLast = wallTime;
 
-				wallTimeElapsed = (wallTimeElapsed > TIME_LIMIT) ? TIME_LIMIT: wallTimeElapsed;
+				wallTimeElapsed = std::min(TIME_LIMIT, wallTimeElapsed);
 				wallTimeAccum += wallTimeElapsed;
 				while (wallTimeAccum >= TIME_STEP)
 				{
-					simTime += TIME_STEP;
+					appTime += TIME_STEP;
 					::onUpdate();
 					wallTimeAccum -= TIME_STEP;
 				}
-				frameInterpolant = (float32_t)(wallTimeAccum / TIME_STEP);
 
 				::onRender();
 

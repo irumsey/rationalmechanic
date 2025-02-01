@@ -5,6 +5,7 @@
 
 LUCID_GUI_BEGIN
 
+struct TimerEvent;
 struct SizeEvent;
 struct MouseEvent;
 
@@ -18,7 +19,7 @@ class Session;
 ///	State
 ///
 /// 
-class State abstract
+class State
 {
 public:
 	virtual ~State() = default;
@@ -27,7 +28,9 @@ public:
 
 	virtual void onLeave(Session *session) const = 0;
 
-	virtual void onEvent(Session *session, LUCID_GUI::SizeEvent const &event) const { /* nop */ }
+	virtual void onEvent(Session *session, LUCID_GUI::TimerEvent const &event) const { /* nop */ }
+
+	virtual void onEvent(Session *session, LUCID_GUI::SizeEvent const &event) const;
 
 	virtual void onEvent(Session *session, LUCID_GUI::MouseEvent const &event) const { /* nop */ }
 
@@ -35,9 +38,7 @@ public:
 
 	virtual void onCheckboxPress(Session *session, LUCID_GUI::Checkbox *button) const { /* nop */ }
 
-	virtual void update(Session *session, float64_t t, float32_t dt) const { /* nop */ }
-
-	virtual void render(Session *session, float64_t t, float32_t interpolant) const { /* nop */ }
+	virtual void render(Session *session, float64_t t) const { /* nop */ }
 
 protected:
 	State() = default;
@@ -112,15 +113,13 @@ public:
 
 	virtual void onLeave(Session *session) const override;
 
-	virtual void onEvent(Session *session, LUCID_GUI::SizeEvent const &event) const override;
+	virtual void onEvent(Session *session, LUCID_GUI::TimerEvent const &event) const override;
 
 	virtual void onEvent(Session *session, LUCID_GUI::MouseEvent const &event) const override;
 
 	virtual void onButtonPress(Session *session, LUCID_GUI::Button *button) const override;
 
-	virtual void update(Session *session, float64_t t, float32_t dt) const override;
-
-	virtual void render(Session *session, float64_t t, float32_t interpolant) const override;
+	virtual void render(Session *session, float64_t t) const override;
 
 	static Configuring const *instance();
 };
@@ -139,7 +138,7 @@ public:
 
 	virtual void onLeave(Session *session) const override;
 
-	virtual void onEvent(Session *session, LUCID_GUI::SizeEvent const &event) const override;
+	virtual void onEvent(Session *session, LUCID_GUI::TimerEvent const &event) const override;
 
 	virtual void onEvent(Session *session, LUCID_GUI::MouseEvent const &event) const override;
 
@@ -147,9 +146,7 @@ public:
 
 	virtual void onCheckboxPress(Session *session, LUCID_GUI::Checkbox *button) const override;
 
-	virtual void update(Session *session, float64_t t, float32_t dt) const override;
-
-	virtual void render(Session *session, float64_t t, float32_t interpolant) const override;
+	virtual void render(Session *session, float64_t t) const override;
 
 	static Running const *instance();
 

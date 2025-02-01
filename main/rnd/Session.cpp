@@ -28,6 +28,13 @@ void Session::shutdown()
 	_guiRender.shutdown();
 }
 
+void Session::onEvent(LUCID_GUI::TimerEvent const &event)
+{
+	assert(nullptr != _state);
+
+	_state->onEvent(this, event);
+}
+
 void Session::onEvent(LUCID_GUI::SizeEvent const &event)
 {
 	assert(nullptr != _state);
@@ -60,16 +67,10 @@ void Session::onCheckboxPress(LUCID_GUI::Checkbox *button)
 	_state->onCheckboxPress(this, button);
 }
 
-void Session::update(float64_t t, float32_t dt)
+void Session::render(float64_t t)
 {
 	assert(nullptr != _state);
-	_state->update(this, t, dt);
-}
-
-void Session::render(float64_t t, float32_t interpolant)
-{
-	assert(nullptr != _state);
-	_state->render(this, t, interpolant);
+	_state->render(this, t);
 }
 
 inline void Session::changeState(State const *state)

@@ -11,5 +11,6 @@
     <ClInclude Include="Utility.h" />
     <ClInclude Include="Session.h" />
     <ClInclude Include="State.h" />
+    <ClInclude Include="DummySimulator.h" />
   </ItemGroup>
 </Project>

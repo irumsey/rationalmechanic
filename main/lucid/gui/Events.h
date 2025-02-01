@@ -23,6 +23,17 @@ struct SizeEvent
 //
 struct TimerEvent
 {
+	float64_t t = 0.0;
+	float32_t dt = 0.f;
+
+	TimerEvent() = default;
+
+	TimerEvent(float64_t t, float32_t dt)
+		: t(t)
+		, dt(dt)
+	{
+	}
+
 };
 
 //
