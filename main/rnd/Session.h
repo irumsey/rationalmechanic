@@ -96,9 +96,11 @@ private:
 
 	LUCID_GUI::Rectangle _rectangle;
 
+	LUCID_GAL::RenderTarget2D *_selectTarget = nullptr;
 	LUCID_GAL::RenderTarget2D *_colorTarget = nullptr;
 	LUCID_GAL::RenderTarget2D *_glowTarget = nullptr;
-	LUCID_GAL::RenderTarget2D *_selectTarget = nullptr;
+	LUCID_GAL::RenderTarget2D *_depthTarget = nullptr;
+
 	LUCID_GAL::TargetReader2D *_selectReader = nullptr;
 
 	LUCID_GAL::RenderTarget2D *_blurTarget = nullptr;

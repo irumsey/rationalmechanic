@@ -31,3 +31,11 @@ struct TriplePixel
 	float4  color : SV_TARGET1;
 	float4   glow : SV_TARGET2;
 };
+
+struct QuadPixel
+{
+	uint1      id : SV_TARGET0;
+	float4  color : SV_TARGET1;
+	float4   glow : SV_TARGET2;
+	float   depth : SV_TARGET3;
+};

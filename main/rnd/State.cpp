@@ -97,14 +97,17 @@ void State::onEvent(Session *session, gui::SizeEvent const &event) const
 	int32_t width = event.width();
 	int32_t height = event.height();
 
+	::reset_raw_ptr(session->_selectTarget);
 	::reset_raw_ptr(session->_colorTarget);
 	::reset_raw_ptr(session->_glowTarget);
-	::reset_raw_ptr(session->_selectTarget);
+	::reset_raw_ptr(session->_depthTarget);
+
 	::reset_raw_ptr(session->_selectReader);
 
 	session->_selectTarget = LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UINT_R32, width, height);
 	session->_colorTarget = LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, width, height);
 	session->_glowTarget = LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, width, height);
+	session->_depthTarget = LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_FLOAT_R32, width, height);
 
 	session->_selectReader = LUCID_GAL::TargetReader2D::create(session->_selectTarget, width, height);
 
@@ -211,16 +214,17 @@ void Starting::onEnter(Session *session) const
 	session->_selectTarget = LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UINT_R32, width, height);
 	session->_colorTarget = LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, width, height);
 	session->_glowTarget = LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, width, height);
+	session->_depthTarget = LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_FLOAT_R32, width, height);
+
+	session->_blurTarget = LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, width, height);
 
 	session->_selectReader = LUCID_GAL::TargetReader2D::create(session->_selectTarget, width, height);
 
-	session->_blurTarget = LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, width, height);
+	session->_clear = LUCID_GIGL::Mesh::create("content/clear.mesh");
 
 	session->_blur = LUCID_GIGL::Mesh::create("content/blur.mesh");
 	session->_blurParameters.texelOffset = GET_MATERIAL_PARAMETER(session->_blur, texelOffset);
 	session->_blurParameters.  theSource = GET_MATERIAL_PARAMETER(session->_blur,   theSource);
-
-	session->_clear = LUCID_GIGL::Mesh::create("content/clear.mesh");
 
 	session->_post = LUCID_GIGL::Mesh::create("content/post.mesh");
 	session->_postParameters.colorTarget = GET_MATERIAL_PARAMETER(session->_post, colorTarget);
@@ -325,10 +329,12 @@ void Stopping::onEnter(Session *session) const
 
 	::reset_raw_ptr(session->_blurTarget);
 
+	::reset_raw_ptr(session->_selectTarget);
 	::reset_raw_ptr(session->_colorTarget);
 	::reset_raw_ptr(session->_glowTarget);
+	::reset_raw_ptr(session->_depthTarget);
+
 	::reset_raw_ptr(session->_selectReader);
-	::reset_raw_ptr(session->_selectTarget);
 
 	session->_renderContext = LUCID_GIGL::Context();
 
