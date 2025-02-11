@@ -44,9 +44,9 @@ public:
 
 	void render(LUCID_GIGL::Context const &context, Frame const *frame);
 
-	void add(ALIGNMENT align, Point const &point, float32_t size, std::string const &text, Color const &color);
-
 	void add(Icon const &icon);
+
+	void add(ALIGNMENT align, Point const &point, float32_t size, std::string const &text, Color const &color);
 
 private:
 	enum { ICON_DRAW_MAXIMUM = 2048 };

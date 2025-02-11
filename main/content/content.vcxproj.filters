@@ -105,6 +105,18 @@
     <FxCompile Include="..\..\_bin\main\rnd\content\font.vertex.hlsl">
       <Filter>rnd</Filter>
     </FxCompile>
+    <FxCompile Include="..\..\_bin\main\rnd\content\screen.vertex.hlsl">
+      <Filter>rnd</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\rnd\content\blur.pixel.hlsl">
+      <Filter>rnd</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\rnd\content\post.pixel.hlsl">
+      <Filter>rnd</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\_bin\main\rnd\content\clear.pixel.hlsl">
+      <Filter>rnd</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\_bin\main\omp\content\atmosphere.header.hlsl">
@@ -147,6 +159,9 @@
       <Filter>rnd</Filter>
     </None>
     <None Include="..\..\_bin\main\rnd\content\font.header.hlsl">
+      <Filter>rnd</Filter>
+    </None>
+    <None Include="..\..\_bin\main\rnd\content\screen.header.hlsl">
       <Filter>rnd</Filter>
     </None>
   </ItemGroup>

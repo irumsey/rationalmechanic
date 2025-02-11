@@ -39,6 +39,8 @@ public:
 
 	bool isEnabled() const;
 
+	bool notEnabled() const;
+
 	virtual void onEvent(TimerEvent const &event) override;
 
 	virtual void onEvent(KeyboardEvent const &event) override;
@@ -75,6 +77,11 @@ inline void Button::setEnabled(bool enabled)
 inline bool Button::isEnabled() const
 {
 	return STATE_DISABLED != _state;
+}
+
+inline bool Button::notEnabled() const
+{
+	return !isEnabled();
 }
 
 LUCID_GUI_END

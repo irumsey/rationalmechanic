@@ -38,10 +38,16 @@ public:
 
 	virtual void onCheckboxPress(Session *session, LUCID_GUI::Checkbox *button) const { /* nop */ }
 
-	virtual void render(Session *session, float64_t t) const { /* nop */ }
+	virtual void render(Session *session, float64_t time) const { /* nop */ }
 
 protected:
 	State() = default;
+
+	void preRender(Session *session, float64_t time) const;
+
+	void blurGlowTarget(Session *session) const;
+
+	void postRender(Session *session) const;
 
 };
 
@@ -119,7 +125,7 @@ public:
 
 	virtual void onButtonPress(Session *session, LUCID_GUI::Button *button) const override;
 
-	virtual void render(Session *session, float64_t t) const override;
+	virtual void render(Session *session, float64_t time) const override;
 
 	static Configuring const *instance();
 };
@@ -146,7 +152,7 @@ public:
 
 	virtual void onCheckboxPress(Session *session, LUCID_GUI::Checkbox *button) const override;
 
-	virtual void render(Session *session, float64_t t) const override;
+	virtual void render(Session *session, float64_t time) const override;
 
 	static Running const *instance();
 

@@ -16,6 +16,17 @@ struct SizeEvent
 		: rectangle(rectangle)
 	{
 	}
+
+	int32_t width() const
+	{
+		return rectangle.max.x - rectangle.min.x;
+	}
+
+	int32_t height() const
+	{
+		return rectangle.max.y - rectangle.min.y;
+	}
+
 };
 
 //
@@ -69,14 +80,16 @@ struct MouseEvent
 	BUTTON button = BUTTON_NONE;
 	int32_t delta = 0;
 	Point position = { 0, 0, };
+	uint32_t sample = -1;			// optional screen sample at the pointer location
 
 	MouseEvent() = default;
 
-	MouseEvent(KIND kind, BUTTON button, int32_t delta, Point const &position)
+	MouseEvent(KIND kind, BUTTON button, int32_t delta, Point const &position, uint32_t sample = -1)
 		: kind(kind)
 		, button(button)
 		, delta(delta)
 		, position(position)
+		, sample(sample)
 	{
 	}
 

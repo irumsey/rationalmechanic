@@ -24,9 +24,9 @@ LUCID_ANONYMOUS_END
 
 LUCID_GAL_BEGIN
 
-RenderTarget2D *RenderTarget2D::create(FORMAT format, int32_t width, int32_t height)
+RenderTarget2D *RenderTarget2D::create(FORMAT format, int32_t width, int32_t height, int32_t samples)
 {
-	return new LUCID_GAL_D3D11::RenderTarget2D(format, width, height);
+	return new LUCID_GAL_D3D11::RenderTarget2D(format, width, height, samples);
 }
 
 RenderTarget2D *RenderTarget2D::create(LUCID_CORE::Reader &reader)
@@ -38,9 +38,10 @@ LUCID_GAL_END
 
 LUCID_GAL_D3D11_BEGIN
 
-RenderTarget2D::RenderTarget2D(FORMAT format, int32_t width, int32_t height)
+RenderTarget2D::RenderTarget2D(FORMAT format, int32_t width, int32_t height, int32_t samples)
 	: _format(format)
 	, _width(width), _height(height)
+	, _samples(samples)
 {
 	try
 	{
@@ -59,6 +60,8 @@ RenderTarget2D::RenderTarget2D(LUCID_CORE::Reader &reader)
 	reader.read(&_format, sizeof(FORMAT));
 	_width = reader.read<int32_t>();
 	_height = reader.read<int32_t>();
+	_samples = 1;
+	// TBD: add samples to bootstrap script...
 
 	try
 	{
@@ -87,30 +90,18 @@ void RenderTarget2D::initialize()
 	descTexture.Height = _height;
 	descTexture.MipLevels = 1;
 	descTexture.ArraySize = 1;
-	descTexture.SampleDesc = { 1, 0, };
+	descTexture.SampleDesc.Count = _samples;
+	descTexture.SampleDesc.Quality = (1 != _samples) ? D3D11_STANDARD_MULTISAMPLE_PATTERN : 0;
 	descTexture.Usage = D3D11_USAGE_DEFAULT;
 	descTexture.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
 
 	HRESULT hResult = d3d11ConcreteDevice->CreateTexture2D(&descTexture, nullptr, &_d3dTexture2D);
 	GAL_VALIDATE_HRESULT(hResult, "unable to create render target");
 
-	D3D11_RENDER_TARGET_VIEW_DESC descTargetView;
-	::memset(&descTargetView, 0, sizeof(D3D11_RENDER_TARGET_VIEW_DESC));
-
-	descTargetView.Format = descTexture.Format;
-	descTargetView.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
-
-	hResult = d3d11ConcreteDevice->CreateRenderTargetView(_d3dTexture2D, &descTargetView, &_d3dTargetView);
+	hResult = d3d11ConcreteDevice->CreateRenderTargetView(_d3dTexture2D, nullptr, &_d3dTargetView);
 	GAL_VALIDATE_HRESULT(hResult, "unable to create render target");
 
-	D3D11_SHADER_RESOURCE_VIEW_DESC descResourceView;
-	::memset(&descResourceView, 0, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
-
-	descResourceView.Format = descTexture.Format;
-	descResourceView.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	descResourceView.Texture2D.MipLevels = 1;
-
-	hResult = d3d11ConcreteDevice->CreateShaderResourceView(_d3dTexture2D, &descResourceView, &_d3dResourceView);
+	hResult = d3d11ConcreteDevice->CreateShaderResourceView(_d3dTexture2D, nullptr, &_d3dResourceView);
 	GAL_VALIDATE_HRESULT(hResult, "unable to create render target");
 
 	++galConcreteStatistic(targets);

@@ -7,9 +7,16 @@
 #include <lucid/gal/VertexBuffer.h>
 #include <lucid/gal/VertexFormat.h>
 #include <lucid/gal/Pipeline.h>
+#include <lucid/core/Profiler.h>
 #include <algorithm>
 
 LUCID_ANONYMOUS_BEGIN
+
+template<typename T> inline void reset_raw_ptr(T *&ptr)
+{
+	delete ptr;
+	ptr = nullptr;
+}
 
 LUCID_GAL::VertexElement const format[] = {
 	{ LUCID_GAL::VertexElement::FORMAT_FLOAT2, LUCID_GAL::VertexElement::  TYPE_VERTEX, 0, 0,  0, },
@@ -55,30 +62,19 @@ void Renderer::initialize(std::string const &font, std::string const &material)
 
 void Renderer::shutdown()
 {
-	delete _font;
-	_font = nullptr;
-
-	delete _characters;
-	_characters = nullptr;
-
-	delete _material;
-	_material = nullptr;
-
-	delete _format;
-	_format = nullptr;
-
-	delete _vertices;
-	_vertices = nullptr;
-
-	delete _indices;
-	_indices = nullptr;
-
-	delete _instances;
-	_instances = nullptr;
+	::reset_raw_ptr(_instances);
+	::reset_raw_ptr(_indices);
+	::reset_raw_ptr(_vertices);
+	::reset_raw_ptr(_format);
+	::reset_raw_ptr(_material);
+	::reset_raw_ptr(_characters);
+	::reset_raw_ptr(_font);
 }
 
 void Renderer::render(LUCID_GIGL::Context const &context, Frame const *frame)
 {
+	LUCID_PROFILE_SCOPE("gui::Renderer::render()");
+
 	_text.clear();
 	_icons.clear();
 
@@ -100,6 +96,8 @@ void Renderer::add(ALIGNMENT align, Point const &point, float32_t size, std::str
 
 void Renderer::process(Frame const *frame)
 {
+	LUCID_PROFILE_SCOPE("gui::Renderer::process()");
+
 	if (nullptr == frame)
 		return;
 
@@ -111,6 +109,8 @@ void Renderer::process(Frame const *frame)
 
 void Renderer::renderIcons(LUCID_GIGL::Context const &context)
 {
+	LUCID_PROFILE_SCOPE("gui::Renderer::renderIcons()");
+
 	_material->begin(context);
 
 		size_t pos = 0;
@@ -137,6 +137,8 @@ void Renderer::renderIcons(LUCID_GIGL::Context const &context)
 
 void Renderer::renderText(LUCID_GIGL::Context const &context)
 {
+	LUCID_PROFILE_SCOPE("gui::Renderer::renderText()");
+
 	size_t pos = 0;
 	size_t count = std::min(size_t(TEXT_DRAW_MAXIMUM), _text.size() - pos);
 	while (0 < count)

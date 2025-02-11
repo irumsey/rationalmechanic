@@ -48,7 +48,7 @@ public:
 		return true;
 	}
 	
-	void update(float32_t dt)
+	void update(float64_t dt)
 	{
 		if (STATE_RUNNING != _state)
 			return;

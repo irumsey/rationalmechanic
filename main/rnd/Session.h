@@ -1,12 +1,28 @@
 #pragma once
 
 #include <lucid/core/Noncopyable.h>
+#include <lucid/gal/Defines.h>
+#include <lucid/gigl/Defines.h>
 #include <lucid/gigl/Context.h>
 #include <lucid/gui/Types.h>
 #include <lucid/gui/Events.h>
 #include <lucid/gui/Renderer.h>
 #include <rnd/Utility.h>
 #include <rnd/DummySimulator.h>
+
+LUCID_GAL_BEGIN
+
+class RenderTarget2D;
+class TargetReader2D;
+class Parameter;
+
+LUCID_GAL_END
+
+LUCID_GIGL_BEGIN
+
+class Mesh;
+
+LUCID_GIGL_END
 
 LUCID_GUI_BEGIN
 
@@ -43,7 +59,7 @@ public:
 
 	void onCheckboxPress(LUCID_GUI::Checkbox *button);
 
-	void render(float64_t t);
+	void render(float64_t time);
 
 private:
 	friend class State;
@@ -53,10 +69,37 @@ private:
 	friend class Configuring;
 	friend class Running;
 
+	struct BlurParameters
+	{
+		LUCID_GAL::Parameter const *texelOffset = nullptr;
+		LUCID_GAL::Parameter const *theSource = nullptr;
+	};
+
+	struct PostParameters
+	{
+		LUCID_GAL::Parameter const *colorTarget = nullptr;
+		LUCID_GAL::Parameter const *glowTarget = nullptr;
+	};
+
 	State const *_state = nullptr;
 	void changeState(State const *state);
 
 	LUCID_GUI::Rectangle _rectangle;
+
+	LUCID_GAL::RenderTarget2D *_colorTarget = nullptr;
+	LUCID_GAL::RenderTarget2D *_glowTarget = nullptr;
+	LUCID_GAL::RenderTarget2D *_selectTarget = nullptr;
+	LUCID_GAL::TargetReader2D *_selectReader = nullptr;
+
+	LUCID_GAL::RenderTarget2D *_blurTarget = nullptr;
+
+	LUCID_GIGL::Mesh *_clear = nullptr;
+
+	LUCID_GIGL::Mesh *_blur = nullptr;
+	BlurParameters _blurParameters;
+
+	LUCID_GIGL::Mesh *_post = nullptr;
+	PostParameters _postParameters;
 
 	LUCID_GUI::Renderer _guiRender;
 	LUCID_GUI::Frame *_guiConfiguring = nullptr;

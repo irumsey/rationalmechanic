@@ -20,7 +20,7 @@ void Button::onEvent(KeyboardEvent const &event)
 
 void Button::onEvent(MouseEvent const &event)
 {
-	if (!isEnabled())
+	if (notEnabled())
 	{
 		return;
 	}

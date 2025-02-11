@@ -42,7 +42,7 @@ public:
 
 	virtual int32_t height() const = 0;
 
-	static RenderTarget2D *create(FORMAT format, int32_t width, int32_t height);
+	static RenderTarget2D *create(FORMAT format, int32_t width, int32_t height, int32_t samples = 1);
 
 	static RenderTarget2D *create(LUCID_CORE::Reader &read);
 

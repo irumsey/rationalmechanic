@@ -18,7 +18,7 @@ LUCID_GAL_D3D11_BEGIN
 class RenderTarget2D : public LUCID_GAL::RenderTarget2D
 {
 public:
-	RenderTarget2D(FORMAT format, int32_t width, int32_t height);
+	RenderTarget2D(FORMAT format, int32_t width, int32_t height, int32_t samples = 1);
 
 	RenderTarget2D(LUCID_CORE::Reader &reader);
 
@@ -40,6 +40,7 @@ private:
 	FORMAT _format = FORMAT_UNDEFINED;
 	int32_t _width = 0;
 	int32_t _height = 0;
+	int32_t _samples = 1;
 
 	ID3D11Texture2D *_d3dTexture2D = nullptr;
 	ID3D11RenderTargetView *_d3dTargetView = nullptr;

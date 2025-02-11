@@ -434,3 +434,11 @@ ModelManifest.xml
 /_bin/main/rnd/content/font.pixel.cso
 /_bin/main/rnd/content/font.vertex.cso
 /_bin/main/rnd/content/OCRa.font
+/_bin/main/rnd/content/blur.mesh
+/_bin/main/rnd/content/blur.pixel.cso
+/_bin/main/rnd/content/clear.mesh
+/_bin/main/rnd/content/clear.pixel.cso
+/_bin/main/rnd/content/post.mesh
+/_bin/main/rnd/content/post.pixel.cso
+/_bin/main/rnd/content/screen.geometry
+/_bin/main/rnd/content/screen.vertex.cso

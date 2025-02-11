@@ -67,10 +67,10 @@ void Session::onCheckboxPress(LUCID_GUI::Checkbox *button)
 	_state->onCheckboxPress(this, button);
 }
 
-void Session::render(float64_t t)
+void Session::render(float64_t time)
 {
 	assert(nullptr != _state);
-	_state->render(this, t);
+	_state->render(this, time);
 }
 
 inline void Session::changeState(State const *state)

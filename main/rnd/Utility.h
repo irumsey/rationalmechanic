@@ -9,7 +9,7 @@
 /// 
 /// 
 
-template<typename P> inline void safe_delete(P *&ptr)
+template<typename P> inline void reset_raw_ptr(P *&ptr)
 {
 	delete ptr;
 	ptr = nullptr;
