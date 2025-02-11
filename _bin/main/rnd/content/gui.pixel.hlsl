@@ -9,6 +9,7 @@ OutputPixel main(InputPixel input)
 
 	float4 texel = guiTexture.Sample(theSampler, input.texcoord);	
 	output.color = input.color * texel;
+	output.glow = float4(0, 0, 0, input.color.a * texel.a);
 
 	return output;
 }

@@ -25,8 +25,8 @@ float64_t const SECONDS_PER_DAY = 24.0 * 3600.0;
 float64_t const DAYS_PER_SECOND = 1.0 / SECONDS_PER_DAY;
 
 // give these macros a try, see if i like them...
-#define GET_MATERIAL_PARAMETER(mesh, name) mesh->material()->program()->lookup( #name )
-#define SET_MATERIAL_PARAMETER(mesh, param, value) mesh->material()->program()->set(param, value)
+#define GET_MATERIAL_PARAMETER(mesh, name) mesh->program()->lookup( #name )
+#define SET_MATERIAL_PARAMETER(mesh, param, value) mesh->program()->set( param, value )
 
 // } test
 

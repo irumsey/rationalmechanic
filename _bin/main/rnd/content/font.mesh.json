@@ -25,7 +25,7 @@
 				"RasterMode": {
 					"Fill": "FILL_SOLID",
 					"Cull": "CULL_NONE",
-					"Multisample": false
+					"Multisample": true
 				},
 
 				"BlendMode": {
