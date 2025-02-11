@@ -24,3 +24,10 @@ struct DoublePixel
 	float4  color : SV_TARGET0;
 	float4   glow : SV_TARGET1;
 };
+
+struct TriplePixel
+{
+	uint1      id : SV_TARGET0;
+	float4  color : SV_TARGET1;
+	float4   glow : SV_TARGET2;
+};

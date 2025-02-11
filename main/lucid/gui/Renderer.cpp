@@ -20,9 +20,10 @@ template<typename T> inline void reset_raw_ptr(T *&ptr)
 
 LUCID_GAL::VertexElement const format[] = {
 	{ LUCID_GAL::VertexElement::FORMAT_FLOAT2, LUCID_GAL::VertexElement::  TYPE_VERTEX, 0, 0,  0, },
-	{ LUCID_GAL::VertexElement::FORMAT_FLOAT4, LUCID_GAL::VertexElement::TYPE_INSTANCE, 1, 1,  0, },
-	{ LUCID_GAL::VertexElement::FORMAT_FLOAT4, LUCID_GAL::VertexElement::TYPE_INSTANCE, 2, 1, 16, },
-	{ LUCID_GAL::VertexElement::FORMAT_FLOAT4, LUCID_GAL::VertexElement::TYPE_INSTANCE, 3, 1, 32, },
+	{ LUCID_GAL::VertexElement:: FORMAT_UINT1, LUCID_GAL::VertexElement::TYPE_INSTANCE, 1, 1,  0, },
+	{ LUCID_GAL::VertexElement::FORMAT_FLOAT4, LUCID_GAL::VertexElement::TYPE_INSTANCE, 2, 1,  4, },
+	{ LUCID_GAL::VertexElement::FORMAT_FLOAT4, LUCID_GAL::VertexElement::TYPE_INSTANCE, 3, 1, 20, },
+	{ LUCID_GAL::VertexElement::FORMAT_FLOAT4, LUCID_GAL::VertexElement::TYPE_INSTANCE, 4, 1, 36, },
 };
 
 LUCID_GAL::Vector2 const vertices[] = {
@@ -47,7 +48,7 @@ void Renderer::initialize(std::string const &font, std::string const &material)
 
 	_material = LUCID_GIGL::Material::create(material);
 
-	_format = LUCID::gal::VertexFormat::create(::format, 4);
+	_format = LUCID::gal::VertexFormat::create(::format, 5);
 
 	_vertices = LUCID_GAL::VertexBuffer::create(LUCID_GAL::VertexBuffer::USAGE_STATIC, 4, sizeof(LUCID_GAL::Vector2));
 	_indices = LUCID_GAL::IndexBuffer::create(LUCID_GAL::IndexBuffer::USAGE_STATIC, LUCID_GAL::IndexBuffer::FORMAT_UINT16, 4);

@@ -2,7 +2,7 @@
 
 LUCID_GUI_BEGIN
 
-Panel::Panel(size_t id, ANCHOR anchor, Size const &size)
+Panel::Panel(uint32_t id, ANCHOR anchor, Size const &size)
 	: Frame(id, anchor, size)
 {
 }

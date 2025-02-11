@@ -12,6 +12,7 @@ OutputVertex main(InputVertex input)
 	float2 scrPosition = texelSize * (input.vertex * size(input.position) + input.position.xy);
 
 	output.ppsPosition = float4(2 * scrPosition - 1, 0, 1);
+	output.id = input.id;
 	output.texcoord = input.vertex * size(input.texcoord) + input.texcoord.xy;
 	output.color = input.color;
 

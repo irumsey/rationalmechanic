@@ -267,7 +267,7 @@ INT WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR cmdln, _In_ IN
 		///
 		LUCID_GUI::Rectangle rectangle = ::getWindowRectangle(hWindow);
 
-		LUCID_GAL_SYSTEM.initialize(true, rectangle.max.x, rectangle.max.y, 4, hWindow);
+		LUCID_GAL_SYSTEM.initialize(true, rectangle.max.x, rectangle.max.y, 1, hWindow);
 		::ShowWindow(hWindow, SW_SHOW);
 
 		///

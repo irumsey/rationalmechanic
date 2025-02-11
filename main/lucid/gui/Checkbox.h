@@ -28,7 +28,7 @@ public:
 
 	typedef std::array<LUCID_GAL::Vector4, STATE_COUNT> Tiles;
 
-	Checkbox(size_t id, ANCHOR anchor, Size const &size, Tiles const &tiles, Callback const &callback);
+	Checkbox(uint32_t id, ANCHOR anchor, Size const &size, Tiles const &tiles, Callback const &callback);
 
 	virtual ~Checkbox() = default;
 

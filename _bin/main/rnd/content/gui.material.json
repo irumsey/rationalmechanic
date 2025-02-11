@@ -24,7 +24,7 @@
 			{
 				"Fill" : "FILL_SOLID",
 				"Cull" : "CULL_NONE",
-				"Multisample": true
+				"Multisample": false
 			},
 
 			"BlendMode" :
@@ -59,7 +59,6 @@
 	},
 
 	"attributes": [
-			{ "name" : "screenSize",    "query" :          "screenSize" },
 			{ "name" :  "texelSize",    "query" :           "texelSize" },
 			{ "name" : "guiTexture", "texture2d": "content/gui.texture" }
 	]

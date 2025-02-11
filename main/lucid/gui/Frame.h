@@ -22,7 +22,7 @@ public:
 
 	Frame const *nextSibling() const;
 
-	size_t id() const;
+	uint32_t id() const;
 
 	ANCHOR anchor() const;
 
@@ -47,13 +47,13 @@ public:
 	virtual void accept(Renderer *renderer) const = 0;
 
 protected:
-	Frame(size_t id, ANCHOR anchor, Size const &size);
+	Frame(uint32_t id, ANCHOR anchor, Size const &size);
 
 private:
 	Frame *_firstChild = nullptr;
 	Frame *_nextSibling = nullptr;
 
-	size_t _id = -1;
+	uint32_t _id = 0;
 	ANCHOR _anchor = ANCHOR_FILL;
 	Size _size;
 
@@ -77,7 +77,7 @@ inline Frame const *Frame::nextSibling() const
 	return _nextSibling;
 }
 
-inline size_t Frame::id() const
+inline uint32_t Frame::id() const
 {
 	return _id;
 }

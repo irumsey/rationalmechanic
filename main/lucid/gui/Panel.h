@@ -12,7 +12,7 @@ LUCID_GUI_BEGIN
 class Panel final : public Frame
 {
 public:
-	Panel(size_t id, ANCHOR anchor, Size const &size);
+	Panel(uint32_t id, ANCHOR anchor, Size const &size);
 
 	virtual ~Panel() = default;
 

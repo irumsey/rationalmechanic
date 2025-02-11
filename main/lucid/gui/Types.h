@@ -61,12 +61,13 @@ struct Size
 //
 //
 #pragma pack(push)
-#pragma pack(8)
+#pragma pack(4)
 struct Icon
 {
+	uint32_t                 id;
 	LUCID_GAL::Vector4 position;
 	LUCID_GAL::Vector4 texcoord;
-	LUCID_GAL::Color   color;
+	LUCID_GAL::Color      color;
 };
 #pragma pack(pop)
 

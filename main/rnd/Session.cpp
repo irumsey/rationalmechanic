@@ -1,6 +1,7 @@
 #include "Session.h"
 #include "State.h"
 #include <lucid/gui/Frame.h>
+#include <lucid/gal/TargetReader2D.h>
 #include <cassert>
 
 #ifdef min
@@ -49,6 +50,9 @@ void Session::onEvent(LUCID_GUI::MouseEvent const &event)
 
 	LUCID_GUI::MouseEvent flipped = event;
 	flipped.position.y = _rectangle.max.y - event.position.y;
+
+	if (nullptr != _selectReader)
+		flipped.sample = _selectReader->sample<uint32_t>(event.position.x, event.position.y);
 
 	_state->onEvent(this, flipped);
 }

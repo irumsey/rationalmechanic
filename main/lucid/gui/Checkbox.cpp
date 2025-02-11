@@ -3,7 +3,7 @@
 
 LUCID_GUI_BEGIN
 
-Checkbox::Checkbox(size_t id, ANCHOR anchor, Size const &size, Tiles const &tiles, Callback const &callback)
+Checkbox::Checkbox(uint32_t id, ANCHOR anchor, Size const &size, Tiles const &tiles, Callback const &callback)
 	: Frame(id, anchor, size)
 	, _tiles(tiles)
 	, _callback(callback)
@@ -53,7 +53,8 @@ void Checkbox::accept(Renderer *renderer) const
 	LUCID_GAL::Vector4 position(float32_t(min.x), float32_t(min.y), float32_t(max.x), float32_t(max.y));
 	LUCID_GAL::Vector4 const &tile = _tiles[_state];
 
-	Icon icon = { position, tile, LUCID_GAL::Color(1, 1, 1, 1), };
+	Icon icon = { id(), position, tile, LUCID_GAL::Color(1, 1, 1, 1), };
+
 	renderer->add(icon);
 }
 

@@ -14,7 +14,7 @@ LUCID_GUI_BEGIN
 class Label final : public Frame
 {
 public:
-	Label(size_t id, ANCHOR anchor, Size const &size, ALIGNMENT align, std::string const &text, Color const &color);
+	Label(uint32_t id, ANCHOR anchor, Size const &size, ALIGNMENT align, std::string const &text, Color const &color);
 
 	virtual ~Label() = default;
 

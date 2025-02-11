@@ -35,9 +35,19 @@ LUCID_GUI_END
 
 class State;
 
+/// Session
 /// 
+/// This is where all the top level application data resides.
+/// The intent is to use the state pattern and define
+/// Session as the noun and State as the action.
 /// 
+/// See: State
 /// 
+/// Note: in the implementation of its members, Session defers
+/// all action to the current state.  However, a few exceptions
+/// are allowed so the each state need not preprocess basic data.
+/// For example, processing screen and mouse coordinates to
+/// make sure they are consistent.
 class Session
 {
 public:

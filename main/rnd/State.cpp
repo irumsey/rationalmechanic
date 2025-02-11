@@ -36,7 +36,7 @@ namespace gui = LUCID_GUI;
 
 enum ID
 {
-	ID_NONE				=    -1,
+	ID_NONE				=     0,
 		
 	ID_BTN_START		= 0x101,
 
@@ -102,12 +102,13 @@ void State::onEvent(Session *session, gui::SizeEvent const &event) const
 	::reset_raw_ptr(session->_selectTarget);
 	::reset_raw_ptr(session->_selectReader);
 
-	session->_colorTarget = LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, width, height, 4);
-	session->_glowTarget = LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, width, height, 4);
-	session->_selectTarget = LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UINT_R32, width, height, 1);
+	session->_selectTarget = LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UINT_R32, width, height);
+	session->_colorTarget = LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, width, height);
+	session->_glowTarget = LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, width, height);
+
 	session->_selectReader = LUCID_GAL::TargetReader2D::create(session->_selectTarget, width, height);
 
-	session->_blurTarget = LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, width, height, 4);
+	session->_blurTarget = LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, width, height);
 
 	session->_guiConfiguring->onEvent(event);
 	session->_guiRunning->onEvent(event);
@@ -127,8 +128,9 @@ void State::preRender(Session *session, float64_t time) const
 
 	LUCID_GAL_PIPELINE.clear(true, true, true, LUCID_GAL::Color(0, 0, 0, 1), 1.f, 0x00);
 
-	LUCID_GAL_PIPELINE.setRenderTarget(0, session->_colorTarget);
-	LUCID_GAL_PIPELINE.setRenderTarget(1, session->_glowTarget);
+	LUCID_GAL_PIPELINE.setRenderTarget(0, session->_selectTarget);
+	LUCID_GAL_PIPELINE.setRenderTarget(1, session->_colorTarget);
+	LUCID_GAL_PIPELINE.setRenderTarget(2, session->_glowTarget);
 	LUCID_GAL_PIPELINE.updateTargets();
 
 	session->_clear->render(session->_renderContext);
@@ -148,6 +150,7 @@ void State::blurGlowTarget(Session *session) const
 
 	LUCID_GAL_PIPELINE.setRenderTarget(0, session->_blurTarget);
 	LUCID_GAL_PIPELINE.setRenderTarget(1, nullptr);
+	LUCID_GAL_PIPELINE.setRenderTarget(2, nullptr);
 	LUCID_GAL_PIPELINE.updateTargets();
 
 	SET_MATERIAL_PARAMETER(session->_blur, session->_blurParameters.theSource, session->_glowTarget);
@@ -205,12 +208,13 @@ void Starting::onEnter(Session *session) const
 
 	session->_renderContext = LUCID_GIGL::Context("content/render.context");
 
-	session->_colorTarget = LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, width, height, 4);
-	session->_glowTarget = LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, width, height, 4);
 	session->_selectTarget = LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UINT_R32, width, height);
+	session->_colorTarget = LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, width, height);
+	session->_glowTarget = LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, width, height);
+
 	session->_selectReader = LUCID_GAL::TargetReader2D::create(session->_selectTarget, width, height);
 
-	session->_blurTarget = LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, width, height, 4);
+	session->_blurTarget = LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, width, height);
 
 	session->_blur = LUCID_GIGL::Mesh::create("content/blur.mesh");
 	session->_blurParameters.texelOffset = GET_MATERIAL_PARAMETER(session->_blur, texelOffset);

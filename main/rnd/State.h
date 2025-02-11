@@ -105,9 +105,10 @@ public:
 
 };
 
-///
+///	Configuring
 /// 
-/// 
+/// this is the "main menu" state where the user sets up,
+/// or configures, the simulation
 class Configuring final : public State
 {
 public:

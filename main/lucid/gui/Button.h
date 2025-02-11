@@ -27,7 +27,7 @@ public:
 
 	typedef std::array<LUCID_GAL::Vector4, STATE_COUNT> Tiles;
 
-	Button(size_t id, ANCHOR anchor, Size const &size, Tiles const &tiles, Callback const &callback);
+	Button(uint32_t id, ANCHOR anchor, Size const &size, Tiles const &tiles, Callback const &callback);
 
 	virtual ~Button() = default;
 
