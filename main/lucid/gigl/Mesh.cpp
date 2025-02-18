@@ -17,7 +17,7 @@ LUCID_GIGL_BEGIN
 
 Mesh *Mesh::create(std::string const &path)
 {
-	return new Mesh(LUCID_CORE::FileReader(path));
+	return new Mesh(path);
 }
 
 Mesh *Mesh::create(LUCID_CORE::Reader &reader)
@@ -28,6 +28,11 @@ Mesh *Mesh::create(LUCID_CORE::Reader &reader)
 ///
 ///
 ///
+
+Mesh::Mesh(std::string const &path)
+{
+	initialize(LUCID_CORE::FileReader(path));
+}
 
 Mesh::Mesh(LUCID_CORE::Reader &reader)
 {

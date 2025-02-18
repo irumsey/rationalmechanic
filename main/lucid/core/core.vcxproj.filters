@@ -26,6 +26,7 @@
     <ClInclude Include="Random.h" />
     <ClInclude Include="Numbers.h" />
     <ClInclude Include="Defines.h" />
+    <ClInclude Include="Memory.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Error.cpp" />

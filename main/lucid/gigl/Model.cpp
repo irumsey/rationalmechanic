@@ -5,6 +5,11 @@
 
 LUCID_GIGL_BEGIN
 
+Model::Model(std::string const &path)
+{
+	initialize(LUCID_CORE::FileReader(path));
+}
+
 Model::Model(LUCID_CORE::Reader &reader)
 {
 	initialize(reader);
@@ -63,7 +68,7 @@ void Model::shutdown()
 
 Model *Model::create(std::string const &path)
 {
-	return create(LUCID_CORE::FileReader(path));
+	return new Model(path);
 }
 
 Model *Model::create(LUCID_CORE::Reader &reader)

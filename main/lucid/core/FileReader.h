@@ -31,32 +31,6 @@ public:
 
 	virtual void read(void *data, size_t size) override;
 
-	virtual void read(bool &data) override;
-
-	virtual void read(int8_t &data) override;
-
-	virtual void read(uint8_t &data) override;
-
-	virtual void read(int16_t &data) override;
-
-	virtual void read(uint16_t &data) override;
-
-	virtual void read(int32_t &data) override;
-
-	virtual void read(uint32_t &data) override;
-
-	virtual void read(int64_t &data) override;
-
-	virtual void read(uint64_t &data) override;
-
-	virtual void read(float32_t &data) override;
-
-	virtual void read(float64_t &data) override;
-
-	virtual void read(std::string &data) override;
-
-	virtual void read(Identity &data) override;
-
 private:
 	std::ifstream _file;
 

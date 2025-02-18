@@ -6,11 +6,57 @@
     <ClCompile Include="Utility.cpp" />
     <ClCompile Include="Session.cpp" />
     <ClCompile Include="State.cpp" />
+    <ClCompile Include="_orbit\Frame.cpp">
+      <Filter>_orbit</Filter>
+    </ClCompile>
+    <ClCompile Include="_orbit\Properties.cpp">
+      <Filter>_orbit</Filter>
+    </ClCompile>
+    <ClCompile Include="_orbit\Ephemeris.cpp">
+      <Filter>_orbit</Filter>
+    </ClCompile>
+    <ClCompile Include="_orbit\Mission.cpp">
+      <Filter>_orbit</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Utility.h" />
     <ClInclude Include="Session.h" />
     <ClInclude Include="State.h" />
-    <ClInclude Include="DummySimulator.h" />
+    <ClInclude Include="_orbit\Defines.h">
+      <Filter>_orbit</Filter>
+    </ClInclude>
+    <ClInclude Include="_orbit\Simulator.h">
+      <Filter>_orbit</Filter>
+    </ClInclude>
+    <ClInclude Include="_orbit\Types.h">
+      <Filter>_orbit</Filter>
+    </ClInclude>
+    <ClInclude Include="_orbit\Frame.h">
+      <Filter>_orbit</Filter>
+    </ClInclude>
+    <ClInclude Include="_orbit\Algorithm.h">
+      <Filter>_orbit</Filter>
+    </ClInclude>
+    <ClInclude Include="_orbit\Properties.h">
+      <Filter>_orbit</Filter>
+    </ClInclude>
+    <ClInclude Include="_orbit\Elements.h">
+      <Filter>_orbit</Filter>
+    </ClInclude>
+    <ClInclude Include="_orbit\Ephemeris.h">
+      <Filter>_orbit</Filter>
+    </ClInclude>
+    <ClInclude Include="_orbit\Mission.h">
+      <Filter>_orbit</Filter>
+    </ClInclude>
+    <ClInclude Include="_orbit\Dictionary.h">
+      <Filter>_orbit</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="_orbit">
+      <UniqueIdentifier>{35403ef1-4658-44d1-8ef8-f4f9bbc280b3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

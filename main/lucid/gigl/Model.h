@@ -29,10 +29,14 @@ class Context;
 ///
 ///	Collection of meshes that make up a more complicated object.
 /// 
-///	Note: one caveat is that all meshes must use the same per-instance-vertex.
+///	Note: one requirement is that all meshes must use the same per-instance-vertex layout.
 class Model final
 {
 public:
+	Model() = default;
+
+	Model(std::string const &path);
+
 	Model(LUCID_CORE::Reader &reader);
 
 	virtual ~Model();

@@ -1,8 +1,11 @@
 #pragma once
 
+#include <rnd/_orbit/Defines.h>
 #include <lucid/core/Types.h>
 
-class DummySimulator
+ORBIT_BEGIN
+
+class Simulator
 {
 public:
 	enum STATE
@@ -13,9 +16,9 @@ public:
 		STATE_PAUSED
 	};
 
-	DummySimulator() = default;
+	Simulator() = default;
 
-	virtual ~DummySimulator() = default;
+	virtual ~Simulator() = default;
 
 	STATE state() const
 	{
@@ -28,7 +31,7 @@ public:
 		_state = STATE_STOPPED;
 	}
 
-	float64_t DummySimulator::time() const
+	float64_t time() const
 	{
 		return _time;
 	}
@@ -73,3 +76,5 @@ private:
 	float64_t _time = 0;
 
 };
+
+ORBIT_END

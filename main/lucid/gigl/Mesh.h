@@ -42,9 +42,18 @@ class Geometry;
 ///	structure.  mesh is entirely data driven which includes the
 ///	vertex layout.  it would be improper to impose a vertex
 ///	structure here.
+/// 
+/// Note: notice the difference between the draw and render methods.
+///       render makes full use of render context, material, and geometry.
+///       draw assumes the caller has used context, program, and/or material
+///       manually and, as such, only draws the geometry.
 class Mesh final
 {
 public:
+	Mesh() = delete;
+
+	Mesh(std::string const &path);
+
 	Mesh(LUCID_CORE::Reader &reader);
 
 	virtual ~Mesh();

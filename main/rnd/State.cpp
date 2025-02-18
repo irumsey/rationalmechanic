@@ -16,6 +16,7 @@
 #include <lucid/gal/Parameter.h>
 #include <lucid/gal/Pipeline.h>
 #include <lucid/gal/System.h>
+#include <lucid/core/Memory.h>
 
 // test {
 #include <sstream>
@@ -97,12 +98,12 @@ void State::onEvent(Session *session, gui::SizeEvent const &event) const
 	int32_t width = event.width();
 	int32_t height = event.height();
 
-	::reset_raw_ptr(session->_selectTarget);
-	::reset_raw_ptr(session->_colorTarget);
-	::reset_raw_ptr(session->_glowTarget);
-	::reset_raw_ptr(session->_depthTarget);
+	LUCID_CORE::reset_raw_ptr(session->_selectTarget);
+	LUCID_CORE::reset_raw_ptr(session->_colorTarget);
+	LUCID_CORE::reset_raw_ptr(session->_glowTarget);
+	LUCID_CORE::reset_raw_ptr(session->_depthTarget);
 
-	::reset_raw_ptr(session->_selectReader);
+	LUCID_CORE::reset_raw_ptr(session->_selectReader);
 
 	session->_selectTarget = LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UINT_R32, width, height);
 	session->_colorTarget = LUCID_GAL::RenderTarget2D::create(LUCID_GAL::RenderTarget2D::FORMAT_UNORM_R8G8B8A8, width, height);
@@ -316,25 +317,25 @@ void Stopping::onEnter(Session *session) const
 {
 	/// TBD: shutdown everything...
 
-	::reset_raw_ptr(session->_guiConfiguring);
-	::reset_raw_ptr(session->_guiRunning);
+	LUCID_CORE::reset_raw_ptr(session->_guiConfiguring);
+	LUCID_CORE::reset_raw_ptr(session->_guiRunning);
 	
 	session->_postParameters = { nullptr, nullptr, };
-	::reset_raw_ptr(session->_post);
+	LUCID_CORE::reset_raw_ptr(session->_post);
 
-	::reset_raw_ptr(session->_clear);
+	LUCID_CORE::reset_raw_ptr(session->_clear);
 
 	session->_blurParameters = { nullptr, nullptr, };
-	::reset_raw_ptr(session->_blur);
+	LUCID_CORE::reset_raw_ptr(session->_blur);
 
-	::reset_raw_ptr(session->_blurTarget);
+	LUCID_CORE::reset_raw_ptr(session->_blurTarget);
 
-	::reset_raw_ptr(session->_selectTarget);
-	::reset_raw_ptr(session->_colorTarget);
-	::reset_raw_ptr(session->_glowTarget);
-	::reset_raw_ptr(session->_depthTarget);
+	LUCID_CORE::reset_raw_ptr(session->_selectTarget);
+	LUCID_CORE::reset_raw_ptr(session->_colorTarget);
+	LUCID_CORE::reset_raw_ptr(session->_glowTarget);
+	LUCID_CORE::reset_raw_ptr(session->_depthTarget);
 
-	::reset_raw_ptr(session->_selectReader);
+	LUCID_CORE::reset_raw_ptr(session->_selectReader);
 
 	session->_renderContext = LUCID_GIGL::Context();
 

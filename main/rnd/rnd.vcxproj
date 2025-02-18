@@ -167,12 +167,25 @@
     <ClCompile Include="Session.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="Utility.cpp" />
+    <ClCompile Include="_orbit\Ephemeris.cpp" />
+    <ClCompile Include="_orbit\Frame.cpp" />
+    <ClCompile Include="_orbit\Mission.cpp" />
+    <ClCompile Include="_orbit\Properties.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DummySimulator.h" />
     <ClInclude Include="Session.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="Utility.h" />
+    <ClInclude Include="_orbit\Algorithm.h" />
+    <ClInclude Include="_orbit\Defines.h" />
+    <ClInclude Include="_orbit\Dictionary.h" />
+    <ClInclude Include="_orbit\Elements.h" />
+    <ClInclude Include="_orbit\Ephemeris.h" />
+    <ClInclude Include="_orbit\Frame.h" />
+    <ClInclude Include="_orbit\Mission.h" />
+    <ClInclude Include="_orbit\Properties.h" />
+    <ClInclude Include="_orbit\Simulator.h" />
+    <ClInclude Include="_orbit\Types.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

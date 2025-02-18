@@ -169,21 +169,21 @@ BlendState::~BlendState()
 
 DepthStencilState::DepthStencilState(LUCID_CORE::Reader &reader)
 {
-	reader.read(depthEnable);
+	depthEnable = reader.read<bool>();
 	writeMask = readEnum(reader, d3dDepthWriteMask);
 	depthFunction = readEnum(reader, d3dCompare);
 
-	reader.read(stencilEnable);
+	stencilEnable = reader.read<bool>();
 	stencilFunction = readEnum(reader, d3dCompare);
 
 	stencilPass = readEnum(reader, d3dStencil);
 	stencilFail = readEnum(reader, d3dStencil);
 	stencilDepthFail = readEnum(reader, d3dStencil);
 
-	reader.read(stencilReadMask);
-	reader.read(stencilWriteMask);
+	stencilReadMask = reader.read<uint8_t>();
+	stencilWriteMask = reader.read<uint8_t>();
 
-	reader.read(stencilRef);
+	stencilRef = reader.read<uint8_t>();
 
 	D3D11_DEPTH_STENCIL_DESC descState;
 	::memset(&descState, 0, sizeof(D3D11_DEPTH_STENCIL_DESC));

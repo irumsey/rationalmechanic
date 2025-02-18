@@ -6,16 +6,6 @@
 #include <lucid/math/Vector.h>
 
 ///
-/// 
-/// 
-
-template<typename P> inline void reset_raw_ptr(P *&ptr)
-{
-	delete ptr;
-	ptr = nullptr;
-}
-
-///
 ///
 ///
 

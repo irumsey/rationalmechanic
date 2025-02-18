@@ -1,16 +1,12 @@
 #pragma once
 
+#include <utility>
 #include <string>
 #include <lucid/core/Defines.h>
 #include <lucid/core/Types.h>
+#include <lucid/core/Identity.h>
 
 LUCID_CORE_BEGIN
-
-///
-///
-///
-
-class Identity;
 
 ///	Reader
 ///
@@ -22,32 +18,6 @@ public:
 
 	virtual void read(void *data, size_t size) = 0;
 
-	virtual void read(bool &data) = 0;
-
-	virtual void read(int8_t &data) = 0;
-
-	virtual void read(uint8_t &data) = 0;
-
-	virtual void read(int16_t &data) = 0;
-
-	virtual void read(uint16_t &data) = 0;
-
-	virtual void read(int32_t &data) = 0;
-
-	virtual void read(uint32_t &data) = 0;
-
-	virtual void read(int64_t &data) = 0;
-
-	virtual void read(uint64_t &data) = 0;
-
-	virtual void read(float32_t &data) = 0;
-
-	virtual void read(float64_t &data) = 0;
-
-	virtual void read(std::string &data) = 0;
-
-	virtual void read(Identity &data) = 0;
-
 	template<class T> T read();
 
 protected:
@@ -58,7 +28,24 @@ protected:
 template<class T> inline T Reader::read()
 {
 	T value = T();
-	read(value);		
+	read(&value, sizeof(T));
+	return value;
+}
+
+template<> inline std::string Reader::read<std::string>()
+{
+	int size = read<int>();
+	std::string value(size, 0);
+
+	if (0 != size) read(&value[0], size);
+
+	return std::move(value);
+}
+
+template<> inline Identity Reader::read<Identity>()
+{
+	Identity value;
+	read(value.data(), Identity::SIZE);
 	return value;
 }
 

@@ -8,15 +8,10 @@
 #include <lucid/gal/VertexFormat.h>
 #include <lucid/gal/Pipeline.h>
 #include <lucid/core/Profiler.h>
+#include <lucid/core/Memory.h>
 #include <algorithm>
 
 LUCID_ANONYMOUS_BEGIN
-
-template<typename T> inline void reset_raw_ptr(T *&ptr)
-{
-	delete ptr;
-	ptr = nullptr;
-}
 
 LUCID_GAL::VertexElement const format[] = {
 	{ LUCID_GAL::VertexElement::FORMAT_FLOAT2, LUCID_GAL::VertexElement::  TYPE_VERTEX, 0, 0,  0, },
@@ -63,13 +58,13 @@ void Renderer::initialize(std::string const &font, std::string const &material)
 
 void Renderer::shutdown()
 {
-	::reset_raw_ptr(_instances);
-	::reset_raw_ptr(_indices);
-	::reset_raw_ptr(_vertices);
-	::reset_raw_ptr(_format);
-	::reset_raw_ptr(_material);
-	::reset_raw_ptr(_characters);
-	::reset_raw_ptr(_font);
+	LUCID_CORE::reset_raw_ptr(_instances);
+	LUCID_CORE::reset_raw_ptr(_indices);
+	LUCID_CORE::reset_raw_ptr(_vertices);
+	LUCID_CORE::reset_raw_ptr(_format);
+	LUCID_CORE::reset_raw_ptr(_material);
+	LUCID_CORE::reset_raw_ptr(_characters);
+	LUCID_CORE::reset_raw_ptr(_font);
 }
 
 void Renderer::render(LUCID_GIGL::Context const &context, Frame const *frame)

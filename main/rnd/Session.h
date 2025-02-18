@@ -8,7 +8,8 @@
 #include <lucid/gui/Events.h>
 #include <lucid/gui/Renderer.h>
 #include <rnd/Utility.h>
-#include <rnd/DummySimulator.h>
+#include <rnd/_orbit/Simulator.h>
+#include <rnd/_orbit/Mission.h>
 
 LUCID_GAL_BEGIN
 
@@ -121,7 +122,8 @@ private:
 
 	LUCID_GIGL::Context _renderContext;
 
-	DummySimulator _simulator;
+	orbit::Mission _mission;
+	orbit::Simulator _simulator;
 
 	Session &ref();
 
