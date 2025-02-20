@@ -38,7 +38,7 @@ public:
 	struct UNKNOWN final {};
 	struct UNDEFINED final {};
 
-	template<class T> struct Type                       { enum { VALUE =  0 }; };
+	template<class T> struct Type                        { enum { VALUE =  0 }; };
 	template<>        struct Type<              UNKNOWN> { enum { VALUE =  0 }; };
 	template<>        struct Type<            UNDEFINED> { enum { VALUE =  1 }; };
 	template<>        struct Type<                 bool> { enum { VALUE =  2 }; };

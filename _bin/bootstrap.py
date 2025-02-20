@@ -3,7 +3,6 @@
 #
 
 import os
-import os
 import optparse
 import uuid
 import json
@@ -37,7 +36,6 @@ vertexElementFormat = {
 	   'FORMAT_FLOAT2' :  1,
 	   'FORMAT_FLOAT3' :  2,
 	   'FORMAT_FLOAT4' :  3,
-
 	    'FORMAT_UINT1' :  4,
 	    'FORMAT_UINT2' :  5,
 	    'FORMAT_UINT3' :  6,
