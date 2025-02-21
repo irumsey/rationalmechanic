@@ -424,7 +424,7 @@ def migrateAll(root):
 			(name, ext) = os.path.splitext(file)
 			if '.json' == ext:
 				src = path + '\\' + file
-				dst = path + '\\' + name + '.migrated'
+				dst = "d:\\temp\\" + path + "\\" + name + '.json'
 
 				kind = os.path.splitext(name)[1]
 
