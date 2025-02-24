@@ -73,14 +73,14 @@ struct RenderProperties
 		showOrbit = stream.read<bool>();
 		showIcon = stream.read<bool>();
 
-		// stream.member_begin("model");
+		// stream.nested_begin("model");
 		model.reset(new LUCID_GIGL::Model(stream));
-		// stream.member_end("model");
+		// stream.nested_end("model");
 
-		stream.member_begin("icon");
+		stream.nested_begin("icon");
 		iconMesh = LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(stream.read<std::string>());
 		iconParameters = stream.read_counted<LUCID_GAL::Vector4, int32_t>(4);
-		stream.member_end("icon");
+		stream.nested_end("icon");
 
 		channel0 = stream.read_counted<LUCID_GAL::Vector4, int32_t>(4);
 		channel1 = stream.read_counted<LUCID_GAL::Vector4, int32_t>(4);

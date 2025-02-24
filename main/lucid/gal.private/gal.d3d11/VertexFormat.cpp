@@ -70,9 +70,9 @@ VertexFormat *VertexFormat::create(LUCID_CORE::Unserializer &reader)
 	std::vector<VertexElement> layout(count);
 	for (int32_t i = 0; i < count; ++i)
 	{
-		reader.member_begin();
+		reader.nested_begin();
 		reader.read(&layout[i], sizeof(VertexElement));
-		reader.member_end();
+		reader.nested_end();
 	}
 	return create(layout);
 }

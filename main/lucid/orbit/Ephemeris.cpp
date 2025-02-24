@@ -50,7 +50,7 @@ void Ephemeris::initialize(std::string const &path)
 	/// 
 
 	{
-		stream.member_begin("time");
+		stream.nested_begin("time");
 
 		_TAI_TT = stream.read<scalar_t>();
 
@@ -65,16 +65,16 @@ void Ephemeris::initialize(std::string const &path)
 		_DELTA_AT.resize(count);
 		for (int32_t i = 0; i < count; ++i)
 		{
-			stream.member_begin("deltas");
+			stream.nested_begin("deltas");
 
 			Date date = stream.read<Date>();
 			_DELTA_AT[i].first = JDN::from(date, Time());
 			_DELTA_AT[i].second = stream.read<scalar_t>();
 
-			stream.member_end("deltas");
+			stream.nested_end("deltas");
 		}
 
-		stream.member_end("time");
+		stream.nested_end("time");
 	}
 
 	///
@@ -84,7 +84,7 @@ void Ephemeris::initialize(std::string const &path)
 	int32_t frameCount = stream.read<int32_t>();
 	for (int32_t frameIndex = 0; frameIndex < frameCount; ++frameIndex)
 	{
-		stream.member_begin("frame");
+		stream.nested_begin("frame");
 
 		Entry target;
 
@@ -109,32 +109,59 @@ void Ephemeris::initialize(std::string const &path)
 		///	for now, orbital body is the only type with extra information
 		if (Entry::TYPE_ORBITAL_BODY == target.type)
 		{
-			stream.member_begin("properties");
+			stream.nested_begin("properties");
 
-			stream.member_begin();
+			stream.nested_begin();
 			_renderProperties.insert(std::make_pair(target.id, RenderProperties(stream)));
-			stream.member_end();
+			stream.nested_end();
 
-			stream.member_begin();
+			stream.nested_begin();
 			_physicalProperties.insert(std::make_pair(target.id, PhysicalProperties(stream)));
-			stream.member_end();
+			stream.nested_end();
 
-			stream.member_end("properties");
+			stream.nested_end("properties");
 
-			stream.member_begin();
+			stream.nested_begin();
 			_rotationalElements.insert(std::make_pair(target.id, RotationalElements(stream)));
-			stream.member_end();
+			stream.nested_end();
 
 			int32_t elementsCount = stream.read<int32_t>();
 			elements_vec_t pluralElements(elementsCount);
 			for (int32_t i = 0; i < elementsCount; ++i)
 			{
-				pluralElements[i] = stream.read_counted<OrbitalElements, int32_t>(13);
+				OrbitalElements &elements = pluralElements[i];
+				elements = stream.read_counted<OrbitalElements, int32_t>(13);
+
+				// test {
+				// JDN bootDouble,
+				//  EC bootDouble,
+				//  QR bootAUsAsMeters,
+				//  IN bootDegreesAsRadians,
+				//  OM bootDegreesAsRadians,
+				//   W bootDegreesAsRadians,
+				//  Tp bootDouble,
+				//   N bootDegreesAsRadians,
+				//  MA bootDegreesAsRadians,
+				//  TA bootDegreesAsRadians,
+				//   A bootAUsAsMeters,
+				//  AD bootAUsAsMeters,
+				//  PR bootDouble
+
+					elements.QR = elements.QR * constants::meters_per_AU;
+					elements.IN = elements.IN * constants:: rads_per_deg;
+					elements.OM = elements.OM * constants:: rads_per_deg;
+					elements. W = elements. W * constants:: rads_per_deg;
+					elements. N = elements. N * constants:: rads_per_deg;
+					elements.MA = elements.MA * constants:: rads_per_deg;
+					elements.TA = elements.TA * constants:: rads_per_deg;
+					elements. A = elements. A * constants::meters_per_AU;
+					elements.AD = elements.AD = constants::meters_per_AU;
+				// } test
 			}
 			_orbitalElements.insert(std::make_pair(target.id, pluralElements));
 		}
 
-		stream.member_end("frame");
+		stream.nested_end("frame");
 	}
 
 	LUCID_CORE::log("INFO", "Ephemeris initialized using: " + path);

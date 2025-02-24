@@ -35,9 +35,9 @@ public:
 
 	template<typename T, typename I> T read_counted(I expected);
 
-	void member_begin(char const *comment = nullptr);
+	void nested_begin(char const *comment = nullptr);
 
-	void member_end(char const *comment = nullptr);
+	void nested_end(char const *comment = nullptr);
 
 private:
 	std::vector<FileReader*> _stack;

@@ -70,9 +70,9 @@ void VertexBuffer::initialize(int32_t count, int32_t stride)
 		break;
 	}
 
-	++galConcreteStatistic(vertexBuffers);
-
 	_size = _d3dBuffer->count() * _d3dBuffer->stride();
+
+	++galConcreteStatistic(vertexBuffers);
 	galConcreteStatistic(vertexMemory) += _size;
 }
 

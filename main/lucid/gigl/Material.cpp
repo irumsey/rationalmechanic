@@ -118,12 +118,12 @@ void Material::initialize(LUCID_CORE::Unserializer &reader)
 	int32_t count = reader.read<int32_t>();
 	for (int32_t i = 0; i < count; ++i)
 	{
-		reader.member_begin();
+		reader.nested_begin();
 
 		std::string name = reader.read<std::string>();
 		_attributes[name] = Attribute(_program->lookup(name), Primitive(reader));
 
-		reader.member_end();
+		reader.nested_end();
 	}
 }
 

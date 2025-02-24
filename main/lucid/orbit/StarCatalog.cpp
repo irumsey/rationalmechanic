@@ -74,14 +74,14 @@ void StarCatalog::initialize(std::string const &path)
 	{
 		Entry &entry = _ordinal[i];
 
-		reader.member_begin();
+		reader.nested_begin();
 		entry.            xno = reader.read<int32_t>();
 		entry.           type = reader.read<std::string>();
 		entry.right_ascension = reader.read<float64_t>();
 		entry.    declination = reader.read<float64_t>();
 		entry.      magnitude = reader.read<float32_t>();
 		entry.          color = lookupColor(entry.type);
-		reader.member_end();
+		reader.nested_end();
 	}
 
 	LUCID_CORE::log("INFO", "Star Catalog initialized using: " + path);

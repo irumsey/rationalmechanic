@@ -25,5 +25,7 @@ LUCID_ORBIT_CONSTANT(   seconds_per_day,                                 86400.0
 LUCID_ORBIT_CONSTANT(  days_per_century,								 36525.0);
 LUCID_ORBIT_CONSTANT(     meters_per_AU,                          149597870700.0);
 LUCID_ORBIT_CONSTANT(     AUs_per_meter,   6.6845871222684454959959533702106e-12);
+LUCID_ORBIT_CONSTANT(      rads_per_deg,                              pi / 180.0);
+LUCID_ORBIT_CONSTANT(      degs_per_rad,                              180.0 / pi);
 
 LUCID_ORBIT_CONSTANTS_END

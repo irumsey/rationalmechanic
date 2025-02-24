@@ -341,7 +341,7 @@ void Program::initialize(LUCID_CORE::Unserializer &reader)
 		int32_t count = reader.read<int32_t>();
 		for (int32_t i = 0; i < count; ++i)
 		{
-			reader.member_begin();
+			reader.nested_begin();
 
 			std::string name = reader.read<std::string>();
 			Sampler *sampler = new Sampler(name, reader);
@@ -349,12 +349,12 @@ void Program::initialize(LUCID_CORE::Unserializer &reader)
 			sampler->next = _samplers;
 			_samplers = sampler;
 
-			reader.member_end();
+			reader.nested_end();
 		}
 
-		reader.member_begin();
+		reader.nested_begin();
 		_renderState = new RenderState(reader);
-		reader.member_end();
+		reader.nested_end();
 
 		_vertexShader = new VertexShader(reader.read<std::string>());
 		for (auto uniform : _vertexShader->uniforms()) { addParameterVS(uniform); }

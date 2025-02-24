@@ -40,7 +40,7 @@ void Unserializer::read(void *data, size_t size)
 	_current->read(data, size);
 }
 
-void Unserializer::member_begin(char const *comment)
+void Unserializer::nested_begin(char const *comment)
 {
 	LUCID_VALIDATE(is_open(), "unserializer not open");
 
@@ -52,7 +52,7 @@ void Unserializer::member_begin(char const *comment)
 	}
 }
 
-void Unserializer::member_end(char const *comment)
+void Unserializer::nested_end(char const *comment)
 {
 	LUCID_VALIDATE(is_open(), "unserializer not open");
 	LUCID_VALIDATE(0 != _stack.size(), "serialization consistency error");

@@ -56,17 +56,17 @@ void Geometry::initialize(LUCID_CORE::Unserializer &reader)
 {
 	_topology = reader.read<LUCID_GAL::Pipeline::TOPOLOGY>();
 
-	reader.member_begin();
+	reader.nested_begin();
    	_format.reset(LUCID_GAL::VertexFormat::create(reader));
-	reader.member_end();
+	reader.nested_end();
 
-	reader.member_begin();
+	reader.nested_begin();
 	_vertices.reset(LUCID_GAL::VertexBuffer::create(reader));
-	reader.member_end();
+	reader.nested_end();
 
-	reader.member_begin();
+	reader.nested_begin();
 	_indices.reset(LUCID_GAL::IndexBuffer::create(reader));		
-	reader.member_end();
+	reader.nested_end();
 }
 
 void Geometry::shutdown()

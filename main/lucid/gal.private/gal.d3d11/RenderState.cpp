@@ -229,17 +229,17 @@ DepthStencilState::~DepthStencilState()
 
 RenderState::RenderState(LUCID_CORE::Unserializer &reader)
 {
-	reader.member_begin();
+	reader.nested_begin();
 	_rasterState.read(reader);
-	reader.member_end();
+	reader.nested_end();
 
-	reader.member_begin();
+	reader.nested_begin();
 	_blendState.read(reader);
-	reader.member_end();
+	reader.nested_end();
 
-	reader.member_begin();
+	reader.nested_begin();
 	_depthStencilState.read(reader);
-	reader.member_end();
+	reader.nested_end();
 }
 
 LUCID_GAL_D3D11_END
