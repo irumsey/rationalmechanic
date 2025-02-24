@@ -1,28 +1,208 @@
 {
-	"primitives" :
-	[
-		{ "name" :         "screenSize",   "vector2" : [0, 0] },
-		{ "name" :          "texelSize",   "vector2" : [0, 0] },
-
-		{ "name" :               "time",     "float" : 0 },
-		{ "name" :        "interpolant",     "float" : 0 },
-                                               
-		{ "name" :        "viewForward",   "vector3" : [ 0, 0, 0 ] },
-		{ "name" :          "viewRight",   "vector3" : [ 0, 0, 0 ] },
-		{ "name" :             "viewUp",   "vector3" : [ 0, 0, 0 ] },
-		{ "name" :       "viewPosition",   "vector3" : [ 0, 0, 0 ] },
-                                               
-		{ "name" :         "viewMatrix", "matrix4x4" : [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ] },
-		{ "name" :      "invViewMatrix", "matrix4x4" : [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ] },
-                                               
-		{ "name" :         "projMatrix", "matrix4x4" : [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ] },
-		{ "name" :      "invProjMatrix", "matrix4x4" : [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ] },
-                                               
-		{ "name" :     "viewProjMatrix", "matrix4x4" : [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ] },
-		{ "name" :  "invViewProjMatrix", "matrix4x4" : [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ] },
-
-		{ "name" :    "starFieldRadius",     "float" : 999 },
-		{ "name" :          "starScale",     "float" : 1.2 }
-
-]
+    "obj:primitives": [
+        {
+            "str:name": "screenSize",
+            "primitiveType": "PRIMITIVE_VECTOR2",
+            "f32:data": [
+                0,
+                0
+            ]
+        },
+        {
+            "str:name": "texelSize",
+            "primitiveType": "PRIMITIVE_VECTOR2",
+            "f32:data": [
+                0,
+                0
+            ]
+        },
+        {
+            "str:name": "time",
+            "primitiveType": "PRIMITIVE_FLOAT",
+            "f32:data": 0
+        },
+        {
+            "str:name": "interpolant",
+            "primitiveType": "PRIMITIVE_FLOAT",
+            "f32:data": 0
+        },
+        {
+            "str:name": "viewForward",
+            "primitiveType": "PRIMITIVE_VECTOR3",
+            "f32:data": [
+                0,
+                0,
+                0
+            ]
+        },
+        {
+            "str:name": "viewRight",
+            "primitiveType": "PRIMITIVE_VECTOR3",
+            "f32:data": [
+                0,
+                0,
+                0
+            ]
+        },
+        {
+            "str:name": "viewUp",
+            "primitiveType": "PRIMITIVE_VECTOR3",
+            "f32:data": [
+                0,
+                0,
+                0
+            ]
+        },
+        {
+            "str:name": "viewPosition",
+            "primitiveType": "PRIMITIVE_VECTOR3",
+            "f32:data": [
+                0,
+                0,
+                0
+            ]
+        },
+        {
+            "str:name": "viewMatrix",
+            "primitiveType": "PRIMITIVE_MATRIX4x4",
+            "f32:data": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ]
+        },
+        {
+            "str:name": "invViewMatrix",
+            "primitiveType": "PRIMITIVE_MATRIX4x4",
+            "f32:data": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ]
+        },
+        {
+            "str:name": "projMatrix",
+            "primitiveType": "PRIMITIVE_MATRIX4x4",
+            "f32:data": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ]
+        },
+        {
+            "str:name": "invProjMatrix",
+            "primitiveType": "PRIMITIVE_MATRIX4x4",
+            "f32:data": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ]
+        },
+        {
+            "str:name": "viewProjMatrix",
+            "primitiveType": "PRIMITIVE_MATRIX4x4",
+            "f32:data": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ]
+        },
+        {
+            "str:name": "invViewProjMatrix",
+            "primitiveType": "PRIMITIVE_MATRIX4x4",
+            "f32:data": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ]
+        },
+        {
+            "str:name": "starFieldRadius",
+            "primitiveType": "PRIMITIVE_FLOAT",
+            "f32:data": 999
+        },
+        {
+            "str:name": "starScale",
+            "primitiveType": "PRIMITIVE_FLOAT",
+            "f32:data": 1.2
+        }
+    ]
 }

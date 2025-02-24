@@ -3,7 +3,7 @@
 #include <lucid/gal/IndexBuffer.h>
 #include <lucid/gal/VertexBuffer.h>
 #include <lucid/gal/VertexFormat.h>
-#include <lucid/core/FileReader.h>
+#include <lucid/core/Unserializer.h>
 #include <lucid/core/Profiler.h>
 
 ///
@@ -24,7 +24,7 @@ LUCID_GIGL_BEGIN
 ///	Geometry
 ///
 
-Geometry::Geometry(LUCID_CORE::Reader &reader)
+Geometry::Geometry(LUCID_CORE::Unserializer &reader)
 {
 	initialize(reader);
 }
@@ -52,17 +52,21 @@ void Geometry::drawInstanced(int32_t count) const
 	LUCID_GAL_PIPELINE.endGeometry(_format.get());
 }
 
-void Geometry::initialize(LUCID_CORE::Reader &reader)
+void Geometry::initialize(LUCID_CORE::Unserializer &reader)
 {
-	reader.read(&_topology, sizeof(LUCID_GAL::Pipeline::TOPOLOGY));
+	_topology = reader.read<LUCID_GAL::Pipeline::TOPOLOGY>();
 
-    if (reader.read<bool>())
-        _format.reset(LUCID_GAL::VertexFormat::create(reader.read<std::string>()));
-    else
-    	_format.reset(LUCID_GAL::VertexFormat::create(reader));
+	reader.member_begin();
+   	_format.reset(LUCID_GAL::VertexFormat::create(reader));
+	reader.member_end();
 
+	reader.member_begin();
 	_vertices.reset(LUCID_GAL::VertexBuffer::create(reader));
+	reader.member_end();
+
+	reader.member_begin();
 	_indices.reset(LUCID_GAL::IndexBuffer::create(reader));		
+	reader.member_end();
 }
 
 void Geometry::shutdown()
@@ -84,10 +88,10 @@ uint32_t Geometry::indexCount() const
 
 Geometry *Geometry::create(std::string const &path)
 {
-	return Geometry::create(LUCID_CORE::FileReader(path));
+	return Geometry::create(LUCID_CORE::Unserializer(path));
 }
 
-Geometry *Geometry::create(LUCID_CORE::Reader &reader)
+Geometry *Geometry::create(LUCID_CORE::Unserializer &reader)
 {
     return new Geometry(reader);
 }

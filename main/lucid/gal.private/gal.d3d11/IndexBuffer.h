@@ -12,7 +12,7 @@
 
 LUCID_CORE_BEGIN
 
-class Reader;
+class Unserializer;
 
 LUCID_CORE_END
 
@@ -26,7 +26,7 @@ class IndexBuffer : public LUCID_GAL::IndexBuffer
 public:
 	IndexBuffer(USAGE usage, FORMAT format, int32_t count);
 
-	IndexBuffer(LUCID_CORE::Reader &reader);
+	IndexBuffer(LUCID_CORE::Unserializer &reader);
 
 	virtual ~IndexBuffer();
 

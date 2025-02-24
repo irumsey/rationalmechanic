@@ -1,63 +1,59 @@
 {
-	"material": {
-		"program": {
-			"Samplers": [
-				{
-					"name": "theSampler",
-					"Filter": "FILTER_MIN_MAG_MIP_LINEAR",
-					"AddressU": "ADDRESS_CLAMP",
-					"AddressV": "ADDRESS_CLAMP",
-					"AddressW": "ADDRESS_CLAMP",
-					"lodMipBias": 0,
-					"MaxAnisotropy": 0,
-					"Compare": "COMPARISON_ALWAYS",
-					"BorderColor": [ 0, 0, 0, 1 ],
-					"MinLOD": 0,
-					"MaxLOD": 0
-				}
-			],
-
-			"RenderStates": {
-				"RasterMode": {
-					"Fill": "FILL_SOLID",
-					"Cull": "CULL_NONE",
-					"Multisample": false
-				},
-
-				"BlendMode": {
-					"ColorWriteMask": 15,
-					"Enabled": false,
-					"SrcBlend": "BLEND_SRC_ALPHA",
-					"SrcBlendAlpha": "BLEND_SRC_ALPHA",
-					"DstBlend": "BLEND_INV_SRC_ALPHA",
-					"DstBlendAlpha": "BLEND_INV_SRC_ALPHA"
-				},
-
-				"DepthStencilMode": {
-					"DepthEnabled": false,
-					"DepthWrite": "DEPTH_WRITE_DISABLED",
-					"DepthFunction": "COMPARISON_LESS",
-					"StencilEnabled": false,
-					"StencilFunction": "COMPARISON_ALWAYS",
-					"StencilPass": "STENCIL_KEEP",
-					"StencilFail": "STENCIL_KEEP",
-					"StencilDepthFail": "STENCIL_KEEP",
-					"StencilReadMask": 15,
-					"StencilWriteMask": 0,
-					"StencilRef": 0
-				}
-
-			},
-
-			"VertexShader": { "Path": "content/screen.vertex.cso" },
-			"PixelShader": { "Path": "content/blur.pixel.cso" }
-		},
-
-		"attributes": [
-		]
-
-	},
-
-	"geometry": "content/screen.geometry"
-
+    "obj:material": {
+        "obj:program": {
+            "obj:Samplers": [
+                {
+                    "str:name": "theSampler",
+                    "filterState": "FILTER_MIN_MAG_MIP_LINEAR",
+                    "addressMode:AddressU": "ADDRESS_CLAMP",
+                    "addressMode:AddressV": "ADDRESS_CLAMP",
+                    "addressMode:AddressW": "ADDRESS_CLAMP",
+                    "f32:lodMipBias": 0,
+                    "i32:MaxAnisotropy": 0,
+                    "comparison": "COMPARISON_ALWAYS",
+                    "f32:BorderColor": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "f32:MinLOD": 0,
+                    "f32:MaxLOD": 0
+                }
+            ],
+            "obj:RenderStates": {
+                "obj:RasterMode": {
+                    "fillMode": "FILL_SOLID",
+                    "cullMode": "CULL_NONE",
+                    "b:Multisample": false
+                },
+                "obj:BlendMode": {
+                    "u8:ColorWriteMask": 15,
+                    "b:Enabled": false,
+                    "blendMode:SrcBlend": "BLEND_SRC_ALPHA",
+                    "blendMode:SrcBlendAplha": "BLEND_SRC_ALPHA",
+                    "blendMode:DstBlend": "BLEND_INV_SRC_ALPHA",
+                    "blendMode:DstBlendAplha": "BLEND_INV_SRC_ALPHA"
+                },
+                "obj:DepthStencilMode": {
+                    "b:DepthEnabled": false,
+                    "depthWriteMask": "DEPTH_WRITE_DISABLED",
+                    "comparison:DepthFunction": "COMPARISON_LESS",
+                    "b:StencilEnabled": false,
+                    "comparison:StencilFunction": "COMPARISON_ALWAYS",
+                    "stencilOperation:StancilPass": "STENCIL_KEEP",
+                    "stencilOperation:StencilFail": "STENCIL_KEEP",
+                    "stencilOperation:StencilDepthFail": "STENCIL_KEEP",
+                    "u8:StencilReadMask": 15,
+                    "u8:StencilWriteMask": 0,
+                    "u8:StencilRef": 0
+                }
+            },
+            "str:VertexShader": "content/screen.vertex.cso",
+            "str:GeometryShader": "",
+            "str:PixelShader": "content/blur.pixel.cso"
+        },
+        "obj:attributes": []
+    },
+    "ref:geometry": "content/screen.geometry"
 }

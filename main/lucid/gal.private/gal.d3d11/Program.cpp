@@ -8,8 +8,7 @@
 #include "RenderTarget2D.h"
 #include "Pipeline.h"
 #include "System.h"
-#include <lucid/core/FileReader.h>
-#include <lucid/core/Reader.h>
+#include <lucid/core/Unserializer.h>
 #include <lucid/core/Logger.h>
 #include <lucid/core/Error.h>
 #include <algorithm>
@@ -21,7 +20,7 @@ Program *Program::create(std::string const &path)
 	return new LUCID_GAL_D3D11::Program(path);
 }
 
-Program *Program::create(LUCID_CORE::Reader &reader)
+Program *Program::create(LUCID_CORE::Unserializer &reader)
 {
 	return new LUCID_GAL_D3D11::Program(reader);
 }
@@ -34,7 +33,7 @@ Program::Program(std::string const &path)
 {
 	try
 	{
-		initialize(LUCID_CORE::FileReader(path));
+		initialize(LUCID_CORE::Unserializer(path));
 	}
 	catch (LUCID_CORE::Error const &error)
 	{
@@ -44,7 +43,7 @@ Program::Program(std::string const &path)
 	}
 }
 
-Program::Program(LUCID_CORE::Reader &reader)
+Program::Program(LUCID_CORE::Unserializer &reader)
 {
 	try
 	{
@@ -335,35 +334,42 @@ void Program::finalizeSamplers()
 	}
 }
 
-void Program::initialize(LUCID_CORE::Reader &reader)
+void Program::initialize(LUCID_CORE::Unserializer &reader)
 {
 	try
 	{
 		int32_t count = reader.read<int32_t>();
-
 		for (int32_t i = 0; i < count; ++i)
 		{
+			reader.member_begin();
+
 			std::string name = reader.read<std::string>();
 			Sampler *sampler = new Sampler(name, reader);
 
 			sampler->next = _samplers;
 			_samplers = sampler;
+
+			reader.member_end();
 		}
 
+		reader.member_begin();
 		_renderState = new RenderState(reader);
+		reader.member_end();
 
 		_vertexShader = new VertexShader(reader.read<std::string>());
 		for (auto uniform : _vertexShader->uniforms()) { addParameterVS(uniform); }
 
-		if (reader.read<bool>())
+		std::string geometryShaderPath = reader.read<std::string>();
+		if (0 != geometryShaderPath.size())
 		{
-			_geometryShader = new GeometryShader(reader.read<std::string>());
+			_geometryShader = new GeometryShader(geometryShaderPath);
 			for (auto uniform : _geometryShader->uniforms()) { addParameterGS(uniform); }
 		}
 
-		if (reader.read<bool>())
+		std::string pixelShaderPath = reader.read<std::string>();
+		if (0 != pixelShaderPath.size())
 		{
-			_pixelShader = new PixelShader(reader.read<std::string>());
+			_pixelShader = new PixelShader(pixelShaderPath);
 			for (auto uniform : _pixelShader->uniforms()) { addParameterPS(uniform); }
 		}
 

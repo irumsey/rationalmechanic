@@ -10,7 +10,7 @@
 
 LUCID_CORE_BEGIN
 
-class Reader;
+class Unserializer;
 
 LUCID_CORE_END
 
@@ -54,7 +54,7 @@ public:
 
 	Mesh(std::string const &path);
 
-	Mesh(LUCID_CORE::Reader &reader);
+	Mesh(LUCID_CORE::Unserializer &reader);
 
 	virtual ~Mesh();
 
@@ -84,7 +84,7 @@ public:
 
 	static Mesh *create(std::string const &path);
 
-	static Mesh *create(LUCID_CORE::Reader &reader);
+	static Mesh *create(LUCID_CORE::Unserializer &reader);
 
 private:
 	LUCID_CORE::Identity const _identity;
@@ -94,7 +94,7 @@ private:
 	std::shared_ptr<Material> _material;
 	std::shared_ptr<Geometry> _geometry;
 
-	void initialize(LUCID_CORE::Reader &reader);
+	void initialize(LUCID_CORE::Unserializer &reader);
 
 	void shutdown();
 

@@ -27,9 +27,13 @@ public:
 
 	bool is_open() const;
 
+	bool not_open() const;
+
 	bool is_eof() const;
 
 	virtual void read(void *data, size_t size) override;
+
+	template<typename T> T read();
 
 private:
 	std::ifstream _file;
@@ -49,9 +53,19 @@ inline bool FileReader::is_open() const
 	return _file.is_open();
 }
 
+inline bool FileReader::not_open() const
+{
+	return !is_open();
+}
+
 inline bool FileReader::is_eof() const
 {
 	return _file.eof();
+}
+
+template<typename T> inline T FileReader::read()
+{
+	return Reader::read<T>();
 }
 
 LUCID_CORE_END

@@ -13,7 +13,7 @@
 
 LUCID_CORE_BEGIN
 
-class Reader;
+class Unserializer;
 
 LUCID_CORE_END
 
@@ -54,7 +54,7 @@ public:
 
 	Font() = delete;
 
-	Font(LUCID_CORE::Reader &reader);
+	Font(LUCID_CORE::Unserializer &reader);
 
 	virtual ~Font();
 
@@ -73,7 +73,7 @@ public:
 
 	static Font *create(std::string const &path);
 
-	static Font *create(LUCID_CORE::Reader &reader);
+	static Font *create(LUCID_CORE::Unserializer &reader);
 
 private:
 	/// 
@@ -112,7 +112,7 @@ private:
 
 	std::unordered_map<Key, float32_t, Hash> _spacing;
 
-	void initialize(LUCID_CORE::Reader &reader);
+	void initialize(LUCID_CORE::Unserializer &reader);
 
 	void shutdown();
 

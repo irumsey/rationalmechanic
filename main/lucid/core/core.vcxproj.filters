@@ -27,6 +27,7 @@
     <ClInclude Include="Numbers.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="Memory.h" />
+    <ClInclude Include="Unserializer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Error.cpp" />
@@ -36,5 +37,6 @@
     <ClCompile Include="Profiler.cpp" />
     <ClCompile Include="Bits.cpp" />
     <ClCompile Include="Random.cpp" />
+    <ClCompile Include="Unserializer.cpp" />
   </ItemGroup>
 </Project>

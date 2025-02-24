@@ -1,4 +1,6 @@
-﻿#
+﻿#!/usr/bin/env python3
+
+#
 #	imports
 #
 
@@ -40,13 +42,13 @@ primitiveLookup = [
 
 def migrateSampler(sampler):
 	sampler['str:name'] = sampler.pop('name')
-	sampler['filterState:Filter'] = sampler.pop('Filter')
+	sampler['filterState'] = sampler.pop('Filter')
 	sampler['addressMode:AddressU'] = sampler.pop('AddressU')
 	sampler['addressMode:AddressV'] = sampler.pop('AddressV')
 	sampler['addressMode:AddressW'] = sampler.pop('AddressW')
 	sampler['f32:lodMipBias'] = sampler.pop('lodMipBias')
 	sampler['i32:MaxAnisotropy'] = sampler.pop('MaxAnisotropy')
-	sampler['comparison:Compare'] = sampler.pop('Compare')
+	sampler['comparison'] = sampler.pop('Compare')
 	sampler['f32:BorderColor'] = sampler.pop('BorderColor')	
 	sampler['f32:MinLOD'] = sampler.pop('MinLOD')
 	sampler['f32:MaxLOD'] = sampler.pop('MaxLOD')
@@ -70,8 +72,8 @@ def migrateRenderStates(states):
 	states['obj:DepthStencilMode'] = states.pop('DepthStencilMode')
 
 	rasterMode = states['obj:RasterMode']
-	rasterMode['fillMode:Fill'] = rasterMode.pop('Fill')
-	rasterMode['cullMode:Cull'] = rasterMode.pop('Cull')
+	rasterMode['fillMode'] = rasterMode.pop('Fill')
+	rasterMode['cullMode'] = rasterMode.pop('Cull')
 	rasterMode['b:Multisample'] = rasterMode.pop('Multisample')
 
 	blendMode = states['obj:BlendMode']
@@ -84,7 +86,7 @@ def migrateRenderStates(states):
 
 	depthStencilMode = states['obj:DepthStencilMode']
 	depthStencilMode['b:DepthEnabled'] = depthStencilMode.pop('DepthEnabled')
-	depthStencilMode['deptWriteMask:DepthWrite'] = depthStencilMode.pop('DepthWrite')
+	depthStencilMode['depthWriteMask'] = depthStencilMode.pop('DepthWrite')
 	depthStencilMode['comparison:DepthFunction'] = depthStencilMode.pop('DepthFunction')
 	depthStencilMode['b:StencilEnabled'] = depthStencilMode.pop("StencilEnabled")
 	depthStencilMode['comparison:StencilFunction'] = depthStencilMode.pop('StencilFunction')	
@@ -105,15 +107,18 @@ def migrateRenderStatesFromFile(srcPath, dstPath):
 #
 
 def migrateProgram(program):
-	migrateSamplers(program['Samplers'])
-	migrateRenderStates(program['RenderStates'])
+	program['obj:Samplers'] = program.pop('Samplers')
+	migrateSamplers(program['obj:Samplers'])
 	
-	program['str:VertexShader'] = program.pop('VertexShader')
-
+	program['obj:RenderStates'] = program.pop('RenderStates')
+	migrateRenderStates(program['obj:RenderStates'])
+	
+	program['str:VertexShader'] = program.pop('VertexShader')['Path']
+	
 	if 'GeomatryShader' in program:
-		program['str:GeometryShader'] = program.pop('GeometryShader')
+		program['str:GeometryShader'] = program.pop('GeometryShader')['Path']
 	if 'PixelShader' in program:
-		program['str:PixelShader'] = program.pop('PixelShader')
+		program['str:PixelShader'] = program.pop('PixelShader')['Path']
 
 def migrateProgramFromFile(srcPath, dstPath):
 	program = json.load(open(srcPath))
@@ -130,7 +135,7 @@ def migrateMaterialAttribute(attribute):
 	found = False
 	for type in primitiveLookup:
 		if type[0] in attribute:
-			attribute['primitiveType:type'] = type[1]
+			attribute['primitiveType'] = type[1]
 			attribute[type[2]] = attribute.pop(type[0])
 			found = True
 			
@@ -164,8 +169,8 @@ def migrateMaterialFromFile(srcPath, dstPath):
 def migrateVertexFormat(vertexFormat):
 	vertexFormat['obj:elements'] = vertexFormat.pop('elements')
 	for element in vertexFormat['obj:elements']:
-		element['vertexElementFormat:format'] = element.pop('format')
-		element['vertexElementType:type'] = element.pop('type')
+		element['vertexElementFormat'] = element.pop('format')
+		element['vertexElementType'] = element.pop('type')
 		element['i32:location'] = element.pop('location')
 		element['i32:stream'] = element.pop('stream')
 		element['i32:offset'] = 4 * element.pop('offset')
@@ -179,7 +184,7 @@ def migrateVertexFormatFromFile(srcPath, dstPath):
 #
 #
 def migrateVertexBuffer(vertexBuffer):
-	vertexBuffer['bufferUsage:usage'] = vertexBuffer.pop('usage')
+	vertexBuffer['bufferUsage'] = vertexBuffer.pop('usage')
 	vertexBuffer['i32:stride'] = 4 * vertexBuffer.pop('stride')
 	vertexBuffer['f32:data'] = vertexBuffer.pop('data')
 
@@ -192,10 +197,10 @@ def migrateVertexBufferFromFile(srcPath, dstPath):
 #
 #
 def migrateIndexBuffer(indexBuffer):
-	indexBuffer['bufferUsage:usage'] = indexBuffer.pop('usage')
-	indexBuffer['indexBufferFormat:format'] = indexBuffer.pop('format')
+	indexBuffer['bufferUsage'] = indexBuffer.pop('usage')
+	indexBuffer['indexBufferFormat'] = indexBuffer.pop('format')
 
-	if ('FORMAT_UINT16' == indexBuffer['indexBufferFormat:format']):
+	if ('FORMAT_UINT16' == indexBuffer['indexBufferFormat']):
 		indexBuffer['u16:data'] = indexBuffer.pop('data')
 	else:
 		indexBuffer['u32:data'] = indexBuffer.pop('data')
@@ -209,7 +214,7 @@ def migrateIndexBufferFromFile(srcPath, dstPath):
 #
 #
 def migrateGeometry(geometry):
-	geometry['topology:topology'] = geometry.pop('topology')
+	# geometry['topology'] = geometry.pop('topology')
 
 	if isinstance(geometry['format'], str):		
 		geometry['ref:format'] = geometry.pop('format')
@@ -281,7 +286,7 @@ def migrateContextPrimitive(primitive):
 	found = False
 	for type in primitiveLookup:
 		if type[0] in primitive:
-			primitive['primitiveType:type'] = type[1]
+			primitive['primitiveType'] = type[1]
 			primitive[type[2]] = primitive.pop(type[0])
 			found = True
 			
@@ -319,14 +324,14 @@ def migrateStarCatalogFromFile(srcPath, dstPath):
 	json.dump(catalog, open(dstPath, 'w'), indent = 4)
 
 def migrateFrameDynamicPoint(frame):
-	frame['orbitalFrameType:type'] = frame.pop('type')
+	frame['orbitalFrameType'] = frame.pop('type')
 	frame['i32:hid'] = frame.pop('hid')
 	frame['str:target'] = frame.pop('target')	
 	frame['str:description'] = frame.pop('description')
 	frame['str:center'] = frame.pop('center')
 
 def migrateFrameOrbitalBody(frame):
-	frame['orbitalFrameType:type'] = frame.pop('type')
+	frame['orbitalFrameType'] = frame.pop('type')
 	frame['i32:hid'] = frame.pop('hid')
 	frame['str:target'] = frame.pop('target')	
 	frame['str:description'] = frame.pop('description')
@@ -382,12 +387,23 @@ def migrateEphemerisTime(time):
 	time['f64:MA'] = time.pop('MA')
 	time['f64:K'] = time.pop('K')
 	time['f64:EB'] = time.pop('EB')
-	time['f64:DELTA_AT'] = time.pop('DELTA_AT')	
+	time['obj:DELTA_AT'] = []
+	
+	delta_at = time.pop('DELTA_AT')
+	for entry in delta_at:
+		time['obj:DELTA_AT'].append({
+			'i32:year' : entry[0],
+			'i32:month' : entry[1],
+			'i32:day' : entry[2],
+			'f64:seconds' : entry[3],
+		})
 
 def migrateEphemerisFrame(frame):
 	migrateFrameType[frame['type']](frame)
 
 def migrateEphemeris(ephemeris):
+	ephemeris['str:comments'] = ephemeris.pop('comments')
+	
 	ephemeris['obj:time'] = ephemeris.pop('time')
 	migrateEphemerisTime(ephemeris['obj:time'])
 	
@@ -429,7 +445,8 @@ def migrateAll(root):
 				kind = os.path.splitext(name)[1]
 
 				print('migrating: ' + src)
-				migrateContent[kind](src, dst)
+				# migrateContent[kind](src, dst)
+				migrateContent[kind](src, src)
 
 #	main()
 #
@@ -460,7 +477,8 @@ def main():
 			print('must specify <src> and <dst> files')
 			quit()
 
-		migrateContent[opts.kind](args[0], args[1])
+		# migrateContent[opts.kind](args[0], args[1])
+		migrateContent[opts.kind](args[0], args[0])
 
 #
 #	script

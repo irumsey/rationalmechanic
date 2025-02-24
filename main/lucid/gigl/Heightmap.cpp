@@ -1,6 +1,5 @@
 #include "Heightmap.h"
-#include <lucid/core/FileReader.h>
-#include <lucid/core/Reader.h>
+#include <lucid/core/Unserializer.h>
 
 LUCID_GIGL_BEGIN
 
@@ -15,10 +14,10 @@ Heightmap::Heightmap(size_t width, size_t height, uint16_t value)
 
 Heightmap::Heightmap(std::string const &path, size_t depth, uint16_t tolerance)
 {
-    initialize(LUCID_CORE::FileReader(path), depth, tolerance);
+    initialize(LUCID_CORE::Unserializer(path), depth, tolerance);
 }
 
-Heightmap::Heightmap(LUCID_CORE::Reader &reader, size_t depth, uint16_t tolerance)
+Heightmap::Heightmap(LUCID_CORE::Unserializer &reader, size_t depth, uint16_t tolerance)
 {
     initialize(reader, depth, tolerance);
 }
@@ -40,12 +39,12 @@ void Heightmap::initialize(size_t width, size_t height, uint16_t value)
 	std::fill(_data, _data + _size, value);
 }
 
-void Heightmap::initialize(LUCID_CORE::Reader &reader, size_t depth, uint16_t tolerance)
+void Heightmap::initialize(LUCID_CORE::Unserializer &reader, size_t depth, uint16_t tolerance)
 {
     shutdown();
 
-    reader.read(&_width, sizeof(size_t));
-    reader.read(&_height, sizeof(size_t));
+    _width = reader.read<size_t>();
+    _height = reader.read<size_t>();
 	_size = _width * _height;
 
 	_data = new uint16_t [_size];

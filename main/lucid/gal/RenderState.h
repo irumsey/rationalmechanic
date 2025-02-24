@@ -5,7 +5,7 @@
 
 LUCID_CORE_BEGIN
 
-class Reader;
+class Unserializer;
 
 LUCID_CORE_END
 
@@ -19,7 +19,7 @@ class RenderState
 public:
 	virtual ~RenderState() = 0 {}
 
-	static RenderState *create(LUCID_CORE::Reader &reader);
+	static RenderState *create(LUCID_CORE::Unserializer &reader);
 
 protected:
 	RenderState() {}

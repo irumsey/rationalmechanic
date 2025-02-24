@@ -9,7 +9,7 @@
 LUCID_CORE_BEGIN
 
 class Identity;
-class Reader;
+class Unserializer;
 
 LUCID_CORE_END
 
@@ -75,7 +75,7 @@ public:
 
 	static Program *create(std::string const &path);
 
-	static Program *create(LUCID_CORE::Reader &reader);
+	static Program *create(LUCID_CORE::Unserializer &reader);
 
 protected:
 	Program() {}

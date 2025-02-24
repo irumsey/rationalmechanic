@@ -1,8 +1,11 @@
+#!/usr/bin/env python3
+
 import os
 import optparse
 import struct
 import json
 from functools import partial
+from io import BytesIO
 
 #
 #
@@ -12,85 +15,146 @@ def tokenize(label):
 	return label.split(':')
 	
 def type_of(label):
-	return tokenize(label)[0]
+	tokens = tokenize(label)
+	if 0  == len(tokens):
+		raise Exception('improper member declaration')
+	return tokens[0]
 
 def name_of(label):
-	return tokenize(label)[1]
+	tokens = tokenize(label)
+	if 1 == len(tokens):
+		return ''
+	return tokens[1]
 
-def write_raw(dst, fmt, value):
+def write_raw(dst, fmt, value, write_prefix_data):
 	if isinstance(value, list):
-		count = len(value)
-		write_uint64(dst, count)
-		dst.write(struct.pack(f'{count}{fmt}', *value))
+		if write_prefix_data:
+			on_int32(dst, 'i32:count', len(value), True)
+		for v in value:
+			write_raw(dst, fmt, v, write_prefix_data)
 	else:
 		dst.write(struct.pack(f'{fmt}', value))
 		
-def write_bool(dst, value):
-	write_raw(dst, '?', value)
+def on_bool(dst, name, value, write_prefix_data):
+	write_raw(dst, '?', value, write_prefix_data)
 	
-def write_int8(dst, value):
-	write_raw(dst, 'b', value)
+def on_int8(dst, name, value, write_prefix_data):
+	write_raw(dst, 'b', value, write_prefix_data)
 	
-def write_uint8(dst, value):
-	write_raw(dst, 'B', value)
+def on_uint8(dst, name, value, write_prefix_data):
+	if isinstance(value, str) and (1 == len(value)):
+		value = ord(value)
+	write_raw(dst, 'B', value, write_prefix_data)
 	
-def write_int16(dst, value):
-	write_raw(dst, 'h', value)
+def on_int16(dst, name, value, write_prefix_data):
+	write_raw(dst, 'h', value, write_prefix_data)
 	
-def write_uint16(dst, value):
-	write_raw(dst, 'H', value)
+def on_uint16(dst, name, value, write_prefix_data):
+	write_raw(dst, 'H', value, write_prefix_data)
 	
-def write_int32(dst, value):
-	write_raw(dst, 'i', value)
+def on_int32(dst, name, value, write_prefix_data):
+	write_raw(dst, 'i', value, write_prefix_data)
 	
-def write_uint32(dst, value):
-	write_raw(dst, 'I', value)
+def on_uint32(dst, name, value, write_prefix_data):
+	write_raw(dst, 'I', value, write_prefix_data)
 
-def write_int64(dst, value):
-	write_raw(dst, 'q', value)
+def on_int64(dst, name, value, write_prefix_data):
+	write_raw(dst, 'q', value, write_prefix_data)
 	
-def write_uint64(dst, value):
-	write_raw(dst, 'Q', value)
+def on_uint64(dst, name, value, write_prefix_data):
+	write_raw(dst, 'Q', value, write_prefix_data)
 	
-def write_float32(dst, value):
-	write_raw(dst, 'f', value)
+def on_float32(dst, name, value, write_prefix_data):
+	write_raw(dst, 'f', value, write_prefix_data)
 
-def write_float64(dst, value):
-	write_raw(dst, 'd', value)
+def on_float64(dst, name, value, write_prefix_data):
+	write_raw(dst, 'd', value, write_prefix_data)
       
-def write_string(dst, str):
-	if isinstance(str, list):
-		count = len(str)
-		write_uint64(dst, count)
-		for s in str:
-			write_string(dst, s)
+def on_bin(dst, name, value, write_prefix_data):
+	tokens = tokenize(name)
+	if (len(tokens) < 2):
+		raise Exception('binary chunk requires a subtype definition')
+	buffer = BytesIO()
+	on_type[tokens[1]](buffer, name, value, False)	
+	if write_prefix_data:
+		on_int32(dst, 'i32:count', buffer.getbuffer().nbytes, False)
+	dst.write(buffer.getvalue())
+
+def on_string(dst, name, value, write_prefix_data):
+	if isinstance(value, list):
+		if write_prefix_data:
+			on_int32(dst, 'i32:count', len(value), False)
+		for str in value:
+			on_string(dst, name, str, write_prefix_data)
 	else:
-		size = len(str)
-		write_uint64(dst, size)
-		dst.write(struct.pack(f'{size}s', bytes(str, 'ascii')))
+		size = len(value)
+		if write_prefix_data:
+			on_int32(dst, 'i32:count', size, False)
+		dst.write(struct.pack(f'{size}s', bytes(value, 'ascii')))
 
-def write_enumeration(dst, value, mapping):
-	write_int32(dst, mapping[value])
-
-def write_reference(dst, path):
-	write_bool(dst, False)
-	write_string(dst, path)
+def on_enumeration(dst, name, value, write_prefix_data, mapping):
+	if isinstance(value, list):
+		if write_prefix_data:
+			on_int32(dst, 'i32:count', len(value), False)
+		for v in value:
+			on_enumeration(dst, name, v, write_prefix_data, mapping)
+	else:
+		on_int32(dst, name, mapping[value], False)
 	
-def write_object(dst, obj):
-	if isinstance(obj, list):
-		count = len(obj)
-		write_uint64(dst, count)
-		for o in obj:
-			write_object(dst, o)
+def on_reference(dst, name, value, write_prefix_data):
+	if write_prefix_data:
+		on_bool(dst, 'b:is_reference', True, write_prefix_data)
+	on_string(dst, name, value, write_prefix_data)
+	
+def on_object(dst, name, value, write_prefix_data):
+	if isinstance(value, list):
+		if write_prefix_data:
+			on_int32(dst, 'i32:count', len(value), False)
+		for obj in value:
+			on_object(dst, name, obj, write_prefix_data)
 	else:
-		write_bool(dst, True)
-		for member, data in obj.items():
-			write_value[type_of(member)](dst, data)
-			
+		if write_prefix_data:
+			on_bool(dst, 'b:is_reference', False, write_prefix_data)
+		for member, data in value.items():
+			on_type[type_of(member)](dst, member, data, write_prefix_data)
+
+def on_comment(dst, member, value, write_prefix_data):
+	# do not serialize comments
+	return
+
 #
 #
 #
-				
+	
+on_type = {
+	  'b' : on_bool,
+	 'i8' : on_int8,
+	 'u8' : on_uint8,
+	'i16' : on_int16,
+	'u16' : on_uint16,
+	'i32' : on_int32,
+	'u32' : on_uint32,
+	'i64' : on_int64,
+	'u64' : on_uint64,
+	'f32' : on_float32,
+	'f64' : on_float64,
+	'bin' : on_bin,
+	'str' : on_string,
+	'ref' : on_reference,
+	'obj' : on_object,
+	  '?' : on_comment,
+}
+
+#
+#
+#
+
+def serialize(srcPath, dstPath):
+	buffer = BytesIO()
+	on_object(buffer, "obj:_root_", json.load(open(srcPath)), True)
+	open(dstPath, 'wb').write(buffer.getvalue())
+	print(f'serialized {srcPath}')
+		
 def serialize_all(root):
 	for path, paths, files in os.walk(root):
 		for file in files:
@@ -99,33 +163,11 @@ def serialize_all(root):
 				srcPath = path + '\\' + file
 				dstPath = path + '\\' + name
 				serialize(srcPath, dstPath)
-				print(f'serialized {srcPath} as {dstPath}')
-	
-def serialize(srcPath, dstPath):
-	write_object(open(dstPath, 'wb'), json.load(open(srcPath)))
-	print(f'serialized {srcPath} as {dstPath}')
 
 #
 #
 #
-	
-write_value = {
-	  'b' : write_bool,
-	 'i8' : write_int8,
-	 'u8' : write_uint8,
-	'i16' : write_int16,
-	'u16' : write_uint16,
-	'i32' : write_int32,
-	'u32' : write_uint32,
-	'i64' : write_int64,
-	'u64' : write_uint64,
-	'f32' : write_float32,
-	'f64' : write_float64,
-	'str' : write_string,
-	'ref' : write_reference,
-	'obj' : write_object,
-}
-	
+		
 def main():
 	optionParser = optparse.OptionParser()
 	optionParser.add_option('-a', '--all', action = 'store_const', const = True, dest = 'all', default = False)
@@ -135,20 +177,17 @@ def main():
 	if opts.enumfile:
 		enums = json.load(open(opts.enumfile))
 		for type, values in enums.items():
-			if type in write_value:
-				print(f'{type} already defined')
-				quit
-			write_value[type] = partial(write_enumeration, mapping = values)
+			if type in on_type:
+				raise Exception(f'{type} already defined')
+			on_type[type] = partial(on_enumeration, mapping = values)
 		
 	if opts.all:
 		if 1 != len(args):
-			print('must specify <dir>')
-			quit()
+			raise Exception('must specify directory')
 		serialize_all(args[0])
 	else:
 		if 2 != len(args):
-			print('must specify <src> and <dst> files')
-			quit()
+			raise Exception('must specify source and destination files')
 		serialize(args[0], args[1])
 			
 if __name__ == '__main__':

@@ -1,4 +1,4 @@
 {
-	"material" : "content/_499/mars.material",
-	"geometry" : "content/sphere.geometry"
+    "ref:material": "content/_499/mars.material",
+    "ref:geometry": "content/sphere.geometry"
 }

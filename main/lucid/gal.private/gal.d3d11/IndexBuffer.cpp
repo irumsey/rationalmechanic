@@ -1,6 +1,6 @@
 #include "IndexBuffer.h"
 #include "Pipeline.h"
-#include <lucid/core/Reader.h>
+#include <lucid/core/Unserializer.h>
 
 LUCID_ANONYMOUS_BEGIN
 
@@ -16,7 +16,7 @@ IndexBuffer *IndexBuffer::create(USAGE usage, FORMAT format, int32_t count)
 	return new LUCID_GAL_D3D11::IndexBuffer(usage, format, count);
 }
 
-IndexBuffer *IndexBuffer::create(LUCID_CORE::Reader &reader)
+IndexBuffer *IndexBuffer::create(LUCID_CORE::Unserializer &reader)
 {
 	return new LUCID_GAL_D3D11::IndexBuffer(reader);
 }
@@ -32,10 +32,10 @@ IndexBuffer::IndexBuffer(USAGE usage, FORMAT format, int32_t count)
 	initialize(count);
 }
 
-IndexBuffer::IndexBuffer(LUCID_CORE::Reader &reader)
+IndexBuffer::IndexBuffer(LUCID_CORE::Unserializer &reader)
 {
-	reader.read(&_usage, sizeof(USAGE));
-	reader.read(&_format, sizeof(FORMAT));
+	_usage = reader.read<USAGE>();
+	_format = reader.read<FORMAT>();
 
 	int32_t count = reader.read<int32_t>();
 	initialize(count);

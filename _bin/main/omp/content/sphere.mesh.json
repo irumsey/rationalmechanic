@@ -1,4 +1,4 @@
 {
-	"material" : "content/sphere.material",
-	"geometry" : "content/sphere.geometry"
+    "ref:material": "content/sphere.material",
+    "ref:geometry": "content/sphere.geometry"
 }

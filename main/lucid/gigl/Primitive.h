@@ -11,7 +11,7 @@
 
 LUCID_CORE_BEGIN
 
-class Reader;
+class Unserializer;
 
 LUCID_CORE_END
 
@@ -38,25 +38,25 @@ public:
 	struct UNKNOWN final {};
 	struct UNDEFINED final {};
 
-	template<class T> struct Type                        { enum { VALUE =  0 }; };
-	template<>        struct Type<              UNKNOWN> { enum { VALUE =  0 }; };
-	template<>        struct Type<            UNDEFINED> { enum { VALUE =  1 }; };
-	template<>        struct Type<                 bool> { enum { VALUE =  2 }; };
-	template<>        struct Type<              int32_t> { enum { VALUE =  3 }; };
-	template<>        struct Type<            float32_t> { enum { VALUE =  4 }; };
-	template<>        struct Type<     LUCID_GAL::Color> { enum { VALUE =  5 }; };
-	template<>        struct Type<   LUCID_GAL::Vector2> { enum { VALUE =  6 }; };
-	template<>        struct Type<   LUCID_GAL::Vector3> { enum { VALUE =  7 }; };
-	template<>        struct Type<   LUCID_GAL::Vector4> { enum { VALUE =  8 }; };
-	template<>        struct Type<LUCID_GAL::Quaternion> { enum { VALUE =  9 }; };
-	template<>        struct Type< LUCID_GAL::Matrix2x2> { enum { VALUE = 10 }; };
-	template<>        struct Type< LUCID_GAL::Matrix3x3> { enum { VALUE = 11 }; };
-	template<>        struct Type< LUCID_GAL::Matrix4x4> { enum { VALUE = 12 }; };
-	template<>        struct Type<   shared_texture2d_t> { enum { VALUE = 13 }; };
-	template<>        struct Type<    shared_target2d_t> { enum { VALUE = 14 }; };
-	template<>        struct Type<          std::string> { enum { VALUE = 15 }; };
-
-	template<>        struct Type< shared_unordered2d_t> { enum { VALUE = 16 }; };
+	template<typename T> struct Type                        { enum { VALUE =  0 }; };
+	template<>           struct Type<              UNKNOWN> { enum { VALUE =  0 }; };
+	template<>           struct Type<            UNDEFINED> { enum { VALUE =  1 }; };
+	template<>           struct Type<                 bool> { enum { VALUE =  2 }; };
+	template<>           struct Type<              int32_t> { enum { VALUE =  3 }; };
+	template<>           struct Type<            float32_t> { enum { VALUE =  4 }; };
+	template<>           struct Type<     LUCID_GAL::Color> { enum { VALUE =  5 }; };
+	template<>           struct Type<   LUCID_GAL::Vector2> { enum { VALUE =  6 }; };
+	template<>           struct Type<   LUCID_GAL::Vector3> { enum { VALUE =  7 }; };
+	template<>           struct Type<   LUCID_GAL::Vector4> { enum { VALUE =  8 }; };
+	template<>           struct Type<LUCID_GAL::Quaternion> { enum { VALUE =  9 }; };
+	template<>           struct Type< LUCID_GAL::Matrix2x2> { enum { VALUE = 10 }; };
+	template<>           struct Type< LUCID_GAL::Matrix3x3> { enum { VALUE = 11 }; };
+	template<>           struct Type< LUCID_GAL::Matrix4x4> { enum { VALUE = 12 }; };
+	template<>           struct Type<   shared_texture2d_t> { enum { VALUE = 13 }; };
+	template<>           struct Type<    shared_target2d_t> { enum { VALUE = 14 }; };
+	template<>           struct Type<          std::string> { enum { VALUE = 15 }; };
+					     
+	template<>           struct Type< shared_unordered2d_t> { enum { VALUE = 16 }; };
 
 	enum { TYPE_COUNT = 17 };
 
@@ -70,13 +70,13 @@ public:
 
 	virtual ~Primitive() = default;
 
-	template<class T> Primitive(T const &rhs)
+	template<typename T> Primitive(T const &rhs)
 	{
 		_tid = Type<T>::VALUE;
 		_any.reset(new Specific<T>(rhs));
 	}
 
-	Primitive(LUCID_CORE::Reader &reader)
+	Primitive(LUCID_CORE::Unserializer &reader)
 	{
 		readFrom(reader);
 	}
@@ -86,7 +86,7 @@ public:
 		coerceFrom(rhs);
 	}
 
-	template<class T> Primitive &operator=(T const &rhs)
+	template<typename T> Primitive &operator=(T const &rhs)
 	{
 		asSpecific<T>(_any)->value = rhs;
 		return *this;
@@ -99,12 +99,12 @@ public:
 		return *this;
 	}
 
-	template<class T> T const &as() const
+	template<typename T> T const &as() const
 	{
 		return asSpecific<T>(_any)->value;
 	}
 
-	template<class T> T &as()
+	template<typename T> T &as()
 	{
 		return asSpecific<T>(_any)->value;
 	}
@@ -130,7 +130,7 @@ private:
 	///
 	///
 	///
-	template<class T> struct Specific : public Any
+	template<typename T> struct Specific : public Any
 	{
 		T value;
 
@@ -159,9 +159,9 @@ private:
 
 	void coerceFrom(Primitive const &rhs);
 
-	void readFrom(LUCID_CORE::Reader &reader);
+	void readFrom(LUCID_CORE::Unserializer &reader);
 
-	template<class T> static Specific<T> *asSpecific(std::unique_ptr<Any> const &rhs)
+	template<typename T> static Specific<T> *asSpecific(std::unique_ptr<Any> const &rhs)
 	{
 		typedef Specific<T> specific_t;
 

@@ -6,7 +6,7 @@
 
 LUCID_CORE_BEGIN
 
-class Reader;
+class Unserializer;
 
 LUCID_CORE_END
 
@@ -37,7 +37,7 @@ public:
 
 	static DepthTarget2D *create(FORMAT format, int32_t width, int32_t height);
 
-	static DepthTarget2D *create(LUCID_CORE::Reader &reader);
+	static DepthTarget2D *create(LUCID_CORE::Unserializer &reader);
 
 protected:
 	DepthTarget2D() {}

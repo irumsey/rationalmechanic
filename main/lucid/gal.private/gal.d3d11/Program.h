@@ -19,7 +19,7 @@
 LUCID_CORE_BEGIN
 
 class Identity;
-class Reader;
+class Unserializer;
 
 LUCID_CORE_END
 
@@ -48,7 +48,7 @@ class Program : public LUCID_GAL::Program
 public:
 	Program(std::string const &path);
 
-	Program(LUCID_CORE::Reader &reader);
+	Program(LUCID_CORE::Unserializer &reader);
 
 	virtual ~Program();
 
@@ -114,7 +114,7 @@ private:
 
 	void finalizeSamplers();
 
-	void initialize(LUCID_CORE::Reader &reader);
+	void initialize(LUCID_CORE::Unserializer &reader);
 
 	void shutdown();
 

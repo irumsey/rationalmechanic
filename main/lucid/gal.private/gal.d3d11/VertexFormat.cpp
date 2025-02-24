@@ -1,8 +1,7 @@
 #include "VertexFormat.h"
 #include "System.h"
 #include "Utility.h"
-#include <lucid/core/FileReader.h>
-#include <lucid/core/Reader.h>
+#include <lucid/core/Unserializer.h>
 #include <sstream>
 #include <d3dcompiler.h>
 
@@ -62,16 +61,19 @@ VertexFormat *VertexFormat::create(std::vector<VertexElement> const &layout)
 
 VertexFormat *VertexFormat::create(std::string const &path)
 {
-	return create(LUCID_CORE::FileReader(path));
+	return create(LUCID_CORE::Unserializer(path));
 }
 
-VertexFormat *VertexFormat::create(LUCID_CORE::Reader &reader)
+VertexFormat *VertexFormat::create(LUCID_CORE::Unserializer &reader)
 {
 	int32_t count = reader.read<int32_t>();
-
 	std::vector<VertexElement> layout(count);
-	reader.read(&layout[0], count * sizeof(VertexElement));
-
+	for (int32_t i = 0; i < count; ++i)
+	{
+		reader.member_begin();
+		reader.read(&layout[i], sizeof(VertexElement));
+		reader.member_end();
+	}
 	return create(layout);
 }
 

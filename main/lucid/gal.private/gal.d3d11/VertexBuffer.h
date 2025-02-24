@@ -12,7 +12,7 @@
 
 LUCID_CORE_BEGIN
 
-class Reader;
+class Unserializer;
 
 LUCID_CORE_END
 
@@ -26,7 +26,7 @@ class VertexBuffer : public LUCID_GAL::VertexBuffer
 public:
 	VertexBuffer(USAGE usage, int32_t count, int32_t stride);
 
-	VertexBuffer(LUCID_CORE::Reader &reader);
+	VertexBuffer(LUCID_CORE::Unserializer &reader);
 
 	virtual ~VertexBuffer();
 

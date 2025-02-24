@@ -7,8 +7,7 @@
 #include <lucid/gal/Unordered2D.h>
 #include <lucid/gal/Pipeline.h>
 #include <lucid/gal/Types.h>
-#include <lucid/core/FileReader.h>
-#include <lucid/core/Reader.h>
+#include <lucid/core/Unserializer.h>
 #include <lucid/core/Logger.h>
 #include <algorithm>
 
@@ -67,10 +66,10 @@ struct Applicator
 
 Material::Material(std::string const &path)
 {
-	initialize(LUCID_CORE::FileReader(path));
+	initialize(LUCID_CORE::Unserializer(path));
 }
 
-Material::Material(LUCID_CORE::Reader &reader)
+Material::Material(LUCID_CORE::Unserializer &reader)
 {
 	initialize(reader);
 }
@@ -100,12 +99,12 @@ Material *Material::create(std::string const &path)
 	return new Material(path);
 }
 
-Material *Material::create(LUCID_CORE::Reader &reader)
+Material *Material::create(LUCID_CORE::Unserializer &reader)
 {
 	return new Material(reader);
 }
 
-void Material::initialize(LUCID_CORE::Reader &reader)
+void Material::initialize(LUCID_CORE::Unserializer &reader)
 {
 	if (reader.read<bool>())
 	{
@@ -119,8 +118,12 @@ void Material::initialize(LUCID_CORE::Reader &reader)
 	int32_t count = reader.read<int32_t>();
 	for (int32_t i = 0; i < count; ++i)
 	{
+		reader.member_begin();
+
 		std::string name = reader.read<std::string>();
 		_attributes[name] = Attribute(_program->lookup(name), Primitive(reader));
+
+		reader.member_end();
 	}
 }
 

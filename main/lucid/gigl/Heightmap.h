@@ -10,7 +10,7 @@
 
 LUCID_CORE_BEGIN
 
-class Reader;
+class Unserializer;
 
 LUCID_CORE_END
 
@@ -54,13 +54,13 @@ public:
 
     Heightmap(std::string const &path, size_t depth, uint16_t tolerance);
 
-    Heightmap(LUCID_CORE::Reader &reader, size_t depth, uint16_t tolerance);
+    Heightmap(LUCID_CORE::Unserializer &reader, size_t depth, uint16_t tolerance);
 
 	virtual ~Heightmap();
 
 	void initialize(size_t width, size_t height, uint16_t value = 0);
 
-    void initialize(LUCID_CORE::Reader &reader, size_t depth, uint16_t tolerance);
+    void initialize(LUCID_CORE::Unserializer &reader, size_t depth, uint16_t tolerance);
 
 	void shutdown();
 

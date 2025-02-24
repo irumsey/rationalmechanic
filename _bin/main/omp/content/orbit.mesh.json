@@ -1,4 +1,4 @@
 {
-	"material" : "content/orbit.material",
-	"geometry" : "content/orbit.geometry"
+    "ref:material": "content/orbit.material",
+    "ref:geometry": "content/orbit.geometry"
 }

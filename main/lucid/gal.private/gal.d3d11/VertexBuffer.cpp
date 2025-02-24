@@ -1,5 +1,6 @@
 #include "VertexBuffer.h"
 #include "Pipeline.h"
+#include <lucid/core/Unserializer.h>
 
 LUCID_GAL_BEGIN
 
@@ -8,7 +9,7 @@ VertexBuffer *VertexBuffer::create(USAGE usage, int32_t count, int32_t stride)
 	return new LUCID_GAL_D3D11::VertexBuffer(usage, count, stride);
 }
 
-VertexBuffer *VertexBuffer::create(LUCID_CORE::Reader &reader)
+VertexBuffer *VertexBuffer::create(LUCID_CORE::Unserializer &reader)
 {
 	return new LUCID_GAL_D3D11::VertexBuffer(reader);
 }
@@ -23,16 +24,19 @@ VertexBuffer::VertexBuffer(USAGE usage, int32_t count, int32_t stride)
 	initialize(count, stride);
 }
 
-VertexBuffer::VertexBuffer(LUCID_CORE::Reader &reader)
+VertexBuffer::VertexBuffer(LUCID_CORE::Unserializer &reader)
 {
-	reader.read(&_usage, sizeof(_usage));
+	_usage = reader.read<USAGE>();
 
-	int32_t count = reader.read<int32_t>();
 	int32_t stride = reader.read<int32_t>();
+	int32_t size = reader.read<int32_t>();
+	
+	LUCID_VALIDATE(0 == (size % stride), "");
+	int32_t count = size / stride;
 
 	initialize(count, stride);
 
-	reader.read(_d3dBuffer->lock(), stride * count);
+	reader.read(_d3dBuffer->lock(), size);
 	_d3dBuffer->unlock();
 }
 

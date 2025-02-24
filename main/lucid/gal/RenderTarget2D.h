@@ -6,7 +6,7 @@
 
 LUCID_CORE_BEGIN
 
-class Reader;
+class Unserializer;
 
 LUCID_CORE_END
 
@@ -44,7 +44,7 @@ public:
 
 	static RenderTarget2D *create(FORMAT format, int32_t width, int32_t height, int32_t samples = 1);
 
-	static RenderTarget2D *create(LUCID_CORE::Reader &read);
+	static RenderTarget2D *create(LUCID_CORE::Unserializer &read);
 
 protected:
 	RenderTarget2D() {}

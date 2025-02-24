@@ -1,52 +1,48 @@
 {
-	"program":
-	{
-		"Samplers" :
-		[
-		],
-
-		"RenderStates" :
-		{
-			"RasterMode" :
-			{
-				"Fill" : "FILL_SOLID",
-				"Cull" : "CULL_NONE",
-				"Multisample": false
-			},
-
-			"BlendMode" :
-			{
-				"ColorWriteMask" : 15,
-				"Enabled" : true,
-				"SrcBlend" : "BLEND_SRC_ALPHA",
-				"SrcBlendAlpha" : "BLEND_SRC_ALPHA",
-				"DstBlend" : "BLEND_INV_SRC_ALPHA",
-				"DstBlendAlpha" : "BLEND_INV_SRC_ALPHA"
-			},
-
-			"DepthStencilMode" :
-			{
-				"DepthEnabled" : false,
-				"DepthWrite" : "DEPTH_WRITE_DISABLED",
-				"DepthFunction" : "COMPARISON_LESS",
-				"StencilEnabled" : false,
-				"StencilFunction" : "COMPARISON_LESS",
-				"StencilPass" : "STENCIL_KEEP",
-				"StencilFail" : "STENCIL_KEEP",
-				"StencilDepthFail" : "STENCIL_KEEP",
-				"StencilReadMask" : 15,
-				"StencilWriteMask" : 0,
-				"StencilRef" : 0
-			}
-		},
-
-		"VertexShader" : { "Path" : "content/nineSlice.vertex.cso" },
-		 "PixelShader" : { "Path" :  "content/nineSlice.pixel.cso" }
-	},
-
-	"attributes":
-	[
-		{ "name":    "texelSize",     "query":               "texelSize" },
-		{ "name":   "theTexture", "texture2d": "content/callout.texture" }
-	]
+  "obj:program": {
+    "obj:Samplers": [],
+    "obj:RenderStates": {
+      "obj:RasterMode": {
+        "fillMode": "FILL_SOLID",
+        "cullMode": "CULL_NONE",
+        "b:Multisample": false
+      },
+      "obj:BlendMode": {
+        "u8:ColorWriteMask": 15,
+        "b:Enabled": true,
+        "blendMode:SrcBlend": "BLEND_SRC_ALPHA",
+        "blendMode:SrcBlendAplha": "BLEND_SRC_ALPHA",
+        "blendMode:DstBlend": "BLEND_INV_SRC_ALPHA",
+        "blendMode:DstBlendAplha": "BLEND_INV_SRC_ALPHA"
+      },
+      "obj:DepthStencilMode": {
+        "b:DepthEnabled": false,
+        "depthWriteMask": "DEPTH_WRITE_DISABLED",
+        "comparison:DepthFunction": "COMPARISON_LESS",
+        "b:StencilEnabled": false,
+        "comparison:StencilFunction": "COMPARISON_LESS",
+        "stencilOperation:StancilPass": "STENCIL_KEEP",
+        "stencilOperation:StencilFail": "STENCIL_KEEP",
+        "stencilOperation:StencilDepthFail": "STENCIL_KEEP",
+        "u8:StencilReadMask": 15,
+        "u8:StencilWriteMask": 0,
+        "u8:StencilRef": 0
+      }
+    },
+    "str:VertexShader": "content/nineSlice.vertex.cso",
+    "str:GeometryShader": "",
+    "str:PixelShader": "content/nineSlice.pixel.cso"
+  },
+    "obj:attributes": [
+        {
+            "str:name": "texelSize",
+            "primitiveType": "PRIMITIVE_QUERY",
+            "str:data": "texelSize"
+        },
+        {
+            "str:name": "theTexture",
+            "primitiveType": "PRIMITIVE_TEXTURE2D",
+            "str:data": "content/callout.texture"
+        }
+    ]
 }

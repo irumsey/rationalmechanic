@@ -7,7 +7,7 @@
 
 LUCID_CORE_BEGIN
 
-class Reader;
+class Unserializer;
 
 LUCID_CORE_END
 
@@ -21,7 +21,7 @@ class Camera2D
 public:
 	Camera2D();
 
-	Camera2D(LUCID_CORE::Reader &reader);
+	Camera2D(LUCID_CORE::Unserializer &reader);
 
 	virtual ~Camera2D();
 

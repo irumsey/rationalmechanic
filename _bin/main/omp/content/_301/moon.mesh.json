@@ -1,4 +1,4 @@
 {
-	"material" : "content/_301/moon.material",
-	"geometry" : "content/sphere.geometry"
+    "ref:material": "content/_301/moon.material",
+    "ref:geometry": "content/sphere.geometry"
 }

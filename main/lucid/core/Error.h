@@ -10,7 +10,7 @@
 ///
 
 #define LUCID_THROW(msg) throw LUCID_CORE::Error( __FILE__ , __LINE__ , msg )
-#define LUCID_VALIDATE(xpr, msg) if(!(xpr)) LUCID_THROW(msg)
+#define LUCID_VALIDATE(xpr, msg) do { if(!(xpr)) LUCID_THROW(msg); } while (false)
 
 LUCID_CORE_BEGIN
 

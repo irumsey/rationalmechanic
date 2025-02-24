@@ -12,7 +12,7 @@
 
 LUCID_CORE_BEGIN
 
-class Reader;
+class Unserializer;
 
 LUCID_CORE_END
 
@@ -26,7 +26,7 @@ class Texture2D : public LUCID_GAL::Texture2D
 public:
 	Texture2D(std::string const &path);
 
-	Texture2D(LUCID_CORE::Reader &reader);
+	Texture2D(LUCID_CORE::Unserializer &reader);
 
 	virtual ~Texture2D();
 

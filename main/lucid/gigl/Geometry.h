@@ -13,7 +13,7 @@
 
 LUCID_CORE_BEGIN
 
-class Reader;
+class Unserializer;
 
 LUCID_CORE_END
 
@@ -33,7 +33,7 @@ LUCID_GIGL_BEGIN
 class Geometry final
 {
 public:
-	Geometry(LUCID_CORE::Reader &reader);
+	Geometry(LUCID_CORE::Unserializer &reader);
 
 	virtual ~Geometry();
 
@@ -54,7 +54,7 @@ public:
 
 	static Geometry *create(std::string const &path);
 
-	static Geometry *create(LUCID_CORE::Reader &reader);
+	static Geometry *create(LUCID_CORE::Unserializer &reader);
 
 private:
 	LUCID_CORE::Identity const _identity;
@@ -65,7 +65,7 @@ private:
 	std::unique_ptr<LUCID_GAL::VertexBuffer> _vertices;
 	std::unique_ptr<LUCID_GAL::IndexBuffer> _indices;
 
-	void initialize(LUCID_CORE::Reader &reader);
+	void initialize(LUCID_CORE::Unserializer &reader);
 
 	void shutdown();
 

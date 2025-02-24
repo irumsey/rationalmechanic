@@ -1,88 +1,92 @@
 {
-	"material" :
-  {
-	  "program":
-	  {
-		  "Samplers" :
-		  [
-		  ],
-
-		  "RenderStates" :
-		  {
-			  "RasterMode" :
-			  {
-				  "Fill" : "FILL_SOLID",
-				  "Cull" : "CULL_NONE",
-				  "Multisample": false
-			  },
-
-			  "BlendMode" :
-			  {
-				  "ColorWriteMask" : 15,
-				  "Enabled" : false,
-				  "SrcBlend" : "BLEND_SRC_ALPHA",
-				  "SrcBlendAlpha" : "BLEND_SRC_ALPHA",
-				  "DstBlend" : "BLEND_INV_SRC_ALPHA",
-				  "DstBlendAlpha" : "BLEND_INV_SRC_ALPHA"
-			  },
-
-			  "DepthStencilMode" :
-			  {
-				  "DepthEnabled" : true,
-				  "DepthWrite" : "DEPTH_WRITE_ENABLED",
-				  "DepthFunction" : "COMPARISON_ALWAYS",
-				  "StencilEnabled" : false,
-				  "StencilFunction" : "COMPARISON_LESS",
-				  "StencilPass" : "STENCIL_KEEP",
-				  "StencilFail" : "STENCIL_KEEP",
-				  "StencilDepthFail" : "STENCIL_KEEP",
-				  "StencilReadMask" : 15,
-				  "StencilWriteMask" : 0,
-				  "StencilRef" : 0
-			  }
-
-		  },
-
-		  "VertexShader" : { "Path" : "content/screen.vertex.cso" },
-		  "PixelShader" : { "Path" : "content/clear.pixel.cso" }
-	  },
-
-	  "attributes":
-	  [
-	  ]
-
-  },
- "geometry" :
-  {
-	  "topology" : "TOPOLOGY_TRIANGLE_STRIP",
-
-	  "format" :
-	  {
-		  "elements" :
-		  [
-			  { "format" : "FORMAT_FLOAT2", "type" : "TYPE_VERTEX", "location" : 0, "stream" : 0, "offset" :  0 },
-			  { "format" : "FORMAT_FLOAT2", "type" : "TYPE_VERTEX", "location" : 1, "stream" : 0, "offset" :  2 }
-		  ]
-	  },
-
-	  "vertices" :
-	  {
-		  "usage" : "USAGE_STATIC",
-		  "stride" : 4,
-		  "data" :
-		  [
-        -1, -1, 0, 1,
-        -1,  1, 0, 0,
-         1, -1, 1, 1,
-         1,  1, 1, 0
-		  ]
-	  },
-	 
-	  "indices" :
-	  {
-			  "usage" :  "USAGE_STATIC",
-		  "format" : "FORMAT_UINT16",
-			  "data" : [ 0, 1, 2, 3 ]
-	  }
-  }
+    "obj:material": {
+        "obj:program": {
+            "obj:Samplers": [],
+            "obj:RenderStates": {
+                "obj:RasterMode": {
+                    "fillMode": "FILL_SOLID",
+                    "cullMode": "CULL_NONE",
+                    "b:Multisample": false
+                },
+                "obj:BlendMode": {
+                    "u8:ColorWriteMask": 15,
+                    "b:Enabled": false,
+                    "blendMode:SrcBlend": "BLEND_SRC_ALPHA",
+                    "blendMode:SrcBlendAplha": "BLEND_SRC_ALPHA",
+                    "blendMode:DstBlend": "BLEND_INV_SRC_ALPHA",
+                    "blendMode:DstBlendAplha": "BLEND_INV_SRC_ALPHA"
+                },
+                "obj:DepthStencilMode": {
+                    "b:DepthEnabled": true,
+                    "depthWriteMask": "DEPTH_WRITE_ENABLED",
+                    "comparison:DepthFunction": "COMPARISON_ALWAYS",
+                    "b:StencilEnabled": false,
+                    "comparison:StencilFunction": "COMPARISON_LESS",
+                    "stencilOperation:StancilPass": "STENCIL_KEEP",
+                    "stencilOperation:StencilFail": "STENCIL_KEEP",
+                    "stencilOperation:StencilDepthFail": "STENCIL_KEEP",
+                    "u8:StencilReadMask": 15,
+                    "u8:StencilWriteMask": 0,
+                    "u8:StencilRef": 0
+                }
+            },
+            "str:VertexShader": "content/screen.vertex.cso",
+            "str:GeometryShader": "",
+            "str:PixelShader": "content/clear.pixel.cso"
+        },
+        "obj:attributes": []
+    },
+    "obj:geometry": {
+        "topology": "TOPOLOGY_TRIANGLE_STRIP",
+        "obj:format": {
+            "obj:elements": [
+                {
+                    "vertexElementFormat": "FORMAT_FLOAT2",
+                    "vertexElementType": "TYPE_VERTEX",
+                    "i32:location": 0,
+                    "i32:stream": 0,
+                    "i32:offset": 0
+                },
+                {
+                    "vertexElementFormat": "FORMAT_FLOAT2",
+                    "vertexElementType": "TYPE_VERTEX",
+                    "i32:location": 1,
+                    "i32:stream": 0,
+                    "i32:offset": 8
+                }
+            ]
+        },
+        "obj:vertices": {
+            "bufferUsage": "USAGE_STATIC",
+            "i32:stride": 16,
+            "bin:f32:data": [
+                -1,
+                -1,
+                0,
+                1,
+                -1,
+                1,
+                0,
+                0,
+                1,
+                -1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                0
+            ]
+        },
+        "obj:indices": {
+            "bufferUsage": "USAGE_STATIC",
+            "indexBufferFormat": "FORMAT_UINT16",
+            "u16:data": [
+                0,
+                1,
+                2,
+                3
+            ]
+        }
+    }
 }

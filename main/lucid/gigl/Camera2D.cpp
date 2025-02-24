@@ -1,6 +1,6 @@
 #include "Camera2D.h"
 #include <lucid/math/Matrix.h>
-#include <lucid/core/Reader.h>
+#include <lucid/core/Unserializer.h>
 
 LUCID_ANONYMOUS_BEGIN
 
@@ -10,13 +10,6 @@ enum TYPE
 	TYPE_ORTHOGRAPHIC,
 };
 
-template<class T> inline T read(LUCID_CORE::Reader &reader)
-{
-	T value = T();
-	reader.read(&value, sizeof(T));
-	return value;
-}
-
 LUCID_ANONYMOUS_END
 
 LUCID_GIGL_BEGIN
@@ -25,33 +18,32 @@ Camera2D::Camera2D()
 {
 }
 
-Camera2D::Camera2D(LUCID_CORE::Reader &reader)
+Camera2D::Camera2D(LUCID_CORE::Unserializer &reader)
 {
-	TYPE type;
-	reader.read(&type, sizeof(TYPE));
+	TYPE type = reader.read<TYPE>();
 
 	if (TYPE_PERSPECTIVE == type)
 	{
-		float32_t fov = read<float32_t>(reader);
-		float32_t aspect = read<float32_t>(reader);
-		float32_t znear = read<float32_t>(reader);
-		float32_t zfar = read<float32_t>(reader);
+		float32_t fov = reader.read<float32_t>();
+		float32_t aspect = reader.read<float32_t>();
+		float32_t znear = reader.read<float32_t>();
+		float32_t zfar = reader.read<float32_t>();
 
 		initPerspective(fov, aspect, znear, zfar);
 	}
 	else
 	{
-		float32_t width = read<float32_t>(reader);
-		float32_t height = read<float32_t>(reader);
-		float32_t znear = read<float32_t>(reader);
-		float32_t zfar = read<float32_t>(reader);
+		float32_t width = reader.read<float32_t>();
+		float32_t height = reader.read<float32_t>();
+		float32_t znear = reader.read<float32_t>();
+		float32_t zfar = reader.read<float32_t>();
 
 		initOrthographic(width, height, znear, zfar);
 	}
 
-	LUCID_GAL::Vector3 position = read<LUCID_GAL::Vector3>(reader);
-	LUCID_GAL::Vector3 target = read<LUCID_GAL::Vector3>(reader);
-	LUCID_GAL::Vector3 up = read<LUCID_GAL::Vector3>(reader);
+	LUCID_GAL::Vector3 position = reader.read<LUCID_GAL::Vector3>();
+	LUCID_GAL::Vector3 target = reader.read<LUCID_GAL::Vector3>();
+	LUCID_GAL::Vector3 up = reader.read<LUCID_GAL::Vector3>();
 
 	look(position, target, up);
 }

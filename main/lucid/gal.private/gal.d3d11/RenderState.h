@@ -12,7 +12,7 @@
 
 LUCID_CORE_BEGIN
 
-class Reader;
+class Unserializer;
 
 LUCID_CORE_END
 
@@ -21,17 +21,18 @@ LUCID_GAL_D3D11_BEGIN
 ///
 ///
 ///
-class RasterState
+struct RasterState
 {
-public:
 	D3D11_FILL_MODE fill = D3D11_FILL_SOLID;
 	D3D11_CULL_MODE cull = D3D11_CULL_FRONT;
 
 	ID3D11RasterizerState *d3dState = nullptr;
 
-	RasterState(LUCID_CORE::Reader &reader);
+	RasterState() = default;
 
-	virtual ~RasterState();
+	~RasterState();
+
+	void read(LUCID_CORE::Unserializer &reader);
 
 	LUCID_PREVENT_COPY(RasterState);
 	LUCID_PREVENT_ASSIGNMENT(RasterState);
@@ -40,9 +41,8 @@ public:
 ///
 ///
 ///
-class BlendState
+struct BlendState
 {
-public:
 	uint8_t colorWriteMask = 0xFF;
 
 	bool enable = false;
@@ -53,9 +53,11 @@ public:
 
 	ID3D11BlendState *d3dState = nullptr;
 
-	BlendState(LUCID_CORE::Reader &reader);
+	BlendState() = default;
 
-	virtual ~BlendState();
+	~BlendState();
+
+	void read(LUCID_CORE::Unserializer &reader);
 
 	LUCID_PREVENT_COPY(BlendState);
 	LUCID_PREVENT_ASSIGNMENT(BlendState);
@@ -64,9 +66,8 @@ public:
 ///
 ///
 ///
-class DepthStencilState
+struct DepthStencilState
 {
-public:
 	bool depthEnable = false;
 	D3D11_DEPTH_WRITE_MASK writeMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	D3D11_COMPARISON_FUNC depthFunction = D3D11_COMPARISON_LESS;
@@ -83,9 +84,11 @@ public:
 
 	ID3D11DepthStencilState *d3dState = nullptr;
 
-	DepthStencilState(LUCID_CORE::Reader &reader);
+	DepthStencilState() = default;
 
-	virtual ~DepthStencilState();
+	~DepthStencilState();
+
+	void read(LUCID_CORE::Unserializer &reader);
 
 	LUCID_PREVENT_COPY(DepthStencilState);
 	LUCID_PREVENT_ASSIGNMENT(DepthStencilState);
@@ -97,7 +100,7 @@ public:
 class RenderState : public LUCID_GAL::RenderState
 {
 public:
-	RenderState(LUCID_CORE::Reader &reader);
+	RenderState(LUCID_CORE::Unserializer &reader);
 
 	virtual ~RenderState() = default;
 

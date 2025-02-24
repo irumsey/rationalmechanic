@@ -8,7 +8,7 @@
 
 LUCID_CORE_BEGIN
 
-class Reader;
+class Unserializer;
 
 LUCID_CORE_END
 
@@ -26,7 +26,7 @@ public:
 
 	Context(std::string const &path);
 
-	Context(LUCID_CORE::Reader &reader);
+	Context(LUCID_CORE::Unserializer &reader);
 
 	Primitive &operator[](std::string const &name);
 
@@ -41,7 +41,7 @@ public:
 private:
 	std::unordered_map<std::string, Primitive> _values;
 
-	void initialize(LUCID_CORE::Reader &reader);
+	void initialize(LUCID_CORE::Unserializer &reader);
 
 };
 

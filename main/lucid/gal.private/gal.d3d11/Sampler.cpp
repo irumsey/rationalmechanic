@@ -1,7 +1,7 @@
 #include "Sampler.h"
 #include "System.h"
 #include "Utility.h"
-#include <lucid/core/Reader.h>
+#include <lucid/core/Unserializer.h>
 
 LUCID_ANONYMOUS_BEGIN
 
@@ -77,7 +77,7 @@ LUCID_GAL_D3D11_BEGIN
 ///
 ///
 
-SamplerState::SamplerState(LUCID_CORE::Reader &reader)
+SamplerState::SamplerState(LUCID_CORE::Unserializer &reader)
 {
 	///
 	///	read the data...
@@ -94,6 +94,7 @@ SamplerState::SamplerState(LUCID_CORE::Reader &reader)
 
 	compare = readEnum(reader, d3dCompare);
 
+	LUCID_VALIDATE(4 == reader.read<int32_t>(), "assuming color data");
 	reader.read(&borderColor, sizeof(LUCID_GAL::Color));
 
 	lodMin = reader.read<float>();
@@ -135,7 +136,7 @@ SamplerState::~SamplerState()
 ///
 ///
 
-Sampler::Sampler(std::string const &name, LUCID_CORE::Reader &reader)
+Sampler::Sampler(std::string const &name, LUCID_CORE::Unserializer &reader)
 	: name(name)
 	, state(reader)
 {

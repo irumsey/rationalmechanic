@@ -1,4 +1,6 @@
-﻿import sys
+﻿#!/usr/bin/env python3
+
+import sys
 import optparse
 import re
 import http.client

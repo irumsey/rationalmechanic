@@ -11,12 +11,6 @@
 #include <lucid/gal/VertexFormat.h>
 #include <lucid/gal.private/gal.d3d11/Defines.h>
 
-LUCID_CORE_BEGIN
-
-class Reader;
-
-LUCID_CORE_END
-
 LUCID_GAL_D3D11_BEGIN
 
 ///

@@ -5,7 +5,7 @@
 #include <lucid/gal/IndexBuffer.h>
 #include <lucid/gal/VertexBuffer.h>
 #include <lucid/gal/VertexFormat.h>
-#include <lucid/core/FileReader.h>
+#include <lucid/core/Unserializer.h>
 #include <lucid/core/Logger.h>
 
 
@@ -20,7 +20,7 @@ Mesh *Mesh::create(std::string const &path)
 	return new Mesh(path);
 }
 
-Mesh *Mesh::create(LUCID_CORE::Reader &reader)
+Mesh *Mesh::create(LUCID_CORE::Unserializer &reader)
 {
 	return new Mesh(reader);
 }
@@ -31,10 +31,10 @@ Mesh *Mesh::create(LUCID_CORE::Reader &reader)
 
 Mesh::Mesh(std::string const &path)
 {
-	initialize(LUCID_CORE::FileReader(path));
+	initialize(LUCID_CORE::Unserializer(path));
 }
 
-Mesh::Mesh(LUCID_CORE::Reader &reader)
+Mesh::Mesh(LUCID_CORE::Unserializer &reader)
 {
 	initialize(reader);
 }
@@ -88,25 +88,17 @@ void Mesh::drawInstanced(int32_t count) const
 	_geometry->drawInstanced(count);
 }
 
-void Mesh::initialize(LUCID_CORE::Reader &reader)
+void Mesh::initialize(LUCID_CORE::Unserializer &reader)
 {
 	if (reader.read<bool>())
-	{
 		_material = Resources::get<Material>(reader.read<std::string>());
-	}
 	else
-	{
 		_material.reset(Material::create(reader));
-	}
 
 	if (reader.read<bool>())
-	{
 		_geometry = Resources::get<Geometry>(reader.read<std::string>());
-	}
 	else
-	{
 		_geometry.reset(Geometry::create(reader));
-	}
 
 	_program = _material->program();
 }

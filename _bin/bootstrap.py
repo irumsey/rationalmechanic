@@ -1,4 +1,6 @@
-﻿#
+﻿#!/usr/bin/env python3
+
+#
 #	imports
 #
 
@@ -841,7 +843,7 @@ def main():
 			quit()
 
 		bootContent[opts.kind](args[0], args[1])
-
+	   
 #
 #	script
 #

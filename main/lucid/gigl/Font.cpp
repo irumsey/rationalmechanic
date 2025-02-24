@@ -1,7 +1,6 @@
 #include "Font.h"
 #include "Resources.h"
-#include <lucid/core/FileReader.h>
-#include <lucid/core/Reader.h>
+#include <lucid/core/Unserializer.h>
 #include <lucid/core/Error.h>
 
 LUCID_GIGL_BEGIN
@@ -12,10 +11,10 @@ LUCID_GIGL_BEGIN
 
 Font *Font::create(std::string const &path)
 {
-	return Font::create(LUCID_CORE::FileReader(path));
+	return Font::create(LUCID_CORE::Unserializer(path));
 }
 
-Font *Font::create(LUCID_CORE::Reader &reader)
+Font *Font::create(LUCID_CORE::Unserializer &reader)
 {
 	return new Font(reader);
 }
@@ -24,7 +23,7 @@ Font *Font::create(LUCID_CORE::Reader &reader)
 ///
 ///
 
-Font::Font(LUCID_CORE::Reader &reader)
+Font::Font(LUCID_CORE::Unserializer &reader)
 {
 	initialize(reader);
 }
@@ -82,32 +81,40 @@ void Font::drawInstanced(int32_t count) const
 	_mesh->drawInstanced(count);
 }
 
-void Font::initialize(LUCID_CORE::Reader &reader)
+void Font::initialize(LUCID_CORE::Unserializer &reader)
 {
 	shutdown();
 
 	_name = reader.read<std::string>();
 	_defaultSpacing = reader.read<float32_t>();
 
-	_mesh = Resources::get<Mesh>(reader.read<std::string>());
+	if (reader.read<bool>())
+		_mesh = Resources::get<Mesh>(reader.read<std::string>());
+	else
+		_mesh.reset(Mesh::create(reader));
 
-	int32_t count = reader.read<int32_t>();
+	int32_t size = reader.read<int32_t>();
+	LUCID_VALIDATE(0 == (size % sizeof(Glyph)), "");
+
+	int32_t count = size / sizeof(Glyph);
 	for (int32_t i = 0; i < count; ++i)
 	{
-		Glyph glyph;
-		reader.read(&glyph, sizeof(Glyph));
+		Glyph glyph = reader.read<Glyph>();
 
 		LUCID_VALIDATE(_glyphs.end() == _glyphs.find(glyph.code), "duplicate glyph code specified for font, " + _name + ", specified");
 		_glyphs.insert(std::make_pair(glyph.code, glyph));
 	}
 
-	count = reader.read<int32_t>();
+	size = reader.read<int32_t>();
+	LUCID_VALIDATE(0 == (size % 2), "");
+
+	count = size / 2;
 	for (int32_t i = 0; i < count; ++i)
 	{
-		uint8_t left = reader.read<uint8_t>();
-		uint8_t right = reader.read<uint8_t>();
+		Key key;
+		key.first = reader.read<uint8_t>();
+		key.second = reader.read<uint8_t>();
 
-		Key key(left, right);
 		LUCID_VALIDATE(_spacing.end() == _spacing.find(key), "duplicate glyph spacing specified for font, " + _name + ", specified");
 
 		_spacing.insert(std::make_pair(key, reader.read<float32_t>()));

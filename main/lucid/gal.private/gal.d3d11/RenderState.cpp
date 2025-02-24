@@ -1,7 +1,7 @@
 #include "RenderState.h"
 #include "System.h"
 #include "Utility.h"
-#include <lucid/core/Reader.h>
+#include <lucid/core/Unserializer.h>
 
 LUCID_ANONYMOUS_BEGIN
 
@@ -71,7 +71,7 @@ LUCID_ANONYMOUS_END
 
 LUCID_GAL_BEGIN
 
-RenderState *RenderState::create(LUCID_CORE::Reader &reader)
+RenderState *RenderState::create(LUCID_CORE::Unserializer &reader)
 {
 	return new LUCID_GAL_D3D11::RenderState(reader);
 }
@@ -80,8 +80,16 @@ LUCID_GAL_END
 
 LUCID_GAL_D3D11_BEGIN
 
-RasterState::RasterState(LUCID_CORE::Reader &reader)
+
+RasterState::~RasterState()
 {
+	safeRelease(d3dState);
+}
+
+void RasterState::read(LUCID_CORE::Unserializer &reader)
+{
+	safeRelease(d3dState);
+
 	///
 	/// read the data...
 	///
@@ -113,17 +121,19 @@ RasterState::RasterState(LUCID_CORE::Reader &reader)
 	GAL_VALIDATE_HRESULT(hResult, "unable to create rasterizer state");
 }
 
-RasterState::~RasterState()
+///
+///
+///
+
+BlendState::~BlendState()
 {
 	safeRelease(d3dState);
 }
 
-///
-///
-///
-
-BlendState::BlendState(LUCID_CORE::Reader &reader)
+void BlendState::read(LUCID_CORE::Unserializer &reader)
 {
+	safeRelease(d3dState);
+
 	colorWriteMask = reader.read<uint8_t>();
 	enable = reader.read<bool>();
 
@@ -158,17 +168,14 @@ BlendState::BlendState(LUCID_CORE::Reader &reader)
 	GAL_VALIDATE_HRESULT(hResult, "unable to create blend state");
 }
 
-BlendState::~BlendState()
+///
+///
+///
+
+void DepthStencilState::read(LUCID_CORE::Unserializer &reader)
 {
 	safeRelease(d3dState);
-}
 
-///
-///
-///
-
-DepthStencilState::DepthStencilState(LUCID_CORE::Reader &reader)
-{
 	depthEnable = reader.read<bool>();
 	writeMask = readEnum(reader, d3dDepthWriteMask);
 	depthFunction = readEnum(reader, d3dCompare);
@@ -220,11 +227,19 @@ DepthStencilState::~DepthStencilState()
 ///
 ///
 
-RenderState::RenderState(LUCID_CORE::Reader &reader)
-	: _rasterState(reader)
-	, _blendState(reader)
-	, _depthStencilState(reader)
+RenderState::RenderState(LUCID_CORE::Unserializer &reader)
 {
+	reader.member_begin();
+	_rasterState.read(reader);
+	reader.member_end();
+
+	reader.member_begin();
+	_blendState.read(reader);
+	reader.member_end();
+
+	reader.member_begin();
+	_depthStencilState.read(reader);
+	reader.member_end();
 }
 
 LUCID_GAL_D3D11_END

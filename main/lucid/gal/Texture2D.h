@@ -7,7 +7,7 @@
 
 LUCID_CORE_BEGIN
 
-class Reader;
+class Unserializer;
 
 LUCID_CORE_END
 
@@ -27,7 +27,7 @@ public:
 
 	static Texture2D *create(std::string const &path);
 
-	static Texture2D *create(LUCID_CORE::Reader &reader);
+	static Texture2D *create(LUCID_CORE::Unserializer &reader);
 
 protected:
 	Texture2D() {}

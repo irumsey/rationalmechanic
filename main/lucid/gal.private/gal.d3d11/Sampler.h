@@ -14,7 +14,7 @@
 
 LUCID_CORE_BEGIN
 
-class Reader;
+class Unserializer;
 
 LUCID_CORE_END
 
@@ -39,7 +39,7 @@ public:
 
 	ID3D11SamplerState *d3dState = nullptr;
 
-	SamplerState(LUCID_CORE::Reader &reader);
+	SamplerState(LUCID_CORE::Unserializer &reader);
 
 	virtual ~SamplerState();
 
@@ -63,7 +63,7 @@ public:
 
 	SamplerState state;
 
-	Sampler(std::string const &name, LUCID_CORE::Reader &reader);
+	Sampler(std::string const &name, LUCID_CORE::Unserializer &reader);
 
 	virtual ~Sampler();
 

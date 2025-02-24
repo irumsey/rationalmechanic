@@ -1,54 +1,48 @@
 {
-	"program":
-	{
-		"Samplers" :
-		[
-		],
-
-		"RenderStates" :
-		{
-			"RasterMode" :
-			{
-				"Fill" : "FILL_SOLID",
-				"Cull" : "CULL_FRONT",
-				"Multisample": false
-			},
-
-			"BlendMode" :
-			{
-				"ColorWriteMask" : 15,
-				"Enabled" : true,
-				"SrcBlend" : "BLEND_SRC_ALPHA",
-				"SrcBlendAlpha" : "BLEND_SRC_ALPHA",
-				"DstBlend" : "BLEND_INV_SRC_ALPHA",
-				"DstBlendAlpha" : "BLEND_INV_SRC_ALPHA"
-			},
-
-			"DepthStencilMode" :
-			{
-				"DepthEnabled" : true,
-				"DepthWrite" : "DEPTH_WRITE_DISABLED",
-				"DepthFunction" : "COMPARISON_LESS",
-				"StencilEnabled" : false,
-				"StencilFunction" : "COMPARISON_LESS",
-				"StencilPass" : "STENCIL_KEEP",
-				"StencilFail" : "STENCIL_KEEP",
-				"StencilDepthFail" : "STENCIL_KEEP",
-				"StencilReadMask" : 15,
-				"StencilWriteMask" : 0,
-				"StencilRef" : 0
-			}
-
-		},
-
-		"VertexShader" : { "Path" : "content/atmosphere.vertex.cso" },
-		"PixelShader" : { "Path" : "content/atmosphere.pixel.cso" }
-	},
-
-	"attributes":
-	[
-		{ "name":     "viewProjMatrix",     "query":                  "viewProjMatrix" },
-		{ "name":     "scatterTexture", "texture2d":      "content/scattering.texture" }
-	]
-
+  "obj:program": {
+    "obj:Samplers": [],
+    "obj:RenderStates": {
+      "obj:RasterMode": {
+        "fillMode": "FILL_SOLID",
+        "cullMode": "CULL_FRONT",
+        "b:Multisample": false
+      },
+      "obj:BlendMode": {
+        "u8:ColorWriteMask": 15,
+        "b:Enabled": true,
+        "blendMode:SrcBlend": "BLEND_SRC_ALPHA",
+        "blendMode:SrcBlendAplha": "BLEND_SRC_ALPHA",
+        "blendMode:DstBlend": "BLEND_INV_SRC_ALPHA",
+        "blendMode:DstBlendAplha": "BLEND_INV_SRC_ALPHA"
+      },
+      "obj:DepthStencilMode": {
+        "b:DepthEnabled": true,
+        "depthWriteMask": "DEPTH_WRITE_DISABLED",
+        "comparison:DepthFunction": "COMPARISON_LESS",
+        "b:StencilEnabled": false,
+        "comparison:StencilFunction": "COMPARISON_LESS",
+        "stencilOperation:StancilPass": "STENCIL_KEEP",
+        "stencilOperation:StencilFail": "STENCIL_KEEP",
+        "stencilOperation:StencilDepthFail": "STENCIL_KEEP",
+        "u8:StencilReadMask": 15,
+        "u8:StencilWriteMask": 0,
+        "u8:StencilRef": 0
+      }
+    },
+    "str:VertexShader": "content/atmosphere.vertex.cso",
+    "str:GeometryShader": "",
+    "str:PixelShader": "content/atmosphere.pixel.cso"
+  },
+    "obj:attributes": [
+        {
+            "str:name": "viewProjMatrix",
+            "primitiveType": "PRIMITIVE_QUERY",
+            "str:data": "viewProjMatrix"
+        },
+        {
+            "str:name": "scatterTexture",
+            "primitiveType": "PRIMITIVE_TEXTURE2D",
+            "str:data": "content/scattering.texture"
+        }
+    ]
 }

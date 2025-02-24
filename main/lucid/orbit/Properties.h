@@ -2,7 +2,8 @@
 
 #include <memory>
 #include <lucid/core/Types.h>
-#include <lucid/core/Reader.h>
+#include <lucid/core/Error.h>
+#include <lucid/core/Unserializer.h>
 #include <lucid/gal/Types.h>
 #include <lucid/gigl/Resources.h>
 #include <lucid/gigl/Mesh.h>
@@ -23,18 +24,18 @@ struct PhysicalProperties
 
 	PhysicalProperties() = default;
 
-	PhysicalProperties(LUCID_CORE::Reader &reader)
+	PhysicalProperties(LUCID_CORE::Unserializer &stream)
 	{
-		read(reader);
+		read(stream);
 	}
 
 	~PhysicalProperties() = default;
 
-	void read(LUCID_CORE::Reader &reader)
+	void read(LUCID_CORE::Unserializer &stream)
 	{
-		reader.read(    &GM, sizeof(scalar_t));
-		reader.read(  &mass, sizeof(scalar_t));
-		reader.read(&radius, sizeof(scalar_t));
+		stream.read(    &GM, sizeof(scalar_t));
+		stream.read(  &mass, sizeof(scalar_t));
+		stream.read(&radius, sizeof(scalar_t));
 	}
 
 };
@@ -60,26 +61,30 @@ struct RenderProperties
 
 	RenderProperties() = default;
 
-	RenderProperties(LUCID_CORE::Reader &reader)
+	RenderProperties(LUCID_CORE::Unserializer &stream)
 	{
-		read(reader);
+		read(stream);
 	}
 
 	~RenderProperties() = default;
 
-	void read(LUCID_CORE::Reader &reader)
+	void read(LUCID_CORE::Unserializer &stream)
 	{
-		showOrbit = reader.read<bool>();
-		showIcon = reader.read<bool>();
+		showOrbit = stream.read<bool>();
+		showIcon = stream.read<bool>();
 
-		model.reset(new LUCID_GIGL::Model(reader));
+		// stream.member_begin("model");
+		model.reset(new LUCID_GIGL::Model(stream));
+		// stream.member_end("model");
 
-		iconMesh = LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(reader.read<std::string>());
-		reader.read(&iconParameters, sizeof(LUCID_GAL::Vector4));
+		stream.member_begin("icon");
+		iconMesh = LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(stream.read<std::string>());
+		iconParameters = stream.read_counted<LUCID_GAL::Vector4, int32_t>(4);
+		stream.member_end("icon");
 
-		reader.read(&channel0, sizeof(LUCID_GAL::Vector4));
-		reader.read(&channel1, sizeof(LUCID_GAL::Vector4));
-		reader.read(&channel2, sizeof(LUCID_GAL::Vector4));
+		channel0 = stream.read_counted<LUCID_GAL::Vector4, int32_t>(4);
+		channel1 = stream.read_counted<LUCID_GAL::Vector4, int32_t>(4);
+		channel2 = stream.read_counted<LUCID_GAL::Vector4, int32_t>(4);
 	}
 };
 

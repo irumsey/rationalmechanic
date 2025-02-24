@@ -34,7 +34,7 @@ template<class T> inline T Reader::read()
 
 template<> inline std::string Reader::read<std::string>()
 {
-	int size = read<int>();
+	int32_t size = read<int32_t>();
 	std::string value(size, 0);
 
 	if (0 != size) read(&value[0], size);

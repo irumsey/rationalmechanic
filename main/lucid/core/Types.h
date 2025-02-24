@@ -11,6 +11,7 @@
 ///
 ///
 
+typedef char const *cstr_t;
 typedef unsigned short byte_t;
 
 ///

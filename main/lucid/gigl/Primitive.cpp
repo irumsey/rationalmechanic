@@ -3,11 +3,11 @@
 #include <lucid/gal/RenderTarget2D.h>
 #include <lucid/gal/Texture2D.h>
 #include <lucid/gal/Unordered2D.h>
-#include <lucid/core/Reader.h>
+#include <lucid/core/Unserializer.h>
 
 LUCID_ANONYMOUS_BEGIN
 
-typedef LUCID_CORE::Reader reader_t;
+typedef LUCID_CORE::Unserializer reader_t;
 
 typedef LUCID_GAL::Unordered2D unordered2d_t;
 typedef std::shared_ptr<unordered2d_t> shared_unordered2d_t;
@@ -69,7 +69,7 @@ void Primitive::coerceFrom(Primitive const &rhs)
 	rhs._any ? _any.reset(rhs._any->clone()) : _any.reset();
 }
 
-void Primitive::readFrom(LUCID_CORE::Reader &reader)
+void Primitive::readFrom(LUCID_CORE::Unserializer &reader)
 {
 	int32_t tid = reader.read<int32_t>();
 	LUCID_VALIDATE(tid < primitive_t::TYPE_COUNT, "invalid primitive type id");
@@ -83,31 +83,74 @@ LUCID_GIGL_END
 
 LUCID_ANONYMOUS_BEGIN
 
-template<class T> primitive_t read(reader_t &reader)
+template<typename T> primitive_t read(reader_t &reader)
 {
-	T value;
-	reader.read(&value, sizeof(T));
-
-	return primitive_t(value);
+	return primitive_t(reader.read<T>());
 }
 
 template<> primitive_t read<UNSUPPORTED>(reader_t &)
 {
 	LUCID_THROW("unsupported gigl primitive type");
 }
-	
+
+template<> primitive_t read<LUCID_GAL::Color>(reader_t &reader)
+{
+	LUCID_VALIDATE(4 == reader.read<int32_t>(), "");
+	return primitive_t(reader.read<LUCID_GAL::Color>());
+}
+
+template<> primitive_t read<LUCID_GAL::Vector2>(reader_t &reader)
+{
+	LUCID_VALIDATE(2 == reader.read<int32_t>(), "");
+	return primitive_t(reader.read<LUCID_GAL::Vector2>());
+}
+
+template<> primitive_t read<LUCID_GAL::Vector3>(reader_t &reader)
+{
+	LUCID_VALIDATE(3 == reader.read<int32_t>(), "");
+	return primitive_t(reader.read<LUCID_GAL::Vector3>());
+}
+
+template<> primitive_t read<LUCID_GAL::Vector4>(reader_t &reader)
+{
+	LUCID_VALIDATE(4 == reader.read<int32_t>(), "");
+	return primitive_t(reader.read<LUCID_GAL::Vector4>());
+}
+
+template<> primitive_t read<LUCID_GAL::Quaternion>(reader_t &reader)
+{
+	LUCID_VALIDATE(4 == reader.read<int32_t>(), "");
+	return primitive_t(reader.read<LUCID_GAL::Quaternion>());
+}
+
+template<> primitive_t read<LUCID_GAL::Matrix2x2>(reader_t &reader)
+{
+	LUCID_VALIDATE(4 == reader.read<int32_t>(), "");
+	return primitive_t(reader.read<LUCID_GAL::Matrix2x2>());
+}
+
+template<> primitive_t read<LUCID_GAL::Matrix3x3>(reader_t &reader)
+{
+	LUCID_VALIDATE(9 == reader.read<int32_t>(), "");
+	return primitive_t(reader.read<LUCID_GAL::Matrix3x3>());
+}
+
+template<> primitive_t read<LUCID_GAL::Matrix4x4>(reader_t &reader)
+{
+	LUCID_VALIDATE(16 == reader.read<int32_t>(), "");
+	return primitive_t(reader.read<LUCID_GAL::Matrix4x4>());
+}
+
 template<> primitive_t read<texture2d_t>(reader_t &reader)
 {
 	std::string path = reader.read<std::string>();
-
 	return primitive_t(LUCID_GIGL::Resources::get<texture2d_t>(path));
 }
 
 template<> primitive_t read<target2d_t>(reader_t &reader)
 {
 	int32_t format = reader.read<int32_t>();
-
-	int32_t width = reader.read<int32_t>();
+	int32_t  width = reader.read<int32_t>();
 	int32_t height = reader.read<int32_t>();
 
 	return primitive_t(shared_target2d_t(target2d_t::create(targetFormat[format], width, height)));
@@ -116,7 +159,6 @@ template<> primitive_t read<target2d_t>(reader_t &reader)
 template<> primitive_t read<std::string>(reader_t &reader)
 {
 	std::string query = reader.read<std::string>();
-
 	return primitive_t(query);
 }
 

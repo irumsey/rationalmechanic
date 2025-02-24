@@ -6,7 +6,7 @@
 #include <lucid/gigl/Resources.h>
 #include <lucid/gigl/Mesh.h>
 #include <lucid/math/Math.h>
-#include <lucid/core/FileReader.h>
+#include <lucid/core/Unserializer.h>
 #include <lucid/core/Profiler.h>
 #include <lucid/core/Logger.h>
 #include <lucid/core/Error.h>
@@ -42,51 +42,58 @@ void Ephemeris::initialize(std::string const &path)
 {
 	shutdown();
 
-	LUCID_CORE::Reader &reader = LUCID_CORE::FileReader(path);
+	LUCID_CORE::Unserializer stream(path);
 
 	///
 	///	load the data required to compute Barycentric Dynamical Time
 	/// aka ephemeris time
 	/// 
 
-	_TAI_TT = reader.read<scalar_t>();
-
-	_MA[0] = reader.read<scalar_t>();
-	_MA[1] = reader.read<scalar_t>();
-
-	_K = reader.read<scalar_t>();
-	_EB = reader.read<scalar_t>();
-
-	int32_t count = reader.read<int32_t>();
-	_DELTA_AT.resize(count);
-
-	for (int32_t i = 0; i < count; ++i)
 	{
-		Date date;
-		date.year = reader.read<uint32_t>();
-		date.month = reader.read<uint32_t>();
-		date.day = reader.read<uint32_t>();
+		stream.member_begin("time");
 
-		_DELTA_AT[i].first = JDN::from(date, Time());
-		_DELTA_AT[i].second = reader.read<scalar_t>();
+		_TAI_TT = stream.read<scalar_t>();
+
+		LUCID_VALIDATE(2 == stream.read<int32_t>(), "");
+		_MA[0] = stream.read<scalar_t>();
+		_MA[1] = stream.read<scalar_t>();
+
+		_K = stream.read<scalar_t>();
+		_EB = stream.read<scalar_t>();
+
+		int32_t count = stream.read<int32_t>();
+		_DELTA_AT.resize(count);
+		for (int32_t i = 0; i < count; ++i)
+		{
+			stream.member_begin("deltas");
+
+			Date date = stream.read<Date>();
+			_DELTA_AT[i].first = JDN::from(date, Time());
+			_DELTA_AT[i].second = stream.read<scalar_t>();
+
+			stream.member_end("deltas");
+		}
+
+		stream.member_end("time");
 	}
 
 	///
 	///	load the frames and their orbital elements
 	/// 
 
-	int32_t frameCount = reader.read<int32_t>();
+	int32_t frameCount = stream.read<int32_t>();
 	for (int32_t frameIndex = 0; frameIndex < frameCount; ++frameIndex)
 	{
+		stream.member_begin("frame");
+
 		Entry target;
 
-		reader.read(&target.type, sizeof(Entry::TYPE));
+		target.type = stream.read<Entry::TYPE>();	
+		target.id = stream.read<int32_t>();
+		target.name = stream.read<std::string>();
+		target.description = stream.read<std::string>();
 			
-		target.id = reader.read<int32_t>();
-		target.name = reader.read<std::string>();
-		target.description = reader.read<std::string>();
-			
-		std::string centerName = reader.read<std::string>();
+		std::string centerName = stream.read<std::string>();
 
 		Entry center;
 		lookup(center, centerName);
@@ -102,16 +109,32 @@ void Ephemeris::initialize(std::string const &path)
 		///	for now, orbital body is the only type with extra information
 		if (Entry::TYPE_ORBITAL_BODY == target.type)
 		{
-			_renderProperties.insert(std::make_pair(target.id, RenderProperties(reader)));
-			_physicalProperties.insert(std::make_pair(target.id, PhysicalProperties(reader)));
-			_rotationalElements.insert(std::make_pair(target.id, RotationalElements(reader)));
+			stream.member_begin("properties");
 
-			size_t elementsCount = reader.read<int32_t>();
+			stream.member_begin();
+			_renderProperties.insert(std::make_pair(target.id, RenderProperties(stream)));
+			stream.member_end();
+
+			stream.member_begin();
+			_physicalProperties.insert(std::make_pair(target.id, PhysicalProperties(stream)));
+			stream.member_end();
+
+			stream.member_end("properties");
+
+			stream.member_begin();
+			_rotationalElements.insert(std::make_pair(target.id, RotationalElements(stream)));
+			stream.member_end();
+
+			int32_t elementsCount = stream.read<int32_t>();
 			elements_vec_t pluralElements(elementsCount);
 			for (int32_t i = 0; i < elementsCount; ++i)
-				reader.read(&pluralElements[i], sizeof(OrbitalElements));
+			{
+				pluralElements[i] = stream.read_counted<OrbitalElements, int32_t>(13);
+			}
 			_orbitalElements.insert(std::make_pair(target.id, pluralElements));
 		}
+
+		stream.member_end("frame");
 	}
 
 	LUCID_CORE::log("INFO", "Ephemeris initialized using: " + path);

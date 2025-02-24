@@ -10,7 +10,7 @@
 
 LUCID_CORE_BEGIN
 
-class Reader;
+class Unserializer;
 
 LUCID_CORE_END
 
@@ -49,7 +49,7 @@ public:
 
 	Material(std::string const &path);
 
-	Material(LUCID_CORE::Reader &reader);
+	Material(LUCID_CORE::Unserializer &reader);
 
 	virtual ~Material();
 
@@ -67,7 +67,7 @@ public:
 
 	static Material *create(std::string const &path);
 
-	static Material *create(LUCID_CORE::Reader &reader);
+	static Material *create(LUCID_CORE::Unserializer &reader);
 
 private:
 	///	Attribute
@@ -94,7 +94,7 @@ private:
 	std::shared_ptr<LUCID_GAL::Program> _program;
 	std::unordered_map<std::string, Attribute> _attributes;
 
-	void initialize(LUCID_CORE::Reader &reader);
+	void initialize(LUCID_CORE::Unserializer &reader);
 
 	void shutdown();
 

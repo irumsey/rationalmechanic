@@ -34,19 +34,17 @@ template<typename T> inline void Writer::write(T const &value)
 
 template<> inline void Writer::write<std::string>(std::string const &value)
 {
-	int size = int(value.size());
-	write<int>(size);
+	int32_t size = int32_t(value.size());
+	write(size);
 	if (0 != size) write(&value[0], size);
 }
 
-#if false
-template<> inline void Writer::write<char const *>(char const *value)
+template<> inline void Writer::write<cstr_t>(cstr_t const &value)
 {
-	int size = ::strlen(value);
-	write<int>(size);
+	int32_t size = int32_t(::strlen(value));
+	write(size);
 	if (0 != size) write(value, size);
 }
-#endif
 
 template<> inline void Writer::write<Identity>(Identity const &value)
 {

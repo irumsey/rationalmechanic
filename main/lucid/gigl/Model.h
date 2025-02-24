@@ -10,7 +10,7 @@
 
 LUCID_CORE_BEGIN
 
-class Reader;
+class Unserializer;
 
 LUCID_CORE_END
 
@@ -37,7 +37,7 @@ public:
 
 	Model(std::string const &path);
 
-	Model(LUCID_CORE::Reader &reader);
+	Model(LUCID_CORE::Unserializer &reader);
 
 	virtual ~Model();
 
@@ -53,7 +53,7 @@ public:
 
 	static Model *create(std::string const &path);
 
-	static Model *create(LUCID_CORE::Reader &reader);
+	static Model *create(LUCID_CORE::Unserializer &reader);
 
 private:
 	typedef std::shared_ptr<Mesh> mesh_ptr_t;
@@ -64,7 +64,7 @@ private:
 	LUCID_CORE::Identity _identity;
 	mesh_vec_t _meshes;
 
-	void initialize(LUCID_CORE::Reader &reader);
+	void initialize(LUCID_CORE::Unserializer &reader);
 
 	void shutdown();
 

@@ -6,7 +6,7 @@
 
 LUCID_CORE_BEGIN
 
-class Reader;
+class Unserializer;
 
 LUCID_CORE_END
 
@@ -50,7 +50,7 @@ public:
 
 	static IndexBuffer *create(USAGE usage, FORMAT format, int32_t count);
 
-	static IndexBuffer *create(LUCID_CORE::Reader &reader);
+	static IndexBuffer *create(LUCID_CORE::Unserializer &reader);
 
 protected:
 	IndexBuffer() {}

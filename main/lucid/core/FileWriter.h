@@ -29,6 +29,8 @@ public:
 
 	virtual void write(void const *data, size_t size) override;
 
+	template<typename T> void write(T const &value);
+
 private:
 	std::ofstream _file;
 
@@ -45,6 +47,11 @@ inline void FileWriter::close()
 {
 	if (_file.is_open())
 		_file.close();
+}
+
+template<typename T> inline void FileWriter::write(T const &value)
+{
+	Writer::write<T>(value);
 }
 
 LUCID_CORE_END

@@ -1,7 +1,7 @@
 #include "DepthTarget2D.h"
 #include "System.h"
 #include "Utility.h"
-#include <lucid/core/Reader.h>
+#include <lucid/core/Unserializer.h>
 #include <lucid/core/Logger.h>
 
 LUCID_ANONYMOUS_BEGIN
@@ -23,7 +23,7 @@ LUCID_GAL_BEGIN
 		return new LUCID_GAL_D3D11::DepthTarget2D(format, width, height);
 	}
 
-	DepthTarget2D *DepthTarget2D::create(LUCID_CORE::Reader &reader)
+	DepthTarget2D *DepthTarget2D::create(LUCID_CORE::Unserializer &reader)
 	{
 		return new LUCID_GAL_D3D11::DepthTarget2D(reader);
 	}
@@ -48,9 +48,9 @@ DepthTarget2D::DepthTarget2D(FORMAT format, int32_t width, int32_t height)
 	}
 }
 
-DepthTarget2D::DepthTarget2D(LUCID_CORE::Reader &reader)
+DepthTarget2D::DepthTarget2D(LUCID_CORE::Unserializer &reader)
 {
-	reader.read(&_format, sizeof(FORMAT));
+	_format = reader.read<FORMAT>();
 	_width = reader.read<int32_t>();
 	_height = reader.read<int32_t>();
 

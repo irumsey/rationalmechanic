@@ -44,6 +44,7 @@
     <ClInclude Include="Stack.h" />
     <ClInclude Include="String.h" />
     <ClInclude Include="Types.h" />
+    <ClInclude Include="Unserializer.h" />
     <ClInclude Include="Writer.h" />
   </ItemGroup>
   <ItemGroup>
@@ -54,6 +55,7 @@
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="Profiler.cpp" />
     <ClCompile Include="Random.cpp" />
+    <ClCompile Include="Unserializer.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{36A0B0CE-4581-4060-B972-357FFD75C148}</ProjectGuid>

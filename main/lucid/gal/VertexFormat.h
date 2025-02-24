@@ -8,7 +8,7 @@
 
 LUCID_CORE_BEGIN
 
-class Reader;
+class Unserializer;
 
 LUCID_CORE_END
 
@@ -72,7 +72,7 @@ public:
 
 	static VertexFormat *create(std::string const &path);
 
-	static VertexFormat *create(LUCID_CORE::Reader &reader);
+	static VertexFormat *create(LUCID_CORE::Unserializer &reader);
 
 protected:
 	VertexFormat() {}

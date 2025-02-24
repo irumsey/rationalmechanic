@@ -1,7 +1,7 @@
 #include "StarCatalog.h"
 #include "Utility.h"
 #include <lucid/gal/Types.h>
-#include <lucid/core/FileReader.h>
+#include <lucid/core/Unserializer.h>
 #include <lucid/core/Logger.h>
 #include <unordered_map>
 
@@ -63,23 +63,25 @@ LUCID_ORBIT_BEGIN
 
 void StarCatalog::initialize(std::string const &path)
 {
-	LUCID_CORE::Reader &reader = LUCID_CORE::FileReader(path);
+	LUCID_CORE::Unserializer reader(path);
 
 	colorInitialize();
 
 	size_t count = reader.read<int32_t>();
-
 	_ordinal.resize(count);
+
 	for (size_t i = 0; i < count; ++i)
 	{
 		Entry &entry = _ordinal[i];
 
+		reader.member_begin();
 		entry.            xno = reader.read<int32_t>();
 		entry.           type = reader.read<std::string>();
 		entry.right_ascension = reader.read<float64_t>();
 		entry.    declination = reader.read<float64_t>();
 		entry.      magnitude = reader.read<float32_t>();
 		entry.          color = lookupColor(entry.type);
+		reader.member_end();
 	}
 
 	LUCID_CORE::log("INFO", "Star Catalog initialized using: " + path);

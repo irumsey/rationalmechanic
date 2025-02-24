@@ -10,6 +10,12 @@
 #include <lucid/gal/RenderTarget2D.h>
 #include <lucid/gal.private/gal.d3d11/Defines.h>
 
+LUCID_CORE_BEGIN
+
+class Unserializer;
+
+LUCID_CORE_END
+
 LUCID_GAL_D3D11_BEGIN
 
 ///
@@ -20,7 +26,7 @@ class RenderTarget2D : public LUCID_GAL::RenderTarget2D
 public:
 	RenderTarget2D(FORMAT format, int32_t width, int32_t height, int32_t samples = 1);
 
-	RenderTarget2D(LUCID_CORE::Reader &reader);
+	RenderTarget2D(LUCID_CORE::Unserializer &reader);
 
 	virtual ~RenderTarget2D();
 

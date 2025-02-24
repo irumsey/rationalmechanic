@@ -10,6 +10,12 @@
 #include <lucid/gal/DepthTarget2D.h>
 #include <lucid/gal.private/gal.d3d11/Defines.h>
 
+LUCID_CORE_BEGIN
+
+class Unserializer;
+
+LUCID_CORE_END
+
 LUCID_GAL_D3D11_BEGIN
 
 ///
@@ -20,7 +26,7 @@ class DepthTarget2D : public LUCID_GAL::DepthTarget2D
 public:
 	DepthTarget2D(FORMAT format, int32_t width, int32_t height);
 
-	DepthTarget2D(LUCID_CORE::Reader &reader);
+	DepthTarget2D(LUCID_CORE::Unserializer &reader);
 
 	virtual ~DepthTarget2D();
 

@@ -6,7 +6,7 @@
 
 LUCID_CORE_BEGIN
 
-class Reader;
+class Unserializer;
 
 LUCID_CORE_END
 
@@ -42,7 +42,7 @@ public:
 
 	static VertexBuffer *create(USAGE usage, int32_t count, int32_t stride);
 
-	static VertexBuffer *create(LUCID_CORE::Reader &reader);
+	static VertexBuffer *create(LUCID_CORE::Unserializer &reader);
 
 protected:
 	VertexBuffer() {}

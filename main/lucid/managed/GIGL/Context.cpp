@@ -2,7 +2,7 @@
 #include "Camera2D.h"
 #include <lucid/gigl/Context.h>
 #include <lucid/core/Logger.h>
-#include <lucid/core/FileReader.h>
+#include <lucid/core/Unserializer.h>
 #include <lucid/core/Error.h>
 #include <msclr/marshal_cppstd.h>
 
@@ -23,7 +23,7 @@ namespace GIGL {
 	{
 		try
 		{
-			_internal = new LUCID_GIGL::Context(LUCID_CORE::FileReader(MI::marshal_as<std::string>(path)));
+			_internal = new LUCID_GIGL::Context(LUCID_CORE::Unserializer(MI::marshal_as<std::string>(path)));
 		}
 		catch (LUCID_CORE::Error const &error)
 		{

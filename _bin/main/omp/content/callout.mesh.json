@@ -1,4 +1,4 @@
 {
-	"material" : "content/callout.material",
-	"geometry" : "content/nineSlice.geometry"
+    "ref:material": "content/callout.material",
+    "ref:geometry": "content/nineSlice.geometry"
 }

@@ -1,16 +1,15 @@
 #include "Model.h"
 #include "Resources.h"
-#include <lucid/core/FileReader.h>
-#include <lucid/core/Reader.h>
+#include <lucid/core/Unserializer.h>
 
 LUCID_GIGL_BEGIN
 
 Model::Model(std::string const &path)
 {
-	initialize(LUCID_CORE::FileReader(path));
+	initialize(LUCID_CORE::Unserializer(path));
 }
 
-Model::Model(LUCID_CORE::Reader &reader)
+Model::Model(LUCID_CORE::Unserializer &reader)
 {
 	initialize(reader);
 }
@@ -50,7 +49,7 @@ void Model::drawInstanced(LUCID_GAL::VertexBuffer *instanceStream, int32_t start
 	}
 }
 
-void Model::initialize(LUCID_CORE::Reader &reader)
+void Model::initialize(LUCID_CORE::Unserializer &reader)
 {
 	shutdown();
 
@@ -71,7 +70,7 @@ Model *Model::create(std::string const &path)
 	return new Model(path);
 }
 
-Model *Model::create(LUCID_CORE::Reader &reader)
+Model *Model::create(LUCID_CORE::Unserializer &reader)
 {
 	return new Model(reader);
 }

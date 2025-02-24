@@ -3,6 +3,7 @@
 #include "System.h"
 #include "Pipeline.h"
 #include "Utility.h"
+#include <lucid/core/Unserializer.h>
 #include <lucid/core/Logger.h>
 #include <lucid/core/Error.h>
 #include <vector>
@@ -15,7 +16,7 @@ Texture2D *Texture2D::create(std::string const &path)
 	return new LUCID_GAL_D3D11::Texture2D(path);
 }
 
-Texture2D *Texture2D::create(LUCID_CORE::Reader &reader)
+Texture2D *Texture2D::create(LUCID_CORE::Unserializer &reader)
 {
 	return new LUCID_GAL_D3D11::Texture2D(reader);
 }
@@ -38,7 +39,7 @@ Texture2D::Texture2D(std::string const &path)
 	}
 }
 
-Texture2D::Texture2D(LUCID_CORE::Reader &reader)
+Texture2D::Texture2D(LUCID_CORE::Unserializer &reader)
 {
 	try
 	{
