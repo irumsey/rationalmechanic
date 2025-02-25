@@ -3,6 +3,7 @@
 #include <vector>
 #include <lucid/core/Defines.h>
 #include <lucid/core/Noncopyable.h>
+#include <lucid/core/Error.h>
 #include <lucid/core/Reader.h>
 
 LUCID_CORE_BEGIN
@@ -31,9 +32,11 @@ public:
 
 	void read(void *data, size_t size) override;
 
+	template<typename T> void expect(T const &expected);
+
 	template<typename T> T read();
 
-	template<typename T, typename I> T read_counted(I expected);
+	template<typename T> T read(int32_t expected);
 
 	void nested_begin(char const *comment = nullptr);
 
@@ -57,15 +60,20 @@ inline bool Unserializer::not_open() const
 	return !is_open();
 }
 
+template<typename T> inline void Unserializer::expect(T const &expected)
+{
+	T actual = read<T>();
+	LUCID_VALIDATE(actual == expected, "expected value does not match actual");
+}
+
 template<typename T> inline T Unserializer::read()
 {
 	return Reader::read<T>();
 }
 
-template<typename T, typename I> T Unserializer::read_counted(I expected)
+template<typename T> inline T Unserializer::read(int32_t expected)
 {
-	I actual = read<I>();
-	// error if expected != actual
+	expect(expected);
 	return read<T>();
 }
 

@@ -130,32 +130,18 @@ void Ephemeris::initialize(std::string const &path)
 			for (int32_t i = 0; i < elementsCount; ++i)
 			{
 				OrbitalElements &elements = pluralElements[i];
-				elements = stream.read_counted<OrbitalElements, int32_t>(13);
+				elements = stream.read<OrbitalElements>(13);
 
 				// test {
-				// JDN bootDouble,
-				//  EC bootDouble,
-				//  QR bootAUsAsMeters,
-				//  IN bootDegreesAsRadians,
-				//  OM bootDegreesAsRadians,
-				//   W bootDegreesAsRadians,
-				//  Tp bootDouble,
-				//   N bootDegreesAsRadians,
-				//  MA bootDegreesAsRadians,
-				//  TA bootDegreesAsRadians,
-				//   A bootAUsAsMeters,
-				//  AD bootAUsAsMeters,
-				//  PR bootDouble
-
-					elements.QR = elements.QR * constants::meters_per_AU;
-					elements.IN = elements.IN * constants:: rads_per_deg;
-					elements.OM = elements.OM * constants:: rads_per_deg;
-					elements. W = elements. W * constants:: rads_per_deg;
-					elements. N = elements. N * constants:: rads_per_deg;
-					elements.MA = elements.MA * constants:: rads_per_deg;
-					elements.TA = elements.TA * constants:: rads_per_deg;
-					elements. A = elements. A * constants::meters_per_AU;
-					elements.AD = elements.AD = constants::meters_per_AU;
+				elements.QR = elements.QR * constants::meters_per_AU;
+				elements.IN = elements.IN * constants:: rads_per_deg;
+				elements.OM = elements.OM * constants:: rads_per_deg;
+				elements. W = elements. W * constants:: rads_per_deg;
+				elements. N = elements. N * constants:: rads_per_deg;
+				elements.MA = elements.MA * constants:: rads_per_deg;
+				elements.TA = elements.TA * constants:: rads_per_deg;
+				elements. A = elements. A * constants::meters_per_AU;
+				elements.AD = elements.AD = constants::meters_per_AU;
 				// } test
 			}
 			_orbitalElements.insert(std::make_pair(target.id, pluralElements));

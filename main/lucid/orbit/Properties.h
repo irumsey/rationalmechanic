@@ -79,12 +79,12 @@ struct RenderProperties
 
 		stream.nested_begin("icon");
 		iconMesh = LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(stream.read<std::string>());
-		iconParameters = stream.read_counted<LUCID_GAL::Vector4, int32_t>(4);
+		iconParameters = stream.read<LUCID_GAL::Vector4>(4);
 		stream.nested_end("icon");
 
-		channel0 = stream.read_counted<LUCID_GAL::Vector4, int32_t>(4);
-		channel1 = stream.read_counted<LUCID_GAL::Vector4, int32_t>(4);
-		channel2 = stream.read_counted<LUCID_GAL::Vector4, int32_t>(4);
+		channel0 = stream.read<LUCID_GAL::Vector4>(4);
+		channel1 = stream.read<LUCID_GAL::Vector4>(4);
+		channel2 = stream.read<LUCID_GAL::Vector4>(4);
 	}
 };
 

@@ -94,8 +94,7 @@ SamplerState::SamplerState(LUCID_CORE::Unserializer &reader)
 
 	compare = readEnum(reader, d3dCompare);
 
-	LUCID_VALIDATE(4 == reader.read<int32_t>(), "assuming color data");
-	reader.read(&borderColor, sizeof(LUCID_GAL::Color));
+	borderColor = reader.read<Color>(4);
 
 	lodMin = reader.read<float>();
 	lodMax = reader.read<float>();

@@ -95,50 +95,42 @@ template<> primitive_t read<UNSUPPORTED>(reader_t &)
 
 template<> primitive_t read<LUCID_GAL::Color>(reader_t &reader)
 {
-	LUCID_VALIDATE(4 == reader.read<int32_t>(), "");
-	return primitive_t(reader.read<LUCID_GAL::Color>());
+	return primitive_t(reader.read<LUCID_GAL::Color>(4));
 }
 
 template<> primitive_t read<LUCID_GAL::Vector2>(reader_t &reader)
 {
-	LUCID_VALIDATE(2 == reader.read<int32_t>(), "");
-	return primitive_t(reader.read<LUCID_GAL::Vector2>());
+	return primitive_t(reader.read<LUCID_GAL::Vector2>(2));
 }
 
 template<> primitive_t read<LUCID_GAL::Vector3>(reader_t &reader)
 {
-	LUCID_VALIDATE(3 == reader.read<int32_t>(), "");
-	return primitive_t(reader.read<LUCID_GAL::Vector3>());
+	return primitive_t(reader.read<LUCID_GAL::Vector3>(3));
 }
 
 template<> primitive_t read<LUCID_GAL::Vector4>(reader_t &reader)
 {
-	LUCID_VALIDATE(4 == reader.read<int32_t>(), "");
-	return primitive_t(reader.read<LUCID_GAL::Vector4>());
+	return primitive_t(reader.read<LUCID_GAL::Vector4>(4));
 }
 
 template<> primitive_t read<LUCID_GAL::Quaternion>(reader_t &reader)
 {
-	LUCID_VALIDATE(4 == reader.read<int32_t>(), "");
-	return primitive_t(reader.read<LUCID_GAL::Quaternion>());
+	return primitive_t(reader.read<LUCID_GAL::Quaternion>(4));
 }
 
 template<> primitive_t read<LUCID_GAL::Matrix2x2>(reader_t &reader)
 {
-	LUCID_VALIDATE(4 == reader.read<int32_t>(), "");
-	return primitive_t(reader.read<LUCID_GAL::Matrix2x2>());
+	return primitive_t(reader.read<LUCID_GAL::Matrix2x2>(4));
 }
 
 template<> primitive_t read<LUCID_GAL::Matrix3x3>(reader_t &reader)
 {
-	LUCID_VALIDATE(9 == reader.read<int32_t>(), "");
-	return primitive_t(reader.read<LUCID_GAL::Matrix3x3>());
+	return primitive_t(reader.read<LUCID_GAL::Matrix3x3>(9));
 }
 
 template<> primitive_t read<LUCID_GAL::Matrix4x4>(reader_t &reader)
 {
-	LUCID_VALIDATE(16 == reader.read<int32_t>(), "");
-	return primitive_t(reader.read<LUCID_GAL::Matrix4x4>());
+	return primitive_t(reader.read<LUCID_GAL::Matrix4x4>(16));
 }
 
 template<> primitive_t read<texture2d_t>(reader_t &reader)

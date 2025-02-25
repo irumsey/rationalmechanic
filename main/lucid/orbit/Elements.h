@@ -1,8 +1,10 @@
 #pragma once
 
+#include <lucid/core/Meta.h>
 #include <lucid/core/Unserializer.h>
 #include <lucid/orbit/Defines.h>
 #include <lucid/orbit/Types.h>
+#include <lucid/orbit/Constants.h>
 
 LUCID_ORBIT_BEGIN
 
@@ -56,14 +58,17 @@ struct RotationalElements
 
 	void read(LUCID_CORE::Unserializer &reader)
 	{
-		int32_t count = reader.read<int32_t>();
-		reader.read( ra, count * sizeof(scalar_t));
+		reader.read( ra, reader.read<int32_t>() * sizeof(scalar_t));
+		reader.read(dec, reader.read<int32_t>() * sizeof(scalar_t));
+		reader.read( pm, reader.read<int32_t>() * sizeof(scalar_t));
 
-		count = reader.read<int32_t>();
-		reader.read(dec, count * sizeof(scalar_t));
-		
-		count = reader.read<int32_t>();
-		reader.read( pm, count * sizeof(scalar_t));
+		// test {
+		auto deg2rad = [](scalar_t rhs) { return constants::rads_per_deg * rhs; };
+
+		std::transform( ra,  ra + 3,  ra, deg2rad);
+		std::transform(dec, dec + 3, dec, deg2rad);
+		std::transform( pm,  pm + 3,  pm, deg2rad);
+		// } test
 	}
 
 };
