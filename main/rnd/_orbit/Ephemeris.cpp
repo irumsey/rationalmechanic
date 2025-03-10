@@ -55,31 +55,12 @@ OrbitalElements const &Ephemeris::lookup(Frame const *frame, scalar_t jdn) const
 	return series[first];
 }
 
-void Ephemeris::write(Dictionary const &dictionary, LUCID_CORE::Writer &writer) const
-{
-	writer.write<size_t>(_entries.size());
-
-	for (auto iter = _entries.begin(); iter != _entries.end(); ++iter)
-	{
-		Frame const *frame = iter->first;
-		writer.write<std::string>(frame->name);
-
-		entry_t const &entry = iter->second;
-		series_t const &series = entry.second;
-
-		LUCID_VALIDATE(1 < series.size(), "insufficient number of entries in series");
-
-		writer.write<size_t>(series.size());
-		writer.write(&series[0], series.size() * sizeof(OrbitalElements));
-	}
-}
-
 void Ephemeris::read(Dictionary const &dictionary, LUCID_CORE::Reader &reader)
 {
-	_entries.clear();
+	clear();
 
-	size_t entryCount = reader.read<size_t>();
-	for (size_t entryIndex = 0; entryIndex < entryCount; ++entryIndex)
+	int32_t entryCount = reader.read<int32_t>();
+	for (int32_t entryIndex = 0; entryIndex < entryCount; ++entryIndex)
 	{
 		std::string name = reader.read<std::string>();
 

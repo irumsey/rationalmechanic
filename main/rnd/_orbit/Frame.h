@@ -10,8 +10,7 @@
 
 LUCID_CORE_BEGIN
 
-class Writer;
-class Reader;
+class Unserializer;
 
 LUCID_CORE_END
 
@@ -89,6 +88,8 @@ public:
 	Frame *firstChild = nullptr;
 	Frame *nextSibling = nullptr;
 
+	RenderProperties renderProperties;
+
 	SIM_STATE simState = SIM_STATE_IDLE;
 	CULL_STATE cullState = CULL_STATE_PRUNED;
 
@@ -111,9 +112,7 @@ public:
 
 	virtual void apply(Algorithm *algorithm) = 0;
 
-	virtual void write(LUCID_CORE::Writer &writer) const;
-
-	virtual void read(LUCID_CORE::Reader &reader);
+	virtual void read(LUCID_CORE::Unserializer &stream);
 
 protected:
 	Frame(TYPE type, std::string const &name, std::string const &description);
@@ -160,17 +159,13 @@ inline void Frame::removeChild(Frame *child)
 class DynamicPoint : public Frame
 {
 public:
-	RenderProperties renderProperties;
-
 	DynamicPoint(std::string const &name, std::string const &description);
 
 	virtual ~DynamicPoint() = default;
 
 	virtual void apply(Algorithm *algorithm) override;
 
-	virtual void write(LUCID_CORE::Writer &writer) const override;
-
-	virtual void read(LUCID_CORE::Reader &reader) override;
+	virtual void read(LUCID_CORE::Unserializer &stream) override;
 
 	LUCID_PREVENT_COPY(DynamicPoint);
 	LUCID_PREVENT_ASSIGNMENT(DynamicPoint);
@@ -185,9 +180,8 @@ class OrbitalBody : public Frame
 {
 public:
 	PhysicalProperties physicalProperties;
-	RenderProperties renderProperties;
-
 	RotationalElements rotationalElements;
+
 	OrbitalElements orbitalElements[2];
 
 	OrbitalBody(std::string const &name, std::string const &description);
@@ -196,9 +190,7 @@ public:
 
 	virtual void apply(Algorithm *algorithm) override;
 
-	virtual void write(LUCID_CORE::Writer &writer) const override;
-
-	virtual void read(LUCID_CORE::Reader &reader) override;
+	virtual void read(LUCID_CORE::Unserializer &stream) override;
 
 	LUCID_PREVENT_COPY(OrbitalBody);
 	LUCID_PREVENT_ASSIGNMENT(OrbitalBody);
@@ -211,17 +203,13 @@ public:
 class DynamicBody : public Frame
 {
 public:
-	RenderProperties renderProperties;
-
 	DynamicBody(std::string const &name, std::string const &description);
 
 	virtual ~DynamicBody() = default;
 
 	virtual void apply(Algorithm *algorithm) override;
 
-	virtual void write(LUCID_CORE::Writer &writer) const override;
-
-	virtual void read(LUCID_CORE::Reader &reader) override;
+	virtual void read(LUCID_CORE::Unserializer &stream) override;
 
 	LUCID_PREVENT_COPY(DynamicBody);
 	LUCID_PREVENT_ASSIGNMENT(DynamicBody);
@@ -233,8 +221,6 @@ public:
 class Camera : public Frame
 {
 public:
-	RenderProperties renderProperties;
-
 	Frame *focus = nullptr;
 
 	Camera(std::string const &name, std::string const &description);
@@ -243,9 +229,7 @@ public:
 
 	virtual void apply(Algorithm *algorithm) override;
 
-	virtual void write(LUCID_CORE::Writer &writer) const override;
-
-	virtual void read(LUCID_CORE::Reader &reader) override;
+	virtual void read(LUCID_CORE::Unserializer &stream) override;
 
 	void look(Frame *frame);
 

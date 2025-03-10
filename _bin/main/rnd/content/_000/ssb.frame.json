@@ -1,0 +1,26 @@
+{
+  "orbitFrameType": "DYNAMIC_POINT",
+  "str:target": "SSB",
+  "str:description": "Solar System Barycenter",
+  "str:center": "__none__",
+  "obj:render": {
+    "b:show orbit": false,
+    "b:show icon": false,
+    "obj:icon": {
+      "str:path": "content/stdIcons.mesh",
+      "bin:obj:parameters": {
+        "f32:size": [ 24, 24 ],
+        "f32:texcoord": [ 0.75, 0.0 ],
+        "f32:texsize": [ 0.25, 0.25 ],
+        "f32:color": [ 1, 1, 1, 1 ]
+      }
+    },
+    "obj:model": {
+      "str:path": "content/axes.model",
+      "bin:obj:parameters": {
+        "f32:diffuse": [ 1, 1, 0, 1 ],
+        "f32:ambient": [ 1, 1, 0, 0.25 ]
+      }
+    }
+  }
+}

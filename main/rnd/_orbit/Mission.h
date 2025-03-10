@@ -7,8 +7,7 @@
 
 LUCID_CORE_BEGIN
 
-class Writer;
-class Reader;
+class Unserializer;
 
 LUCID_CORE_END
 
@@ -24,13 +23,11 @@ class Mission
 public:
 	Mission();
 
-	Mission(LUCID_CORE::Reader &reader);
+	Mission(LUCID_CORE::Unserializer &reader);
 
 	virtual ~Mission();
 
-	void write(LUCID_CORE::Writer &writer) const;
-
-	void read(LUCID_CORE::Reader &reader);
+	void read(LUCID_CORE::Unserializer &stream);
 
 private:
 	Dictionary _dictionary;
@@ -38,9 +35,7 @@ private:
 
 	Frame *_root = nullptr;
 
-	void write(LUCID_CORE::Writer &writer, Frame const *frame) const;
-
-	Frame *read_frame(LUCID_CORE::Reader &reader);
+	Frame *read_frame(LUCID_CORE::Unserializer &reader);
 
 	void shutdown();
 

@@ -2,14 +2,14 @@
 
 #include <memory>
 #include <lucid/core/Defines.h>
+#include <lucid/gal/Types.h>
 #include <lucid/gigl/Defines.h>
 #include <rnd/_orbit/Defines.h>
 #include <rnd/_orbit/Types.h>
 
 LUCID_CORE_BEGIN
 
-class Writer;
-class Reader;
+class Unserializer;
 
 LUCID_CORE_END
 
@@ -37,21 +37,38 @@ struct PhysicalProperties
 ///
 struct RenderProperties
 {
+	bool showOrbit = false;
+	bool showIcon = false;
+
+	struct IconParameters
+	{
+		LUCID_GAL::Vector2 size;
+		LUCID_GAL::Vector2 texcoord;
+		LUCID_GAL::Vector2 texsize;
+		LUCID_GAL::  Color color;
+	};
+
 	std::string iconPath;
 	std::shared_ptr<LUCID_GIGL::Mesh> icon;	
+	IconParameters iconParameters;
+
+	struct ModelParameters
+	{
+		LUCID_GAL::Color diffuse;
+		LUCID_GAL::Color ambient; // alpha -> specular coefficient
+	};
 
 	std::string modelPath;
 	std::shared_ptr<LUCID_GIGL::Model> model;
+	ModelParameters modelParameters;
 
 	RenderProperties() = default;
 
-	RenderProperties(LUCID_CORE::Reader &reader);
+	RenderProperties(LUCID_CORE::Unserializer &stream);
 
 	~RenderProperties() = default;
 
-	void write(LUCID_CORE::Writer &writer) const;
-
-	void read(LUCID_CORE::Reader &reader);
+	void read(LUCID_CORE::Unserializer &stream);
 
 };
 

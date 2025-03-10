@@ -1,0 +1,15 @@
+{
+  "str:frames": [
+    "content/_000/ssb.frame",
+    "content/_010/sun.frame",
+    "content/_399/earth.frame",
+    "content/_301/moon.frame",
+    "content/_499/mars.frame"
+  ],
+  "str:ephemeris": [
+    "content/_010/sun_2000_2050.ephemeris",
+    "content/_399/earth_2000_2050.ephemeris",
+    "content/_301/moon_2025_2030.ephemeris",
+    "content/_499/mars_2000_2050.ephemeris"
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "orbitFrameType": "ORBITAL_BODY",
+  "str:target": "Earth",
+  "str:description": "the Earth",
+  "str:center": "Sun",
+  "obj:render": {
+    "b:show orbit": false,
+    "b:show icon": false,
+    "obj:icon": {
+      "str:path": "content/stdIcons.mesh",
+      "bin:obj:parameters": {
+        "f32:size": [ 24, 24 ],
+        "f32:texcoord": [ 0.75, 0.0 ],
+        "f32:texsize": [ 0.25, 0.25 ],
+        "f32:color": [ 1, 1, 1, 1 ]
+      }
+    },
+    "obj:model": {
+      "str:path": "content/_399/earth.model",
+      "bin:obj:parameters": {
+        "f32:diffuse": [ 1, 1, 0, 1 ],
+        "f32:ambient": [ 1, 1, 0, 0.25 ]
+      }
+    }
+  },
+  "bin:obj:physical": {
+    "f64:GM": 398600435436000.0,
+    "f64:mass": 5.97219e+24,
+    "f64:radius": 6371010.0
+  },
+  "bin:obj:rotational": {
+    "f64:ra": [ 0.0, -0.641, 0 ],
+    "f64:dec": [ 90.0, -0.557, 0 ],
+    "f64:pm": [ 190.16, 360.9856235, 0 ]
+  }
+}

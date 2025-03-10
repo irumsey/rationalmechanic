@@ -167,12 +167,25 @@
     "PRIMITIVE_QUERY": 15
   },
 
-  "orbitalFrameType": {
+  "orbitFrameType": {
     "UNDEFINED": 0,
     "DYNAMIC_POINT": 1,
     "ORBITAL_BODY": 2,
     "DYNAMIC_BODY": 3,
     "CAMERA": 4
+  },
+
+  "orbitFrameSimState": {
+    "SIM_STATE_IDLE": 0,
+    "SIM_STATE_ERROR": 1,
+    "SIM_STATE_STABLE": 2
+  },
+
+  "orbitFrameCullState": {
+    "CULL_STATE_PRUNED": 0,
+    "CULL_STATE_CULLED": 1,
+    "CULL_STATE_IMPERCEPTIBLE": 2,
+    "CULL_STATE_VISIBLE": 3
   }
 
 }

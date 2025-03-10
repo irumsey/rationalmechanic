@@ -1,12 +1,12 @@
 #include "Mission.h"
 #include "Frame.h"
-#include <lucid/core/Reader.h>
+#include <lucid/core/Unserializer.h>
 #include <lucid/core/Writer.h>
 #include <lucid/core/Memory.h>
 
 LUCID_ANONYMOUS_BEGIN
 
-typedef orbit::Frame *(*create_func_t)(LUCID_CORE::Reader &reader);
+typedef orbit::Frame *(*create_func_t)(LUCID_CORE::Unserializer &stream);
 extern create_func_t create_frame[orbit::Frame::TYPE_COUNT];
 
 LUCID_ANONYMOUS_END
@@ -15,37 +15,14 @@ ORBIT_BEGIN
 
 Mission::Mission()
 {
-	_root = new DynamicPoint("bc1", "solar system barycenter");
-	_root->centerFrame = _root;
-
-	Frame *  sun = new OrbitalBody(  "sun",   "the sun");
-	Frame *earth = new OrbitalBody("earth", "the earth");
-	Frame * moon = new OrbitalBody( "moon",  "the moon");
-	Frame * mars = new OrbitalBody( "mars",  "the mars");
-
-	_root->addChild(  sun);
-	  sun->addChild(earth);
-	  sun->addChild( mars);
-	earth->addChild( moon);
-
-	_dictionary.define(  "sun",   sun);
-	_dictionary.define("earth", earth);
-	_dictionary.define( "moon",  moon);
-	_dictionary.define( "mars",  mars);
-
-	_ephemeris.add(  sun, OrbitalElements());
-	_ephemeris.add(  sun, OrbitalElements());
-	_ephemeris.add(earth, OrbitalElements());
-	_ephemeris.add(earth, OrbitalElements());
-	_ephemeris.add( moon, OrbitalElements());
-	_ephemeris.add( moon, OrbitalElements());
-	_ephemeris.add( mars, OrbitalElements());
-	_ephemeris.add( mars, OrbitalElements());
+	// test {
+	read(LUCID_CORE::Unserializer("missions/theFirst.mission"));
+	// } test
 }
 
-Mission::Mission(LUCID_CORE::Reader &reader)
+Mission::Mission(LUCID_CORE::Unserializer &stream)
 {
-	read(reader);
+	read(stream);
 }
 
 Mission::~Mission()
@@ -53,53 +30,53 @@ Mission::~Mission()
 	shutdown();
 }
 
-void Mission::write(LUCID_CORE::Writer &writer) const
-{
-	LUCID_VALIDATE(nullptr != _root, "attempt to write an empty mission");
-
-	// serialize the tree, then write a sentinel value to indicate end-of-data.
-	write(writer, _root);
-	writer.write<Frame::TYPE>(Frame::TYPE_UNDEFINED);
-
-	_ephemeris.write(_dictionary, writer);
-}
-
-void Mission::read(LUCID_CORE::Reader &reader)
+void Mission::read(LUCID_CORE::Unserializer &stream)
 {
 	shutdown();
 
-	_root = read_frame(reader);
-	while (nullptr != read_frame(reader)) {}
+	int32_t frameCount = stream.read<int32_t>();
+	LUCID_VALIDATE(0 < frameCount, "a mission must have at least one frame of reference");
 
-	// even if the tree was serialized as "detached" this must take ownership.
+	_root = read_frame(LUCID_CORE::Unserializer(stream.read<std::string>()));
+	for (int32_t i = 1; i < frameCount; ++i)
+		read_frame(LUCID_CORE::Unserializer(stream.read<std::string>()));
 	_root->centerFrame = _root;
 
-	_ephemeris.read(_dictionary, reader);
+	int32_t ephemerisCount = stream.read<int32_t>();
+	for (int32_t i = 0; i < ephemerisCount; ++i)
+	{
+		LUCID_CORE::Unserializer substream(stream.read<std::string>());
+		Frame const *frame = _dictionary.lookup(substream.read<std::string>());
+
+		int32_t elementsCount = substream.read<int32_t>();
+		for (int32_t j = 0; j < elementsCount; ++j)
+		{
+			LUCID_VALIDATE(13 == substream.read<int32_t>(), "");
+
+			OrbitalElements elements;
+			substream.read(&elements, sizeof(OrbitalElements));
+			
+			_ephemeris.add(frame, elements);
+		}
+	}
 }
 
-void Mission::write(LUCID_CORE::Writer &writer, Frame const *frame) const
+Frame *Mission::read_frame(LUCID_CORE::Unserializer &stream)
 {
-	frame->write(writer);
-	for (Frame const *child = frame->firstChild; nullptr != child; child = child->nextSibling)
-		write(writer, child);
-}
-
-Frame *Mission::read_frame(LUCID_CORE::Reader &reader)
-{
-	Frame::TYPE type = reader.read<Frame::TYPE>();
-	Frame *frame = ::create_frame[type](reader);
+	Frame::TYPE type = stream.read<Frame::TYPE>();
+	Frame *frame = ::create_frame[type](stream);
 
 	if (nullptr == frame)
 		return nullptr;
 
 	_dictionary.define(frame->name, frame);
-	Frame *centerFrame = _dictionary[reader.read<std::string>()];
+	Frame *centerFrame = _dictionary[stream.read<std::string>()];
 
 	// 'member, a detached tree has its center frame set to null.
 	// and a root frame has itself as its center frame.
 	if ((nullptr != centerFrame) && (frame != centerFrame))
 		centerFrame->addChild(frame);
-	frame->read(reader);
+	frame->read(stream);
 
 	return frame;
 }
@@ -116,39 +93,39 @@ ORBIT_END
 
 LUCID_ANONYMOUS_BEGIN
 
-orbit::Frame *create_null(LUCID_CORE::Reader &)
+orbit::Frame *create_null(LUCID_CORE::Unserializer &)
 {
 	return nullptr;
 }
 
-orbit::Frame *create_dynamic_point(LUCID_CORE::Reader &reader)
+orbit::Frame *create_dynamic_point(LUCID_CORE::Unserializer &stream)
 {
-	std::string name = reader.read<std::string>();
-	std::string description = reader.read<std::string>();
+	std::string name = stream.read<std::string>();
+	std::string description = stream.read<std::string>();
 
 	return new orbit::DynamicPoint(name, description);
 }
 
-orbit::Frame *create_orbital_body(LUCID_CORE::Reader &reader)
+orbit::Frame *create_orbital_body(LUCID_CORE::Unserializer &stream)
 {
-	std::string name = reader.read<std::string>();
-	std::string description = reader.read<std::string>();
+	std::string name = stream.read<std::string>();
+	std::string description = stream.read<std::string>();
 
 	return new orbit::OrbitalBody(name, description);
 }
 
-orbit::Frame *create_dynamic_body(LUCID_CORE::Reader &reader)
+orbit::Frame *create_dynamic_body(LUCID_CORE::Unserializer &stream)
 {
-	std::string name = reader.read<std::string>();
-	std::string description = reader.read<std::string>();
+	std::string name = stream.read<std::string>();
+	std::string description = stream.read<std::string>();
 
 	return new orbit::DynamicBody(name, description);
 }
 
-orbit::Frame *create_camera(LUCID_CORE::Reader &reader)
+orbit::Frame *create_camera(LUCID_CORE::Unserializer &stream)
 {
-	std::string name = reader.read<std::string>();
-	std::string description = reader.read<std::string>();
+	std::string name = stream.read<std::string>();
+	std::string description = stream.read<std::string>();
 
 	return new orbit::Camera(name, description);
 }

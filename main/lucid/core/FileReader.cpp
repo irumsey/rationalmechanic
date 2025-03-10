@@ -26,6 +26,7 @@ void FileReader::read(void *data, size_t size)
 {
 	LUCID_VALIDATE(is_open(), "attempt to read from an unopened file");
 	_file.read((char *)data, size);
+	LUCID_VALIDATE(not_eof(), "reading past end of file");
 }
 
 LUCID_CORE_END

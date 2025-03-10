@@ -31,6 +31,8 @@ public:
 
 	bool is_eof() const;
 
+	bool not_eof() const;
+
 	virtual void read(void *data, size_t size) override;
 
 	template<typename T> T read();
@@ -61,6 +63,11 @@ inline bool FileReader::not_open() const
 inline bool FileReader::is_eof() const
 {
 	return _file.eof();
+}
+
+inline bool FileReader::not_eof() const
+{
+	return !is_eof();
 }
 
 template<typename T> inline T FileReader::read()

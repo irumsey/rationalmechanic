@@ -33,8 +33,6 @@ public:
 
 	void add(Frame const *frame, OrbitalElements const &elements);
 
-	void write(Dictionary const &dictionary, LUCID_CORE::Writer &writer) const;
-
 	void read(Dictionary const &dictionary, LUCID_CORE::Reader &reader);
 
 	void clear();

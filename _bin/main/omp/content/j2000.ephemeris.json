@@ -56,14 +56,14 @@
     },
     "obj:frames": [
         {
-            "orbitalFrameType": "DYNAMIC_POINT",
+            "orbitFrameType": "DYNAMIC_POINT",
             "i32:hid": 0,
             "str:target": "SSB",
             "str:description": "Solar System Barycenter",
             "str:center": "NONE"
         },
         {
-            "orbitalFrameType": "ORBITAL_BODY",
+            "orbitFrameType": "ORBITAL_BODY",
             "i32:hid": 10,
             "str:target": "Sun",
             "str:description": "",
@@ -896,7 +896,7 @@
             ]
         },
         {
-            "orbitalFrameType": "ORBITAL_BODY",
+            "orbitFrameType": "ORBITAL_BODY",
             "i32:hid": 199,
             "str:target": "Mercury",
             "str:description": "",
@@ -1728,7 +1728,7 @@
             ]
         },
         {
-            "orbitalFrameType": "ORBITAL_BODY",
+            "orbitFrameType": "ORBITAL_BODY",
             "i32:hid": 299,
             "str:target": "Venus",
             "str:description": "",
@@ -2560,7 +2560,7 @@
             ]
         },
         {
-            "orbitalFrameType": "ORBITAL_BODY",
+            "orbitFrameType": "ORBITAL_BODY",
             "i32:hid": 399,
             "str:target": "Earth",
             "str:description": "",
@@ -3393,7 +3393,7 @@
             ]
         },
         {
-            "orbitalFrameType": "ORBITAL_BODY",
+            "orbitFrameType": "ORBITAL_BODY",
             "i32:hid": 301,
             "str:target": "Moon",
             "str:description": "",
@@ -4375,7 +4375,7 @@
             ]
         },
         {
-            "orbitalFrameType": "ORBITAL_BODY",
+            "orbitFrameType": "ORBITAL_BODY",
             "i32:hid": 499,
             "str:target": "Mars",
             "str:description": "",
@@ -5208,7 +5208,7 @@
             ]
         },
         {
-            "orbitalFrameType": "ORBITAL_BODY",
+            "orbitFrameType": "ORBITAL_BODY",
             "i32:hid": 599,
             "str:target": "Jupiter",
             "str:description": "",
@@ -6040,7 +6040,7 @@
             ]
         },
         {
-            "orbitalFrameType": "ORBITAL_BODY",
+            "orbitFrameType": "ORBITAL_BODY",
             "i32:hid": 699,
             "str:target": "Saturn",
             "str:description": "",
@@ -6872,7 +6872,7 @@
             ]
         },
         {
-            "orbitalFrameType": "ORBITAL_BODY",
+            "orbitFrameType": "ORBITAL_BODY",
             "i32:hid": 799,
             "str:target": "Uranus",
             "str:description": "",
@@ -7704,7 +7704,7 @@
             ]
         },
         {
-            "orbitalFrameType": "ORBITAL_BODY",
+            "orbitFrameType": "ORBITAL_BODY",
             "i32:hid": 899,
             "str:target": "Neptune",
             "str:description": "",
@@ -8536,7 +8536,7 @@
             ]
         },
         {
-            "orbitalFrameType": "ORBITAL_BODY",
+            "orbitFrameType": "ORBITAL_BODY",
             "i32:hid": 999,
             "str:target": "Pluto",
             "str:description": "",
@@ -9368,7 +9368,7 @@
             ]
         },
         {
-            "orbitalFrameType": "ORBITAL_BODY",
+            "orbitFrameType": "ORBITAL_BODY",
             "i32:hid": -125544,
             "str:target": "ISS",
             "str:description": "International Space Station",
@@ -9465,7 +9465,7 @@
             ]
         },
         {
-            "orbitalFrameType": "ORBITAL_BODY",
+            "orbitFrameType": "ORBITAL_BODY",
             "i32:hid": -48,
             "str:target": "HST",
             "str:description": "Hubble Space Telescope",
@@ -9562,7 +9562,7 @@
             ]
         },
         {
-            "orbitalFrameType": "ORBITAL_BODY",
+            "orbitFrameType": "ORBITAL_BODY",
             "i32:hid": -95,
             "str:target": "TESS",
             "str:description": "Transiting Exoplanet Survey Satellite",
@@ -9659,7 +9659,7 @@
             ]
         },
         {
-            "orbitalFrameType": "ORBITAL_BODY",
+            "orbitFrameType": "ORBITAL_BODY",
             "i32:hid": -170,
             "str:target": "JWST",
             "str:description": "Jame's Webb Space Telescope",
@@ -9921,7 +9921,7 @@
             ]
         },
         {
-            "orbitalFrameType": "ORBITAL_BODY",
+            "orbitFrameType": "ORBITAL_BODY",
             "i32:hid": 16,
             "str:target": "16 Psyche",
             "str:description": "Asteroid",

@@ -1,0 +1,36 @@
+{
+  "orbitFrameType": "ORBITAL_BODY",
+  "str:target": "Moon",
+  "str:description": "the Moon",
+  "str:center": "Earth",
+  "obj:render": {
+    "b:show orbit": false,
+    "b:show icon": false,
+    "obj:icon": {
+      "str:path": "content/stdIcons.mesh",
+      "bin:obj:parameters": {
+        "f32:size": [ 24, 24 ],
+        "f32:texcoord": [ 0.75, 0.0 ],
+        "f32:texsize": [ 0.25, 0.25 ],
+        "f32:color": [ 1, 1, 1, 1 ]
+      }
+    },
+    "obj:model": {
+      "str:path": "content/_301/moon.model",
+      "bin:obj:parameters": {
+        "f32:diffuse": [ 1, 1, 0, 1 ],
+        "f32:ambient": [ 1, 1, 0, 0.25 ]
+      }
+    }
+  },
+  "bin:obj:physical": {
+    "f64:GM": 4902800066000.0,
+    "f64:mass": 7.349e+22,
+    "f64:radius": 1737530.0
+  },
+  "bin:obj:rotationalElements": {
+    "f64:ra": [ 270.0, 0.0, 0 ],
+    "f64:dec": [ 66.534, 0.0, 0 ],
+    "f64:pm": [ 38.314, 13.1763581, 0 ]
+  }
+}

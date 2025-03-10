@@ -2,8 +2,7 @@
 #include <lucid/gigl/Resources.h>
 #include <lucid/gigl/Model.h>
 #include <lucid/gigl/Mesh.h>
-#include <lucid/core/Reader.h>
-#include <lucid/core/Writer.h>
+#include <lucid/core/Unserializer.h>
 
 ORBIT_BEGIN
 
@@ -11,24 +10,27 @@ ORBIT_BEGIN
 ///
 /// 
 
-RenderProperties::RenderProperties(LUCID_CORE::Reader &reader)
+RenderProperties::RenderProperties(LUCID_CORE::Unserializer &stream)
 {
-	read(reader);
+	read(stream);
 }
 
-void RenderProperties::write(LUCID_CORE::Writer &writer) const
+void RenderProperties::read(LUCID_CORE::Unserializer &stream)
 {
-	writer.write<std::string>( iconPath);
-	writer.write<std::string>(modelPath);
-}
+	showOrbit = stream.read<bool>();
+	showIcon = stream.read<bool>();
 
-void RenderProperties::read(LUCID_CORE::Reader &reader)
-{
-	iconPath = reader.read<std::string>();
+	stream.nested_begin();
+	iconPath = stream.read<std::string>();
 //	icon = LUCID_GIGL::Resources::get<LUCID_GIGL::Mesh>(iconPath);
+	stream.read(&iconParameters, stream.read<int32_t>());
+	stream.nested_end();
 
-	modelPath = reader.read<std::string>();
+	stream.nested_begin();
+	modelPath = stream.read<std::string>();
 //	model = LUCID_GIGL::Resources::get<LUCID_GIGL::Model>(modelPath);
+	stream.read(&modelParameters, stream.read<int32_t>());
+	stream.nested_end();
 }
 
 ORBIT_END

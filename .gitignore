@@ -443,3 +443,14 @@ ModelManifest.xml
 /_bin/main/rnd/content/screen.geometry
 /_bin/main/rnd/content/screen.vertex.cso
 /_bin/main/omp/content/bsc5.starcatalog
+/_bin/main/rnd/content/_000/frame
+/_bin/main/rnd/content/_000/ssb.frame
+/_bin/main/rnd/content/_010/sun.frame
+/_bin/main/rnd/content/_010/sun_2000_2050.ephemeris
+/_bin/main/rnd/content/_301/moon.frame
+/_bin/main/rnd/content/_301/moon_2025_2030.ephemeris
+/_bin/main/rnd/content/_399/earth.frame
+/_bin/main/rnd/content/_399/earth_2000_2050.ephemeris
+/_bin/main/rnd/content/_499/mars.frame
+/_bin/main/rnd/content/_499/mars_2000_2050.ephemeris
+/_bin/main/rnd/missions/theFirst.mission

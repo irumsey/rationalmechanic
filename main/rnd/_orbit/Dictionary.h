@@ -17,7 +17,7 @@ class Dictionary
 public:
 	Dictionary()
 	{
-		_internal["__null__"] = nullptr;
+		clear();
 	}
 
 	virtual ~Dictionary() = default;
@@ -44,6 +44,7 @@ public:
 	void clear()
 	{
 		_internal.clear();
+		_internal["__none__"] = nullptr;
 	}
 
 private:
