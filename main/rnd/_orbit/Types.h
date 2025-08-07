@@ -8,9 +8,9 @@ ORBIT_BEGIN
 
 typedef float64_t scalar_t;
 
-typedef LUCID_MATH::Vector<scalar_t, 2>  vector2_t;
-typedef LUCID_MATH::Vector<scalar_t, 3>  vector3_t;
-typedef LUCID_MATH::Vector<scalar_t, 4>  vector4_t;
+typedef LUCID_MATH::Vector<scalar_t, 2> vector2_t;
+typedef LUCID_MATH::Vector<scalar_t, 3> vector3_t;
+typedef LUCID_MATH::Vector<scalar_t, 4> vector4_t;
 
 typedef LUCID_MATH::Matrix<scalar_t, 3, 3> matrix3x3_t;
 typedef LUCID_MATH::Matrix<scalar_t, 4, 4> matrix4x4_t;

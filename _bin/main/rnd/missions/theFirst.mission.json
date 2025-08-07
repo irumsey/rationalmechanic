@@ -1,4 +1,5 @@
 {
+  "str:starCatalog": "content/bsc5.starcatalog",
   "str:frames": [
     "content/_000/ssb.frame",
     "content/_010/sun.frame",

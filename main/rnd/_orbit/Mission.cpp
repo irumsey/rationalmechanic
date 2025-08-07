@@ -1,5 +1,6 @@
 #include "Mission.h"
 #include "Frame.h"
+#include "Constants.h"
 #include <lucid/core/Unserializer.h>
 #include <lucid/core/Writer.h>
 #include <lucid/core/Memory.h>
@@ -34,6 +35,8 @@ void Mission::read(LUCID_CORE::Unserializer &stream)
 {
 	shutdown();
 
+	_stars.initialize(LUCID_CORE::Unserializer(stream.read<std::string>()));
+
 	int32_t frameCount = stream.read<int32_t>();
 	LUCID_VALIDATE(0 < frameCount, "a mission must have at least one frame of reference");
 
@@ -52,10 +55,20 @@ void Mission::read(LUCID_CORE::Unserializer &stream)
 		for (int32_t j = 0; j < elementsCount; ++j)
 		{
 			LUCID_VALIDATE(13 == substream.read<int32_t>(), "");
+			OrbitalElements elements = substream.read<OrbitalElements>();
 
-			OrbitalElements elements;
-			substream.read(&elements, sizeof(OrbitalElements));
-			
+			// TBD: keep the file in AUs and degrees ??? {
+			elements.QR = elements.QR * constants::meters_per_AU;
+			elements.IN = elements.IN * constants:: rads_per_deg;
+			elements.OM = elements.OM * constants:: rads_per_deg;
+			elements. W = elements. W * constants:: rads_per_deg;
+			elements. N = elements. N * constants:: rads_per_deg;
+			elements.MA = elements.MA * constants:: rads_per_deg;
+			elements.TA = elements.TA * constants:: rads_per_deg;
+			elements. A = elements. A * constants::meters_per_AU;
+			elements.AD = elements.AD = constants::meters_per_AU;
+			// }
+
 			_ephemeris.add(frame, elements);
 		}
 	}
@@ -86,6 +99,7 @@ void Mission::shutdown()
 	LUCID_CORE::reset_raw_ptr(_root);
 
 	_dictionary.clear();
+	_stars.clear();
 	_ephemeris.clear();
 }
 

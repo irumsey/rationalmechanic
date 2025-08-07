@@ -1,5 +1,7 @@
 #include "State.h"
 #include "Session.h"
+#include <rnd/_orbit/Simulator.h>
+#include <rnd/_orbit/JDN.h>
 #include <lucid/gui/Checkbox.h>
 #include <lucid/gui/Button.h>
 #include <lucid/gui/Label.h>
@@ -21,9 +23,6 @@
 // test {
 #include <sstream>
 #include <iomanip>
-
-float64_t const SECONDS_PER_DAY = 24.0 * 3600.0;
-float64_t const DAYS_PER_SECOND = 1.0 / SECONDS_PER_DAY;
 
 // give these macros a try, see if i like them...
 #define GET_MATERIAL_PARAMETER(mesh, name) mesh->program()->lookup( #name )
@@ -402,7 +401,7 @@ Configuring const *Configuring::instance()
 
 void Running::onEnter(Session *session) const
 {
-	session->_simulator.initialize(2460707.500000);
+	session->_simulator.initialize(ORBIT::JDN::now());
 }
 
 void Running::onLeave(Session *session) const
@@ -411,7 +410,7 @@ void Running::onLeave(Session *session) const
 
 void Running::onEvent(Session *session, LUCID_GUI::TimerEvent const &event) const
 {
-	session->_simulator.update(DAYS_PER_SECOND * event.dt);
+	session->_simulator.update(ORBIT_CONSTANTS::days_per_second * event.dt);
 
 	// test {
 	std::ostringstream stream;
@@ -435,12 +434,14 @@ void Running::onButtonPress(Session *session, gui::Button *button) const
 
 void Running::onCheckboxPress(Session *session, gui::Checkbox *button) const
 {
+	orbit::Simulator &simulator = session->_simulator;
+
 	if (ID_BTN_PLAYPAUSE == button->id())
 	{
 		if (button->isChecked())
-			session->_simulator.start();
+			simulator.start();
 		else
-			session->_simulator.pause();
+			simulator.pause();
 	}
 }
 

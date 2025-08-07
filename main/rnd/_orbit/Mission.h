@@ -3,6 +3,7 @@
 #include <lucid/core/Defines.h>
 #include <rnd/_orbit/Defines.h>
 #include <rnd/_orbit/Dictionary.h>
+#include <rnd/_orbit/StarCatalog.h>
 #include <rnd/_orbit/Ephemeris.h>
 
 LUCID_CORE_BEGIN
@@ -23,7 +24,7 @@ class Mission
 public:
 	Mission();
 
-	Mission(LUCID_CORE::Unserializer &reader);
+	Mission(LUCID_CORE::Unserializer &stream);
 
 	virtual ~Mission();
 
@@ -31,11 +32,12 @@ public:
 
 private:
 	Dictionary _dictionary;
+	StarCatalog _stars;
 	Ephemeris _ephemeris;
 
 	Frame *_root = nullptr;
 
-	Frame *read_frame(LUCID_CORE::Unserializer &reader);
+	Frame *read_frame(LUCID_CORE::Unserializer &stream);
 
 	void shutdown();
 

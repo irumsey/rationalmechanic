@@ -18,6 +18,9 @@
     <ClCompile Include="_orbit\Mission.cpp">
       <Filter>_orbit</Filter>
     </ClCompile>
+    <ClCompile Include="_orbit\StarCatalog.cpp">
+      <Filter>_orbit</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Utility.h" />
@@ -51,6 +54,15 @@
       <Filter>_orbit</Filter>
     </ClInclude>
     <ClInclude Include="_orbit\Dictionary.h">
+      <Filter>_orbit</Filter>
+    </ClInclude>
+    <ClInclude Include="_orbit\Constants.h">
+      <Filter>_orbit</Filter>
+    </ClInclude>
+    <ClInclude Include="_orbit\JDN.h">
+      <Filter>_orbit</Filter>
+    </ClInclude>
+    <ClInclude Include="_orbit\StarCatalog.h">
       <Filter>_orbit</Filter>
     </ClInclude>
   </ItemGroup>
